@@ -1,0 +1,9 @@
+gag on
+read echodat.txt 1ab330 ; read echodat.dta 1ab42c ; getsym echodat.sym
+gag off
+echo "	start	size	end"
+echo "text	1ab330	fc	1ab42b"
+echo "data	1ab42c	0	1ab42b"
+echo "bss	1ab42c	0	1ab42b"
+echo "Symbols loaded"
+xpc 1ab330

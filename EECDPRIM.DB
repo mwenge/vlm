@@ -1,0 +1,9 @@
+gag on
+read eecdprim.txt 8000 ; read eecdprim.dta 81ce ; getsym eecdprim.sym
+gag off
+echo "	start	size	end"
+echo "text	8000	1ce	81cd"
+echo "data	81ce	0	81cd"
+echo "bss	81ce	80	824d"
+echo "Symbols loaded"
+xpc 8000

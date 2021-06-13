@@ -1,0 +1,9 @@
+	XDEF	DSPORG
+	XDEF	state
+	XDEF	pointer
+	XDEF	d_start
+	XDEF	fake_it
+	XDEF	i2s_isr
+	XDEF	clean_up
+	XDEF	shutd
+	XDEF	verydead

@@ -1,0 +1,47 @@
+                        CD BootROM Error Codes
+
+
+When an unrecognized CD or missing CD is detected at boot time, the CD bootrom
+displays a CD disc with a flashing question mark.  A multisession CD that is
+not encrypted will also result in the flashing question mark.  Other error
+conditions as well can cause this to occur.
+
+To determine which error condition has caused the flashing question mark,
+use the CD Err Chk Kart.  Just insert the Kart into the cartridge slot without
+cycling power.  The Kart will cause a reset, and then display a blue screen
+with some diagnostic memory dumps.  On the top line is a hex word labeled
+"ErrC".  If the first three digits are "DAFx", then an error was detected
+during the previous boot attempt.  The "x" is a code for the error condition.
+The following is a table of "x" codes:
+
+0 - Unrecognized CD or Directory read error
+1 - "ATRI" header not found on hash track
+2 - "ATARI APPROVED.." not found
+3 - Hash entry count below minimum
+4 - Bad RSA block on hash track
+5 - Bad TOC hash
+6 - Bad segment hash
+7 - Time-out looking for sync before MD5 hash
+8 - retry failure (CD ERR) on 1st read of hash track
+9 - retry failure (CD ERR) on 2nd read of hash track
+A - retry failure (CD ERR) on 3rd (random) hash block
+B - retry failure (CD ERR) on 2nd (random) hash block 
+C - retry failure (CD ERR) on 1st (boot) hash block 
+D - retry failure on load of boot block (before exec)
+
+
+Nine possible boot screens are randomly selected for display during the boot
+process.  The nine are assigned a number from 1-9 and a description of
+each is given here:
+
+1- Large "JAGUAR" w/ 8 white-centered blue rotating doilies 
+2- Large "JAGUAR" w/ turq/green/yellow point-grid yawing, pitching & rolling
+3- Large "JAGUAR" w/ rainbow plasma radiating out from a point to a rectangle
+4- Large "JAGUAR" w/ rainbow plasma radiating out from a vertical central bar
+5- Large "JAGUAR" w/ rainbow plasma radiating out from a horizontal central bar
+6- Large "JAGUAR" w/ rainbow plasma bleeding off the letters
+7- Small kinetic rainbow "JAGUAR" on receeding starfield
+8- Large "JAGUAR" w/ orangish-red fringed yellow kinetic medallion on starfield
+9- Large "JAGUAR" w/ circular counter-rotating white tipped arcs on starfield
+
+Please refer to each of these boot screens by number.

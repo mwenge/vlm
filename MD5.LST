@@ -1,0 +1,933 @@
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 1    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+GASM -l -o -c -CDSP -R1 -S -Id:\bin MD5.DAS
+
+                0000005F 	PLEN		95
+                         ;
+                         ;********************************************************
+                         ;							*
+                         ;							*
+                         ;   Message Digest (MD5) for JAGUAR CD rom		*
+                         ;							*
+                         ;							*
+                         ;********************************************************
+                         ;
+                         ;
+                         ;
+                         ;   Programmer:  Dave Staugas
+                         ;  Last Update:  9-Jan-94	
+                         ;
+                         ;
+                         ;
+                         ;
+                         ;
+                00000000 accum			REGSET		R0
+                00000001 scratch1		REGSET		R1
+                00000002 abit6			REGSET		R2
+                00000003 index			REGSET		R3
+                00000004 indexinc		REGSET		R4
+                00000005 rolcnt			REGSET		R5
+                00000006 speciesR		REGSET		R6
+                         ;
+                         ;
+                00000007 hashptr			REGSET		R7		
+                00000008 hashcur			REGSET		R8
+                         
+                00000009 loopcnt			REGSET		R9
+                0000000A inptptre		REGSET		R10
+                         
+                0000000B mask31			REGSET		R11
+                0000000C temp			REGSET		R12
+                0000000D command			REGSET		R13
+                         ;
+                         ;
+                00000010 regAx			REGSET		R16
+                00000011 regBx			REGSET		R17
+                00000012 regCCx			REGSET		R18
+                00000013 regDx			REGSET		R19
+                         ;
+                00000014 nextblkR		REGSET		R20
+                00000015 hashendR		REGSET		R21
+                00000016 mask63			REGSET		R22
+                00000017 blckbase		REGSET		R23
+                00000018 nextserR		REGSET		R24
+                00000019 ourkey			REGSET		R25
+                         ;
+                0000001A regA			REGSET		R26
+                0000001B regB			REGSET		R27
+                0000001C regCC			REGSET		R28
+                0000001D regD			REGSET		R29
+                         ;
+                         ;
+                         ;  this needs to follow right after RSA code loaded by bootrom
+                         ;
+@'00F1B000               	org	D_RAM
+                         ;
+@'00F1B000               baseaddress:
+@'00F1B000 9800 B3BA00F1 	movei	#sramout,r0	; (interrupt 0 - CPU)
+@'00F1B006 D000           	jump	(r0)
+@'00F1B008 E400           	nop
+@'00F1B00A E400           	nop
+@'00F1B00C E400           	nop
+@'00F1B00E E400           	nop
+                         ;
+@'00F1B010               i2s_vec:
+@'00F1B010 981E B2C400F1 	movei	#i2s_start,r30	;(interrupt 1 - I2S)
+@'00F1B016 D3C0           	jump	(r30)
+@'00F1B018 E400           	nop
+@'00F1B01A E400           	nop
+@'00F1B01C E400           	nop
+@'00F1B01E E400           	nop
+                         ;
+                         ;
+@'00F1B020               MD5semi:
+@'00F1B020      FFFFFFFF 	dc.l	-1	;=0 start MD5 from I2S, =1 start MD5 from addr range 
+@'00F1B024               MD5head:
+@'00F1B024      00000000 	dc.l	0	;start MD5 when 16 of these have been read
+@'00F1B028               MD5leng:
+@'00F1B028      00000000 	dc.l	0	;# of blocks to MD5 before quitting
+                         ;
+@'00F1B02C               MD5result:
+@'00F1B02C      00000000 	dc.l	0	;stuff hash here when done
+@'00F1B030      00000000 	dc.l	0
+@'00F1B034      00000000 	dc.l	0
+@'00F1B038      00000000 	dc.l	0
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 2    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+                         ;
+@'00F1B03C      00000000 	dc.l	0	;test (count of irq's)
+@'00F1B040               MD5start:
+                         ;
+                         ;  load up bank #0 regs with constants for I2S irq
+                         ;
+@'00F1B040 981F D00000F1 	movei	#D_RAM+$2000,R31	;setup stack at SRAM top
+@'00F1B046 981D A10000F1 	movei	#D_FLAGS,R29		;flags
+@'00F1B04C 981C A14800F1 	movei	#LTXD,R28		;left receive
+@'00F1B052 981B A14C00F1 	movei	#RTXD,R27		;right receive
+@'00F1B058 981A C00000F1 	movei	#$F1C000,R26		;data DST pointer
+                         
+@'00F1B05E 9814 80000000 	movei	#$8000,R20		;time-out maximum count
+                         ;	movei	#$100000,R20		;time-out maximum count
+                         
+@'00F1B064 9819 FF80FFFF 	movei	#$ffffff80,R25
+@'00F1B06A 9818 A11800F1 	movei	#D_HIDATA,R24		;equates have misnomer for "D_MOD"
+@'00F1B070 BF19           	store	R25,(R24)		;set modulo mask for circular queue
+                         ;
+@'00F1B072 8C19           	moveq	#0,R25			;start pattern
+@'00F1B074 8C18           	moveq	#0,R24			;length (in longs)
+                         ;
+@'00F1B076 8E17           	moveq	#16,R23			;pattern count
+@'00F1B078 9816 B304981E 	movei	#($981E0000+(i2s_end & $FFFF)),R22	;secondary irq
+@'00F1B07E 9815 B01000F1 	movei	#i2s_vec,R21		;vector location to stuff
+                         ;
+                         ;  now switch to register bank 1 for foreground
+                         ;
+@'00F1B084 93BD           	moveta	R29,R29		;just in case of trouble here
+@'00F1B086 A7A0           	load	(R29),R0	;get D_FLAGS
+                         
+                         
+                         ;		   3         2         1
+                         ;		  10987654321098765432109876543210
+@'00F1B088 9801 7E300000 	movei	#%00000000000000000111111000110000,R1	;bits to set
+@'00F1B08E 9802 7E3FFFFF 	movei	#%11111111111111110111111000111111,R2	;bits to clear
+@'00F1B094 2820           	or	R1,R0
+@'00F1B096 2440           	and	R2,R0
+                         ;
+                         ;	bset	#14,R0		;switch to bank 1
+                         ;	bset	#5,R0		;enable i2s interrupt
+                         ;	bset	#4,R0		;enable cpu interrupt
+                         ;
+@'00F1B098 BFA0           	store	R0,(R29)	;we're in bank 1 now, with i2s goin'
+@'00F1B09A E400           	nop
+@'00F1B09C E400           	nop
+                         ;
+                         ;
+                         ;   Come back up here for new command
+                         ;
+                         ;
+@'00F1B09E 8C00           	moveq	#0,R0		;sucessful completion code (1 if time out)
+@'00F1B0A0               foreloop:
+@'00F1B0A0 6200           	shlq	#16,R0		;move completion code to high word
+                         ;
+                         ;  Here's where we load up the MD5 constants..
+                         ;
+@'00F1B0A2 9815 B52C00F1 	movei	#hashend,hashendR
+@'00F1B0A8 9807 B3FC00F1 	movei	#hashman,hashptr
+                         ;
+@'00F1B0AE 8C02           	moveq	#0,abit6		;we need bit6 set for xor
+@'00F1B0B0 9053           	moveta	abit6,R19		;set time-out counter to zero
+                         
+@'00F1B0B2 38C2           	bset	#6,abit6
+@'00F1B0B4 9817 C00000F1 	movei	#$F1C000,blckbase	;start off using low buffer
+                         ;
+@'00F1B0BA 92FA           	moveta	blckbase,R26		;restore ptr
+                         ;
+@'00F1B0BC 8FEB           	moveq	#31,mask31		;$1f, 5 bits of LSBs for mask
+@'00F1B0BE 8976           	move	mask31,mask63
+@'00F1B0C0 02D6           	add	mask63,mask63
+                         ;
+@'00F1B0C2 9810 23016745 	movei	#$67452301,regAx	;init state reg's
+@'00F1B0C8 9811 AB89EFCD 	movei	#$EFCDAB89,regBx	; to constants
+@'00F1B0CE 9812 DCFE98BA 	movei	#$98BADCFE,regCCx
+@'00F1B0D4 9813 54761032 	movei	#$10325476,regDx
+                         ;
+                         ;
+@'00F1B0DA 9818 B1C200F1 	movei	#nextrans,nextserR
+@'00F1B0E0 9814 B1AA00F1 	movei	#nexti2s,nextblkR	;assume we want i2s input
+                         ;
+                         ;-----------------------------------------------
+                         ;
+                         ;  Time to wait for new command
+                         ;
+@'00F1B0E6 9809 B02000F1 	movei	#MD5semi,loopcnt
+@'00F1B0EC 3000           	not	R0
+@'00F1B0EE BD20           	store	R0,(loopcnt)		;tell 'em we're thru
+                         ;
+@'00F1B0F0               cmdwait:
+@'00F1B0F0 A52D           	load	(loopcnt),command
+@'00F1B0F2 29AD           	or	command,command
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 3    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+@'00F1B0F4 D7B8           	jr	MI,cmdwait	;wait til non-negative comes in
+@'00F1B0F6 E400           	nop
+                         ;
+                         ;  commands are: 0 - perform MD5 on-the-fly segment CD reads
+                         ;		 1 - perform MD5 on dRAM or sRAM range
+                         ;		 2 - load boot sector
+                         ;		 3 - shut the DSP down
+                         ;
+@'00F1B0F8 0889           	addq	#4,loopcnt	;ptr to head
+@'00F1B0FA A52F           	load	(loopcnt),R15	;head pattern (or memory addr)
+@'00F1B0FC 0889           	addq	#4,loopcnt
+@'00F1B0FE A52A           	load	(loopcnt),inptptre	;length in blocks (or memory addr)
+                         ;
+@'00F1B100 7C4D           	cmpq	#2,command
+@'00F1B102 D4C8           	jr	CS,doMD			;br if 0 or 1
+@'00F1B104 E400           	nop
+                         ;
+@'00F1B106 9814 B25C00F1 	movei	#shutboot,nextblkR	;need to check shutdown or boot
+@'00F1B10C D280           	jump	(nextblkR)		; (commands 2, 3)
+@'00F1B10E E400           	nop
+                         
+@'00F1B110               doMD:
+@'00F1B110 981A B17000F1 	movei	#justmem,RegA	;assume br to memory hash only
+@'00F1B116 7C2D           	cmpq	#1,command	;was it memory or circular I2S?
+@'00F1B118 D342           	jump	EQ,(RegA)	;br if memory
+@'00F1B11A E400           	nop
+                         ;
+                         ;
+                         ;  else, start up the circular que business
+                         ;
+@'00F1B11C               cirqdue:
+                         ;
+                         ;  first, let's wait for "FOUND" from DSA
+                         ;
+                         ;
+                         ; ***  3-May-95  Addition added so DSP waits for ACK after seek
+                         ;
+@'00F1B11C 981A FF0000DF 	movei	#$DFFF00,RegA	;ptr to BUTCH
+                         ;
+@'00F1B122               reACK:
+@'00F1B122 981B 13880000 	movei	#5000,RegB	;delay timer
+@'00F1B128               ACKdelay:
+@'00F1B128 183B           	subq	#1,RegB
+@'00F1B12A D7C1           	jr	NE,ACKdelay
+@'00F1B12C E400           	nop
+                         ;
+@'00F1B12E A75B           	load	(RegA),RegB	;get BUTCH
+@'00F1B130 35BB           	btst	#13,RegB	;check DSA RX pending
+@'00F1B132 D6E2           	jr	EQ,reACK
+@'00F1B134 E400           	nop
+                         ;
+@'00F1B136 095A           	addq	#$A,RegA	;--> DS_DATA
+@'00F1B138 A35B           	loadw	(RegA),RegB	;fetch return code
+                         
+                         ;
+                         ;****22-May-95 we don't clear DSA_rx flag since it might also clear DSA_tx
+                         ;	subq	#6,RegA		;--> DSCNTRL
+                         ;
+                         ;	load	(RegA),RegCC	;clear DSA Rx pending
+                         ;
+                         
+                         
+@'00F1B13A 981A 01000000 	movei	#$100,RegA	;get "FOUND"
+@'00F1B140 2B9C           	or	RegCC,RegCC	;fix scoreboard bug for dummy load
+@'00F1B142 7B5B           	cmp	RegA,RegB	;did we get found?
+@'00F1B144 D4C2           	jr	EQ,foundgot	;br if so
+@'00F1B146 E400           	nop
+                         ;
+                         ;  we have a seek error...
+                         ;
+@'00F1B148 980D B0A000F1 	movei	#foreloop,command
+@'00F1B14E D1A0           	jump	(command)
+@'00F1B150 8C40           	moveq	#2,R0		;indicate seek error
+                         ;
+                         ;
+@'00F1B152               foundgot:
+@'00F1B152 981A FF1000DF 	movei	#$DFFF10,RegA
+@'00F1B158 A75B           	load	(RegA),RegB	;clear any CD Err
+@'00F1B15A 2B7B           	or	RegB,RegB	;fix scoreboard bug for dummy load
+                         ;
+                         ;  *** End 3-May-95 addition
+                         ;
+@'00F1B15C 8943           	move	inptptre,index
+@'00F1B15E 6383           	shlq	#4,index
+@'00F1B160 0823           	addq	#1,index
+@'00F1B162 9078           	moveta	index,R24	;set length in longs
+@'00F1B164 91F9           	moveta	R15,R25		;set start pattern
+                         ;
+@'00F1B166 980D B19200F1 	movei	#firstI2S,command
+@'00F1B16C D1A0           	jump	(command)
+@'00F1B16E 8C0F           	moveq	#0,R15
+                         ;
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 4    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+                         ;
+                         ;
+                         ;
+@'00F1B170               justmem:
+@'00F1B170 9814 B17600F1 	movei	#nextblk,nextblkR
+                         ;
+                         ;
+                         ;=========================================================
+                         ;
+                         ;   Load next 64-bytes of Kart in our local RAM and
+                         ;    futz, grind, hack and ickify it.
+                         ;
+@'00F1B176               nextblk:
+@'00F1B176 88E8           	move	hashptr,hashcur
+@'00F1B178 8AA1           	move	hashendR,scratch1
+                         ;
+                         ;   The following code copies a 64-byte block of Kart into
+                         ;    GPU space.  If each ROM block is always long-word aligned,
+                         ;    then the simple routine will suffice.  Else, the other
+                         ;    is required.
+                         ;
+                         ;  Use this for long-word aligned SRC..
+                         ;   
+@'00F1B17A 8E09           	moveq	#16,loopcnt
+@'00F1B17C               locallp:
+@'00F1B17C A5E0           	load	(R15),accum
+@'00F1B17E 088F           	addq	#4,R15
+@'00F1B180 BC20           	store	accum,(scratch1)
+@'00F1B182 1829           	subq	#1,loopcnt
+@'00F1B184 D761           	jr	NE,locallp
+@'00F1B186 0C81           	addqt	#4,scratch1
+                         ;
+@'00F1B188 9809 B1BA00F1 	movei	#nextboth,loopcnt
+@'00F1B18E D120           	jump	(loopcnt)
+                         ;	jr	nextboth		;skip over i2s nextblock setup
+@'00F1B190 8AAE           	move	hashendR,R14	
+                         ;
+                         ;
+                         ;
+                         ;  First time, just wait for pointer to start moving (=0 if time-out)
+                         ;
+@'00F1B192               firstI2S:
+@'00F1B192 9743           	movefa	R26,index
+@'00F1B194               tmwait:
+@'00F1B194 7AE3           	cmp	blckbase,index		;has pointer started to move?
+@'00F1B196 D7C2           	jr	EQ,tmwait		;br if not
+@'00F1B198 9743           	movefa	R26,index
+                         ;
+                         ; it's moving--check for time-out
+                         ;
+@'00F1B19A 2863           	or	index,index		;this will be zero'd if time-out
+@'00F1B19C D4E1           	jr	NE,nextnext		;br if not timed out
+@'00F1B19E E400           	nop
+                         ;
+@'00F1B1A0 980D B0A000F1 	movei	#foreloop,command	;else, we're done--timeout
+@'00F1B1A6 D1A0           	jump	(command)
+@'00F1B1A8 8C20           	moveq	#1,R0			;indicate time-out
+                         ;
+                         ;  here is our loop point if reading i2s
+                         ;
+@'00F1B1AA               nexti2s:
+@'00F1B1AA 9743           	movefa	R26,index		;fetch i2s routine's block ptr
+@'00F1B1AC               nextnext:
+@'00F1B1AC 2EE3           	xor	blckbase,index		;i2s must not be filling the buffer
+@'00F1B1AE 34C3           	btst	#6,index		;     we want to use for hashing
+@'00F1B1B0 D7A2           	jr	EQ,nextnext
+@'00F1B1B2 9743           	movefa	R26,index
+                         ;
+@'00F1B1B4 182A           	subq	#1,inptptre
+                         ;
+                         ;  opposite buffer being filled, go hash ours
+                         ;
+@'00F1B1B6 8AEE           	move	blckbase,R14
+@'00F1B1B8 2C57           	xor	abit6,blckbase	;set for alternate block next time around
+@'00F1B1BA               nextboth:
+@'00F1B1BA 8A1A           	move	regAx,regA
+@'00F1B1BC 8A3B           	move	regBx,regB
+@'00F1B1BE 8A5C           	move	regCCx,regCC
+@'00F1B1C0 8A7D           	move	regDx,regD
+                         ;
+                         ;
+@'00F1B1C2               nextrans:
+@'00F1B1C2 A506           	load	(hashcur),speciesR	;load up function addr
+@'00F1B1C4 0888           	addq	#4,hashcur
+                         ;
+@'00F1B1C6 A504           	load	(hashcur),indexinc	;load up index increment,init
+@'00F1B1C8 0888           	addq	#4,hashcur
+@'00F1B1CA 8883           	move	indexinc,index
+@'00F1B1CC 2563           	and	mask31,index
+@'00F1B1CE 7604           	rorq	#16,indexinc
+@'00F1B1D0 2564           	and	mask31,indexinc
+                         ;
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 5    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+@'00F1B1D2 A505           	load	(hashcur),rolcnt	;get 4 packed ROR counts
+@'00F1B1D4 0888           	addq	#4,hashcur
+                         ;		
+@'00F1B1D6 D0C0           	jump	(speciesR)
+@'00F1B1D8 8E09           	moveq	#16,loopcnt		;jump in at 1 of 4 functions
+                         ;
+                         ;
+@'00F1B1DA               futz:
+                         ;  accum = (regB & regCC) | (~regB & regD)
+@'00F1B1DA 8B60           	move	regB,accum
+@'00F1B1DC 8B61           	move	regB,scratch1
+@'00F1B1DE 2780           	and	regCC,accum
+@'00F1B1E0 3001           	not	scratch1
+@'00F1B1E2 D4C0           	jr	endspec1
+@'00F1B1E4 27A1           	and	regD,scratch1
+                         ;	jr	endspec
+                         ;	or	scratch1,accum
+                         ;
+@'00F1B1E6               grind:
+                         ;  accum = (regB & regD) | (regCC & ~regD)
+@'00F1B1E6 8BA0           	move	regD,accum
+@'00F1B1E8 8BA1           	move	regD,scratch1
+@'00F1B1EA 2760           	and	regB,accum
+@'00F1B1EC 3001           	not	scratch1
+@'00F1B1EE 2781           	and	regCC,scratch1
+@'00F1B1F0               endspec1:
+@'00F1B1F0 D520           	jr	endspec
+@'00F1B1F2 2820           	or	scratch1,accum
+                         ;
+@'00F1B1F4               hack:
+                         ;  accum = regB ^ regCC ^ regD
+@'00F1B1F4 8BA0           	move	regD,accum
+@'00F1B1F6 2F60           	xor	regB,accum
+@'00F1B1F8 D4A0           	jr	endspec
+@'00F1B1FA 2F80           	xor	regCC,accum
+                         ;
+@'00F1B1FC               ickify:
+                         ;  accum = regCC ^ (regB | ~regD)
+@'00F1B1FC 8BA0           	move	regD,accum
+@'00F1B1FE 3000           	not	accum
+@'00F1B200 2B60           	or	regB,accum
+@'00F1B202 2F80           	xor	regCC,accum
+                         ;
+                         ;
+                         ;
+@'00F1B204               endspec:
+@'00F1B204 E861           	load	(R14+index),scratch1
+@'00F1B206 0083           	add	indexinc,index
+@'00F1B208 0020           	add	scratch1,accum
+                         ;
+@'00F1B20A A501           	load	(hashcur),scratch1
+@'00F1B20C 26C3           	and	mask63,index
+@'00F1B20E 0020           	add	scratch1,accum
+@'00F1B210 0888           	addq	#4,hashcur
+@'00F1B212 0340           	add	regA,accum
+                         ;
+@'00F1B214 88AC           	move	rolcnt,temp
+@'00F1B216 7505           	rorq	#8,rolcnt
+@'00F1B218 256C           	and	mask31,temp	
+@'00F1B21A 7180           	ror	temp,accum
+@'00F1B21C 0360           	add	regB,accum
+                         ;
+@'00F1B21E 1829           	subq	#1,loopcnt
+                         ;
+@'00F1B220 8BBA           	move	regD,regA
+@'00F1B222 8B9D           	move	regCC,regD
+@'00F1B224 8B7C           	move	regB,regCC
+                         ;
+@'00F1B226 D0C1           	jump	NE,(speciesR)		;do all 16, for this function
+@'00F1B228 881B           	move	accum,regB
+                         ;
+@'00F1B22A 7915           	cmp	hashcur,hashendR	;do all 4 functions
+@'00F1B22C D301           	jump	NE,(nextserR)
+@'00F1B22E E400           	nop
+                         ;
+@'00F1B230 0350           	add	regA,regAx
+@'00F1B232 0371           	add	regB,regBx
+@'00F1B234 0392           	add	regCC,regCCx
+@'00F1B236 03B3           	add	regD,regDx
+                         ;	
+@'00F1B238 794F           	cmp	inptptre,R15		;have we reached end of Kart?
+@'00F1B23A D288           	jump	CS,(nextblkR)		;br if not
+@'00F1B23C 88E8           	move	hashptr,hashcur
+                         ;
+                         ;  We have computed the MD5 for the address range specified.
+                         ;   Now overwrite the code at "overhash" with the results
+                         ;
+@'00F1B23E               wedone:
+@'00F1B23E 9806 B02C00F1 	movei	#MD5result,speciesR	;stuff results here and quit
+                         ;
+@'00F1B244 BCD0           	store	regAx,(speciesR)
+@'00F1B246 0886           	addq	#4,speciesR
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 6    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+                         ;
+@'00F1B248 BCD1           	store	regBx,(speciesR)
+@'00F1B24A 0886           	addq	#4,speciesR
+                         ;
+@'00F1B24C BCD2           	store	regCCx,(speciesR)
+@'00F1B24E 0886           	addq	#4,speciesR
+                         ;
+@'00F1B250 BCD3           	store	regDx,(speciesR)
+                         ;
+@'00F1B252 980D B0A000F1 	movei	#foreloop,command		;go wait for another command
+@'00F1B258 D1A0           	jump	(command)
+@'00F1B25A 8C00           	moveq	#0,R0				;set for sucessful completion
+                         ;
+                         ;
+                         ;  We got either a shutdown or BOOT load command...
+                         ;
+@'00F1B25C               shutboot:
+@'00F1B25C 7C6D           	cmpq	#3,command	;3 = shutdown
+@'00F1B25E D4C2           	jr	EQ,shutdown
+@'00F1B260 E400           	nop
+                         ;
+                         ;   Must be 2 -- do bootload
+                         ;
+@'00F1B262 980D B28E00F1 	movei	#DOBOOT,command
+@'00F1B268 D1A0           	jump	(command)
+@'00F1B26A E400           	nop
+                         ;
+                         ;
+@'00F1B26C               shutdown:
+@'00F1B26C 981D A10000F1 	movei	#D_FLAGS,R29	;just in case
+@'00F1B272 A7A0           	load	(R29),R0	;get D_FLAGS
+@'00F1B274 3CA0           	bclr	#5,R0		;kill i2s interrupt
+@'00F1B276 3C80           	bclr	#4,R0		;kill cpu interrupt
+@'00F1B278 3DC0           	bclr	#14,R0		;reg set is bank 0
+@'00F1B27A BFA0           	store	R0,(R29)
+@'00F1B27C E400           	nop
+@'00F1B27E E400           	nop
+                         ;
+@'00F1B280 9800 A11400F1 	movei	#D_CTRL,R0
+@'00F1B286 8C01           	moveq	#0,R1
+                         
+                         ;	moveq	#0,R2
+                         ;	movei	#SMODE,R29
+                         ;	store	R2,(R29)
+                         
+@'00F1B288               realdone:
+@'00F1B288 BC01           	store	R1,(R0)
+@'00F1B28A D7C0           	jr	realdone
+@'00F1B28C E400           	nop
+                         ;
+                         ;
+                         ;
+                         ;-----------------------------------------------------------------
+                         ;
+                         ;  Read in the boot sector
+                         ;
+@'00F1B28E               DOBOOT:
+@'00F1B28E 9800 B332981E 	movei	#($981E0000+(I2S_BOOT & $FFFF)),R0	;secondary irq
+@'00F1B294 9016           	moveta	R0,R22
+                         ;
+@'00F1B296 8E00           	moveq	#16,R0
+@'00F1B298 9017           	moveta	R0,R23		;make sure we look for 16 longs
+                         ;
+@'00F1B29A 9800 52494154 	movei	#$41545249,R0	;look for 16 longs of "ATRI"
+@'00F1B2A0 9019           	moveta	R0,R25		;start the unit up
+                         ;
+@'00F1B2A2               bootfin:
+@'00F1B2A2 9720           	movefa	R25,R0
+@'00F1B2A4 2800           	or	R0,R0
+@'00F1B2A6 D7A1           	jr	NE,bootfin
+@'00F1B2A8 E400           	nop
+                         ;
+@'00F1B2AA 9640           	movefa	R18,R0
+@'00F1B2AC 9801 B02C00F1 	movei	#MD5result,R1
+@'00F1B2B2 BC20           	store	R0,(R1)		;tell 68k the start addr
+@'00F1B2B4 0881           	addq	#4,R1
+@'00F1B2B6 95E0           	movefa	R15,R0		;get length too for grins
+@'00F1B2B8 BC20           	store	R0,(R1)
+                         ;
+                         ;	movei	#MD5semi,R1
+                         ;	moveq	#0,R0
+                         ;	not	R0
+                         ;	store	R0,(R1)
+                         ;
+                         ;	movei	#($981E0000+(i2s_shut & $FFFF)),R22	;secondary irq
+                         ;	movefa	R21,R21
+                         ;	store	R22,(R21)
+                         ;
+@'00F1B2BA 980D B0A000F1 	movei	#foreloop,command
+@'00F1B2C0 D1A0           	jump	(command)
+@'00F1B2C2 8C00           	moveq	#0,R0		;indicate no time-out
+                         ;
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 7    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+                         ;
+                         ;
+                         ;
+                         ;
+                         ;
+                         ;______________________________________________________________________________
+                         ;
+                         ; interrupt service routines
+                         ;
+                         ;
+                         ;
+                         ;		HASH-ON-THE-FLY				BOOTLOAD
+                         ;
+                         ;   R30 irq temp (D_FLAGS)				"
+                         ;   R29 -> D_FLAGS ptr contant				"
+                         ;   R28 -> LTXD ptr contant				"
+                         ;   R27 -> RTXD ptr constant				"
+                         ;   R26 -> DST ptr (circular queue)/0 if time-out	dRAM DST ptr 
+                         ;   R25 -> start pattern (=0 if none)			"
+                         ;   R24 -> long count					long count
+                         ;   R23 -> pattern count (init to 16)			" + offset to data
+                         ;   R22 -> "i2s_end"
+                         ;   R21 -> (i2s_vector)
+                         ;   R20 -> time-out constant (=$2000 longs before pattern is found)
+                         ;   R19 -> time-out counter (init to 0)
+                         ;
+                         ;  This is the idler routine to use when waiting for a start pattern
+                         ;
+@'00F1B2C4               i2s_start:
+@'00F1B2C4 A7BE           	load	(R29),R30		;get D_FLAGS in R30
+@'00F1B2C6 A790           	load	(R28),R16		;get left channel
+@'00F1B2C8 A771           	load	(R27),R17		;get rite channel
+@'00F1B2CA 6210           	shlq	#16,R16
+@'00F1B2CC 6211           	shlq	#16,R17
+@'00F1B2CE 6610           	shrq	#16,R16
+@'00F1B2D0 2B39           	or	R25,R25			;check for null pattern 
+@'00F1B2D2 D582           	jr	EQ,staroff		;br if we're not waiting
+@'00F1B2D4 2A30           	or	R17,R16			;form R16, our input longword
+                         ;
+                         ;  we're looking for a non-zero header pattern (marker)
+                         ;
+@'00F1B2D6 7A19           	cmp	R16,R25			;are we matching desired pattern?
+@'00F1B2D8 D501           	jr	NE,repat		;br if not
+@'00F1B2DA 0833           	addq	#1,R19			;advance time-out count
+                         ;
+@'00F1B2DC 1837           	subq	#1,R23			;count off 16 marker patterns
+@'00F1B2DE D4C1           	jr	NE,staroff		;br if not all in yet
+@'00F1B2E0 E400           	nop
+                         ;
+                         ;  We got 16 longs matching our pattern
+                         ;
+@'00F1B2E2 2AF7           	or	R23,R23
+@'00F1B2E4 BEB6           	store	R22,(R21)		;use secondary I2S routine next
+                         ;
+@'00F1B2E6 D440           	jr	staroff			;reload with 8 not 16
+@'00F1B2E8 8D17           	moveq	#8,R23			;we need in case this is boot
+                         ;
+@'00F1B2EA               repat:
+@'00F1B2EA 8E17           	moveq	#16,R23
+@'00F1B2EC               staroff:
+@'00F1B2EC 7A93           	cmp	R20,R19			;check for time-out
+@'00F1B2EE D468           	jr	CS,starxit		;br if not a time-out
+@'00F1B2F0 E400           	nop
+                         ;
+                         ;  we timed-out.. tell foreground we're done 
+                         ;
+@'00F1B2F2 8C19           	moveq	#0,R25			;we're done
+@'00F1B2F4 8C1A           	moveq	#0,R26			;set time-out indication
+@'00F1B2F6               starxit:
+@'00F1B2F6 3C7E           	bclr	#3,R30			;exit i2s routine
+@'00F1B2F8 A7F1           	load	(R31),R17
+@'00F1B2FA 395E           	bset	#10,R30
+@'00F1B2FC 0851           	addq	#2,R17
+@'00F1B2FE 089F           	addq	#4,R31
+@'00F1B300 D220           	jump	(R17)
+@'00F1B302 BFBE           	store	R30,(R29)
+                         ;
+                         ;
+                         ;  This is the secondary routine to use for HASH-ON-THE-FLY
+                         ;  Circular queue is filled until length in R24 is reached  
+                         ;
+@'00F1B304               i2s_end:
+@'00F1B304 A7BE           	load	(R29),R30		;get D_FLAGS in R30
+@'00F1B306 A790           	load	(R28),R16		;get left channel
+@'00F1B308 A771           	load	(R27),R17		;get rite channel
+@'00F1B30A 6210           	shlq	#16,R16
+@'00F1B30C 6211           	shlq	#16,R17
+@'00F1B30E 6610           	shrq	#16,R16
+@'00F1B310 2A30           	or	R17,R16			;else form R16, our input longword
+                         ;
+@'00F1B312 1838           	subq	#1,R24			;decrement length
+@'00F1B314 BF50           	store	R16,(R26)		;save data in cicular queue
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 8    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+@'00F1B316 D4C1           	jr	NE,endoff		;reached end?
+@'00F1B318 FC9A           	addqmod	#4,R26			;advance circular queue ptr
+                         ;
+@'00F1B31A 8C19           	moveq	#0,R25			;this is for i2s_start
+                         ;
+@'00F1B31C 9810 B2C4981E 	movei	#($981E0000+(i2s_start & $FFFF)),R16	;secondary irq
+@'00F1B322 BEB0           	store	R16,(R21)
+@'00F1B324               endoff:
+@'00F1B324 3C7E           	bclr	#3,R30			;exit i2s routine
+@'00F1B326 A7F1           	load	(R31),R17
+@'00F1B328 395E           	bset	#10,R30
+@'00F1B32A 0851           	addq	#2,R17
+@'00F1B32C 089F           	addq	#4,R31
+@'00F1B32E D220           	jump	(R17)
+@'00F1B330 BFBE           	store	R30,(R29)
+                         ;
+                         ;	
+                         ;
+                         ;  This is the secondary routine after 16 "ATRI"'s have been found
+                         ;   to pass over the 8 longs of "ATARI APPROVED .."
+                         ;
+                         ;
+@'00F1B332               I2S_BOOT:
+@'00F1B332 A7BE           	load	(R29),R30		;get D_FLAGS in R30
+@'00F1B334 A790           	load	(R28),R16		;get left channel
+@'00F1B336 1837           	subq	#1,R23			;count off 8 longs before we go
+@'00F1B338 D4C1           	jr	NE,I2done
+@'00F1B33A A771           	load	(R27),R17		;get rite channel
+                         ;
+@'00F1B33C 9818 B354981E 	movei	#($981E0000+(I2S_BOOX & $FFFF)),R24	;tertiary irq
+@'00F1B342 BEB8           	store	R24,(R21)
+@'00F1B344 8C1A           	moveq	#0,R26			;set DST ptr to 0 (indicating not set)
+@'00F1B346               I2done:
+@'00F1B346 3C7E           	bclr	#3,R30			;exit i2s routine
+@'00F1B348 A7F1           	load	(R31),R17
+@'00F1B34A 395E           	bset	#10,R30
+@'00F1B34C 0851           	addq	#2,R17
+@'00F1B34E 089F           	addq	#4,R31
+@'00F1B350 D220           	jump	(R17)
+@'00F1B352 BFBE           	store	R30,(R29)
+                         ;
+                         ;
+                         ;  This is the tertiary routine after 8 longs of "ATARI APPROVED.." have
+                         ;   been passed over.  R26 =
+                         ;			 0 on entry
+                         ;		- DST ADDR  right after DST addr is read (waiting for length)
+                         ;
+                         ;
+@'00F1B354               I2S_BOOX:	
+@'00F1B354 A7BE           	load	(R29),R30		;get D_FLAGS in R30
+@'00F1B356 A790           	load	(R28),R16		;get left channel
+@'00F1B358 A771           	load	(R27),R17		;get rite channel
+@'00F1B35A 6210           	shlq	#16,R16
+@'00F1B35C 6211           	shlq	#16,R17
+@'00F1B35E 6610           	shrq	#16,R16
+@'00F1B360 2A30           	or	R17,R16			;else form R16, our input longword
+                         ;
+@'00F1B362 2B5A           	or	R26,R26			;have we loaded DST ptr yet?
+@'00F1B364 D4E2           	jr	EQ,loadDST		;br if not yet
+@'00F1B366 E400           	nop
+                         ;
+@'00F1B368 D534           	jr	PL,loadBOOT		;if legit ptr, br to load
+@'00F1B36A E400           	nop
+                         ;
+@'00F1B36C 8A18           	move	R16,R24		;  & save current input as length
+@'00F1B36E 8A0F           	move	R16,R15		; save length because we want to know it later
+@'00F1B370 D460           	jr	exitboo
+@'00F1B372 1838           	subq	#1,R24		;adjust length so terminate logic works
+                         ;
+@'00F1B374               loadDST:
+@'00F1B374 8A1A           	move	R16,R26		;set start DST ptr
+@'00F1B376 8A12           	move	R16,R18		;save start DST ptr for use by foreground & 68k
+@'00F1B378               exitboo:
+@'00F1B378 D5A0           	jr	exitboot	
+@'00F1B37A 301A           	not	R26		;tell them we need length next
+                         ;
+                         ;
+                         ;
+@'00F1B37C               loadBOOT:
+@'00F1B37C 2B18           	or	R24,R24			;ready to terminate?
+@'00F1B37E D4F4           	jr	PL,stoboot		;br if not
+@'00F1B380 E400           	nop
+                         ;
+@'00F1B382 9816 B2C4981E 	movei	#($981E0000+(i2s_start & $FFFF)),R22	;secondary irq
+@'00F1B388 BEB6           	store	R22,(R21)
+@'00F1B38A D480           	jr	exitboot
+@'00F1B38C 8C19           	moveq	#0,R25			;pattern=0 means we're done
+@'00F1B38E               stoboot:
+@'00F1B38E BF50           	store	R16,(R26)		;else, save data to deired location
+@'00F1B390 089A           	addq	#4,R26			;advance DST ptr
+@'00F1B392 1898           	subq	#4,R24			;and decrement length
+@'00F1B394               exitboot:
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 9    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+@'00F1B394 3C7E           	bclr	#3,R30			;exit i2s routine
+@'00F1B396 A7F1           	load	(R31),R17
+@'00F1B398 395E           	bset	#10,R30
+@'00F1B39A 0851           	addq	#2,R17
+@'00F1B39C 089F           	addq	#4,R31
+@'00F1B39E D220           	jump	(R17)
+@'00F1B3A0 BFBE           	store	R30,(R29)
+                         ;
+                         ;
+@'00F1B3A2               i2s_shut:
+@'00F1B3A2 981E 3E000002 	movei	#%100011111000000000,R30
+@'00F1B3A8 BFBE           	store	R30,(R29)
+@'00F1B3AA 9811 A11400F1 	movei	#D_CTRL,R17
+@'00F1B3B0 8C1E           	moveq	#0,R30
+@'00F1B3B2               waitshut:
+@'00F1B3B2 E400           	nop
+@'00F1B3B4 BE3E           	store	R30,(R17)
+@'00F1B3B6 D7A0           	jr	waitshut
+@'00F1B3B8 E400           	nop
+                         ;
+                         ;
+                         ;
+                         ;
+@'00F1B3BA               sramout:
+@'00F1B3BA A7BE           	load	(R29),R30
+@'00F1B3BC 9807 B3EC00F1 	movei	#sramo,R7
+@'00F1B3C2 A4E6           	load	(R7),R6		;get SRC
+@'00F1B3C4 0887           	addq	#4,R7
+@'00F1B3C6 A4E8           	load	(R7),R8		;get DST
+@'00F1B3C8 0887           	addq	#4,R7
+@'00F1B3CA A4E9           	load	(R7),R9		;get count
+@'00F1B3CC 0887           	addq	#4,R7
+                         ;
+@'00F1B3CE               fetchy:
+@'00F1B3CE A4CA           	load	(R6),R10
+@'00F1B3D0 0886           	addq	#4,R6
+@'00F1B3D2 BD0A           	store	R10,(R8)
+@'00F1B3D4 1829           	subq	#1,R9
+@'00F1B3D6 D761           	jr	NE,fetchy
+@'00F1B3D8 0888           	addq	#4,R8
+                         ;
+@'00F1B3DA BCE9           	store	R9,(R7)
+                         ;
+@'00F1B3DC 3C7E           	bclr	#3,R30			;exit cpu routine
+@'00F1B3DE A7E7           	load	(R31),R7
+@'00F1B3E0 393E           	bset	#9,R30
+@'00F1B3E2 0847           	addq	#2,R7
+@'00F1B3E4 089F           	addq	#4,R31
+@'00F1B3E6 D0E0           	jump	(R7)
+@'00F1B3E8 BFBE           	store	R30,(R29)
+                         ;
+                         ;
+                         ;
+@'00F1B3EA      00000002 	ALIGN LONG
+                         ;
+                         ;  This is used by the cpu burp to copy a block to dRAM
+                         ;
+@'00F1B3EC               sramo:
+@'00F1B3EC      00F1B02C 	dc.l	MD5result	;SRC
+@'00F1B3F0      00004000 	dc.l	$4000		;DST
+@'00F1B3F4      00000004 	dc.l	4		;count
+                         ;
+@'00F1B3F8      FFFFFFFF 	dc.l	-1		;cpu irq semiphore
+                         ;	ALIGN	LONG
+                         ;
+                         ;	
+                         ;	align	long
+                         ;
+                         ;  Constant data goes here..
+                         ;
+                         ;
+@'00F1B3FC               hashman:
+@'00F1B3FC      00F1B1DA 	dc.l	futz				;function loop addr
+@'00F1B400     0004 0000 	dc.w	4,0				;index increment, initial
+@'00F1B404      0A0F1419 	dc.b	(32-22),(32-17),(32-12),(32-7)	;left shift counts 
+                         ;
+                         
+@'00F1B408      D76AA478 	dc.l	$D76AA478
+@'00F1B40C      E8C7B756 	dc.l	$E8C7B756
+@'00F1B410      242070DB 	dc.l	$242070DB
+@'00F1B414      C1BDCEEE 	dc.l	$C1BDCEEE
+@'00F1B418      F57C0FAF 	dc.l	$F57C0FAF	
+@'00F1B41C      4787C62A 	dc.l	$4787C62A
+@'00F1B420      A8304613 	dc.l	$A8304613
+@'00F1B424      FD469501 	dc.l	$FD469501
+@'00F1B428      698098D8 	dc.l	$698098D8
+@'00F1B42C      8B44F7AF 	dc.l	$8B44F7AF
+@'00F1B430      FFFF5BB1 	dc.l	$FFFF5BB1
+@'00F1B434      895CD7BE 	dc.l	$895CD7BE
+@'00F1B438      6B901122 	dc.l	$6B901122
+@'00F1B43C      FD987193 	dc.l	$FD987193
+@'00F1B440      A679438E 	dc.l	$A679438E
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 10    		Mon May 22 1995 14:32	Dsp (Rev:1)
+
+@'00F1B444      49B40821 	dc.l	$49B40821
+                         ;
+                         ;
+                         ;
+                         ;
+                         ;
+@'00F1B448      00F1B1E6 	dc.l	grind
+@'00F1B44C     0014 0004 	dc.w	20,4				;index increment, initial
+@'00F1B450      0C12171B 	dc.b	(32-20),(32-14),(32-9) ,(32-5)	;left shift counts
+                         ;
+@'00F1B454      F61E2562 	dc.l	$F61E2562
+@'00F1B458      C040B340 	dc.l	$C040B340
+@'00F1B45C      265E5A51 	dc.l	$265E5A51
+@'00F1B460      E9B6C7AA 	dc.l	$E9B6C7AA
+@'00F1B464      D62F105D 	dc.l	$D62F105D
+@'00F1B468      02441453 	dc.l	$02441453
+@'00F1B46C      D8A1E681 	dc.l	$D8A1E681
+@'00F1B470      E7D3FBC8 	dc.l	$E7D3FBC8
+@'00F1B474      21E1CDE6 	dc.l	$21E1CDE6
+@'00F1B478      C33707D6 	dc.l	$C33707D6
+@'00F1B47C      F4D50D87 	dc.l	$F4D50D87
+@'00F1B480      455A14ED 	dc.l	$455A14ED
+@'00F1B484      A9E3E905 	dc.l	$A9E3E905
+@'00F1B488      FCEFA3F8 	dc.l	$FCEFA3F8
+@'00F1B48C      676F02D9 	dc.l	$676F02D9
+@'00F1B490      8D2A4C8A 	dc.l	$8D2A4C8A
+                         ;
+                         ;
+                         ;
+@'00F1B494      00F1B1F4 	dc.l	hack
+@'00F1B498     000C 0014 	dc.w	12,20				;index increment, initial
+@'00F1B49C      0910151C 	dc.b	(32-23),(32-16),(32-11),(32-4)	;left shift counts
+                         ;
+@'00F1B4A0      FFFA3942 	dc.l	$FFFA3942
+@'00F1B4A4      8771F681 	dc.l	$8771F681
+@'00F1B4A8      6D9D6122 	dc.l	$6D9D6122
+@'00F1B4AC      FDE5380C 	dc.l	$FDE5380C
+@'00F1B4B0      A4BEEA44 	dc.l	$A4BEEA44
+@'00F1B4B4      4BDECFA9 	dc.l	$4BDECFA9
+@'00F1B4B8      F6BB4B60 	dc.l	$F6BB4B60
+@'00F1B4BC      BEBFBC70 	dc.l	$BEBFBC70
+@'00F1B4C0      289B7EC6 	dc.l	$289B7EC6
+@'00F1B4C4      EAA127FA 	dc.l	$EAA127FA
+@'00F1B4C8      D4EF3085 	dc.l	$D4EF3085
+@'00F1B4CC      04881D05 	dc.l	$04881D05
+@'00F1B4D0      D9D4D039 	dc.l	$D9D4D039
+@'00F1B4D4      E6DB99E5 	dc.l	$E6DB99E5
+@'00F1B4D8      1FA27CF8 	dc.l	$1FA27CF8
+@'00F1B4DC      C4AC5665 	dc.l	$C4AC5665
+                         ;
+                         ;
+                         ;
+@'00F1B4E0      00F1B1FC 	dc.l	ickify
+@'00F1B4E4     001C 0000 	dc.w	28,0				;index increment, initial
+@'00F1B4E8      0B11161A 	dc.b	(32-21),(32-15),(32-10),(32-6)	;left shift counts
+                         ;
+@'00F1B4EC      F4292244 	dc.l	$F4292244
+@'00F1B4F0      432AFF97 	dc.l	$432AFF97
+@'00F1B4F4      AB9423A7 	dc.l	$AB9423A7
+@'00F1B4F8      FC93A039 	dc.l	$FC93A039
+@'00F1B4FC      655B59C3 	dc.l	$655B59C3
+@'00F1B500      8F0CCC92 	dc.l	$8F0CCC92
+@'00F1B504      FFEFF47D 	dc.l	$FFEFF47D
+@'00F1B508      85845DD1 	dc.l	$85845DD1
+@'00F1B50C      6FA87E4F 	dc.l	$6FA87E4F
+@'00F1B510      FE2CE6E0 	dc.l	$FE2CE6E0
+@'00F1B514      A3014314 	dc.l	$A3014314
+@'00F1B518      4E0811A1 	dc.l	$4E0811A1
+@'00F1B51C      F7537E82 	dc.l	$F7537E82
+@'00F1B520      BD3AF235 	dc.l	$BD3AF235
+@'00F1B524      2AD7D2BB 	dc.l	$2AD7D2BB
+@'00F1B528      EB86D391 	dc.l	$EB86D391
+                         ;
+@'00F1B52C               hashend:
+                         		

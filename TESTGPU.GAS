@@ -1,0 +1,94 @@
+;
+;
+;
+	.include	"JAGUAR.INC"
+	.include	"TESTGPU.XDF"
+;
+;
+	org	$f03000
+;
+	dc.l	-1		;this will go 0 when time to stop 
+	dc.l	$100000		;pointer to base of screen
+gpustart:
+	move	PC,R0
+	subq	#2,R0
+	move	R0,R16		;semiphore ptr
+	load	(R0),R0
+;
+	subq	#4,R16
+	movei	#$1ad4d0,R7	;frame counter (lower word)
+	movei	#$ffff,R9	;
+;
+	movei	#320,R1		;width of screen (in bytes)
+;
+	movei	#50,R2		;xpos
+	movei	#50,R3		;ypos
+;
+	movei	#191,R21	;xpos max
+	movei	#0,R22		;xpos min
+;
+	moveq	#1,R20		;sign
+;
+	movei	#$ffffffff,R4	;2 pixels of desired color
+	movei	#loop,R25	;we need for a label
+loop:
+	move	R3,R5		;copy ypos to temp
+	mult	R1,R5
+	add	R0,R5
+	shlq	#1,R2
+	add	R2,R5		;R5 is new desired screen ptr
+	shrq	#1,R2
+;
+	loadw	(r5),R19
+	storew	R4,(R5)
+	addq	#2,R5
+	loadw	(r5),R18
+	storew	R4,(R5)
+	subq	#2,R5
+;
+	load	(R7),R8		;get counter
+	and	R9,R8
+;
+	load	(R16),R10
+	or	R10,R10		;semiphore for stop
+	jr	NZ,wait
+	nop
+	movei	#G_CTRL,R11
+	moveq	#0,R12
+stopper:
+	store	R12,(R11)
+	jr	stopper
+	nop
+wait:
+	load	(R7),R10	;get counter
+	and	R9,R10
+;
+	sub	R8,R10
+	cmpq	#2,R10
+	jr	CS,wait
+	nop
+;
+	storew	R19,(R5)		;clear out pixel
+	addq	#2,R5
+	storew	R18,(R5)		;clear out pixel
+
+;
+	add	R20,R2
+	add	R20,R3
+
+	cmp	R21,R2		;xpos reached max?
+	jr	CS,notmax
+	nop
+
+atbound:
+	neg	R20
+	jump	(R25)
+	nop
+notmax:
+	cmp	R2,R22		;xpos reached min?
+	jr	CC,atbound
+	nop
+	jump	(R25)
+	nop
+	
+	

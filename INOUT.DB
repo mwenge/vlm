@@ -1,0 +1,9 @@
+gag on
+read inout.txt 1ac1a0 ; read inout.dta 1ac68c ; getsym inout.sym
+gag off
+echo "	start	size	end"
+echo "text	1ac1a0	4ec	1ac68b"
+echo "data	1ac68c	0	1ac68b"
+echo "bss	1ac68c	0	1ac68b"
+echo "Symbols loaded"
+xpc 1ac1a0

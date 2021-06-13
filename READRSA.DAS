@@ -1,0 +1,1075 @@
+	PLEN	95
+;
+;
+	NOLIST
+	include		"jaguar.inc"
+	include		"READRSA.XDF"
+	LIST
+;
+	ORG	D_RAM
+;
+;
+;****************************************************************
+;								*
+;								*
+;  RSA decrypt code for the JAGUAR DSP, using MULT instruction	*
+;    (also, CD_read functions are handled here for loading	*
+;     boot sector and hash table)				*
+; 								*
+;****************************************************************
+;
+;
+;
+;
+;    Programmer:  Dave Staugas
+;   Last Update:  8-Dec-94
+;
+;
+;  This is the RSA decryption code for the authentication
+;  of Jaguar game cartridges.  Its purpose is to read blocks
+;  of data from the signature address space of a game cartridge,
+;  decrypt them, then pass control to whatever data results,
+;  hoping that the GPU can make sense of it as code.  This (hopefully)
+;  code will perform the Message Digest (MD5) algorithm on the entire 
+;  address space of the cartridge and compare it with the embedded
+;  signature previously computed for it.  If the signatures match, we
+;  will permit the Kart to run.
+;  
+;
+;  This RSA decryption code is loaded into the GPU by the Boot-ROM.
+;  The MD5 code that performs cartridge authentication is encrypted
+;  on each cartridge and will be run immediately after the RSA code
+;  finishes executing.  Then, the 68k will interpret the results
+;  of the authentication and determine whether to run the Kart or not. 
+;
+;
+;
+;
+keysize	equ	65			;size of key (518-bits used)
+ksize	equ	(keysize+3) & $fffffffc	;size of key to nearest long
+;
+;
+;
+;
+;	R E G I S T E R S
+;
+;
+;
+;  These reg definitions are for the alternate register page (#1)
+;
+lastcodebyte		REGSET		R0
+Dstptr			REGSET		R1
+BlockCnt		REGSET		R2
+;
+;
+;
+;  These reg definitions are for the base register page (#0)
+;
+;
+cartptr			REGSET		R0
+longcnt			REGSET		R1
+bytecnt			REGSET		R2
+;
+;  the following register block is local to mult section..
+plierbase		REGSET		R3
+plierptr		REGSET		R4
+mplier			REGSET		R5
+candbase		REGSET		R6
+candend			REGSET		R7
+candptr			REGSET		R8
+mcand			REGSET		R9
+mcand1			REGSET		R10
+prodcur			REGSET		R11
+;  end mult reg block
+;
+;
+;  the following register block is local to div section..
+;
+dendbase		REGSET		R3
+dsorbase		REGSET		R4
+dsorend			REGSET		R5
+bitcnt			REGSET		R6
+rolcount		REGSET		R7
+dendALT			REGSET		R8
+dendcur			REGSET		R9
+;
+;  end div reg block
+;
+;
+prodptr			REGSET		R12
+;
+accum			REGSET		R13
+accum1			REGSET		R16
+accum2			REGSET		R17
+zeroconst		REGSET		R18
+;
+candlpr			REGSET		R19
+plierlpr		REGSET		R20
+dendend			REGSET		R21
+;
+masklo			REGSET		R22
+maskhi			REGSET		R23
+;
+carryhold		REGSET		R24
+deboog			REGSET		R25
+;
+cartsigr		REGSET		R26
+ksizer			REGSET		R27
+multlpr			REGSET		R28
+blkloopR		REGSET		R29
+;
+;
+;
+;
+;
+;
+;
+;
+CPU_VEC:
+	movei	#dspcopy,r30
+	jump	(r30)
+	nop
+	nop
+	nop
+	nop
+I2S_VEC:
+	movei	#I2S_START,r30	;(interrupt 1 - I2S)
+	jump	(r30)
+	nop
+	nop
+	nop
+	nop
+;
+;
+SETUP:
+;
+;  load up bank #0 regs with constants for I2S irq
+;
+	movei	#D_RAM+$2000,R31	;setup stack at SRAM top
+	movei	#D_FLAGS,R29		;flags
+	movei	#LTXD,R28		;left receive
+	movei	#RTXD,R27		;right receive
+	moveq	#0,R26			;data DST pointer
+
+;*********test
+;
+	movei	#$fffff800,R25
+	movei	#D_HIDATA,R24		;equates have misnomer for "D_MOD"
+	store	R25,(R24)		;set modulo mask for circular queue
+;**********end test
+
+	moveq	#0,R25			;start pattern (=0 means do nothing)
+	moveq	#0,R24			;HASH/BOOT vec
+;
+	moveq	#16,R23			;pattern count
+	movei	#I2S_VEC,R22		;vector location to stuff
+;
+;  now switch to register bank 1 for foreground
+;
+	moveta	R29,R29		;just in case of trouble here
+	load	(R29),R0	;get D_FLAGS
+;
+;		   3         2         1
+;		  10987654321098765432109876543210
+	movei	#%00000000000000000111111000110000,R1	;bits to set
+	movei	#%11111111111111110111111000111111,R2	;bits to clear
+	or	R1,R0
+	and	R2,R0
+
+;	bset	#14,R0		;switch to bank 1
+;	bset	#5,R0		;enable i2s interrupt
+;	bset	#4,R0		;enable cpu interrupt
+	store	R0,(R29)	;we're in bank 1 now, with i2s goin'
+	nop
+	nop
+;
+;
+;   Come back up here for new command
+;
+;
+foreloop:
+	movei	#SEMIPTR,R13
+	moveq	#0,R0
+	not	R0
+	store	R0,(R13)
+waitusr:
+	load	(R13),cartptr		;wait til 68k wants a decrypt
+	or	cartptr,cartptr
+	jr	MI,waitusr
+	nop
+;
+;  cartptr =	0 if time to quit
+;		1 if load a hash table (hashoffs will be set)
+;     else, if positive and not 0..1, cartptr points to a 65-byte block to
+;      decrypt
+;  cartptr -> block to decrypt
+;
+	cmpq	#0,cartptr
+	jr	NE,notdone
+	nop
+;
+;  we're finished..
+;
+	movei	#outtah,R0
+	jump	(R0)
+	nop
+;
+;	
+notdone:
+	
+	cmpq	#1,cartptr		;check for load a hash table
+	jr	NE,nothasht
+	nop
+;
+	movei	#DOHASH,R0
+	jump	(R0)
+	nop
+;
+nothasht:
+;	cmpq	#2,cartptr
+;	jr	NE,deRSA
+;	nop
+;
+;	movei	#DOBOOT,R0
+;	jump	(R0)
+;	nop
+;
+;
+;
+deRSA:		
+;
+;  decrypt a block
+;
+;
+;
+;   Start of code proper.
+;
+;   These should be the first GPU instructions executed by the
+;   production Jaguar at power-up
+;		 
+;
+;
+; Global labels and constants needed ..
+;
+	movei	#blkloopG,blkloopR	;label for the main outer loop
+;	movei	#cartbeg,cartptr	;start reading cart at signature space
+	movei	#ksize,ksizer		;we need the basic block size often
+	movei	#cartsigG,cartsigr	;buffer ptr for inverted input block
+;
+	movei	#$ff,accum		;do it this way for single block action
+	moveta	accum,BlockCnt
+	subq	#1,cartptr
+
+	movei	#(bootIIG-4),accum
+	moveta	accum,Dstptr		;here's where the unRSA goes
+;
+	moveq	#0,accum
+	moveta	accum,lastcodebyte	;start with 0 here
+;
+blkloopG:
+;
+;  Copy next (keysize) bytes to "cartsig" in inverted order
+;
+	movei	#$000000ff,maskhi
+	move	cartsigr,R14		;local destination for keysize bytes from cart
+	move	ksizer,longcnt		;use this as index
+loadsigG:	
+	moveq	#0,accum		;accum = 0
+	moveq	#4,bytecnt		;4 times thru this loop
+swapit4G:		
+	addq	#1,cartptr		;advance cartridge ptr
+	loadb	(cartptr),accum1	;get next byte
+	or	accum1,accum		;place at LSB position
+	subq	#1,bytecnt		;do it 4 times
+	jr	NE,swapit4G		;br always does next instr:
+	rorq	#8,accum		;  move to MSB position
+;
+	subq	#4,longcnt		;pre-decrement DST
+	jr	NE,loadsigG		;go for all ksize bytes
+	store	accum,(R14+longcnt)	;save inverted order to cartsig
+;
+	and	maskhi,accum		;extra 3 bytes are dummy read
+	store	accum,(R14)		;we needed to fill out the long word
+	subq	#3,cartptr		;so clear it and adjust cartptr
+;
+;
+	rorq	#8,maskhi	;=FF000000
+	sharq	#8,maskhi	;=FFFF0000
+	move	maskhi,masklo	;these masks needed for odd word alignments
+	not	masklo		;=0000FFFF
+;
+	movei	#plierlpG,plierlpr	;set-up outer multiply loop JUMP ptr
+	movei	#candlpG,candlpr		;inner-loop JUMP ptr
+	movei	#multlpG,multlpr		;loop JUMP ptr for 2nd multiply
+	moveq	#0,zeroconst		;constant of 0 is handy
+;
+	move	cartsigr,plierptr	;1st multiplier is cart data
+	add	ksizer,plierptr		; ptr starts at LSB
+	move	plierptr,candend	;1st multiplicand is also cart data
+
+	move	cartsigr,plierbase	;
+	move	cartsigr,candbase
+;
+	movei	#accumAG,prodptr		;accumA is our product area
+	move	ksizer,accum		;clear 2*ksizer bytes
+	sharq	#1,accum
+;
+;
+;  Each multiple precision multiply starts here
+;
+;
+;  These registers should be set-up as follows:
+;
+;  prodptr   -> MSB of product area (need not be cleared)
+;    accum   = # of longs in product (to be cleared)
+;
+;  plierbase -> MSB of multiplier
+;  plierptr  -> LSB (+1) of multiplier
+;
+;  candbase  -> MSB of multiplicand
+;  candend   -> LSB (+1) of multiplicand
+;
+;     maskhi = FFFF0000
+;     masklo = 0000FFFF
+;
+;     zeroconst = 0  , a constant of zero (which is useful)
+;
+multlpG:
+	move	candend,candptr		;start multiplicand ptr @ LSB (+1)
+;
+;  Clear product area
+;
+	subq	#1,accum
+clearprodG:
+	store	zeroconst,(prodptr)	;zero a long
+	addqt	#4,prodptr
+	jr	NE,clearprodG
+	subq	#1,accum		; accum times
+;
+	move	prodptr,dendend		;prodptr -> LSB (+1) of product
+;				 save for possible use as dividend end
+;
+;   Get next Most Signif long of multiplier
+;
+plierlpG:
+	subq	#4,plierptr		;adjust ptr
+	move	prodptr,prodcur		;prodcur starts here & moves to MSB
+	load	(plierptr),mplier	;get multiplier long
+	subq	#4,prodptr
+	move	mplier,longcnt
+	rorq	#16,longcnt
+candlpG:
+	subq	#4,candptr
+	load	(candptr),mcand		;get next multiplicand long
+;
+;  16-bit word operand chunks are represented by letters..
+;
+;         . . . A B C D
+;      x  . . . E F G H
+;             __________
+;                  (H*D)     <- product is sum of these partial results
+;                (H*C)           added with this alignment
+;                (G*D)
+;              (G*C)
+;
+;              (F*D)
+;            (F*C)
+;            (E*D)
+;          (E*C)
+;
+;   etc..
+;
+	move	mcand,mcand1		;copy CD to mcand1
+	move	mcand,accum		;mcand will be just "D" in accum
+	rorq	#16,mcand1		;mcand1 will be DC (actually just "C")
+	mult	mplier,accum		;     accum = (H*D)
+	move	mcand1,accum1		;copy "C" to accum1
+	mult	longcnt,mcand		;     mcand = (G*D)
+	mult	mplier,accum1		;    accum1 = (H*C)
+	mult	longcnt,mcand1		;    mcand1 = (G*C)
+;
+;  add the 4 partial products with above illustrated alignment
+;    to produce the 64-bit result of the 32x32 multiply
+;
+	add	accum1,mcand		;mcand = (H*C) + (G*D) 
+	moveq	#0,accum1		; we need this to save any CY
+	addc	accum1,accum1		;  capture any carry-out
+	rorq	#16,mcand		;mcand  = LLLLMMMM
+	rorq	#16,accum1		;accum1 = 000C0000
+	move	mcand,accum2		;copy to accum2 for masking
+;
+	and	masklo,accum2		;accum2 = 0000MMMM
+	and	maskhi,mcand		;mcand  = LLLL0000
+	or	accum2,accum1		;accum1 = 000CMMMM
+;
+	subq	#4,prodcur		;pre-decrement destination product ptr
+	add	mcand,accum		;   MSL LSL
+	load	(prodcur),mcand		;fetch previous accumulations
+	addc	mcand1,accum1		;accum1 accum is 64-bit result
+;
+	add	accum,mcand		;add our new LSL
+	move	prodcur,mcand1		;use mcand1 as temp ptr
+	store	mcand,(prodcur)		;so we can add new results
+;
+	subqt	#4,mcand1		;  that can move up toward the MSB
+;
+	load	(mcand1),accum		;fetch previous for our MSL add
+	addc	accum1,accum		;add w/CY new MSL
+	jr	CC,noCYoutG		;and skip CY propagate if none
+	store	accum,(mcand1)		;  save results
+;
+;   CY propagate loop...
+CYlpG:
+	subqt	#4,mcand1		;move to next MSL
+	load	(mcand1),accum		;fetch previous
+	addc	zeroconst,accum		;  add 0 (w/CY)
+	jr	CS,CYlpG		;keep going until no more CY
+	store	accum,(mcand1)		;save results
+;
+;  Next multiplicand long please..
+;
+noCYoutG:
+	cmp	candptr,candbase	;reached MSL of multiplicand?
+	jump	NE,(candlpr)		;br for more if not
+;	nop
+;
+;  Finished entire multiplicand, go for next multiplier long
+;
+	cmp	plierptr,plierbase	;reached MSL of multiplier?
+	move	candend,candptr		;restore multiplicand to LSL
+	jump	NE,(plierlpr)		;br if not
+;	nop
+;
+;  We're done with this multiply..
+;    check to see if it was the square or the cube operation..
+;
+	cmp	candbase,cartsigr	;was previous multiply our cube? 
+	move	ksizer,accum		;start building product clear count
+	jr	NE,cubedoneG		; br if so (candbase is "accumA" for cube)
+	add	ksizer,plierptr
+;
+;
+	movei	#accumAG,candbase	;make just formed product our next multiplicand
+	movei	#accumBG,prodptr		;accumB is now our product area
+;
+	move	candbase,candend
+	add	ksizer,accum		;accum = 2*ksizer
+	add	accum,candend		;candend -> LSL (+1) of multiplicand		
+	add	ksizer,accum		;accum = 3*ksizer for cube
+	jump	(multlpr)		;go for next multiply
+	sharq	#2,accum		;adjust product clear count for longs
+;
+;
+cubedoneG:
+;
+;
+;   accumB has the cube we just computed--it will be the dividend
+;   PublicKey will be normalized & copied to accumA--it will be the divisor
+;   
+	movei	#accumBG,dendbase	;dividend base (MSL)	
+	movei	#accumAG,dsorbase	;divisor base  (MSL)
+	movei	#accumCG,dendALT		;alternate dividend base buffer
+;	
+	move	dendbase,R14		;use the dedicated index base regs
+	move	dsorbase,R15
+
+	moveq	#0,longcnt		;find 1st non-zero long
+msbcheckG:
+	load	(R14+longcnt),accum	;in the dividend
+	store	zeroconst,(R15+longcnt)	; clear out divisor while we're at it
+	or	accum,accum		;got non-zero?
+	jr	EQ,msbcheckG		;br if not
+	addq	#4,longcnt		;advance index
+;
+;
+;
+	move	ksizer,bitcnt		;dividend is 3*ksizer, divisor is 1*ksizer
+	subq	#4,longcnt		;adjust index for 1 excess addq
+	add	ksizer,bitcnt		;2*ksizer is difference
+	sub	longcnt,bitcnt		; but we can skip 0 longs in dividend MSL
+	shlq	#3,bitcnt		;*8 for bit count to shift & subtract
+;
+;
+;	
+	movei	#PublicK,R14		;copy our divisor to shift area
+	add	longcnt,dsorbase	;starting divisor MSL
+	add	longcnt,dendbase	;starting dividend MSL
+	add	longcnt,dendALT		;starting dividend alternate MSL
+	move	dsorbase,R15		;use R15 ptr for copy destination
+	subq	#4,R15			;-4 is more convenient for our skewed loops
+;
+;  We still have the 1st non-zero MSL of the dividend in accum
+;
+	moveq	#0,accum1		;count how many MSBit 0's
+msbitG:
+	add	accum,accum		;shift left, CY = next MSBit
+	jr	CC,msbitG		;repeat if still zero
+	addq	#1,accum1		;count it
+;
+;  accum1 = # of MSBit zeros (+1)
+;
+	moveq	#26,rolcount	;26 bits of msb zeros in Public Key (adjust for new PK)
+	movei	#noshiftG,maskhi
+	sub	accum1,rolcount	;rolcount = # of bits to left shift
+;
+	jump	CS,(maskhi)	;br if no left shift needed
+	addq	#1,rolcount	;adjust for extra add in loop
+;
+	add	rolcount,bitcnt	;total # of shifts & subtracts required
+;
+	neg	rolcount	;we need left-shift in a right-shift world
+	moveq	#0,maskhi	;form masks for this much shifting
+	not	maskhi
+	sh	rolcount,maskhi	;maskhi = %1111...0000 (# of 0's given by rolcount)
+	move	maskhi,masklo
+	not	masklo		;masklo = %0000...1111 (# of 1's given by rolcount)
+;
+;  copy divisor from PublicKey and bit-wise align to our Cube dividend  
+;
+	moveq	#0,longcnt		;start at MSL index position
+getkeyG:
+	load	(R14+longcnt),accum1	;pick up next PublicKey divisor
+	ror	rolcount,accum1		;align to dividend
+;	and	maskhi,accum1	;LSBits are in high end, MSbits are already 0's
+;
+;  accum1 has previous LSBits in high end with low end masked to 0's
+;
+shiflpG:
+	addq	#4,longcnt		;adjust index for next SRC
+	load	(R14+longcnt),accum2	;get next SRC	
+	ror	rolcount,accum2		;align to DST
+	move	accum2,accum		;need 2 copies for masking
+	and	masklo,accum2		;form MSBits in low position
+	and	maskhi,accum		;and LSBits in high position
+	or	accum2,accum1		;mate new MSBits in low with
+	cmp	longcnt,ksizer		; have we picked up all the SRC?
+	store	accum1,(R15+longcnt)	; previous LSBits in high--save to DST
+	jr	NE,shiflpG		;br for more if not
+	move	accum,accum1		; use our LSBits for next iter
+;
+	or	accum1,accum1		;do we have any LSBits to worry about?
+	jr	EQ,finish0G		; if not, we're done
+	nop
+;
+	jr	finish0G		;skip over non-shifted version
+	store	accum1,(R15+longcnt)	;save one more
+;
+;  DST R15 has been adjusted by -4 so we can
+;     do direct copy the following way--
+;
+noshiftG:
+	moveq	#0,longcnt
+copkeyG:
+	load	(R14+longcnt),accum	;no shift required
+	addq	#4,longcnt
+	cmp	ksizer,longcnt		;done it all?
+	jr	NE,copkeyG		;repeat if not
+	store	accum,(R15+longcnt)
+;
+;
+finish0G:
+	move	R15,dsorend		;we need a divisor end ptr
+	move	dendbase,R14		;SRC
+	add	longcnt,dsorend		;this is our divisor LSL (not +1!)
+;
+;   Copy dividend to alternate buffer
+;
+	move	dendALT,R15		;DST
+;	
+	add	ksizer,R14		;we only need 2*ksizer LSL's
+	move	ksizer,longcnt
+	add	ksizer,R15	 
+;
+	add	ksizer,longcnt
+;
+;
+altcopyG:
+	subq	#4,longcnt
+	load	(R14+longcnt),accum
+	jr	PL,altcopyG
+	store	accum,(R15+longcnt)
+;
+	movei	#divloopG,rolcount
+	movei	#doriteshG,prodptr	;we have to jump to far on this
+;
+	move	dsorbase,R14
+	move	dendbase,R15
+;
+;  now see if we can do some subtracts & shifts
+;
+divloopG:
+	load	(R14),accum	;get MSLong of divisor
+	load	(R15),accum1	;and MSLong of dividend
+	cmp	accum,accum1	;quick check: can we cancel the sub?
+	jump	CS,(prodptr)	;br if so--go to rite shift section
+	or	accum,accum1	;since we have hi end, marched off right yet?
+;
+	jr	NE,skiplfmG	;br if 1's still found in MSlongs
+	move	dsorend,longcnt	;it won't hurt to always do sub set-up
+;
+	addq	#4,R14		;advance divisor base ptr to next long
+	addq	#4,R15		;and dividend base too
+	jr	divloopG		;re-check the MSLongs (max iter here is 1)
+	addq	#4,dendALT	;also advance alt difference buffer base
+;
+skiplfmG:
+;
+; finish Subtraction set-up..
+	sub	R14,longcnt	;form offset to LSLongs (not +1!)
+;
+	move	dendALT,dendcur	;we wouldn't need if there was a 3rd 
+	add	longcnt,dendcur	;   indirect indexed register! CY=0
+;
+subloopG:
+	load	(R14+longcnt),accum	;get next divisor LSLong
+	load	(R15+longcnt),accum1	; & next dividend LSLong
+	subc	accum,accum1		;accum1 = (dividend - divisor)
+	store	accum1,(dendcur)	;save result in alt diff buffer
+	addc	zeroconst,zeroconst	;capture CY in bit0
+	subq	#4,longcnt		;& advance index for others LSL's
+	subqt	#4,dendcur		;advance to next LSLong in alt
+	jr	PL,subloopG		;do all indexes (including 0)
+	sharq	#1,zeroconst		;restore CY from previous subc
+;
+	jr	CS,doriteshG	;CY=1 means throw out result
+	move	dendALT,dendcur	;won't hurt to always do
+;	
+	move	R15,dendALT	;else, swap dividend & alt diff
+	move	dendcur,R15	; for a successful (pos result) sub
+;
+;   Time to right-shift divisor
+;   (DSP is really ugly on multiple-precision rite-shifts)
+;
+doriteshG:
+	move	R14,dendcur	;divisor MSL ptr to temp
+	moveq	#0,accum1	;we need this clear (bit31 holder)
+nextriteG:
+	moveq	#0,zeroconst	;and this too
+	load	(dendcur),accum	;pick up next MSLong divisor
+	shrq	#1,accum	;shift right 1x  (0-> LONG -> CY)
+	addc	zeroconst,zeroconst	;capture CY in bit0
+	or	accum1,accum	;OR in bit31 from previous rite sh
+	store	accum,(dendcur)	;save new shifted LONG with prev bit31
+	move	zeroconst,accum1	;copy shrq's CY to bit31 holder
+	rorq	#1,accum1		;put it in bit31 position
+	cmp	dsorend,dendcur		;have we reached LSLong?
+	jr	CS,nextriteG	;br for all divisor longs	
+	addq	#4,dendcur	;advance to next LSLong
+;
+	or	accum1,accum1	;does bit31 show a rite-shift carry-out?
+	jr	EQ,skiprtmG	;br if not
+	moveq	#0,zeroconst	;always do
+;
+	store	accum1,(dendcur)	;save $80000000 to new LSLong
+	move	dendcur,dsorend		; & update divisor LSLong ptr
+skiprtmG:
+	subq	#1,bitcnt	;shift all the way down to dividend's LSLong
+	jump	PL,(rolcount)	;will do an unnecessary rite-shift at end
+	nop
+
+shiftdoneG:
+;
+;   Now "unroll" the decrypted residue into our space
+;
+;
+	movefa	lastcodebyte,accum2	;get these from the alternate reg set	
+	movefa	Dstptr,R14
+	movefa	BlockCnt,rolcount
+;
+;
+	move	ksizer,longcnt
+	movei	#$000000ff,masklo
+nextrolG:
+	moveq	#4,bytecnt
+;nextrolx:
+	subq	#4,longcnt
+	moveq	#0,accum1
+	load	(R15+longcnt),accum
+rollongG:
+;
+	add	accum,accum2
+;
+	rorq	#24,accum1
+	and	masklo,accum2
+	or	accum2,accum1
+	subq	#1,bytecnt
+	jr	NE,rollongG
+	rorq	#8,accum
+;
+	addq	#4,R14
+	cmpq	#4,longcnt
+	jr	NE,nextrolG	
+	store	accum1,(R14)
+;
+	moveq	#$15,accum2	;was the deRSA legit?
+	load	(R15),accum	;we need to tell host 68k
+	cmp	accum,accum2
+	jr	EQ,cryptg	;br if good
+	moveq	#0,R1
+
+	bset	#16,R1	;else, its gibberish--set error indicator in hi word 
+cryptg:
+	movei	#SEMIPTR,R13	;=$FFFFFFFF if good, =$FFFEFFFF if bad
+	not	R1		; use hi word since it never gets corrupted
+	movei	#waitusr,R2
+	jump	(R2)
+	store	R1,(R13)
+;
+;-------------------------------------------
+;
+;  start a read of the hash table
+;
+;     first, let's wait for ACK from seek
+;
+DOHASH:
+;
+; ***  3-May-95  Addition added so DSP waits for ACK after seek
+;
+	movei	#$DFFF00,R0	;ptr to BUTCH
+reack:
+	movei	#5000,R1	;delay timer
+ackdelay:
+	subq	#1,R1
+	jr	NE,ackdelay
+	nop
+;
+	load	(R0),R1		;get BUTCH
+	btst	#13,R1		;check DSA RX pending
+	jr	EQ,reack
+	nop
+;
+	addq	#$A,R0		;--> DS_DATA
+	loadw	(R0),R1		;fetch return code
+;
+;***Take this out because sometimes the it clears the DSA_tx in CD_read
+;22-May	subq	#6,R0		;--> DSCNTRL
+;
+;22-May	load	(R0),R2		;clear DSA Rx pending
+;
+;
+	movei	#$100,R0	;get "FOUND"
+	cmp	R0,R1		;did we get found?
+	jr	EQ,wefound	;br if so
+	or	R2,R2		;fix scoreboard
+;
+	movei	#(hashoffs+4),R0
+	store	R1,(R0)		;save error code
+	movei	#hasherr,R0
+	moveq	#1,R2
+	jump	(R0)
+	not	R2
+;
+wefound:
+	movei	#$DFFF10,R0
+	load	(R0),R2		;clear any CD Err
+	or	R2,R2		;fix scoreboard bug
+;
+; 
+;  *** End 3-May-95 addition
+;
+;
+	movei	#rawHASH,R0
+	moveta	R0,R26		;set DST ptr to our start load addr
+;
+	movei	#hashoffs,R0	;init hashtable fragment offsets ptr
+	load	(R0),R1		;let's get 1st one to start off
+
+	moveta	R1,R18		;set 1st offset in current offset reg
+	addq	#4,R0		;advance offsets ptr
+;
+	moveta	R0,R21		;init offset table ptr to next entry
+;
+	moveq	#0,R0
+	moveta	R0,R19		;init current long count to 0
+;
+	movei	#$8000,R0	;set wait-for-pattern time-out
+;	movei	#$20000,R0	;set wait-for-pattern time-out
+	moveta	R0,R20		;  long count
+;
+	movei	#($981E0000+(I2S_HASH & $FFFF)),R0	;secondary irq
+	moveta	R0,R24
+;
+	moveq	#16,R0
+	moveta	R0,R23		;make sure we look for 16 longs
+;
+	movei	#$41545249,R0	;look for "ATRI"
+	moveta	R0,R25		;start the unit up
+;
+hashfin:
+	movefa	R25,R0
+	or	R0,R0
+	jr	NE,hashfin
+	nop
+;
+	movefa	R26,R2		;check for time-out condition
+	or	R2,R2		;DST ptr is cleared if timed-out
+	jr	NE,hashnto	;br if time out didn't terminate
+	not	R2		;this will be -1 if we fall thru
+;
+hasherr:
+	movei	#hashoffs,R1
+	store	R2,(R1)		;we need to tell 68k about the timeout
+hashnto:
+	movei	#foreloop,R0
+	jump	(R0)
+	nop
+;	
+;
+;
+;  We're outta here (shutdown)
+;
+outtah:
+	movei	#D_FLAGS,R29	;just in case
+	load	(R29),R28	;get D_FLAGS
+	bclr	#5,R28		;kill i2s interrupt
+	bclr	#4,R28		;kill cpu interrupt
+	bclr	#14,R28		;reg set is bank 0
+	store	R28,(R29)
+	nop
+	nop
+;
+	movei	#D_CTRL,R30
+	moveq	#0,R29
+reald:
+	store	R29,(R30)
+	jr	reald
+	nop
+;
+;
+;
+;
+;
+;
+;---------------------------------------------------------
+;
+;
+; interrupt service routines
+;
+I2S_IDLE:
+	bclr	#3,R30			;exit i2s routine
+	load	(R31),R17
+	bset	#10,R30
+	addq	#2,R17
+	addq	#4,R31
+	jump	(R17)
+	store	R30,(R29)
+;
+;
+;
+;   R30 irq temp (D_FLAGS)
+;   R29 -> D_FLAGS ptr contant
+;   R28 -> LTXD ptr contant
+;   R27 -> RTXD ptr constant
+;   R26 -> DST (current) ptr
+;   R25 -> start pattern (=0 if none)
+;   R24 -> i2s_boot/i2s_hash
+;   R23 -> pattern count (init to 16)
+;   R22 -> "i2s_vec"
+;   R21 =  ptr to current hashoffs entry (HASH)/ or length if boot
+;   R20 =  max long count before time-out on search for start pattern
+;   R19 =  current long count
+;   R18 =  current long offset we're waiting for
+;
+;  This is the routine to use when waiting for a start pattern
+;
+I2S_START:
+	load	(R29),R30		;get D_FLAGS in R30
+	or	R25,R25			;check for null pattern 
+	load	(R28),R16		;get left channel
+	jr	EQ,I2S_IDLE		;br if we're not waiting
+	load	(R27),R17		;get rite channel
+;
+	shlq	#16,R16
+	shlq	#16,R17
+	shrq	#16,R16
+	or	R17,R16			;else form R16, our input longword
+;
+	cmp	R16,R25			;is this our start pattern?
+	jr	NE,REPAT		;br if not
+	addq	#1,R19			;advance time-out counter
+;
+;  we have a match with our start pattern..
+;
+	subq	#1,R23			;decrement counter (we need 16 longs)
+	jr	NE,STAROFF		;br if not all 16 in yet
+	or	R23,R23
+;
+;  all 16 start pattern longs have come in..
+;
+;	move	R19,R15			;save how long we waited
+	store	R24,(R22)		;use i2s_boot or i2s_hash routine next
+	jr	STAROFF
+	moveq	#0,R19			;set long count to 0
+;
+;
+REPAT:
+	moveq	#16,R23
+STAROFF:
+	cmp	R20,R19			;have we timed-out on wait for start?
+	jr	CS,STARxit
+	nop
+	moveq	#0,R25			;clear start pattern--we time out
+	moveq	#0,R26			;set DST ptr to 0 to indicate time-out
+STARxit:
+	bclr	#3,R30			;exit i2s routine
+	load	(R31),R17
+	bset	#10,R30
+	addq	#2,R17
+	addq	#4,R31
+	jump	(R17)
+	store	R30,(R29)
+;
+;
+;
+;
+;  This is the routine to use when loading the hash table
+;
+;
+I2S_HASH:
+	load	(R29),R30	;get D_FLAGS in R30
+	load	(R28),R16	;get left channel
+	load	(R27),R17	;get rite channel
+	shlq	#16,R16
+	shlq	#16,R17
+	shrq	#16,R16
+	or	R17,R16		;form R16, our input longword
+;
+	cmp	R18,R19		;check desired offset with current
+	jr	CS,exithash	;br if not yet
+	addq	#1,R19		;advance current offset
+;
+;  we are at or beyond our current offset..
+;
+	moveq	#17,R17		;we need 17 longs, this fragment
+	store	R16,(R26)	;save data to desired location
+	add	R18,R17		;compute terminator, this frag
+	cmp	R17,R19		;have we finished this one?
+	jr	CS,exithash	;br if not yet
+	addq	#4,R26		;advance DST ptr
+;
+;  we finished this frag--load offset to next or terminate
+;
+	load	(R21),R18	;fetch next offset
+	or	R18,R18		;have we reached terminator?
+	jr	MI,termhash	;br if so
+	addq	#4,R21		;advance offset table ptr
+;
+;
+exithash:
+	bclr	#3,R30			;exit i2s routine
+	load	(R31),R17
+	bset	#10,R30
+	addq	#2,R17
+	addq	#4,R31
+	jump	(R17)
+	store	R30,(R29)
+;
+;
+termhash:
+;	movei	#($981E0000+(I2S_START & $FFFF)),R21	;back to primary irq
+;	store	R21,(R22)
+	movei	#($981E0000+(I2S_START & $FFFF)),R24	;back to primary irq
+	store	R24,(R22)
+	jr	exithash
+	moveq	#0,R25			;pattern=0 means we're done
+;
+;
+;
+;   Burp some data out of DSP to dRAM...
+;
+;
+dspcopy:
+	load	(R29),R30
+	movei	#DSP2RAM,R7
+	load	(R7),R6			;get SRC
+	addq	#4,R7
+	load	(R7),R8			;get DST
+	addq	#4,R7
+	load	(R7),R9			;get count
+	addq	#4,R7
+	subq	#1,R9
+	shlq	#2,R9			;*4
+	add	R6,R9
+;
+fetchmo:
+	load	(R6),R5
+	cmp	R9,R6
+	store	R5,(R8)
+	addqt	#4,R6
+	jr	CS,fetchmo
+	addq	#4,R8
+;
+	moveq	#0,R9
+	store	R9,(R7)
+;
+	bclr	#3,R30			;exit cpu routine
+	load	(R31),R7
+	bset	#9,R30
+	addq	#2,R7
+	addq	#4,R31
+	jump	(R7)
+	store	R30,(R29)
+;
+;
+;
+	ALIGN LONG
+;
+;  This is used by the cpu burp to copy a block to dRAM
+;
+DSP2RAM:
+	dc.l	hashoffs	;SRC
+	dc.l	$4000		;DST
+	dc.l	8		;count
+	dc.l	-1		;cpu irq semiphore
+;
+;
+	ALIGN	LONG
+;
+;  hash table offsets for desired fragments (up to 7x17 longs)
+;   (terminated by -1)
+;
+hashoffs:
+	dc.l	-1	;offset for next hashtable fragment (17 longs)
+	dc.l	-1
+	dc.l	-1
+	dc.l	-1
+	dc.l	-1
+	dc.l	-1
+	dc.l	-1
+	dc.l	-1
+;
+;
+SEMIPTR:
+	dc.l	-1	;ptr to RSA block to do (-1 if done, 0 if quit)
+;			;+1 if load hash table, +2 if load boot sector
+;
+;
+;  Here's our local RAM storage
+;
+;   These are defined using equates instead of labels on DS.L blocks
+;    since the assembler insists on stuffing 00's in the so-called
+;    uninitialized data blocks..
+;
+PublicK:
+rama		set	PublicK			;Public key
+rama		set	rama+ksize
+
+accumAG	equ	rama				;accum A (big enuf for cube)
+rama		set	rama+(3*ksize)
+
+accumBG	equ	rama				;accum B
+rama		set	rama+(3*ksize)
+
+accumCG	equ	rama				;accum C
+rama		set	rama+(3*ksize)		
+;
+cartsigG	equ	rama		;original crypto-text (reverse order)
+rama		set	rama+ksize
+;
+;
+bootIIG		equ	rama			;results (plain-text)
+rama		set	rama+(3*ksize)
+;
+;
+;
+rawHASH		equ	rama			;hash table fragments

@@ -1,0 +1,10 @@
+getsym cdfront.sym
+gag on
+read cdboot1.txt 802000 ; read cdboot1.dta 802eda ; getsym cdboot1.sym
+gag off
+echo "	start	size	end"
+echo "text	802000	eda	802ed9"
+echo "data	802eda	2a2cc	82d1a5"
+echo "bss	40000	0	3ffff"
+echo "Symbols loaded"
+xpc 802000

@@ -1,0 +1,402 @@
+	PLEN	95
+;******************************************************************************
+;* (C)1993 ATARI CORP.       SECRET & CONFIDENTIAL       ALL RIGHTS RESERVED  *
+;*									      *
+;* GPUDAVE.GAS								      *
+;*									      *
+;*									      *
+;*	This GPU program runs a Butch subcode interrupt (from the DSP	      *
+;*	interrupt #1) and a pseudo-vblank interrupt (called by the CPU)	      *
+;*									      *
+;*									      *
+;*									      *
+;*									      *
+;*									      *
+;*				REVISION HISTORY			      *
+;*									      *
+;* REV.	DATE	   BY	DESCRIPTION OF EDIT				      *
+;* """"	""""	   """	"""""""""""""""""""				      *
+;* 4.00 25 Feb 94  PKF	added an interrupt handler to take care of external   *
+;*			interrupt 0 - the interrupt from BUTCH.		      *
+;*									      *
+;*      21-Sep 94  DJS  Dave's version					      *
+;******************************************************************************
+
+;==============================================================================
+; INCLUDE FILES
+;==============================================================================
+
+	NOLIST
+	.include "jaguar.inc"
+	LIST
+;==============================================================================
+; DIFFERENT MEMORY MAPPED REGISTER USED FOR PLAYING AUDIO
+;==============================================================================
+
+; Butch's hardware registers
+
+BUTCH		equ	$DFFF00		; base of Butch=interrupt control register, R/W
+DSCNTRL		equ	BUTCH+4		; DSA control register, R/W
+DS_DATA		equ	BUTCH+$A	; DSA TX/RX data, R/W
+I2CNTRL		equ	BUTCH+$10	; i2s bus control register, R/W
+SBCNTRL		equ	BUTCH+$14	; CD subcode control register, R/W
+SUBDATA		equ	BUTCH+$18	; Subcode data register A
+SUBDATB		equ	BUTCH+$1C	; Subcode data register B
+SB_TIME		equ	BUTCH+$20	; Subcode time and compare enable (D24)
+I2SDAT1		equ	BUTCH+$24	; i2s FIFO data
+I2SDAT2		equ	BUTCH+$28	; i2s FIFO data
+;
+;
+;
+GPU_stop	equ	$F03500		; stop-GPU semaphore from M68K
+Haf_flg		equ	$F03504		; buffer half flag
+Ful_flg		equ	$F03508		; buffer full flag
+
+SBuf_Beg	equ	$F03600		;subcode buffer in GPU memory
+SBuf_Mid	equ	$F03660		; midway pointer in subcode buffer
+SBuf_End	equ	$F036C0		; end of subcode buffer
+
+STACKPOS	equ	$F03F00		; stack in GPU SRAM
+
+;==============================================================================
+; THIS PROGRAM TO BE LOADED AT START OF GPU RAM
+;==============================================================================
+
+	ORG	$F03000
+
+;==============================================================================
+;==============================================================================
+;
+davelist	REGSET	R8	;ptr to daves local
+dlist		REGSET	R9	;Jeff's hardware dlist
+blist		REGSET	R10	;Jeff's hardware shadow
+Pradip		REGSET	R11	;semiphore to indicate v_blank has happened
+const60		REGSET	R12	;constant=$60
+const50		REGSET	R13	;constant=$50
+const10		REGSET	R14	;constant=$10
+frames		REGSET	R15	;frame counter ptr
+;
+;
+subcnt		REGSET	R16	;chunk count ($10..$1B)
+;
+curptr		REGSET	R17	;ptr to current subcode buffer position
+begptr		REGSET	R18	;subcode buffer start (constant)
+midptr		REGSET	R19	;subcode buffer midpoint (constant)
+endptr		REGSET	R20	;subcode buffer end+1 (constant)
+;
+gpustop		REGSET	R21	;ptr to stop/go semiphore (constant)
+hafflgp		REGSET	R22	;ptr to half flag (constant)
+fulflgp		REGSET	R23	;ptr to full flag (constant)
+;
+miscount	REGSET	R24	;count of missed chunks
+getcount	REGSET	R25	;count of good chunks
+;
+subdata		REGSET	R26	;ptr to subcodes: S R Q chunk# (constant)
+subdatb		REGSET	R27	;ptr to subcodes: W V U T (constant)
+butchptr	REGSET	R28	;ptr to BUTCH (constant)
+;
+gflagptr	REGSET	R29	;ptr to G_FLAGS (constant)
+;
+gflag		REGSET	R30	;temp used for contents of G_FLAGS
+stackptr	REGSET	R31	;stack ptr
+
+;==============================================================================
+; GPU PROGRAM CODE
+;==============================================================================
+
+GPUORG:
+intr0:
+	movei	#vblank,R0		; (int0  - CPU interrupt, v-blank)
+	jump	(R0)
+	nop
+	nop
+	nop
+	nop
+intr1:
+	movei	#sub_isr,R0		; (int1 - DSP)
+	jump	(R0)
+	nop
+	nop
+	nop
+	nop
+;
+;  Caller supplied addresses
+;
+userdat:
+;davelist:
+	dc.l	0		;davelist
+;dlist:
+	dc.l	0		;dlist
+;blist:
+	dc.l	0		;blist
+;Pradip:
+	dc.l	0		;Pradip.w
+;frames
+	dc.l	0		;frames.w
+;
+;==============================================================================
+; INITIALISE GPU PROGRAM STUFF
+;==============================================================================
+;
+gpustart:
+;
+;  Load up the Vblank code constants..
+;
+	movei	#userdat,R0
+	load	(R0),davelist
+	addq	#4,R0
+	load	(R0),dlist
+	addq	#4,R0
+	load	(R0),blist
+	addq	#4,R0
+	load	(R0),Pradip
+	addq	#4,R0
+	load	(R0),frames
+;
+	movei	#$60,const60
+	movei	#$50,const50
+	movei	#$10,const10
+;
+;
+;  Load up the Subcode code constants..
+;
+	movei	#STACKPOS,stackptr	; set up a stack pointer
+;
+	movei	#GPU_stop,gpustop	;address of GPU-Stop semaphore
+	movei	#Haf_flg,hafflgp	;half flag ptr
+	movei	#Ful_flg,fulflgp	;full flag ptr
+;
+	movei	#SUBDATA,subdata	;subcode data reg A ptr
+	movei	#SUBDATB,subdatb	;subcode data reg B ptr
+;
+	movei	#Sbuf_Beg,begptr	;begining of subcode data buffer
+	movei	#Sbuf_Mid,midptr	;midpoint of subcode data buffer
+	movei	#Sbuf_End,endptr	;end of subcode data buffer
+	move	begptr,curptr		;start current ptr at begining
+;
+	moveq	#$10,subcnt		;next expected chunk count
+
+	movei	#G_FLAGS,gflagptr	; load GPU flags register address
+	movei	#BUTCH,butchptr		;  and BUTCH to
+
+	moveq	#0,miscount		;count of missed chunks
+	moveq	#0,getcount		;count of good chunks
+;
+	store	miscount,(hafflgp)	;initialize half flag (=0)
+	store	miscount,(fulflgp)	;initialize full flag (=0)
+	store	miscount,(gpustop)	;initialize gpustop (=0)
+;
+	load	(gflagptr),R0		; load GPU flags
+	bset	#5,R0			; enable DSP interrupt
+	bset	#4,R0			; enable CPU interrupt
+	store	R0,(gflagptr)	 	; save GPU flags
+;
+fakeit:
+;
+	load	(gpustop),r7		;****1-Aug-95
+	cmpq	#1,r7
+	jr	NE,fakeit
+	nop
+	movei	#shutdown,r7
+	jump	(r7)
+	nop
+;
+;1-Aug	nop
+;1-Aug	jr	fakeit			; a dummy loop to encapsulate the ISR
+;Aug-95	nop
+;
+;
+;==============================================================================
+; CPU INTERRUPT (#0) - WILL RESTORE DISPLAY LIST AS VBLANK DID
+;==============================================================================
+;
+;
+;
+vblank:
+	load	(gflagptr),gflag	; get GPU flags
+;
+;  Perform Display List refresh here...
+;
+	move	davelist,R0
+	move	dlist,R1
+	moveq	#4,R2
+dloop0:
+	load	(R0),R3
+	subq	#1,R2
+	store	R3,(R1)
+	addqt	#4,R0
+	jr	NE,dloop0
+	addqt	#4,R1
+;
+	move	blist,R0
+	add	const60,R0
+	add	const50,R1
+;
+	moveq	#24,R2
+dloop1:
+	load	(R0),R3
+	subq	#1,R2
+	store	R3,(R1)
+	addqt	#4,R0
+	jr	NE,dloop1
+	addqt	#4,R1
+;
+	loadw	(frames),R0
+	addq	#1,R0
+	storew	R0,(frames)
+;
+	moveq	#0,R1
+	storew	R1,(Pradip)
+;
+	bclr	#3,gflag	; clear IMASK (for GPU)
+	bset	#9,gflag	; set CPU interrupt clear bit 
+;
+;  now exit the irq by the Book
+;
+	load	(stackptr),R0	; get last instruction address
+	addq	#$2,R0		; point at next to be executed
+	addq	#$4,stackptr	; update the stack pointer
+	jump	(R0)		; and return
+	store	gflag,(gflagptr)	; restore flags
+;
+;
+;
+;
+;
+notours:
+	movei	#exitirq,R0		;major error, better shut it down
+	jump	(R0)
+	nop
+;
+;==============================================================================
+; EXTERNAL INTERRUPT (#1, DSP) - HANDLES SUBCODE INTERRUPT
+;==============================================================================
+;
+sub_isr:
+	load	(gflagptr),gflag	; get GPU flags
+	load	(butchptr),R0		; get the ICR flags
+	btst	#10,R0			; check for subcode interrupt
+	jr	EQ,notours		;br if error--not a subcode irq
+	load	(subdata),R0		;get S R Q & chunk#
+sub_dat:
+	load	(subdatb),R1		;get W V U T
+	move	R0,R2
+	shlq	#24,R2
+	shrq	#24,R2
+	cmp	subcnt,R2		;are we at expected chunk count?
+	jr	EQ,goodchk		;br if good chunk #
+	move	begptr,R3		;assume bad sequence on 1st half
+;
+;  Bad sequence, we must redo the frame
+;
+	cmp	midptr,curptr		;are we in 1st or 2nd half?
+	jr	CS,firsthaf
+	addq	#1,miscount
+;
+	move	midptr,R3
+firsthaf:
+	movei	#resetcnt,R2		;jump to reset subcnt & exit
+	jump	(R2)
+	move	R3,curptr		;start fresh frame
+;	
+;  got a good subcode here
+;
+goodchk:
+	store	R0,(curptr)		;save S R Q & chunk#
+	addq	#1,subcnt		;advance next expected chunk counter
+	addq	#4,curptr		;bump buffer ptr
+	addq	#1,getcount		;increment good counter
+	store	R1,(curptr)		;save W V U T
+	addq	#4,curptr
+	moveq	#1,R1		;set half/full indicator temp (in case we need)
+;
+	cmp	midptr,curptr	;reached end of 1st half?
+	jr	NE,nothalf	;br if not
+	cmp	endptr,curptr	;test end in case we br--else it won't hurt
+;
+;  Reached end of halfway point..
+;
+	load	(hafflgp),R0	;check half buffer semiphore
+	cmp	R1,R0		;already set?
+	jr	NE,resetcnt	;if not, we can set now and exit
+	store	R1,(hafflgp)	;set hafflg=1
+;
+;  Error condition detected--better shutdown
+;
+errx:
+;	movei	#shutdown,R2
+	movei	#exitirq,R2
+	jump	(R2)
+	nop
+;
+nothalf:
+	jr	NE,exitirq
+	load	(fulflgp),R0	
+;
+	cmp	R1,R0
+	jr	EQ,errx		;br to error condition if detected
+	store	R1,(fulflgp)
+;
+	move	begptr,curptr
+resetcnt:
+	moveq	#$10,subcnt
+;
+exitirq:
+	movei	#J_INT,R0	;Jerry's interrupt ACK register
+	movei	#SBCNTRL,R2	;read this to clear the subcode interrupt flag
+;
+	bset	#10,gflag	; set DSP interrupt clear bit 
+	store	gflag,(gflagptr)	; restore flags
+	bclr	#3,gflag	; clear IMASK (for GPU)
+;
+	moveq	#1,R1
+	bset	#8,R1
+	storew	R1,(R0)		;acknowlege Jerry
+;
+	load	(gpustop),R0	;see if 68k wants to stop us
+;
+	load	(R2),R1		;clear the Butch interrupt
+;
+	or	R0,R0
+	jr	NE,shutdown	;br if 68k put a non-zero value here
+;
+;  now exit the irq by the Book
+;
+	load	(stackptr),R0	; get last instruction address
+	addq	#$2,R0		; point at next to be executed
+	addq	#$4,stackptr	; update the stack pointer
+	jump	(R0)		; and return
+	store	gflag,(gflagptr)	; restore flags
+;
+;
+;
+shutdown:
+	moveq	#$1,R0
+	store	R0,(gpustop)	; set the semaphore flag
+;
+	movei	#J_INT,R0	;Jerry's interrupt ACK register
+	movei	#SBCNTRL,R2	;read this to clear the subcode interrupt flag
+	moveq	#1,R1
+	bset	#8,R1
+	storew	R1,(R0)		;acknowlege Jerry
+;
+	bclr	#3,gflag	; clear IMASK (for GPU)
+	bset	#10,gflag	; set DSP interrupt clear bit 
+;
+	movei	#$3e00,gflag	;clear & mask all irq
+	load	(R2),R1		;clear the Butch interrupt
+	store	gflag,(gflagptr)	; restore flags
+;
+	moveq	#0,R0
+	movei	#G_CTRL,R1	; and halt the GPU
+	store	R0,(R1)		; by clearing GPU control register
+;
+verydead:			; if the GPU is not stopped now
+	jr	verydead	; try turning the power off
+	nop
+;
+	end                                        
+
+;==============================================================================
+;==============================================================================
+

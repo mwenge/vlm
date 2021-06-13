@@ -1,0 +1,416 @@
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 1    		Tue Aug 01 1995 10:51	Gpu (Rev:1)
+
+GASM -o -CGPU -R1 -l gpudave.GAS
+
+                0000005F 	PLEN	95
+                         ;******************************************************************************
+                         ;* (C)1993 ATARI CORP.       SECRET & CONFIDENTIAL       ALL RIGHTS RESERVED  *
+                         ;*									      *
+                         ;* GPUDAVE.GAS								      *
+                         ;*									      *
+                         ;*									      *
+                         ;*	This GPU program runs a Butch subcode interrupt (from the DSP	      *
+                         ;*	interrupt #1) and a pseudo-vblank interrupt (called by the CPU)	      *
+                         ;*									      *
+                         ;*									      *
+                         ;*									      *
+                         ;*									      *
+                         ;*									      *
+                         ;*				REVISION HISTORY			      *
+                         ;*									      *
+                         ;* REV.	DATE	   BY	DESCRIPTION OF EDIT				      *
+                         ;* """"	""""	   """	"""""""""""""""""""				      *
+                         ;* 4.00 25 Feb 94  PKF	added an interrupt handler to take care of external   *
+                         ;*			interrupt 0 - the interrupt from BUTCH.		      *
+                         ;*									      *
+                         ;*      21-Sep 94  DJS  Dave's version					      *
+                         ;******************************************************************************
+                         
+                         ;==============================================================================
+                         ; INCLUDE FILES
+                         ;==============================================================================
+                         
+                         ;==============================================================================
+                         ; DIFFERENT MEMORY MAPPED REGISTER USED FOR PLAYING AUDIO
+                         ;==============================================================================
+                         
+                         ; Butch's hardware registers
+                         
+                00DFFF00 BUTCH		equ	$DFFF00		; base of Butch=interrupt control register, R/W
+                00DFFF04 DSCNTRL		equ	BUTCH+4		; DSA control register, R/W
+                00DFFF0A DS_DATA		equ	BUTCH+$A	; DSA TX/RX data, R/W
+                00DFFF10 I2CNTRL		equ	BUTCH+$10	; i2s bus control register, R/W
+                00DFFF14 SBCNTRL		equ	BUTCH+$14	; CD subcode control register, R/W
+                00DFFF18 SUBDATA		equ	BUTCH+$18	; Subcode data register A
+                00DFFF1C SUBDATB		equ	BUTCH+$1C	; Subcode data register B
+                00DFFF20 SB_TIME		equ	BUTCH+$20	; Subcode time and compare enable (D24)
+                00DFFF24 I2SDAT1		equ	BUTCH+$24	; i2s FIFO data
+                00DFFF28 I2SDAT2		equ	BUTCH+$28	; i2s FIFO data
+                         ;
+                         ;
+                         ;
+                00F03500 GPU_stop	equ	$F03500		; stop-GPU semaphore from M68K
+                00F03504 Haf_flg		equ	$F03504		; buffer half flag
+                00F03508 Ful_flg		equ	$F03508		; buffer full flag
+                         
+                00F03600 SBuf_Beg	equ	$F03600		;subcode buffer in GPU memory
+                00F03660 SBuf_Mid	equ	$F03660		; midway pointer in subcode buffer
+                00F036C0 SBuf_End	equ	$F036C0		; end of subcode buffer
+                         
+                00F03F00 STACKPOS	equ	$F03F00		; stack in GPU SRAM
+                         
+                         ;==============================================================================
+                         ; THIS PROGRAM TO BE LOADED AT START OF GPU RAM
+                         ;==============================================================================
+                         
+@'00F03000               	ORG	$F03000
+                         
+                         ;==============================================================================
+                         ;==============================================================================
+                         ;
+                00000008 davelist	REGSET	R8	;ptr to daves local
+                00000009 dlist		REGSET	R9	;Jeff's hardware dlist
+                0000000A blist		REGSET	R10	;Jeff's hardware shadow
+                0000000B Pradip		REGSET	R11	;semiphore to indicate v_blank has happened
+                0000000C const60		REGSET	R12	;constant=$60
+                0000000D const50		REGSET	R13	;constant=$50
+                0000000E const10		REGSET	R14	;constant=$10
+                0000000F frames		REGSET	R15	;frame counter ptr
+                         ;
+                         ;
+                00000010 subcnt		REGSET	R16	;chunk count ($10..$1B)
+                         ;
+                00000011 curptr		REGSET	R17	;ptr to current subcode buffer position
+                00000012 begptr		REGSET	R18	;subcode buffer start (constant)
+                00000013 midptr		REGSET	R19	;subcode buffer midpoint (constant)
+                00000014 endptr		REGSET	R20	;subcode buffer end+1 (constant)
+                         ;
+                00000015 gpustop		REGSET	R21	;ptr to stop/go semiphore (constant)
+                00000016 hafflgp		REGSET	R22	;ptr to half flag (constant)
+                00000017 fulflgp		REGSET	R23	;ptr to full flag (constant)
+                         ;
+                00000018 miscount	REGSET	R24	;count of missed chunks
+                00000019 getcount	REGSET	R25	;count of good chunks
+                         ;
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 2    		Tue Aug 01 1995 10:51	Gpu (Rev:1)
+
+                0000001A subdata		REGSET	R26	;ptr to subcodes: S R Q chunk# (constant)
+                0000001B subdatb		REGSET	R27	;ptr to subcodes: W V U T (constant)
+                0000001C butchptr	REGSET	R28	;ptr to BUTCH (constant)
+                         ;
+                0000001D gflagptr	REGSET	R29	;ptr to G_FLAGS (constant)
+                         ;
+                0000001E gflag		REGSET	R30	;temp used for contents of G_FLAGS
+                0000001F stackptr	REGSET	R31	;stack ptr
+                         
+                         ;==============================================================================
+                         ; GPU PROGRAM CODE
+                         ;==============================================================================
+                         
+@'00F03000               GPUORG:
+@'00F03000               intr0:
+@'00F03000 9800 30C800F0 	movei	#vblank,R0		; (int0  - CPU interrupt, v-blank)
+@'00F03006 D000           	jump	(R0)
+@'00F03008 E400           	nop
+@'00F0300A E400           	nop
+@'00F0300C E400           	nop
+@'00F0300E E400           	nop
+@'00F03010               intr1:
+@'00F03010 9800 311200F0 	movei	#sub_isr,R0		; (int1 - DSP)
+@'00F03016 D000           	jump	(R0)
+@'00F03018 E400           	nop
+@'00F0301A E400           	nop
+@'00F0301C E400           	nop
+@'00F0301E E400           	nop
+                         ;
+                         ;  Caller supplied addresses
+                         ;
+@'00F03020               userdat:
+                         ;davelist:
+@'00F03020      00000000 	dc.l	0		;davelist
+                         ;dlist:
+@'00F03024      00000000 	dc.l	0		;dlist
+                         ;blist:
+@'00F03028      00000000 	dc.l	0		;blist
+                         ;Pradip:
+@'00F0302C      00000000 	dc.l	0		;Pradip.w
+                         ;frames
+@'00F03030      00000000 	dc.l	0		;frames.w
+                         ;
+                         ;==============================================================================
+                         ; INITIALISE GPU PROGRAM STUFF
+                         ;==============================================================================
+                         ;
+@'00F03034               gpustart:
+                         ;
+                         ;  Load up the Vblank code constants..
+                         ;
+@'00F03034 9800 302000F0 	movei	#userdat,R0
+@'00F0303A A408           	load	(R0),davelist
+@'00F0303C 0880           	addq	#4,R0
+@'00F0303E A409           	load	(R0),dlist
+@'00F03040 0880           	addq	#4,R0
+@'00F03042 A40A           	load	(R0),blist
+@'00F03044 0880           	addq	#4,R0
+@'00F03046 A40B           	load	(R0),Pradip
+@'00F03048 0880           	addq	#4,R0
+@'00F0304A A40F           	load	(R0),frames
+                         ;
+@'00F0304C 980C 00600000 	movei	#$60,const60
+@'00F03052 980D 00500000 	movei	#$50,const50
+@'00F03058 980E 00100000 	movei	#$10,const10
+                         ;
+                         ;
+                         ;  Load up the Subcode code constants..
+                         ;
+@'00F0305E 981F 3F0000F0 	movei	#STACKPOS,stackptr	; set up a stack pointer
+                         ;
+@'00F03064 9815 350000F0 	movei	#GPU_stop,gpustop	;address of GPU-Stop semaphore
+@'00F0306A 9816 350400F0 	movei	#Haf_flg,hafflgp	;half flag ptr
+@'00F03070 9817 350800F0 	movei	#Ful_flg,fulflgp	;full flag ptr
+                         ;
+@'00F03076 981A FF1800DF 	movei	#SUBDATA,subdata	;subcode data reg A ptr
+@'00F0307C 981B FF1C00DF 	movei	#SUBDATB,subdatb	;subcode data reg B ptr
+                         ;
+@'00F03082 9812 360000F0 	movei	#Sbuf_Beg,begptr	;begining of subcode data buffer
+@'00F03088 9813 366000F0 	movei	#Sbuf_Mid,midptr	;midpoint of subcode data buffer
+@'00F0308E 9814 36C000F0 	movei	#Sbuf_End,endptr	;end of subcode data buffer
+@'00F03094 8A51           	move	begptr,curptr		;start current ptr at begining
+                         ;
+@'00F03096 8E10           	moveq	#$10,subcnt		;next expected chunk count
+                         
+@'00F03098 981D 210000F0 	movei	#G_FLAGS,gflagptr	; load GPU flags register address
+@'00F0309E 981C FF0000DF 	movei	#BUTCH,butchptr		;  and BUTCH to
+                         
+@'00F030A4 8C18           	moveq	#0,miscount		;count of missed chunks
+@'00F030A6 8C19           	moveq	#0,getcount		;count of good chunks
+                         ;
+@'00F030A8 BED8           	store	miscount,(hafflgp)	;initialize half flag (=0)
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 3    		Tue Aug 01 1995 10:51	Gpu (Rev:1)
+
+@'00F030AA BEF8           	store	miscount,(fulflgp)	;initialize full flag (=0)
+@'00F030AC BEB8           	store	miscount,(gpustop)	;initialize gpustop (=0)
+                         ;
+@'00F030AE A7A0           	load	(gflagptr),R0		; load GPU flags
+@'00F030B0 38A0           	bset	#5,R0			; enable DSP interrupt
+@'00F030B2 3880           	bset	#4,R0			; enable CPU interrupt
+@'00F030B4 BFA0           	store	R0,(gflagptr)	 	; save GPU flags
+                         ;
+@'00F030B6               fakeit:
+                         ;
+@'00F030B6 A6A7           	load	(gpustop),r7		;****1-Aug-95
+@'00F030B8 7C27           	cmpq	#1,r7
+@'00F030BA D7A1           	jr	NE,fakeit
+@'00F030BC E400           	nop
+@'00F030BE 9807 319A00F0 	movei	#shutdown,r7
+@'00F030C4 D0E0           	jump	(r7)
+@'00F030C6 E400           	nop
+                         ;
+                         ;1-Aug	nop
+                         ;1-Aug	jr	fakeit			; a dummy loop to encapsulate the ISR
+                         ;Aug-95	nop
+                         ;
+                         ;
+                         ;==============================================================================
+                         ; CPU INTERRUPT (#0) - WILL RESTORE DISPLAY LIST AS VBLANK DID
+                         ;==============================================================================
+                         ;
+                         ;
+                         ;
+@'00F030C8               vblank:
+@'00F030C8 A7BE           	load	(gflagptr),gflag	; get GPU flags
+                         ;
+                         ;  Perform Display List refresh here...
+                         ;
+@'00F030CA 8900           	move	davelist,R0
+@'00F030CC 8921           	move	dlist,R1
+@'00F030CE 8C82           	moveq	#4,R2
+@'00F030D0               dloop0:
+@'00F030D0 A403           	load	(R0),R3
+@'00F030D2 1822           	subq	#1,R2
+@'00F030D4 BC23           	store	R3,(R1)
+@'00F030D6 0C80           	addqt	#4,R0
+@'00F030D8 D761           	jr	NE,dloop0
+@'00F030DA 0C81           	addqt	#4,R1
+                         ;
+@'00F030DC 8940           	move	blist,R0
+@'00F030DE 0180           	add	const60,R0
+@'00F030E0 01A1           	add	const50,R1
+                         ;
+@'00F030E2 8F02           	moveq	#24,R2
+@'00F030E4               dloop1:
+@'00F030E4 A403           	load	(R0),R3
+@'00F030E6 1822           	subq	#1,R2
+@'00F030E8 BC23           	store	R3,(R1)
+@'00F030EA 0C80           	addqt	#4,R0
+@'00F030EC D761           	jr	NE,dloop1
+@'00F030EE 0C81           	addqt	#4,R1
+                         ;
+@'00F030F0 A1E0           	loadw	(frames),R0
+@'00F030F2 0820           	addq	#1,R0
+@'00F030F4 B9E0           	storew	R0,(frames)
+                         ;
+@'00F030F6 8C01           	moveq	#0,R1
+@'00F030F8 B961           	storew	R1,(Pradip)
+                         ;
+@'00F030FA 3C7E           	bclr	#3,gflag	; clear IMASK (for GPU)
+@'00F030FC 393E           	bset	#9,gflag	; set CPU interrupt clear bit 
+                         ;
+                         ;  now exit the irq by the Book
+                         ;
+@'00F030FE A7E0           	load	(stackptr),R0	; get last instruction address
+@'00F03100 0840           	addq	#$2,R0		; point at next to be executed
+@'00F03102 089F           	addq	#$4,stackptr	; update the stack pointer
+@'00F03104 D000           	jump	(R0)		; and return
+@'00F03106 BFBE           	store	gflag,(gflagptr)	; restore flags
+                         ;
+                         ;
+                         ;
+                         ;
+                         ;
+@'00F03108               notours:
+@'00F03108 9800 317000F0 	movei	#exitirq,R0		;major error, better shut it down
+@'00F0310E D000           	jump	(R0)
+@'00F03110 E400           	nop
+                         ;
+                         ;==============================================================================
+                         ; EXTERNAL INTERRUPT (#1, DSP) - HANDLES SUBCODE INTERRUPT
+                         ;==============================================================================
+                         ;
+@'00F03112               sub_isr:
+@'00F03112 A7BE           	load	(gflagptr),gflag	; get GPU flags
+@'00F03114 A780           	load	(butchptr),R0		; get the ICR flags
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 4    		Tue Aug 01 1995 10:51	Gpu (Rev:1)
+
+@'00F03116 3540           	btst	#10,R0			; check for subcode interrupt
+@'00F03118 D6E2           	jr	EQ,notours		;br if error--not a subcode irq
+@'00F0311A A740           	load	(subdata),R0		;get S R Q & chunk#
+@'00F0311C               sub_dat:
+@'00F0311C A761           	load	(subdatb),R1		;get W V U T
+@'00F0311E 8802           	move	R0,R2
+@'00F03120 6102           	shlq	#24,R2
+@'00F03122 6702           	shrq	#24,R2
+@'00F03124 7A02           	cmp	subcnt,R2		;are we at expected chunk count?
+@'00F03126 D542           	jr	EQ,goodchk		;br if good chunk #
+@'00F03128 8A43           	move	begptr,R3		;assume bad sequence on 1st half
+                         ;
+                         ;  Bad sequence, we must redo the frame
+                         ;
+@'00F0312A 7A71           	cmp	midptr,curptr		;are we in 1st or 2nd half?
+@'00F0312C D448           	jr	CS,firsthaf
+@'00F0312E 0838           	addq	#1,miscount
+                         ;
+@'00F03130 8A63           	move	midptr,R3
+@'00F03132               firsthaf:
+@'00F03132 9802 316E00F0 	movei	#resetcnt,R2		;jump to reset subcnt & exit
+@'00F03138 D040           	jump	(R2)
+@'00F0313A 8871           	move	R3,curptr		;start fresh frame
+                         ;	
+                         ;  got a good subcode here
+                         ;
+@'00F0313C               goodchk:
+@'00F0313C BE20           	store	R0,(curptr)		;save S R Q & chunk#
+@'00F0313E 0830           	addq	#1,subcnt		;advance next expected chunk counter
+@'00F03140 0891           	addq	#4,curptr		;bump buffer ptr
+@'00F03142 0839           	addq	#1,getcount		;increment good counter
+@'00F03144 BE21           	store	R1,(curptr)		;save W V U T
+@'00F03146 0891           	addq	#4,curptr
+@'00F03148 8C21           	moveq	#1,R1		;set half/full indicator temp (in case we need)
+                         ;
+@'00F0314A 7A71           	cmp	midptr,curptr	;reached end of 1st half?
+@'00F0314C D541           	jr	NE,nothalf	;br if not
+@'00F0314E 7A91           	cmp	endptr,curptr	;test end in case we br--else it won't hurt
+                         ;
+                         ;  Reached end of halfway point..
+                         ;
+@'00F03150 A6C0           	load	(hafflgp),R0	;check half buffer semiphore
+@'00F03152 7820           	cmp	R1,R0		;already set?
+@'00F03154 D581           	jr	NE,resetcnt	;if not, we can set now and exit
+@'00F03156 BEC1           	store	R1,(hafflgp)	;set hafflg=1
+                         ;
+                         ;  Error condition detected--better shutdown
+                         ;
+@'00F03158               errx:
+                         ;	movei	#shutdown,R2
+@'00F03158 9802 317000F0 	movei	#exitirq,R2
+@'00F0315E D040           	jump	(R2)
+@'00F03160 E400           	nop
+                         ;
+@'00F03162               nothalf:
+@'00F03162 D4C1           	jr	NE,exitirq
+@'00F03164 A6E0           	load	(fulflgp),R0	
+                         ;
+@'00F03166 7820           	cmp	R1,R0
+@'00F03168 D6E2           	jr	EQ,errx		;br to error condition if detected
+@'00F0316A BEE1           	store	R1,(fulflgp)
+                         ;
+@'00F0316C 8A51           	move	begptr,curptr
+@'00F0316E               resetcnt:
+@'00F0316E 8E10           	moveq	#$10,subcnt
+                         ;
+@'00F03170               exitirq:
+@'00F03170 9800 002000F1 	movei	#J_INT,R0	;Jerry's interrupt ACK register
+@'00F03176 9802 FF1400DF 	movei	#SBCNTRL,R2	;read this to clear the subcode interrupt flag
+                         ;
+@'00F0317C 395E           	bset	#10,gflag	; set DSP interrupt clear bit 
+@'00F0317E BFBE           	store	gflag,(gflagptr)	; restore flags
+@'00F03180 3C7E           	bclr	#3,gflag	; clear IMASK (for GPU)
+                         ;
+@'00F03182 8C21           	moveq	#1,R1
+@'00F03184 3901           	bset	#8,R1
+@'00F03186 B801           	storew	R1,(R0)		;acknowlege Jerry
+                         ;
+@'00F03188 A6A0           	load	(gpustop),R0	;see if 68k wants to stop us
+                         ;
+@'00F0318A A441           	load	(R2),R1		;clear the Butch interrupt
+                         ;
+@'00F0318C 2800           	or	R0,R0
+@'00F0318E D4A1           	jr	NE,shutdown	;br if 68k put a non-zero value here
+                         ;
+                         ;  now exit the irq by the Book
+                         ;
+@'00F03190 A7E0           	load	(stackptr),R0	; get last instruction address
+@'00F03192 0840           	addq	#$2,R0		; point at next to be executed
+@'00F03194 089F           	addq	#$4,stackptr	; update the stack pointer
+@'00F03196 D000           	jump	(R0)		; and return
+@'00F03198 BFBE           	store	gflag,(gflagptr)	; restore flags
+Jaguar GPU Assembler GASM V1.5.3 Copyright (C) 1992,1993 Nick Terry
+Page 5    		Tue Aug 01 1995 10:51	Gpu (Rev:1)
+
+                         ;
+                         ;
+                         ;
+@'00F0319A               shutdown:
+@'00F0319A 8C20           	moveq	#$1,R0
+@'00F0319C BEA0           	store	R0,(gpustop)	; set the semaphore flag
+                         ;
+@'00F0319E 9800 002000F1 	movei	#J_INT,R0	;Jerry's interrupt ACK register
+@'00F031A4 9802 FF1400DF 	movei	#SBCNTRL,R2	;read this to clear the subcode interrupt flag
+@'00F031AA 8C21           	moveq	#1,R1
+@'00F031AC 3901           	bset	#8,R1
+@'00F031AE B801           	storew	R1,(R0)		;acknowlege Jerry
+                         ;
+@'00F031B0 3C7E           	bclr	#3,gflag	; clear IMASK (for GPU)
+@'00F031B2 395E           	bset	#10,gflag	; set DSP interrupt clear bit 
+                         ;
+@'00F031B4 981E 3E000000 	movei	#$3e00,gflag	;clear & mask all irq
+@'00F031BA A441           	load	(R2),R1		;clear the Butch interrupt
+@'00F031BC BFBE           	store	gflag,(gflagptr)	; restore flags
+                         ;
+@'00F031BE 8C00           	moveq	#0,R0
+@'00F031C0 9801 211400F0 	movei	#G_CTRL,R1	; and halt the GPU
+@'00F031C6 BC20           	store	R0,(R1)		; by clearing GPU control register
+                         ;
+@'00F031C8               verydead:			; if the GPU is not stopped now
+@'00F031C8 D7E0           	jr	verydead	; try turning the power off
+@'00F031CA E400           	nop
+                         ;
+                00F031CC 	end                                        
+                         
+                         ;==============================================================================
+                         ;==============================================================================
+                         

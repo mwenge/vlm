@@ -1,0 +1,14 @@
+g,.jumper
+t
+read p:\nvmrom.abs 802000
+g,501ee
+xd0 1865
+g,501fc
+xd3 2
+g,5021e
+xd1 3d0dead
+g,50286
+g,1054
+xa0 802000
+xd0 2
+g,1062

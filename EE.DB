@@ -1,0 +1,9 @@
+gag on
+read ee.txt 4000 ; read ee.dta 4856 ; getsym ee.sym
+gag off
+echo "	start	size	end"
+echo "text	4000	856	4855"
+echo "data	4856	0	4855"
+echo "bss	4856	1000	5855"
+echo "Symbols loaded"
+xpc 4000

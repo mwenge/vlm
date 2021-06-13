@@ -1,0 +1,378 @@
+;******************************************************************************
+;* (C)1993 ATARI CORP.       SECRET & CONFIDENTIAL       ALL RIGHTS RESERVED  *
+;*									      *
+;* GPUECHO.GAS								      *
+;*									      *
+;* This program uses the i2s external sample word clock to generate an	      *
+;* interrupt, set up by the calling 68K host program, to time data moves      *
+;* from the i2s port input to i2s output; a simple loopthru.		      *
+;*									      *
+;*									      *
+;*				REVISION HISTORY			      *
+;*									      *
+;* REV.	DATE	   BY	DESCRIPTION OF EDIT				      *
+;* """"	""""	   """	"""""""""""""""""""				      *
+;* 4.00 25 Feb 94  PKF	added an interrupt handler to take care of external   *
+;*			interrupt 0 - the interrupt from BUTCH.		      *
+;*									      *
+;******************************************************************************
+
+;==============================================================================
+; INCLUDE FILES
+;==============================================================================
+
+	.include "jaguar.inc"
+
+;==============================================================================
+; DIFFERENT MEMORY MAPPED REGISTER USED FOR PLAYING AUDIO
+;==============================================================================
+
+; Butch's hardware registers
+
+BUTCH		equ	$DFFF00		; base of Butch=interrupt control register, R/W
+DSCNTRL		equ	BUTCH+4		; DSA control register, R/W
+DS_DATA		equ	BUTCH+$A	; DSA TX/RX data, R/W
+I2CNTRL		equ	BUTCH+$10	; i2s bus control register, R/W
+SBCNTRL		equ	BUTCH+$14	; CD subcode control register, R/W
+SUBDATA		equ	BUTCH+$18	; Subcode data register A
+SUBDATB		equ	BUTCH+$1C	; Subcode data register B
+SB_TIME		equ	BUTCH+$20	; Subcode time and compare enable (D24)
+I2SDAT1		equ	BUTCH+$24	; i2s FIFO data
+I2SDAT2		equ	BUTCH+$28	; i2s FIFO data
+
+J_INT		equ	$F10020		; JERRY ICR
+
+GPU_FLAGS	equ	$F02100		; flag register
+
+GPU_stop	equ	$F03500		; stop-GPU semaphore from M68K
+
+Haf_flg		equ	$F03504		; buffer half flag
+Ful_flg		equ	$F03508		; buffer full flag
+
+Cur_ptr		equ	$F0350C		; current position in GPU memory
+
+MissPtr		equ	$F03510		; number of packets thrown away
+GetsPtr		equ	$F03514		; number of packets processed
+
+Buf_ptr		equ	$F03600		; subcode buffer in GPU memory
+Mid_ptr		equ	$F03660		; midway pointer in subcode buffer
+End_ptr		equ	$F036C0		; end of subcode buffer
+
+STACKPOS	equ	$F03F00		; stack in GPU SRAM
+
+;==============================================================================
+; THIS PROGRAM TO BE LOADED AT START OF GPU RAM
+;==============================================================================
+
+	ORG	$F03000
+
+;==============================================================================
+;==============================================================================
+
+	errflg	REGSET	r0
+
+	curptr	REGSET	r1
+	bufptr	REGSET	r2
+	midptr	REGSET	r3
+	endptr	REGSET	r4
+
+	hafflg	REGSET	r5
+	fulflg	REGSET	r6
+
+	a_dptr	REGSET	r7
+	b_dptr	REGSET	r8
+
+	butchp	REGSET	r9
+	subclr	REGSET	r10
+
+	subcnt	REGSET	r11
+	rsdata	REGSET	r12
+	twdata	REGSET	r13
+
+	stoprq	REGSET	r14
+	hltgpu	REGSET	r15
+
+	gpustp	REGSET	r16
+	gpuflg	REGSET	r17
+
+	misptr	REGSET	r18
+	getptr	REGSET	r19
+
+	tempa	REGSET	r20
+	tempb	REGSET	r21
+	tempc	REGSET	r22
+	tempd	REGSET	r23
+
+	unused	REGSET	r24
+
+	tempf	REGSET	r25
+	tempg	REGSET	r26
+	temph	REGSET	r27
+	tempi	REGSET	r28
+
+	unused	REGSET	r29
+	unused	REGSET	r30
+
+	stkpos	REGSET	r31
+
+;==============================================================================
+; GPU PROGRAM CODE
+;==============================================================================
+
+GPUORG:
+intr0:
+	movei	#gpustart,tempi		; (int0  - CPU interrupt - initialise stuff)
+	jump	(tempi)
+	nop
+	nop
+	nop
+	nop
+intr1:
+	movei	#sub_isr,tempi		; (int1 - DSP)
+	jump	(tempi)
+	nop
+	nop
+	nop
+	nop
+intr2:
+	nop				; (int2 - Timer 1)
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+intr3:
+	nop				; (int3 - Object Processor)
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+intr4:
+	nop				; (int4 - Blitter)
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+
+;==============================================================================
+; INITIALISE GPU PROGRAM STUFF
+;==============================================================================
+
+gpustart:
+	movei	#STACKPOS,stkpos	; set up a stack pointer
+
+	movei	#GPU_stop,gpustp	; address of GPU-Stop semaphore
+	moveq	#0,tempa
+	store	tempa,(gpustp)		; clear the GPU-Stop flag
+
+	movei	#Cur_ptr,curptr		; current buffer pointer stored here
+	movei	#Buf_ptr,bufptr		; subcode buffer pointer stored here
+	movei	#Mid_ptr,midptr		; midway pointer stored here
+	movei	#End_ptr,endptr		; end of buffer pointer stored here
+	store	bufptr,(curptr)		; initialise current pointer
+
+	movei	#Haf_flg,hafflg		; half flag pointer stored here
+	movei	#Ful_flg,fulflg		; full flag pointer stored here
+
+	moveq	#0,tempa
+	movei	#MissPtr,misptr
+	movei	#GetsPtr,getptr
+	store	tempa,(misptr)
+	store	tempa,(getptr)
+
+	moveq	#0,tempa
+	store	tempa,(hafflg)		; initialise half buffer flag
+	store	tempa,(fulflg)		; initialise full buffer flag
+
+	moveq	#$10,subcnt		; next expected counter in subcode register
+
+	movei	#GPU_FLAGS,gpuflg	; load GPU flags register address
+	load	(gpuflg),tempf		; load GPU flags
+	bset	#5,tempf		; enable DSP interrupt
+	store	tempf,(gpuflg)	 	; save GPU flags
+
+fakeit:	nop
+	jr	fakeit			; a dummy loop to encapsulate the ISR
+	nop
+	nop
+
+;==============================================================================
+; EXTERNAL INTERRUPT - IT HANDLES SUBCODE INTERRUPT
+;==============================================================================
+
+sub_isr:
+	movei	#GPU_FLAGS,gpuflg	; load GPU flags register address
+	load	(gpuflg),tempf		; get GPU flags
+
+	movei	#BUTCH,butchp		; butch ICR pointer stored here
+	movei	#stop_req,stoprq	; do rest of the stuff - common to various ISRs
+	load	(butchp),tempb		; get the ICR flags
+	btst	#10,tempb		; check for subcode interrupt
+	jump	eq,(stoprq)		; not a subcode interrupt - do rest of the stuff
+	nop
+
+sub_dat:
+	movei	#SUBDATA,a_dptr		; subcode data register A pointer stored here
+	movei	#SUBDATB,b_dptr		; subcode data register B pointer stored here
+	load	(a_dptr),rsdata		; get subcode data register A
+	load	(b_dptr),twdata		; get subcode data register B
+
+sub_chk:
+	movei	#sub_dne,tempg
+	move	rsdata,tempa		; temporary copy of data register A
+	movei	#$FF,tempb		; mask for counter value
+	and	tempb,tempa		; get the counter value 
+	cmp	tempa,subcnt		; is the counter as expected ?
+	jump	eq,(tempg)		; yes - accept the subcode
+	nop
+
+sub_can:				; cancel the current frame and
+	load	(misptr),tempb
+	addq	#1,tempb
+	store	tempb,(misptr)
+
+	subq	#$10,subcnt		; update the data pointers
+	moveq	#$8,tempa
+	mult	subcnt,tempa		; there are 8 bytes per data entry
+	load	(curptr),tempb
+	sub	tempa,tempb		; update the current pointer in buffer
+	store	tempb,(curptr)		; current pointer in buffer is updated
+	moveq	#$10,subcnt		; restart the frame
+	jump	(stoprq)		; do rest of the stuff
+	nop
+
+sub_dne:
+	load	(getptr),tempb
+	addq	#1,tempb
+	store	tempb,(getptr)
+
+	load	(curptr),tempa		; get the current pointer in buffer
+	store	rsdata,(tempa)		; save R-S channels
+	addq	#4,tempa
+	store	twdata,(tempa)		; save T-W channels
+	addq	#4,tempa
+	store	tempa,(curptr)		; save the updated pointer
+	addq	#$1,subcnt		; next expected subcode counter
+
+chk_haf:				; check and set the half way
+	movei	#chk_ful,tempg		; or full buffer flag
+	load	(curptr),tempa
+	cmp	tempa,midptr		; according to where we are
+	jump	ne,(tempg)		; in the local subcode buffer
+	nop
+
+	movei	#Haf_flg,hafflg		; half flag pointer stored here
+	movei	#haf_err,temph		; check if M68K could not 
+	load	(hafflg),tempa		; clear the half buffer flag
+	cmpq	#$1,tempa		; yet, in that case it is an 
+	jump	eq,(temph)		; error condition...
+	nop
+haf_set:
+	moveq	#$1,tempa		; set the half buffer flag
+	store	tempa,(hafflg)
+	moveq	#$10,subcnt		; reinitialise the subcode counter
+	jump	(stoprq)
+	nop
+haf_err:
+	movei	#halt_GPU,hltgpu	; prepare for jump to halt
+	movei	#$11111111,errflg	; set the half way error condition
+	jump	(hltgpu)		; and halt the GPU
+	nop
+
+chk_ful:
+	load	(curptr),tempb
+	cmp	tempb,endptr		; according to where we are
+	jump	ne,(stoprq)		; in the local subcode buffer
+	nop
+
+	movei	#Ful_flg,fulflg		; full flag pointer stored here
+	movei	#ful_err,temph		; check if M68K could not
+	load	(fulflg),tempa		; clear the full buffer flag
+	cmpq	#$1,tempa		; yet, in that case it is an
+	jump	eq,(temph)		; error condition...
+	nop
+ful_set:
+	moveq	#$1,tempb		; set the full buffer flag
+	store	tempb,(fulflg)
+	store	bufptr,(curptr)		; set the current pointer to the
+					; begining of the subcode buffer
+	moveq	#$10,subcnt		; reinitialise the subcode counter
+	jump	(stoprq)
+	nop
+ful_err:
+	movei	#halt_GPU,hltgpu	; prepare for jump to halt
+	movei	#$22222222,errflg	; set the full buffer error condition
+	jump	(hltgpu)		; and halt the GPU
+	nop
+	nop
+	nop
+	nop
+
+;==============================================================================
+; HALT THE GPU IF CRITICAL ERROR OCCURS
+;==============================================================================
+
+stop_req:				; M68K wants us to stop ?
+	movei	#GPU_stop,gpustp	; address of GPU-Stop semaphore
+	movei	#$DEADC0DE,errflg	; set the requested stop condition
+	movei	#halt_GPU,hltgpu	; prepare for jump to halt
+	load	(gpustp),tempc		; get semaphore
+	cmpq	#$1,tempc		; no, do cleanup
+	jump	eq,(hltgpu)		; yes, halt GPU
+	nop
+
+clean_up:				; housekeeping for handler
+	bclr	#$3,tempf		; clear IMASK
+	bset	#10,tempf		; set DSP interrupt clear bit
+	store	tempf,(gpuflg)		; restore flags
+
+	movei	#J_INT,tempa		; Acknowledge in Jerry
+	moveq	#1,tempb
+	bset	#8,tempb
+	storew	tempb,(tempa)
+
+	movei	#SBCNTRL,subclr		; read this to clear the subcode interrupt flag
+	load	(subclr),tempa		; clear the interrupt
+	nop
+
+	load	(stkpos),temph		; get last instruction address
+	addq	#$2,temph		; point at next to be executed
+	addq	#$4,stkpos		; update the stack pointer
+	jump	(temph)			; and return
+	nop
+	nop
+	nop
+
+halt_GPU:				; do this to stop the damn thing
+	moveq	#$1,tempd
+	store	tempd,(gpustp)		; set the semaphore flag
+
+	movei	#$03E00,tempf		; clear all interrupts - safe side
+	store	tempf,(gpuflg)
+
+	moveq	#$0,tempc
+	movei	#G_CTRL,tempd		; and halt the GPU
+	store	tempc,(tempd)		; by clearing GPU control register
+	nop
+	nop
+
+verydead:				; if the GPU is not stopped now
+	jr	verydead		; try turning the power off
+	nop
+	nop
+	nop
+	nop
+
+	end                                        
+
+;==============================================================================
+;==============================================================================
+

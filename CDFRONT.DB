@@ -1,0 +1,9 @@
+gag on
+read cdfront.txt 80000 ; read cdfront.dta 83f70 ; getsym cdfront.sym
+gag off
+echo "	start	size	end"
+echo "text	80000	3f70	83f6f"
+echo "data	83f70	741c	8b38b"
+echo "bss	8b38c	8a8	8bc33"
+echo "Symbols loaded"
+xpc 80000

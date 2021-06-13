@@ -1,0 +1,9 @@
+gag on
+read cart.txt f00 ; read cart.dta f7c ; getsym cart.sym
+gag off
+echo "	start	size	end"
+echo "text	f00	7c	f7b"
+echo "data	f7c	0	f7b"
+echo "bss	f7c	0	f7b"
+echo "Symbols loaded"
+xpc f00
