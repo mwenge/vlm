@@ -1,9 +1,9 @@
-	PLEN	95
+;	PLEN	95
 ;
 ;
 	NOLIST
 	include		"jaguar.inc"
-	include		"READRSA.XDF"
+	include		"readrsa.xdf"
 	LIST
 ;
 	ORG	D_RAM
@@ -57,66 +57,66 @@ ksize	equ	(keysize+3) & $fffffffc	;size of key to nearest long
 ;
 ;  These reg definitions are for the alternate register page (#1)
 ;
-lastcodebyte		REGSET		R0
-Dstptr			REGSET		R1
-BlockCnt		REGSET		R2
+lastcodebyte		REGEQU		R0
+Dstptr			REGEQU		R1
+BlockCnt		REGEQU		R2
 ;
 ;
 ;
 ;  These reg definitions are for the base register page (#0)
 ;
 ;
-cartptr			REGSET		R0
-longcnt			REGSET		R1
-bytecnt			REGSET		R2
+cartptr			REGEQU		R0
+longcnt			REGEQU		R1
+bytecnt			REGEQU		R2
 ;
 ;  the following register block is local to mult section..
-plierbase		REGSET		R3
-plierptr		REGSET		R4
-mplier			REGSET		R5
-candbase		REGSET		R6
-candend			REGSET		R7
-candptr			REGSET		R8
-mcand			REGSET		R9
-mcand1			REGSET		R10
-prodcur			REGSET		R11
+plierbase		REGEQU		R3
+plierptr		REGEQU		R4
+mplier			REGEQU		R5
+candbase		REGEQU		R6
+candend			REGEQU		R7
+candptr			REGEQU		R8
+mcand			REGEQU		R9
+mcand1			REGEQU		R10
+prodcur			REGEQU		R11
 ;  end mult reg block
 ;
 ;
 ;  the following register block is local to div section..
 ;
-dendbase		REGSET		R3
-dsorbase		REGSET		R4
-dsorend			REGSET		R5
-bitcnt			REGSET		R6
-rolcount		REGSET		R7
-dendALT			REGSET		R8
-dendcur			REGSET		R9
+dendbase		REGEQU		R3
+dsorbase		REGEQU		R4
+dsorend			REGEQU		R5
+bitcnt			REGEQU		R6
+rolcount		REGEQU		R7
+dendALT			REGEQU		R8
+dendcur			REGEQU		R9
 ;
 ;  end div reg block
 ;
 ;
-prodptr			REGSET		R12
+prodptr			REGEQU		R12
 ;
-accum			REGSET		R13
-accum1			REGSET		R16
-accum2			REGSET		R17
-zeroconst		REGSET		R18
+accum			REGEQU		R13
+accum1			REGEQU		R16
+accum2			REGEQU		R17
+zeroconst		REGEQU		R18
 ;
-candlpr			REGSET		R19
-plierlpr		REGSET		R20
-dendend			REGSET		R21
+candlpr			REGEQU		R19
+plierlpr		REGEQU		R20
+dendend			REGEQU		R21
 ;
-masklo			REGSET		R22
-maskhi			REGSET		R23
+masklo			REGEQU		R22
+maskhi			REGEQU		R23
 ;
-carryhold		REGSET		R24
-deboog			REGSET		R25
+carryhold		REGEQU		R24
+deboog			REGEQU		R25
 ;
-cartsigr		REGSET		R26
-ksizer			REGSET		R27
-multlpr			REGSET		R28
-blkloopR		REGSET		R29
+cartsigr		REGEQU		R26
+ksizer			REGEQU		R27
+multlpr			REGEQU		R28
+blkloopR		REGEQU		R29
 ;
 ;
 ;
@@ -1012,7 +1012,7 @@ fetchmo:
 ;
 ;
 ;
-	ALIGN LONG
+	.long
 ;
 ;  This is used by the cpu burp to copy a block to dRAM
 ;
@@ -1023,7 +1023,7 @@ DSP2RAM:
 	dc.l	-1		;cpu irq semiphore
 ;
 ;
-	ALIGN	LONG
+	.long
 ;
 ;  hash table offsets for desired fragments (up to 7x17 longs)
 ;   (terminated by -1)

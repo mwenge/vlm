@@ -1,4 +1,4 @@
-	PLEN	95
+;PLEN	95
 ;**************************************************************************
 ; (C)1993 ATARI CORP.       SECRET & CONFIDENTIAL       ALL RIGHTS RESERVED
 ;
@@ -602,7 +602,7 @@ tx_errx:
 ;
 ;
 ;
-	.align	long
+	.long
 RETBUF:
 	ds.l	6		;return words (extended to longs)
 LOCALTOC:

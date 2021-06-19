@@ -1,8 +1,8 @@
 ;
 ;
 ;
-	.include	"JAGUAR.INC"
-	.include	"TESTGPU.XDF"
+	.include "jaguar.inc"
+	.include	"testgpu.xdf"
 ;
 ;
 	org	$f03000

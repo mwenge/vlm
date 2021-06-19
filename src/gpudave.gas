@@ -1,4 +1,4 @@
-	PLEN	95
+;	PLEN	95
 ;******************************************************************************
 ;* (C)1993 ATARI CORP.       SECRET & CONFIDENTIAL       ALL RIGHTS RESERVED  *
 ;*									      *
@@ -52,9 +52,9 @@ GPU_stop	equ	$F03500		; stop-GPU semaphore from M68K
 Haf_flg		equ	$F03504		; buffer half flag
 Ful_flg		equ	$F03508		; buffer full flag
 
-SBuf_Beg	equ	$F03600		;subcode buffer in GPU memory
-SBuf_Mid	equ	$F03660		; midway pointer in subcode buffer
-SBuf_End	equ	$F036C0		; end of subcode buffer
+Sbuf_Beg	equ	$F03600		;subcode buffer in GPU memory
+Sbuf_Mid	equ	$F03660		; midway pointer in subcode buffer
+Sbuf_End	equ	$F036C0		; end of subcode buffer
 
 STACKPOS	equ	$F03F00		; stack in GPU SRAM
 
@@ -67,38 +67,38 @@ STACKPOS	equ	$F03F00		; stack in GPU SRAM
 ;==============================================================================
 ;==============================================================================
 ;
-davelist	REGSET	R8	;ptr to daves local
-dlist		REGSET	R9	;Jeff's hardware dlist
-blist		REGSET	R10	;Jeff's hardware shadow
-Pradip		REGSET	R11	;semiphore to indicate v_blank has happened
-const60		REGSET	R12	;constant=$60
-const50		REGSET	R13	;constant=$50
-const10		REGSET	R14	;constant=$10
-frames		REGSET	R15	;frame counter ptr
+davelist	REGEQU	R8	;ptr to daves local
+dlist		REGEQU	R9	;Jeff's hardware dlist
+blist		REGEQU	R10	;Jeff's hardware shadow
+Pradip		REGEQU	R11	;semiphore to indicate v_blank has happened
+const60		REGEQU	R12	;constant=$60
+const50		REGEQU	R13	;constant=$50
+const10		REGEQU	R14	;constant=$10
+frames		REGEQU	R15	;frame counter ptr
 ;
 ;
-subcnt		REGSET	R16	;chunk count ($10..$1B)
+subcnt		REGEQU	R16	;chunk count ($10..$1B)
 ;
-curptr		REGSET	R17	;ptr to current subcode buffer position
-begptr		REGSET	R18	;subcode buffer start (constant)
-midptr		REGSET	R19	;subcode buffer midpoint (constant)
-endptr		REGSET	R20	;subcode buffer end+1 (constant)
+curptr		REGEQU	R17	;ptr to current subcode buffer position
+begptr		REGEQU	R18	;subcode buffer start (constant)
+midptr		REGEQU	R19	;subcode buffer midpoint (constant)
+endptr		REGEQU	R20	;subcode buffer end+1 (constant)
 ;
-gpustop		REGSET	R21	;ptr to stop/go semiphore (constant)
-hafflgp		REGSET	R22	;ptr to half flag (constant)
-fulflgp		REGSET	R23	;ptr to full flag (constant)
+gpustop		REGEQU	R21	;ptr to stop/go semiphore (constant)
+hafflgp		REGEQU	R22	;ptr to half flag (constant)
+fulflgp		REGEQU	R23	;ptr to full flag (constant)
 ;
-miscount	REGSET	R24	;count of missed chunks
-getcount	REGSET	R25	;count of good chunks
+miscount	REGEQU	R24	;count of missed chunks
+getcount	REGEQU	R25	;count of good chunks
 ;
-subdata		REGSET	R26	;ptr to subcodes: S R Q chunk# (constant)
-subdatb		REGSET	R27	;ptr to subcodes: W V U T (constant)
-butchptr	REGSET	R28	;ptr to BUTCH (constant)
+subdata		REGEQU	R26	;ptr to subcodes: S R Q chunk# (constant)
+subdatb		REGEQU	R27	;ptr to subcodes: W V U T (constant)
+butchptr	REGEQU	R28	;ptr to BUTCH (constant)
 ;
-gflagptr	REGSET	R29	;ptr to G_FLAGS (constant)
+gflagptr	REGEQU	R29	;ptr to G_FLAGS (constant)
 ;
-gflag		REGSET	R30	;temp used for contents of G_FLAGS
-stackptr	REGSET	R31	;stack ptr
+gflag		REGEQU	R30	;temp used for contents of G_FLAGS
+stackptr	REGEQU	R31	;stack ptr
 
 ;==============================================================================
 ; GPU PROGRAM CODE
@@ -169,6 +169,8 @@ gpustart:
 	movei	#SUBDATA,subdata	;subcode data reg A ptr
 	movei	#SUBDATB,subdatb	;subcode data reg B ptr
 ;
+
+
 	movei	#Sbuf_Beg,begptr	;begining of subcode data buffer
 	movei	#Sbuf_Mid,midptr	;midpoint of subcode data buffer
 	movei	#Sbuf_End,endptr	;end of subcode data buffer

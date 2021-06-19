@@ -1,6 +1,6 @@
-	XDEF	gpustart
-	XDEF	loop
-	XDEF	stopper
-	XDEF	wait
-	XDEF	atbound
-	XDEF	notmax
+	.globl	gpustart
+	.globl	loop
+	.globl	stopper
+	.globl	wait
+	.globl	atbound
+	.globl	notmax

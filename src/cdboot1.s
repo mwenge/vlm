@@ -27,8 +27,8 @@ maxretry	equ	5	;CD ERR or seek errors warrant this # of retries
 ;
 ;
 	.nlist
-        .include 'jaguar.inc'
-	.include 'blit.inc'
+  .include 'jaguar.inc'
+	.include 'blitter.inc'
 	.list
 	.include 'cd.inc'	; CD-related equates
 
@@ -2829,10 +2829,10 @@ ATstrng:	;32103210321032103210321032103210
 	.even
 Public:
 	dc.b	0,0,0
-	.include	"PUBLIC.KEY"
+	.include	"public.key"
 PublicCD:
 	dc.b	0,0,0
-	.include	"PUBLICD.KEY"
+	.include	"publicd.key"
 ;
 ;
 ;

@@ -1,7 +1,7 @@
-	PLEN		95
+;	PLEN		95
 	NOLIST
-	Include		"JAGUAR.INC"
-	Include		"MD5.XDF"
+	Include		"jaguar.inc"
+	Include		"md5.xdf"
 	LIST
 ;
 ;********************************************************
@@ -21,42 +21,42 @@
 ;
 ;
 ;
-accum			REGSET		R0
-scratch1		REGSET		R1
-abit6			REGSET		R2
-index			REGSET		R3
-indexinc		REGSET		R4
-rolcnt			REGSET		R5
-speciesR		REGSET		R6
+accum			REGEQU		R0
+scratch1		REGEQU		R1
+abit6			REGEQU		R2
+index			REGEQU		R3
+indexinc		REGEQU		R4
+rolcnt			REGEQU		R5
+speciesR		REGEQU		R6
 ;
 ;
-hashptr			REGSET		R7		
-hashcur			REGSET		R8
+hashptr			REGEQU		R7		
+hashcur			REGEQU		R8
 
-loopcnt			REGSET		R9
-inptptre		REGSET		R10
+loopcnt			REGEQU		R9
+inptptre		REGEQU		R10
 
-mask31			REGSET		R11
-temp			REGSET		R12
-command			REGSET		R13
+mask31			REGEQU		R11
+temp			REGEQU		R12
+command			REGEQU		R13
 ;
 ;
-regAx			REGSET		R16
-regBx			REGSET		R17
-regCCx			REGSET		R18
-regDx			REGSET		R19
+regAx			REGEQU		R16
+regBx			REGEQU		R17
+regCCx			REGEQU		R18
+regDx			REGEQU		R19
 ;
-nextblkR		REGSET		R20
-hashendR		REGSET		R21
-mask63			REGSET		R22
-blckbase		REGSET		R23
-nextserR		REGSET		R24
-ourkey			REGSET		R25
+nextblkR		REGEQU		R20
+hashendR		REGEQU		R21
+mask63			REGEQU		R22
+blckbase		REGEQU		R23
+nextserR		REGEQU		R24
+ourkey			REGEQU		R25
 ;
-regA			REGSET		R26
-regB			REGSET		R27
-regCC			REGSET		R28
-regD			REGSET		R29
+regA			REGEQU		R26
+regB			REGEQU		R27
+regCC			REGEQU		R28
+regD			REGEQU		R29
 ;
 ;
 ;  this needs to follow right after RSA code loaded by bootrom
@@ -204,6 +204,10 @@ cmdwait:
 	movei	#shutboot,nextblkR	;need to check shutdown or boot
 	jump	(nextblkR)		; (commands 2, 3)
 	nop
+
+RegA regequ R26
+RegB regequ R27
+RegCC regequ R28
 
 doMD:
 	movei	#justmem,RegA	;assume br to memory hash only
@@ -789,7 +793,7 @@ fetchy:
 ;
 ;
 ;
-	ALIGN LONG
+	.long
 ;
 ;  This is used by the cpu burp to copy a block to dRAM
 ;
