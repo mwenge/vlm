@@ -31,11 +31,19 @@ def addSymbols(l):
     o = [syms[c] if c in syms and idc > i else c for i,c in enumerate(l1)]
     return ''.join(o)
 
-lf = open("vlmdisassemble/vlm.txt.asm", 'r')
-f = open("vlmdisassemble/vlm.s", 'w')
-while True:
-    l = lf.readline()
-    if not l:
-        break
-    print(addSymbols(l).strip(), file=f)
+f = open("../src/vlm/vlm.s", 'r')
+s = f.read()
+
+lf = open("vlm.miss", 'r')
+ws = lf.readlines()
+for w in ws:
+    w = w.strip()
+    if w not in syms:
+        print(w);
+        continue
+    n = syms[w]
+    s = s.replace(w, n)
+
+f = open("../src/vlm/vlm.s.new", 'w')
+f.write(s)
 

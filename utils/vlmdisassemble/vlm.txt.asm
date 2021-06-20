@@ -32,7 +32,7 @@ sub_192000:                             ; DATA XREF: sub_195E3A+2A↓o
                                         ; sub_195F78+2A↓o
                 move.w  #5,($1AF05E).l
                 movea.l #$1AEFA8,sp
-                move.l  #locret_1962CC,(byte_198CB0+$CE4).l
+                move.l  #locret_1962CC,(off_199994).l
                 move.w  #0,($1AE030).l
                 move.w  #1,(word_198CAC).l
                 move.w  #9,($1AF068).l
@@ -44,7 +44,7 @@ sub_192000:                             ; DATA XREF: sub_195E3A+2A↓o
 ; ---------------------------------------------------------------------------
                 nop
                 movea.l #$1AEFA8,sp
-                move.l  #locret_1962CC,(byte_198CB0+$CE4).l
+                move.l  #locret_1962CC,(off_199994).l
                 move.w  #4,($1AF05E).l
                 move.w  #0,($1AF068).l
                 move.w  #0,($1AE030).l
@@ -136,7 +136,7 @@ loc_1921CA:                             ; CODE XREF: sub_192088+FA↑j
                 lea     ($1AE108).l,a0
                 move.w  #$64,d0 ; 'd'
                 move.w  #$104,d1
-                move.l  #(byte_198CB0+$F98),d2
+                move.l  #dword_199C48,d2
                 move.w  #5,d5
                 jsr     sub_193420
                 move.w  #$10,$16(a0)
@@ -179,7 +179,7 @@ loc_1921CA:                             ; CODE XREF: sub_192088+FA↑j
                 lea     ($1AE208).l,a0
                 move.w  #$10A,d0
                 move.w  #$190,d1
-                move.l  #byte_19ADD0,d2
+                move.l  #dword_19ADD0,d2
                 move.w  #7,d5
                 swap    d0
                 swap    d1
@@ -577,20 +577,20 @@ sub_192726:                             ; DATA XREF: sub_192088+2E2↑o
 loc_192750:                             ; CODE XREF: sub_192726+20↑j
                 move.b  1(a1),d0
                 rol.b   #2,d0
-                lea     ((byte_198CB0+$EE8)).l,a0
+                lea     (dword_199B98).l,a0
                 jsr     sub_196622
                 move.b  1(a1),d0
                 rol.b   #4,d0
-                lea     ((byte_198CB0+$F04)).l,a0
+                lea     (dword_199BB4).l,a0
                 jsr     sub_196622
-                move.l  (byte_198CB0+$EE8).l,d0
+                move.l  (dword_199B98).l,d0
                 lsr.l   #8,d0
                 and.l   #$FFFF,d0
-                move.l  d0,(byte_198CB0+$F44).l
-                move.l  (byte_198CB0+$F04).l,d0
+                move.l  d0,(dword_199BF4).l
+                move.l  (dword_199BB4).l,d0
                 lsr.l   #8,d0
                 and.l   #$FFFF,d0
-                move.l  d0,(byte_198CB0+$F40).l
+                move.l  d0,(dword_199BF0).l
                 rts
 ; End of function sub_192726
 
@@ -617,7 +617,7 @@ loc_1927AE:                             ; CODE XREF: sub_19279E+6↑j
                 and.l   #$2000000,d0
                 bsr.w   sub_1927F4
                 lea     2(a1),a1
-                lea     ((byte_198CB0+$F20)).l,a0
+                lea     (dword_199BD0).l,a0
                 move.l  (a3),d0
                 and.l   #$20000000,d0
 ; End of function sub_19279E
@@ -940,16 +940,16 @@ sub_192B0E:                             ; DATA XREF: sub_1928D4:loc_192AEA↑o
 
 sub_192B2A:                             ; CODE XREF: sub_192088+5E↑p
                                         ; sub_195076+7E↓p
-                move.w  #2,(byte_198CB0+$F48).l
-                clr.w   (byte_198CB0+$F4A).l
-                move.w  #2,(byte_198CB0+$F50).l
-                move.w  #$F,(byte_198CB0+$F52).l
+                move.w  #2,(word_199BF8).l
+                clr.w   (word_199BFA).l
+                move.w  #2,(word_199C00).l
+                move.w  #$F,(word_199C02).l
                 clr.w   ($1AE002).l
                 move.w  #2,($1AE008).l
                 move.w  #$F,($1AE00A).l
                 move.w  #3,($1AE000).l
                 lea     ($1C03F8).l,a0
-                move.l  a0,(byte_198CB0+$F4C).l
+                move.l  a0,(dword_199BFC).l
                 movea.l a0,a1
                 lea     $300(a1),a1
                 move.l  a1,($1AE004).l
@@ -1093,7 +1093,7 @@ loc_192BDC:                             ; CODE XREF: sub_192BC8+8↑j
 
 
 sub_192D0E:                             ; CODE XREF: sub_1928D4+1BA↑p
-                lea     ((byte_19B028+$28)).l,a0
+                lea     (dword_19B050).l,a0
                 jsr     sub_196634
                 move.w  (a0),d0
                 swap    d0
@@ -1107,7 +1107,7 @@ sub_192D0E:                             ; CODE XREF: sub_1928D4+1BA↑p
 ; START OF FUNCTION CHUNK FOR sub_1928D4
 
 loc_192D2C:                             ; CODE XREF: sub_1928D4+1C4↑j
-                lea     ((byte_19B028+$44)).l,a0
+                lea     (dword_19B06C).l,a0
                 jsr     sub_196634
                 move.w  (a0),d0
                 swap    d0
@@ -1157,13 +1157,13 @@ loc_192D4A:                             ; CODE XREF: sub_192088+2F2↑j
                 move.l  ($1AE536).l,($F03F68).l
                 move.l  #$1E81F4,($F03F6C).l
                 move.l  #asc_197E20,($F03F70).l ; "Parameter not yet defined    "
-                move.l  #(byte_198CB0+$F48),($F03F74).l
-                move.l  #(byte_19B028+$10AE0),($F03F78).l
-                move.l  #(byte_19B028+$B998),($F03F48).l
+                move.l  #word_199BF8,($F03F74).l
+                move.l  #off_1ABB08,($F03F78).l
+                move.l  #off_1A69C0,($F03F48).l
                 move.l  #1,($F03F50).l
                 moveq   #$A,d0
-                lea     ((byte_19B028+$D408)).l,a0
-                jsr     byte_19B028+$B95E
+                lea     (dword_1A8430).l,a0
+                jsr     loc_1A6986
 
 loc_192E34:                             ; CODE XREF: sub_192088+DC4↓j
                                         ; sub_192088+DF8↓j
@@ -1174,15 +1174,15 @@ loc_192E34:                             ; CODE XREF: sub_192088+DC4↓j
 ; ---------------------------------------------------------------------------
 
 loc_192E46:                             ; CODE XREF: sub_192088+DB8↑j
-                tst.w   (byte_19B028+$B7D8).l
+                tst.w   (word_1A6800).l
                 beq.s   loc_192E34
                 move.w  #1,($1E80D4).l
                 bsr.w   sub_192E82
                 move.w  #2,($1E80D4).l
-                movea.l (byte_198CB0+$CE4).l,a0
+                movea.l (off_199994).l,a0
                 jsr     (a0)
                 move.w  #3,($1E80D4).l
-                clr.w   (byte_19B028+$B7D8).l
+                clr.w   (word_1A6800).l
                 move.w  #4,($1E80D4).l
                 bra.s   loc_192E34
 ; END OF FUNCTION CHUNK FOR sub_192088
@@ -1214,14 +1214,14 @@ loc_192EA2:                             ; CODE XREF: sub_192E82+6↑j
 
 loc_192ED8:                             ; CODE XREF: sub_192E82+3E↑j
                                         ; sub_192E82+62↓j
-                move.l  (byte_19B028+$28).l,d0
-                cmp.l   (byte_19B028+$28).l,d0
+                move.l  (dword_19B050).l,d0
+                cmp.l   (dword_19B050).l,d0
                 bne.s   loc_192ED8
                 move.l  d0,($1AF04A).l
 
 loc_192EEC:                             ; CODE XREF: sub_192E82+76↓j
-                move.l  (byte_19B028+$44).l,d0
-                cmp.l   (byte_19B028+$44).l,d0
+                move.l  (dword_19B06C).l,d0
+                cmp.l   (dword_19B06C).l,d0
                 bne.s   loc_192EEC
                 move.l  d0,($1AF04E).l
                 move.w  ($1AE4F6).l,d0
@@ -1424,7 +1424,7 @@ loc_193228:                             ; CODE XREF: sub_193036+1F4↓j
                 dbf     d0,loc_193228
                 movem.l a0-a1,-(sp)
                 lea     $380(a6),a1
-                lea     ((byte_198CB0+$EE8)).l,a0
+                lea     (dword_199B98).l,a0
                 move.l  #$6C,d0 ; 'l'
                 jsr     sub_193470
                 movem.l (sp)+,a0-a1
@@ -1436,7 +1436,7 @@ loc_193228:                             ; CODE XREF: sub_193036+1F4↓j
 
 
 sub_19324E:                             ; CODE XREF: sub_192402+48↑p
-                jsr     byte_19B028+$B810
+                jsr     loc_1A6838
                 jsr     sub_195DA0
                 move.l  ($1AEC84).l,d0
                 move.w  #0,($F00024).l
@@ -1653,19 +1653,19 @@ sub_1934AA:                             ; CODE XREF: ROM:001937AE↓j
                 move.w  #$40,d3 ; '@'
                 move.w  #$C0,d4
                 jsr     sub_1961F8
-                move.l  ($F03F54).l,(byte_19B028+$B7DC).l
+                move.l  ($F03F54).l,(dword_1A6804).l
                 move.w  ($1AE040).l,d2
                 lsl.w   #4,d2
                 movea.l ($1AE532).l,a0
                 lea     (a0,d2.w),a0
                 cmpi.w  #7,$E(a0)
                 bge.w   loc_193762
-                move.l  a0,(byte_19B028+$B7E0).l
+                move.l  a0,(dword_1A6808).l
                 add.w   #$40,d1 ; '@'
                 swap    d1
                 move.w  d0,d1
-                move.l  d1,(byte_19B028+$B7E4).l
-                move.w  #5,(byte_19B028+$B7DA).l
+                move.l  d1,(dword_1A680C).l
+                move.w  #5,(word_1A6802).l
                 bra.w   sub_193916
 ; End of function sub_1934AA
 
@@ -1680,7 +1680,7 @@ sub_1934AA:                             ; CODE XREF: ROM:001937AE↓j
                 lea     ($1AE57C).l,a1
                 lea     ($1FD314).l,a3
                 move.w  #$3F,d5 ; '?'
-                lea     ((byte_19B028+$A0)).l,a4
+                lea     (dword_19B0C8).l,a4
                 move.w  ($1AF012).l,d3
                 lsl.w   #3,d3
                 lea     (a4,d3.w),a4
@@ -1784,9 +1784,9 @@ loc_193680:                             ; CODE XREF: ROM:00193678↑j
                 bne.s   loc_19366C
                 rts
 ; ---------------------------------------------------------------------------
-                move.l  #(byte_19B028+$A0),(byte_19B028+$B7DC).l
-                move.l  #$1E80B4,(byte_19B028+$B7E0).l
-                move.w  #9,(byte_19B028+$B7DA).l
+                move.l  #dword_19B0C8,(dword_1A6804).l
+                move.l  #$1E80B4,(dword_1A6808).l
+                move.w  #9,(word_1A6802).l
                 bsr.w   sub_193916
                 rts
 ; ---------------------------------------------------------------------------
@@ -1819,8 +1819,8 @@ loc_1936DE:                             ; CODE XREF: ROM:001936FA↓j
 sub_1936FE:                             ; CODE XREF: sub_192E82+9E↑p
                 tst.l   ($1AE780).l
                 beq.w   locret_1962CC
-                move.l  ($1AE780).l,(byte_19B028+$B7DC).l
-                move.w  #1,(byte_19B028+$B7DA).l
+                move.l  ($1AE780).l,(dword_1A6804).l
+                move.w  #1,(word_1A6802).l
                 bsr.w   sub_193916
                 movea.l ($F03F54).l,a0
                 movea.l ($1AE780).l,a1
@@ -1855,7 +1855,7 @@ unk_19375A:     dc.b   0                ; DATA XREF: sub_1936FE+2C↑o
 
 loc_193762:                             ; CODE XREF: sub_1934AA+4A↑j
                 bne.w   loc_193788
-                move.w  (byte_198CB0+$EE8).l,d2
+                move.w  (dword_199B98).l,d2
                 lsr.w   #2,d2
                 and.w   #$3F,d2 ; '?'
                 add.w   d2,d0
@@ -1868,7 +1868,7 @@ loc_193778:                             ; CODE XREF: sub_1934AA+2F8↓j
 ; ---------------------------------------------------------------------------
 
 loc_193788:                             ; CODE XREF: sub_1934AA:loc_193762↑j
-                move.w  (byte_198CB0+$F04).l,d3
+                move.w  (dword_199BB4).l,d3
                 lsr.w   #2,d3
                 and.w   #$3F,d3 ; '?'
                 add.w   #$3F,d1 ; '?'
@@ -1938,30 +1938,30 @@ loc_193836:                             ; CODE XREF: ROM:001937F6↑j
                 jsr     sub_1961F8
                 move.w  (sp)+,d1
                 add.w   #$40,d1 ; '@'
-                move.l  ($F03F54).l,(byte_19B028+$B7DC).l
-                move.l  #$1E80F4,(byte_19B028+$B7E0).l
+                move.l  ($F03F54).l,(dword_1A6804).l
+                move.l  #$1E80F4,(dword_1A6808).l
                 swap    d1
                 move.w  d0,d1
                 move.l  d1,-(sp)
-                move.l  d1,(byte_19B028+$B7E4).l
+                move.l  d1,(dword_1A680C).l
                 move.w  #$FF00,d0
                 swap    d0
                 move.w  ($1AE4F0).l,d0
-                move.l  d0,(byte_19B028+$B7E8).l
-                move.w  #8,(byte_19B028+$B7DA).l
+                move.l  d0,(dword_1A6810).l
+                move.w  #8,(word_1A6802).l
                 jsr     sub_193916
-                move.l  ($F03F54).l,(byte_19B028+$B7DC).l
-                move.l  #$1E8134,(byte_19B028+$B7E0).l
+                move.l  ($F03F54).l,(dword_1A6804).l
+                move.l  #$1E8134,(dword_1A6808).l
                 move.l  (sp)+,d1
-                move.l  d1,(byte_19B028+$B7E4).l
+                move.l  d1,(dword_1A680C).l
                 move.w  #$8800,d0
                 swap    d0
                 move.w  ($1AE4F0).l,d0
-                move.l  d0,(byte_19B028+$B7E8).l
-                move.w  #7,(byte_19B028+$B7DA).l
+                move.l  d0,(dword_1A6810).l
+                move.w  #7,(word_1A6802).l
                 bsr.w   sub_193916
-                move.l  #$F03F54,(byte_19B028+$B7DC).l
-                move.l  #$1E80F4,(byte_19B028+$B7E0).l
+                move.l  #$F03F54,(dword_1A6804).l
+                move.l  #$1E80F4,(dword_1A6808).l
                 bra.w   loc_19393C
 
 ; =============== S U B R O U T I N E =======================================
@@ -1969,7 +1969,7 @@ loc_193836:                             ; CODE XREF: ROM:001937F6↑j
 
 sub_193916:                             ; CODE XREF: sub_1934AA+6A↑j
                                         ; ROM:001936B0↑p ...
-                tst.w   (byte_19B028+$B7DA).l
+                tst.w   (word_1A6802).l
                 bne.s   sub_193916
                 rts
 ; End of function sub_193916
@@ -1978,20 +1978,20 @@ sub_193916:                             ; CODE XREF: sub_1934AA+6A↑j
 
 loc_193920:                             ; CODE XREF: ROM:0019383C↑j
                 add.w   #$40,d1 ; '@'
-                move.l  ($F03F54).l,(byte_19B028+$B7DC).l
-                move.l  #$1E80F4,(byte_19B028+$B7E0).l
+                move.l  ($F03F54).l,(dword_1A6804).l
+                move.l  #$1E80F4,(dword_1A6808).l
                 swap    d1
                 move.w  d0,d1
 
 loc_19393C:                             ; CODE XREF: ROM:00193912↑j
-                move.l  d1,(byte_19B028+$B7E4).l
+                move.l  d1,(dword_1A680C).l
                 tst.l   ($1AE52E).l
                 bmi.w   locret_1962CC
                 move.w  #$8800,d0
                 swap    d0
                 move.w  ($1AE4F0).l,d0
-                move.l  d0,(byte_19B028+$B7E8).l
-                move.w  #6,(byte_19B028+$B7DA).l
+                move.l  d0,(dword_1A6810).l
+                move.w  #6,(word_1A6802).l
                 bra.s   sub_193916
 
 ; =============== S U B R O U T I N E =======================================
@@ -2037,9 +2037,9 @@ loc_19397C:                             ; DATA XREF: sub_192E82+88↑o
                 move.w  #$C0,($1AEFB0).l
                 move.w  #$C0,($1AEFB2).l
                 move.w  #$88FF,($1AEFB8).l
-                move.l  ($F03F54).l,(byte_19B028+$B7DC).l
-                move.l  #$1AEFB0,(byte_19B028+$B7E0).l
-                move.w  #3,(byte_19B028+$B7DA).l
+                move.l  ($F03F54).l,(dword_1A6804).l
+                move.l  #$1AEFB0,(dword_1A6808).l
+                move.w  #3,(word_1A6802).l
                 jsr     sub_193916
                 movem.w (sp)+,d0-d1
                 asr.w   #1,d0
@@ -2055,7 +2055,7 @@ loc_19397C:                             ; DATA XREF: sub_192E82+88↑o
                 move.w  d2,($1AEFB0).l
                 move.w  d3,($1AEFB2).l
                 move.w  d0,-(sp)
-                move.w  #3,(byte_19B028+$B7DA).l
+                move.w  #3,(word_1A6802).l
                 jsr     sub_193916
                 move.w  (sp)+,d0
                 move.w  d0,d2
@@ -2068,7 +2068,7 @@ loc_19397C:                             ; DATA XREF: sub_192E82+88↑o
                 add.w   #$C0,d3
                 move.w  d2,($1AEFB0).l
                 move.w  d3,($1AEFB2).l
-                move.w  #3,(byte_19B028+$B7DA).l
+                move.w  #3,(word_1A6802).l
                 jsr     sub_193916
                 rts
 ; ---------------------------------------------------------------------------
@@ -2201,13 +2201,13 @@ sub_193C1E:                             ; CODE XREF: ROM:00193B20↑p
                 movea.l ($1AF046).l,a2
                 movea.l ($1AEFE6).l,a3
                 bsr.w   sub_193CFA
-                move.l  a2,(byte_19B028+$B7DC).l
+                move.l  a2,(dword_1A6804).l
                 move.l  ($1AF04A).l,d1
                 lsr.l   #8,d1
                 and.l   #$FFFF,d1
-                move.l  d1,(byte_19B028+$B7E0).l
-                move.l  a3,(byte_19B028+$B7E4).l
-                move.w  #2,(byte_19B028+$B7DA).l
+                move.l  d1,(dword_1A6808).l
+                move.l  a3,(dword_1A680C).l
+                move.w  #2,(word_1A6802).l
                 jmp     sub_193916
 ; End of function sub_193C1E
 
@@ -2228,24 +2228,24 @@ sub_193C5C:                             ; CODE XREF: ROM:0019399C↑p
                 lea     word_197E3E-asc_197E20(a1,d0.w),a1 ; "Parameter not yet defined    "
                 movea.l ($1AEFE6).l,a3
                 bsr.w   sub_193CFA
-                move.l  a2,(byte_19B028+$B7DC).l
+                move.l  a2,(dword_1A6804).l
                 move.l  ($1AF04A).l,d1
                 lsr.l   #8,d1
                 and.l   #$FFFF,d1
                 move.w  d1,-(sp)
-                move.l  d1,(byte_19B028+$B7E0).l
-                move.l  a3,(byte_19B028+$B7E4).l
-                move.w  #2,(byte_19B028+$B7DA).l
+                move.l  d1,(dword_1A6808).l
+                move.l  a3,(dword_1A680C).l
+                move.w  #2,(word_1A6802).l
                 jsr     sub_193916
                 movea.l ($1AEFE6).l,a3
                 bsr.w   sub_193CF2
-                move.l  a1,(byte_19B028+$B7DC).l
+                move.l  a1,(dword_1A6804).l
                 move.l  ($1AF04E).l,d1
                 lsr.l   #8,d1
                 and.l   #$FFFF,d1
-                move.l  d1,(byte_19B028+$B7E0).l
-                move.l  a3,(byte_19B028+$B7E4).l
-                move.w  #2,(byte_19B028+$B7DA).l
+                move.l  d1,(dword_1A6808).l
+                move.l  a3,(dword_1A680C).l
+                move.w  #2,(word_1A6802).l
                 jsr     sub_193916
                 move.w  (sp)+,d0
                 rts
@@ -2382,7 +2382,7 @@ loc_193E0C:                             ; DATA XREF: ROM:00193E00↑o
                 move.l  a0,($1AF05A).l
 
 loc_193E7A:                             ; DATA XREF: ROM:00193E6E↑o
-                lea     ((byte_198CB0+$F20)).l,a0
+                lea     (dword_199BD0).l,a0
                 move.w  ($1AE040).l,d0
                 move.w  d0,d1
                 lsl.w   #3,d0
@@ -2678,28 +2678,28 @@ loc_19429C:                             ; CODE XREF: sub_1941FA+11C↓j
                 move.l  a0,($1AF05A).l
 
 loc_194368:                             ; DATA XREF: ROM:0019435C↑o
-                move.w  (byte_198CB0+$F48).l,d0
+                move.w  (word_199BF8).l,d0
                 bpl.w   loc_194374
                 clr.w   d0
 
 loc_194374:                             ; CODE XREF: ROM:0019436E↑j
-                move.w  d0,(byte_19B028+$62).l
-                move.l  #(byte_19B028+$60),($1AE036).l
+                move.w  d0,(word_19B08A).l
+                move.l  #byte_19B088,($1AE036).l
                 lea     ($1977E2).l,a0
                 jsr     sub_19483A
                 move.w  #$C,($1AE028).l
 
 loc_194398:                             ; DATA XREF: ROM:00195828↓o
                 lea     ($199C14).l,a0
-                lea     byte_198CB0+$F6A-(byte_198CB0+$F64)(a0),a1
+                lea     asc_199C14+6-asc_199C14(a0),a1 ; "~g3:5:                                 "
                 move.w  #$1F,d0
 
 loc_1943A6:                             ; CODE XREF: ROM:001943AA↓j
                 move.b  #1,(a1)+
                 dbf     d0,loc_1943A6
                 lea     6(a0),a1
-                move.w  (byte_198CB0+$F50).l,d1
-                move.w  (byte_198CB0+$F52).l,d2
+                move.w  (word_199C00).l,d1
+                move.w  (word_199C02).l,d2
                 clr.w   d0
 
 loc_1943C0:                             ; CODE XREF: ROM:001943C6↓j
@@ -2888,8 +2888,8 @@ sub_194574:                             ; CODE XREF: sub_1943FC:loc_194404↑p
 
 loc_194594:                             ; CODE XREF: sub_19454C+4↑j
                                         ; DATA XREF: sub_192F26+56↑o
-                clr.l   (byte_19B028+$2C).l
-                clr.l   (byte_19B028+$48).l
+                clr.l   (dword_19B054).l
+                clr.l   (dword_19B070).l
                 move.w  ($1AE040).l,d0
                 lsl.w   #2,d0
                 lea     ($1E8054).l,a0
@@ -2926,7 +2926,7 @@ loc_19460A:                             ; CODE XREF: sub_19454C+B4↑j
                 lsr.w   #1,d2
                 dbf     d7,loc_1945EA
                 move.l  #(byte_196DEF+$3D),($1AF052).l
-                move.l  #(byte_198CB0+$DD8),($1AF056).l
+                move.l  #dword_199A88,($1AF056).l
                 move.w  #6,($1AE4F6).l
                 move.w  #7,($1AE028).l
                 lea     ($19797F).l,a0
@@ -3011,7 +3011,7 @@ loc_1946E6:                             ; CODE XREF: sub_1946B2+2A↑j
 
 loc_19470A:                             ; CODE XREF: sub_1946B2+4E↑j
                 move.l  #byte_196DEC,($1AF052).l
-                move.l  #(byte_198CB0+$E38),($1AF056).l
+                move.l  #dword_199AE8,($1AF056).l
                 rts
 ; End of function sub_1946B2
 
@@ -3027,7 +3027,7 @@ sub_194720:                             ; CODE XREF: sub_19454C+138↑p
                 addi.w  #1,($1AE4EC).l
                 move.w  #1,($1AE57A).l
                 move.l  6(a0),d3
-                lea     ((byte_19B028+$28)).l,a2
+                lea     (dword_19B050).l,a2
                 bsr.w   sub_19478E
                 movea.l ($1AEFE6).l,a3
                 btst    #0,(a0)
@@ -3042,7 +3042,7 @@ sub_194720:                             ; CODE XREF: sub_19454C+138↑p
                 lea     word_197E3E-asc_197E20(a0,d0.w),a0 ; "Parameter not yet defined    "
                 move.w  4(a0),d2
                 move.l  6(a0),d3
-                lea     ((byte_19B028+$44)).l,a2
+                lea     (dword_19B06C).l,a2
 ; End of function sub_194720
 
 
@@ -3560,7 +3560,7 @@ loc_194DFE:                             ; CODE XREF: sub_194C90+148↑j
 
 loc_194E1C:                             ; CODE XREF: sub_194C90+174↑j
                                         ; sub_194C90+180↑j
-                jsr     loc_196442+4
+                jsr     byte_196442+4
                 tst.w   ($1AF03E).l
                 beq.w   loc_194E48
                 move.l  ($1AE00C).l,d1
@@ -3786,7 +3786,7 @@ loc_1950CC:                             ; CODE XREF: sub_195076+26↑j
                 lea     $400(a1),a1
                 lea     4(a0),a0
                 dbf     d0,loc_195096
-                lea     ((byte_198CB0+$EE8)).l,a1
+                lea     (dword_199B98).l,a1
                 movea.l ($1AE550).l,a0
                 lea     $380(a0),a0
                 move.l  #$6C,d0 ; 'l'
@@ -3804,15 +3804,15 @@ loc_1950CC:                             ; CODE XREF: sub_195076+26↑j
 
 
 sub_19510A:                             ; CODE XREF: sub_195076+78↑p
-                move.w  (byte_198CB0+$F4A).l,-(sp)
-                move.l  (byte_198CB0+$F4C).l,-(sp)
+                move.w  (word_199BFA).l,-(sp)
+                move.l  (dword_199BFC).l,-(sp)
                 move.w  ($1AE002).l,-(sp)
                 move.l  ($1AE004).l,-(sp)
                 bsr.w   sub_193470
                 move.l  (sp)+,($1AE004).l
                 move.w  (sp)+,($1AE002).l
-                move.l  (sp)+,(byte_198CB0+$F4C).l
-                move.w  (sp)+,(byte_198CB0+$F4A).l
+                move.l  (sp)+,(dword_199BFC).l
+                move.w  (sp)+,(word_199BFA).l
                 rts
 ; End of function sub_19510A
 
@@ -3837,7 +3837,7 @@ loc_195140:                             ; DATA XREF: sub_194C90+1D8↑o
                 ori.b   #$80,(a1)+
                 move.w  ($1AF012).l,d0
                 lsl.w   #3,d0
-                lea     ((byte_19B028+$A0)).l,a0
+                lea     (dword_19B0C8).l,a0
                 lea     (a0,d0.w),a0
                 move.l  ($1AE00C).l,d0
                 move.l  d0,d1
@@ -3858,7 +3858,7 @@ loc_1951AE:                             ; CODE XREF: ROM:001951A0↑j
                 bne.w   loc_1958A2
                 move.w  ($1AF012).l,d0
                 lsl.w   #3,d0
-                lea     ((byte_19B028+$A0)).l,a0
+                lea     (dword_19B0C8).l,a0
                 lea     (a0,d0.w),a0
                 move.l  ($1AE00C).l,d0
                 move.l  d0,d1
@@ -3955,7 +3955,7 @@ loc_1952FE:                             ; CODE XREF: sub_1943FC+EFA↑j
                 clr.l   d0
                 move.w  $102(a0),d0
                 lsl.l   #8,d0
-                move.l  d0,(byte_19B028+$28).l
+                move.l  d0,(dword_19B050).l
                 bra.w   loc_1960AA
 ; END OF FUNCTION CHUNK FOR sub_1943FC
 ; ---------------------------------------------------------------------------
@@ -3963,7 +3963,7 @@ loc_1952FE:                             ; CODE XREF: sub_1943FC+EFA↑j
                 jsr     sub_19483A
                 move.w  #7,($1AE028).l
                 move.l  #(byte_196DEF+$6D),($1AF052).l
-                move.l  #(byte_198CB0+$E08),($1AF056).l
+                move.l  #dword_199AB8,($1AF056).l
                 bsr.w   sub_1946A8
                 bra.w   sub_1960C4
 ; ---------------------------------------------------------------------------
@@ -4011,7 +4011,7 @@ sub_1953FA:                             ; DATA XREF: ROM:0019534E↑o
                 movea.l ($1AE536).l,a5
                 movea.l (a5),a1
                 lea     $380(a1),a1
-                lea     ((byte_198CB0+$EE8)).l,a0
+                lea     (dword_199B98).l,a0
                 move.l  #$6C,d0 ; 'l'
                 jsr     sub_193470
                 move.w  ($1AF040).l,d0
@@ -4054,8 +4054,8 @@ sub_19546E:                             ; CODE XREF: sub_1943FC:loc_19528A↑p
                 movea.l #asc_197467,a0  ; "Attach and Adjust Waveforms//Press keys"...
                 clr.w   ($1AF00C).l
                 jsr     sub_19482C
-                clr.l   (byte_19B028+$28).l
-                clr.l   (byte_19B028+$2C).l
+                clr.l   (dword_19B050).l
+                clr.l   (dword_19B054).l
                 move.w  ($1AE4EC).l,d0
                 move.w  d0,($1AEFDA).l
                 sub.w   #1,d0
@@ -4072,7 +4072,7 @@ sub_19546E:                             ; CODE XREF: sub_1943FC:loc_19528A↑p
                 lea     (a6,d0.w),a5
                 move.l  a5,($1AEFE2).l
                 move.l  #(byte_196DEF+$FD),($1AF052).l
-                move.l  #(byte_198CB0+$DA8),($1AF056).l
+                move.l  #dword_199A58,($1AF056).l
                 rts
 ; End of function sub_19546E
 
@@ -4099,9 +4099,9 @@ sub_19546E:                             ; CODE XREF: sub_1943FC:loc_19528A↑p
                 movea.l ($1AEFDE).l,a4
 
 loc_195538:                             ; CODE XREF: ROM:00195522↑j
-                lea     ((byte_19B028+$28)).l,a0
+                lea     (dword_19B050).l,a0
                 jsr     sub_196634
-                move.l  (byte_19B028+$28).l,d1
+                move.l  (dword_19B050).l,d1
                 lsr.l   #8,d1
                 move.w  d1,$102(a4)
                 move.l  a4,($1AE77C).l
@@ -4166,7 +4166,7 @@ loc_195622:                             ; CODE XREF: ROM:00195598↑j
 loc_195628:                             ; CODE XREF: ROM:0019563E↓j
                                         ; ROM:00195646↓j ...
                 move.w  #2,($1AF00C).l
-                clr.w   (byte_198CB0+$DBA).l
+                clr.w   (word_199A6A).l
                 rts
 ; ---------------------------------------------------------------------------
 
@@ -4207,18 +4207,18 @@ loc_195668:                             ; CODE XREF: ROM:00195616↑j
                 lea     ($1AE00C).l,a1
                 move.b  1(a1),d0
                 rol.b   #2,d0
-                lea     ((byte_19B028+$28)).l,a0
+                lea     (dword_19B050).l,a0
                 jsr     sub_196634
                 bra.w   loc_1956B6
 ; ---------------------------------------------------------------------------
                 lea     ($1AE00C).l,a1
                 move.b  1(a1),d0
                 rol.b   #2,d0
-                lea     ((byte_19B028+$28)).l,a0
+                lea     (dword_19B050).l,a0
                 jsr     sub_196634
                 move.b  1(a1),d0
                 rol.b   #4,d0
-                lea     ((byte_19B028+$44)).l,a0
+                lea     (dword_19B06C).l,a0
                 jsr     sub_196634
 
 loc_1956B6:                             ; CODE XREF: ROM:00195688↑j
@@ -4324,15 +4324,15 @@ loc_1957F4:                             ; CODE XREF: ROM:001957E4↑j
 
 loc_195804:                             ; CODE XREF: ROM:001957FE↑j
                 sub.w   #1,d0
-                move.w  d0,(byte_198CB0+$F48).l
+                move.w  d0,(word_199BF8).l
                 rts
 ; ---------------------------------------------------------------------------
 
 loc_195810:                             ; CODE XREF: ROM:001957C2↑j
-                addi.w  #1,(byte_198CB0+$F50).l
+                addi.w  #1,(word_199C00).l
 
 loc_195818:                             ; CODE XREF: ROM:0019583C↓j
-                andi.w  #$3F,(byte_198CB0+$F50).l ; '?'
+                andi.w  #$3F,(word_199C00).l ; '?'
 
 loc_195820:                             ; CODE XREF: ROM:0019584E↓j
                 move.w  #1,($1AF03E).l
@@ -4341,20 +4341,20 @@ loc_195820:                             ; CODE XREF: ROM:0019584E↓j
 ; ---------------------------------------------------------------------------
 
 loc_195834:                             ; CODE XREF: ROM:001957B6↑j
-                subi.w  #1,(byte_198CB0+$F50).l
+                subi.w  #1,(word_199C00).l
                 bra.s   loc_195818
 ; ---------------------------------------------------------------------------
 
 loc_19583E:                             ; CODE XREF: ROM:0019579E↑j
-                addi.w  #1,(byte_198CB0+$F52).l
+                addi.w  #1,(word_199C02).l
 
 loc_195846:                             ; CODE XREF: ROM:00195858↓j
-                andi.w  #$3F,(byte_198CB0+$F52).l ; '?'
+                andi.w  #$3F,(word_199C02).l ; '?'
                 bra.s   loc_195820
 ; ---------------------------------------------------------------------------
 
 loc_195850:                             ; CODE XREF: ROM:001957AA↑j
-                subi.w  #1,(byte_198CB0+$F52).l
+                subi.w  #1,(word_199C02).l
                 bra.s   loc_195846
 ; ---------------------------------------------------------------------------
                 move.l  ($1AE00C).l,d0
@@ -4742,11 +4742,11 @@ loc_195BDC:                             ; DATA XREF: sub_195B4C+38↑o
                 sub.w   #$B0,d4
                 tst.w   ($1AE02A).l
                 beq.w   loc_195C80
-                move.w  (byte_198CB0+$EE8).l,d0
+                move.w  (dword_199B98).l,d0
                 sub.w   #$7F,d0
                 add.w   d3,d0
                 move.w  d0,(a2)
-                move.w  (byte_198CB0+$F04).l,d0
+                move.w  (dword_199BB4).l,d0
                 sub.w   #$7F,d0
                 lsl.w   #1,d0
                 add.w   d4,d0
@@ -5167,7 +5167,7 @@ sub_1960A0:                             ; DATA XREF: ROM:00195556↑o
 
 loc_1960AA:                             ; CODE XREF: sub_1943FC+F16↑j
                 move.l  ($1AF056).l,-(sp)
-                move.l  #(byte_198CB0+$DD8),($1AF056).l
+                move.l  #dword_199A88,($1AF056).l
                 bsr.w   sub_1960C4
                 move.l  (sp)+,($1AF056).l
 ; END OF FUNCTION CHUNK FOR sub_1943FC
@@ -5217,7 +5217,7 @@ sub_196122:                             ; CODE XREF: sub_1944C4+58↑p
                 move.l  #$11800,($F02228).l
                 lsl.w   #1,d2
                 lea     ($198CB0).l,a1
-                move.w  byte_198CB0+4-byte_198CB0(a1,d2.w),d2
+                move.w  word_198CB4-dword_198CB0(a1,d2.w),d2
                 lea     (a1,d2.w),a2
                 move.l  a2,($F02224).l
                 move.l  #0,($F02230).l
@@ -5468,14 +5468,10 @@ loc_196426:                             ; DATA XREF: sub_19640C↑o
                 dc.b $78 ; x
 ; ---------------------------------------------------------------------------
                 move.w  $30(a5,d3.l),d1
-
-loc_196442:                             ; CODE XREF: sub_194C90:loc_194E1C↑p
-                move.w  ([$48E7,a6,d3.l],-$1FFFDDC4),-(a1)
 ; ---------------------------------------------------------------------------
-                dc.b $F0
-                dc.b $FF
-                dc.b $FF
-                dc.b $FC
+byte_196442:    dc.b  $33, $36, $39, $23, $48, $E7, $E0,   0
+                                        ; CODE XREF: sub_194C90:loc_194E1C↑p
+                dc.b  $22, $3C, $F0, $FF, $FF, $FC
 ; ---------------------------------------------------------------------------
                 moveq   #$FFFFFFFF,d2
                 move.w  #$81FE,($F14000).l
@@ -6465,7 +6461,8 @@ asc_19775A:     dc.b '~g1:20:Joypad to select, any FIRE to edit',0
                                         ; DATA XREF: sub_192F26+106↑o
                                         ; ROM:00193DA2↑o
                 dc.b '~g1:20:Up,Down to choose, L,R to change',0
-                dc.b '~g1:18:Hold down b and use up,down to//change channel',0
+asc_1977AC:     dc.b '~g1:18:Hold down b and use up,down to//change channel',0
+                                        ; DATA XREF: ROM:0019B08C↓o
                 dc.b '@~g1:1:Delay line settings//U,D changes number L,R changes spac'
                 dc.b 'ing~e3:7:',0
                 dc.b '@~g1:1:Compressing matrix to ROM//Press any fire to exit',0
@@ -6502,13 +6499,13 @@ asc_1978F9:     dc.b 'Editing: Symmetry Planes and Types//Press number keys to t
                 dc.b 'Matrix',0
                 dc.b 'Spectrum as intensities',0
                 dc.b 'Jaguar Logo',0
-                dc.b 'Off',0
-                dc.b 'channel 1',0
-                dc.b 'channel 2',0
-                dc.b 'channel 3',0
-                dc.b 'channel 4',0
-                dc.b 'channel 5',0
-                dc.b 'channel 6',0
+asc_197ACD:     dc.b 'Off',0            ; DATA XREF: ROM:0019B090↓o
+asc_197AD1:     dc.b 'channel 1',0      ; DATA XREF: ROM:0019B098↓o
+asc_197ADB:     dc.b 'channel 2',0      ; DATA XREF: ROM:0019B0A0↓o
+asc_197AE5:     dc.b 'channel 3',0      ; DATA XREF: ROM:0019B0A8↓o
+asc_197AEF:     dc.b 'channel 4',0      ; DATA XREF: ROM:0019B0B0↓o
+asc_197AF9:     dc.b 'channel 5',0      ; DATA XREF: ROM:0019B0B8↓o
+asc_197B03:     dc.b 'channel 6',0      ; DATA XREF: ROM:0019B0C0↓o
                 dc.b 'FX page 1',0
                 dc.b 'FX page 2',0
                 align 2
@@ -6904,10 +6901,10 @@ word_198C24:    dcb.w 2,0               ; DATA XREF: sub_194C90+1C↑r
 off_198C28:     dc.l off_198C5C         ; DATA XREF: sub_192088+D44↑o
                 dc.l $1AF06C, $1AE048, $198C6C, $198C74, $198C7C, $1FD314
                 dc.l $1AE57C, $1AE000, $19B0C8, $1E80B4, $1A6800, $198CAC
-off_198C5C:     dc.l byte_198CB0+$418   ; DATA XREF: ROM:off_198C28↑o
-                dc.l byte_198CB0+$F94
-                dc.l byte_198CB0+$CE0
-                dc.l byte_198CB0+$CE0
+off_198C5C:     dc.l dword_1990C8       ; DATA XREF: ROM:off_198C28↑o
+                dc.l dword_199C44
+                dc.l dword_199990
+                dc.l dword_199990
                 dc.l $1F5278, $1F927C, $1F4A78, $1FD280, $197E0F
                 dc.b 0, $19
                 dc.w $7E10, $19, $7E18, $19, $7E18, 4
@@ -6919,9897 +6916,4135 @@ off_198C5C:     dc.l byte_198CB0+$418   ; DATA XREF: ROM:off_198C28↑o
 word_198CAC:    dcb.w 2,0               ; DATA XREF: sub_192000+20↑w
                                         ; ROM:loc_19207A↑w ...
 ; font.bin
-byte_198CB0:    dc.b   0,  8,  0,  8,  3,$98,  3,$F8
+dword_198CB0:   dc.l $80008
+word_198CB4:    dc.w $398, $3F8, $400, $408, $410
                                         ; DATA XREF: sub_196122+1A↑r
-                dc.b   4,  0,  4,  8,  4,$10,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$30
-                dc.b   1,$38,  1,$40,  1,$48,  1,$50
-                dc.b   1,$58,  1,$60,  1,$68,  1,$70
-                dc.b   1,$78,  1,$80,  1,$88,  1,$90
-                dc.b   1,$98,  1,$A0,  1,$A8,  1,$B0
-                dc.b   1,$B8,  1,$C0,  1,$C8,  1,$D0
-                dc.b   1,$D8,  1,$E0,  1,$E8,  1,$F0
-                dc.b   3,$A0,  1,$18,  1,$28,  1,$18
-                dc.b   1,$20,  1,$18,  1,$18,  2,$C8
-                dc.b   2,$D0,  2,$D8,  2,$E0,  2,$E8
-                dc.b   2,$F0,  2,$F8,  3,  0,  3,  8
-                dc.b   3,$10,  3,$18,  3,$20,  3,$28
-                dc.b   3,$30,  3,$38,  3,$40,  3,$48
-                dc.b   3,$50,  3,$58,  3,$60,  3,$68
-                dc.b   3,$70,  3,$78,  3,$80,  3,$88
-                dc.b   3,$90,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$F8
-                dc.b   2,  0,  2,  8,  2,$10,  2,$18
-                dc.b   2,$20,  2,$28,  2,$30,  2,$38
-                dc.b   2,$40,  2,$48,  2,$50,  2,$58
-                dc.b   2,$60,  2,$68,  2,$70,  2,$78
-                dc.b   2,$80,  2,$88,  2,$90,  2,$98
-                dc.b   2,$A0,  2,$A8,  2,$B0,  2,$B8
-                dc.b   2,$C0,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  3,$A8,  3,$B0
-                dc.b   3,$B8,  3,$C0,  3,$C8,  3,$D0
-                dc.b   3,$D8,  3,$E0,  3,$E8,  3,$F0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b $20,$10,  8,  4,  4,  8,$10,$20
-                dc.b   4,  8,$10,$20,$20,$10,  8,  4
-                dc.b $20,$20,$20,$20,$20,  0,  0,$20
-                dc.b $50,$50,$50,  0,  0,  0,  0,  0
-                dc.b $48,$48,$FE,$48,$48,$FE,$48,$48
-                dc.b $10,$7E,$90,$70,$10,$14,$FE,$20
-                dc.b $60,$62,  4,  8,$10,$20,$4C,$8C
-                dc.b $20,$50,$88,$70,$64,$98,$9A,$64
-                dc.b   0,$10,$20,$40,  0,  0,  0,  0
-                dc.b $10,$20,$40,$40,$40,$40,$20,$10
-                dc.b $20,$10,  8,  8,  8,  8,$10,$20
-                dc.b   0,$92,$54,$38,$38,$54,$92,  0
-                dc.b $10,$10,$10,$FE,$10,$10,$10,  0
-                dc.b   0,  0,  0,  0,  0,$10,$10,$20
-                dc.b   0,  0,  0,$FE,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$60,$60,  0
-                dc.b   0,  2,  4,  8,$10,$20,$40,$80
-                dc.b $7C,$82,$86,$8A,$92,$A2,$C2,$7C
-                dc.b $10,$30,$50,$10,$10,$10,$10,$FE
-                dc.b $78,$84,  4,  8,$10,$20,$40,$FE
-                dc.b $7C,$82,  2,  4,$7C,  2,$82,$7C
-                dc.b   4, $C,$14,$24,$44,$84,$FE,  4
-                dc.b $FE,$80,$80,$FC,  2,  2,$82,$7C
-                dc.b $38,$40,$80,$FC,$82,$82,$82,$7C
-                dc.b $FE,  2,  4,  8,$10,$20,$40,$80
-                dc.b $7C,$82,$82,$7C,$82,$82,$82,$7C
-                dc.b $7C,$82,$82,$82,$7E,  2,$82,$7C
-                dc.b   0,  0,  0,$7C,  2,$7E,$82,$7E
-                dc.b $80,$80,$80,$FC,$82,$82,$82,$FC
-                dc.b   0,  0,  0,$7E,$80,$80,$80,$7E
-                dc.b   2,  2,  2,$7E,$82,$82,$82,$7E
-                dc.b   0,  0,  0,$7C,$82,$FC,$80,$7C
-                dc.b   0,$3E,$40,$40,$FE,$40,$40,$40
-                dc.b   0,  0,  0,$7E,$82,$7E,  2,$7C
-                dc.b $80,$80,$80,$FC,$82,$82,$82,$82
-                dc.b   0,$10,  0,$30,$10,$10,$10,$38
-                dc.b   0,$10,  0,$10,$10,$10,$10,$E0
-                dc.b $80,$80,$80,$88,$90,$F0,$88,$84
-                dc.b $60,$20,$20,$20,$20,$20,$20,$70
-                dc.b   0,  0,  0,$7C,$92,$92,$92,$82
-                dc.b   0,  0,  0,$78,$84,$84,$84,$84
-                dc.b   0,  0,  0,$7C,$82,$82,$82,$7C
-                dc.b   0,  0,  0,$FC,$82,$FC,$80,$80
-                dc.b   0,  0,  0,$7E,$82,$7E,  2,  2
-                dc.b   0,  0,  0,$FC,$82,$80,$80,$80
-                dc.b   0,  0,  0,$7E,$40,$38,  4,$FC
-                dc.b   0,  0,$10,$FE,$10,$10,$10, $C
-                dc.b   0,  0,  0,$82,$82,$82,$86,$7A
-                dc.b   0,  0,  0,$82,$82,$44,$28,$10
-                dc.b   0,  0,  0,$82,$82,$92,$AA,$C6
-                dc.b   0,  0,  0,$84,$48,$30,$48,$84
-                dc.b   0,  0,  0,$82,$82,$7E,  2,$FC
-                dc.b   0,  0,  0,$FE,  4,$10,$40,$FE
-                dc.b $10,$28,$44,$82,$FE,$82,$82,$82
-                dc.b $FC,$82,$84,$FC,$82,$82,$82,$FC
-                dc.b $7E,$C0,$80,$80,$80,$80,$C0,$7E
-                dc.b $FC,$86,$82,$82,$82,$82,$86,$FC
-                dc.b $FE,$80,$80,$FE,$80,$80,$80,$FE
-                dc.b $FE,$80,$80,$FE,$80,$80,$80,$80
-                dc.b $7E,$C0,$80,$80,$80,$86,$C2,$7C
-                dc.b $82,$82,$82,$FE,$82,$82,$82,$82
-                dc.b $FE,$10,$10,$10,$10,$10,$10,$FE
-                dc.b $FE,  8,  8,  8,  8,$88,$88,$70
-                dc.b $84,$88,$90,$E0,$90,$88,$84,$82
-                dc.b $80,$80,$80,$80,$80,$80,$80,$FE
-                dc.b $82,$C6,$AA,$92,$82,$82,$82,$82
-                dc.b $82,$C2,$A2,$92,$8A,$86,$82,$82
-                dc.b $7C,$C6,$82,$82,$82,$82,$C6,$7C
-                dc.b $FC,$82,$82,$82,$FC,$80,$80,$80
-                dc.b $7C,$C6,$82,$82,$82,$8A,$C6,$7A
-                dc.b $FC,$82,$82,$82,$FC,$88,$84,$82
-                dc.b $7E,$80,$C0,$30,$1C,  6,  2,$FC
-                dc.b $FE,$10,$10,$10,$10,$10,$10,$10
-                dc.b $82,$82,$82,$82,$82,$82,$82,$7C
-                dc.b $82,$82,$82,$44,$44,$28,$28,$10
-                dc.b $82,$82,$82,$82,$82,$92,$AA,$C6
-                dc.b $82,$82,$44,$38,$28,$44,$82,$82
-                dc.b $82,$82,$82,$44,$28,$10,$10,$10
-                dc.b $FE,  2,  4,  8,$10,$20,$40,$FE
-                dc.b $C0,$F0,$FC,$FE,$FE,$FC,$F0,$C0
-                dc.b   0,  0,$30,  0,  0,$30,  0,  0
-                dc.b   0,$3C,$66,$66,$66,$66,$3C,  0
-                dc.b   0,$38,$18,$18,$18,$18,$3C,  0
-                dc.b   0,$38,$6C, $C,$18,$30,$7C,  0
-                dc.b   0,$7E,  6, $C,  6,$66,$3C,  0
-                dc.b   0,$1C,$3C,$6C,$7E, $C, $C,  0
-                dc.b   0,$7E,$60,$7C,  6,  6,$7C,  0
-                dc.b   0,$3C,$60,$7C,$66,$66,$3C,  0
-                dc.b   0,$3E,  6, $C,$18,$18,$18,  0
-                dc.b   0,$3C,$66,$3C,$66,$66,$3C,  0
-                dc.b   0,$3C,$66,$3E,  6,  6,$3C,  0
-                dc.b $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$8F,$8F,$8F,$8F,$8F,$8F,$FF
-                dc.b $FF,$F1,$F1,$F1,$F1,$F1,$F1,$FF
-                dc.b $FF,$81,$81,$81,$81,$81,$81,$FF
-                dc.b   0,  4,  0,$37,  0,  0,  0,  0
-                dc.b   0,$3E,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0, $F,$FC,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  1
-                dc.b $FF,$80,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$3F,$FF,$C0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$1F,$FF
-                dc.b $FF,$80,  0,  0,  0, $E,  0,  0
-                dc.b   0,  0,  0,  7,  0,  0,  0,  0
-                dc.b   0, $F,$FF,$FF,$FE, $E,  0,  0
-                dc.b   0,$1E,  0,  0,  6,  0,  1,$FF
-                dc.b $C0,  0,  0,  0,  0, $F,$FF,$FF
-                dc.b $F8,$BE,  0,$3E,  0,$3F,  0,  0
-                dc.b   7,$C0, $F,$FF,$F0,  0,  0,  0
-                dc.b   0,$1F,$FF,$FF,$C0,$FE,  0,$FF
-                dc.b   0,$3F,  7,$80,  7,$E0,$7F,$FF
-                dc.b $F8,  0,  0,  0,  0,$1F,$FF,$FF
-                dc.b $81,$FF,  1,$FF,$80,$7F, $F,$C0
-                dc.b  $F,$E1,$FF,$FF,$FC,$70,  0,  0
-                dc.b   0, $F,$FF,$FE,  3,$FF,  3,$FF
-                dc.b $C0,$7E,$1F,$C0,$1F,$E7,$FF,$FF
-                dc.b $FE,$70,  0,  0,  0,  7,$FF,$FE
-                dc.b   3,$FF,  7,$FF,$80,$FE,$1F,$C0
-                dc.b $3F,$CF,$FF,$FF,$FE,  0,  0,  0
-                dc.b   0,  7,  0,$FC,  7,$FF, $F,$FF
-                dc.b   0,$FC,$3F,$C0,$7F,$DF,$FF,$FF
-                dc.b $FE,  0,  0,  0,  0,  0,  1,$FC
-                dc.b   7,$FF, $F,$F8,  1,$FC,$3F,$80
-                dc.b $FF,$FF,$FF,$83,$FE,  0,  0,  0
-                dc.b   0,  0,  1,$FC, $F,$BF,$1F,$E0
-                dc.b   1,$F8,$3F,$81,$EF,$FF,$FF,  1
-                dc.b $FE,  0,  0,  0,  0,  0,  1,$FC
-                dc.b  $F,$7F,$3F,$80,  3,$F8,$7F,  1
-                dc.b $DF,$CF,$FF,  1,$FE,  0,  0,  0
-                dc.b   0,  0,  1,$F8,$1F,$7E,$3F,  0
-                dc.b   3,$F0,$FF,  3,$9F,$C7,$FC,  1
-                dc.b $FE,  0,  0,  0,  0,  0,  3,$F8
-                dc.b $3E,$7E,$7E,  0,  3,$F0,$FE,  7
-                dc.b $BF,$C0,$7C,  3,$FC,  0,  0,  0
-                dc.b   0,  0,  3,$F8,$3E,$7E,$7C,  0
-                dc.b $47,$E0,$FE, $F,$FF,$80,$FC,  7
-                dc.b $F8,  0,  0,  0,  0,  0,  3,$F8
-                dc.b $7C,$FE,$FC,  1,$F7,$E0,$FE,$1F
-                dc.b $FF,$80,$F8,$C7,$F0,  0,  0,  0
-                dc.b   0,  0,  3,$F0,$7F,$FE,$F8, $F
-                dc.b $F7,$C1,$FC,$1F,$FF,$80,$F8,$7F
-                dc.b $E0,  0,  0,  0,  0,  0,  7,$F0
-                dc.b $FF,$FE,$F8,$1F,$FF,$C1,$FC,$3F
-                dc.b $FF,$81,$F0,$FF,$C0,  0,  0,  0
-                dc.b   0,  0,  7,$F0,$FF,$FE,$F8,$7F
-                dc.b $EF,$81,$F8,$7F,$CF,$81,$F1,$FF
-                dc.b   0,  0,  0,  0,  0,  0,  7,$E1
-                dc.b $FF,$7E,$F0,$7D,$EF,$83,$F8,$FF
-                dc.b  $F,$81,$F7,$FF,  0,  0,  0,  0
-                dc.b   0,  0, $F,$E7,$FC,$7E,$F8,$C3
-                dc.b $FF,  3,$F3,$FC, $F,$83,$F7,$FF
-                dc.b $80,  0,  0,  0,  0,  0, $F,$E7
-                dc.b $E0,$7E,$F8,  3,$FF,  7,$F7,$F0
-                dc.b  $F,$83,$E7,$FB,$C0,  0,  0,  0
-                dc.b   0,  0, $F,$C3,$C0,$7E,$F8,  7
-                dc.b $FE, $F,$F7,$F0, $F,$83,$E4,$FC
-                dc.b $E0,  0,  0,  0,  0,  0,$1F,$C7
-                dc.b $C0,$7E,$F8,  7,$DE,$1F,$E7,$E0
-                dc.b  $F,$87,$E7,$FF,$70,  0,  0,  0
-                dc.b   0,  0,$1F,$87,$80,$7E,$7C,  7
-                dc.b $DE,$7F,$E3,$E0, $F,$87,$E3,$FF
-                dc.b $B8,  0,  0,  0,  0,  0,$3F,$8F
-                dc.b $80,$7E,$7E,  3,$DE,$F7,$E7,$C0
-                dc.b  $F,$87,$C1,$FF,$FC,  0,  0,  0
-                dc.b   0,  0,$3F,$8F,$80,$3E,$3F,  3
-                dc.b $DF,$EF,$EF,$C0, $F,$8F,$C0,$EF
-                dc.b $FE,  0,  0,  0,  0,  0,$7F,$1F
-                dc.b   0,$3E,$1F,$FF,$DF,$CF,$EF,$80
-                dc.b  $F,$8F,$C0,$77,$F7,  0,  0,  0
-                dc.b   0,  0,$7F,$1F,  0,$3E, $F,$FF
-                dc.b $DF,$8F,$FF,$80,  7, $F,$C0,$3B
-                dc.b $FB,$80,  0,  0,  0,  0,$FE,$3E
-                dc.b   0,$3E,  7,$FC,$CF,  7,$FF,  0
-                dc.b   7,$1F,$C0,$1D,$FD,$E0,  0,  0
-                dc.b   0,  1,$FC,$3E,  0,$1A,  1,$F8
-                dc.b $40,  7,$BE,  0,  7,$1F,$80, $E
-                dc.b $FE,$F0,  0,  0,$60,  3,$F8,$7C
-                dc.b   0,  8,  0,  0,  0,  0,$7E,  0
-                dc.b   7,$1F,$80,  7,$7F,$B8,  0,  0
-                dc.b $60,  7,$F8,$7C,  0,  8,  0,  0
-                dc.b   0,  0,$FC,  0,  3,$1F,$80,  3
-                dc.b $9F,$DC,  0,  0,$38, $F,$F0,$F8
-                dc.b   0,  0,  0,  0,  0,  0,$F8,  0
-                dc.b   3,$3D,$80,  1,$DF,$EE,  0,  0
-                dc.b $3E,$3F,$E0,$F8,  0,  0,  0,  0
-                dc.b   0,  1,$F0,  0,  3,$7F,  0,  0
-                dc.b $E7,$F7,  0,  0, $F,$FF,$C1,$A0
-                dc.b   0,  0,  0,  0,  0,  3,$F0,  0
-                dc.b   3,$7E,  0,  0,$71,$B9,$80,  0
-                dc.b   7,$FF,$80,$80,  0,  0,  0,  0
-                dc.b   0,  3,$E0,  0,  0,$70,  0,  0
-                dc.b $18,$FC,$C0,  0,  1,$FE,  0,  0
-                dc.b   0,  0,  0,  0,  0,  3,  0,  0
-                dc.b   0,$70,  0,  0, $C,$76,$70,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$60,  0,  0
-                dc.b   7,$3B,$38,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  3,$9D,$9C,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$E6,$67,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$72,$33,$80
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$38,$90,$C0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0, $C,$64,$70
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  6,$38,$38,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  3,$9C,$CE
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$C6,$62,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$63,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$39,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0, $C,$60
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  6,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  3,$80
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$C0,  0,  0,  0,  0
-                dc.b   0,  7,$FF,$E0,  1,$FF,$3F,$FE
-                dc.b  $F,$FF,$C0,  0,  0, $F,$FF,$80
-                dc.b $7F,$FF,  0,  7,$F3,$FF,$E1,$FF
-                dc.b $FF,$FE,  0,  3,$FF,$F8,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  7,$FF,$E0,  3,$FF,$3F,$FC
-                dc.b $1F,$FF,$80,  0,  0, $F,$FF,$80
-                dc.b $7F,$FF,  0, $F,$F3,$FF,$E0,$FF
-                dc.b $FF,$FC,  0,  7,$FF,$F8,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  7,$FF,$C0,  7,$FE,$3F,$FC
-                dc.b $1F,$FF,  0,  0,  0,$1F,$FF,  0
-                dc.b $FF,$FE,  0,$1F,$C3,$FF,$E0,$3F
-                dc.b $BF,$F0,  0,  7,$FF,$F8,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  7,$FF,$C0,  7,$FE,$3F,$FC
-                dc.b $3F,$FE,  0,  0,  0,$1F,$FF,  0
-                dc.b $FF,$FE,  0,$3F,$C3,$FF,$E0,$1E
-                dc.b $7F,$F0,  0, $F,$FF,$F0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0, $F,$FF,$C0, $F,$FC,$3F,$FC
-                dc.b $3F,$FC,  0,  0,  0,$1F,$FE,  0
-                dc.b $FF,$FC,  0,$7F,$CF,$FF,$E0,  0
-                dc.b $7F,$F0,  0, $F,$FF,$E0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0, $F,$FF,$C0, $F,$F8,$3F,$FC
-                dc.b $7F,$F8,  0,  0,$20,$3F,$FC,  0
-                dc.b $FF,$FC,  0,$FF,$FF,$FF,$E0,  0
-                dc.b $7F,$E0,  0,$1F,$FF,$E0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0, $F,$FF,$80,$1F,$F8,$3F,$FC
-                dc.b $7F,$F0,  0,  0,$74,$3F,$FC,  1
-                dc.b $FF,$FC,  1,$FF,$FF,$FF,$C0,  0
-                dc.b $FF,$E0,  0,$3F,$FF,$C0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0, $F,$FF,$80,$3F,$F0,$3F,$FC
-                dc.b $7F,$F0,  0,  1,$F6,$3F,$F8,  1
-                dc.b $FF,$F8,  1,$FF,$FF,$FF,$C0,  0
-                dc.b $FF,$E0,$E0,$7F,$FF,$80,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$1F,$FF,$80,$3F,$F0,$FF,$FC
-                dc.b $FF,$E0,  0,  7,$FE,$7F,$F8,  1
-                dc.b $FF,$F8,  3,$FF,$FF,$FF,$C0,  1
-                dc.b $FF,$C0,$F0,$7F,$FF,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$1F,$FF,  0,$3F,$E3,$FF,$FC
-                dc.b $FF,$E0,  0,$3F,$FE,$7F,$F8,  1
-                dc.b $FF,$F0,  3,$FF,$FF,$FF,$C0,  1
-                dc.b $FF,$80,$FF,$FF,$FE,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$1F,$FF,  0,$3F,$EF,$FF,$FC
-                dc.b $FF,$C0,  0,$FF,$FE,$7F,$F0,  3
-                dc.b $FF,$F0,  7,$FF,$FF,$FF,$C0,  1
-                dc.b $FF,$80,$7F,$FF,$FC,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$1F,$FF,  0,$7F,$FF,$FF,$FC
-                dc.b $FF,$C0,  3,$FF,$FE,$FF,$F0,  3
-                dc.b $FF,$E0, $F,$FF,$FF,$FF,$C0,  3
-                dc.b $FF,$80,$3F,$FF,$F8,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$3F,$FF,  0,$FF,$FF,$FF,$FC
-                dc.b $FF,$C0,  7,$FF,$FE,$FF,$E0,  3
-                dc.b $FF,$E0, $F,$FF,$FF,$FF,$C0,  3
-                dc.b $FF,  1,$FF,$FF,$E0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$3F,$FE,  0,$FF,$FF,$FF,$FC
-                dc.b $FF,$80,$1F,$FF,$FE,$FF,$C0,  7
-                dc.b $FF,$C0,$1F,$FF,$FD,$FF,$C0,  3
-                dc.b $FF,  3,$FF,$FF,$C0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$3F,$FE,  0,$FF,$FF,$FF,$FC
-                dc.b $FF,$80,$3F,$FF,$FD,$FF,$C0,  7
-                dc.b $FF,$C0,$3F,$FF,$E1,$FF,$C0,  7
-                dc.b $FF,  7,$FF,$FF,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$7F,$FE,  1,$FF,$FF,$9F,$FC
-                dc.b $FF,$80,$7F,$FF,$FD,$FF,$80,  7
-                dc.b $FF,$C0,$7F,$FF,$81,$FF,$C0,  7
-                dc.b $FE,$37,$FF,$FE,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$7F,$FC,  3,$FF,$FF,$3F,$FC
-                dc.b $FF,  0,$7F,$F7,$FD,$FF,$80, $F
-                dc.b $FF,$81,$FF,$FE,  1,$FF,$C0,  7
-                dc.b $FE,$7F,$FF,$FF,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$7F,$FC,$1F,$FF,$FC,$3F,$FC
-                dc.b $FF,$80,$FE,$1F,$FD,$FF,  0, $F
-                dc.b $FF,$83,$FF,$FC,  1,$FF,$C0, $F
-                dc.b $FE,$FF,$FF,$FF,$80,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$FF,$FC,$3F,$FF,$E0,$3F,$FC
-                dc.b $FF,$81,$F0,$1F,$FB,$FF,  0,$1F
-                dc.b $FF, $F,$FF,$B0,  1,$FF,$C0, $F
-                dc.b $FE,$7F,$FF,$FF,$C0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$FF,$F8,$7F,$FF,  0,$3F,$FC
-                dc.b $FF,$80,$C0,$1F,$FB,$FF,  0,$3F
-                dc.b $FF,$3F,$FF,$80,  1,$FF,$C0, $F
-                dc.b $FC,$FF,$FF,$FF,$E0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$FF,$F8,$3F,$FC,  0,$3F,$FC
-                dc.b $FF,$80,  0,$1F,$FB,$FE,  0,$7F
-                dc.b $FF,$3F,$FF,  0,  1,$FF,$C0,$1F
-                dc.b $FC,$7F,$FF,$DF,$F0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   1,$FF,$F8,$1F,$F8,  0,$3F,$FC
-                dc.b $FF,$80,  0,$1F,$FF,$FE,  0,$FF
-                dc.b $FE,$3F,$FF,  0,  3,$FF,$80,$1F
-                dc.b $FC,$1F,$FF,$EF,$F8,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   1,$FF,$F0,$1F,$F0,  0,$3F,$FC
-                dc.b $FF,$C0,  0,$3F,$FF,$FC,  1,$FF
-                dc.b $FE,$3F,$FE,  0,  1,$FF,$80,$1F
-                dc.b $FC,$71,$FF,$F1,$F8,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   3,$FF,$F0,$1F,$F0,  0,$3F,$FC
-                dc.b $FF,$C0,  0,$3F,$F7,$FC,  3,$FF
-                dc.b $FE,$7F,$FE,  0,  1,$FF,$80,$3F
-                dc.b $F8,$FE,$FF,$F8,$FC,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   3,$FF,$E0,$3F,$E0,  0,$3F,$FC
-                dc.b $FF,$C0,  0,$3F,$F7,$FC,  7,$FF
-                dc.b $FC,$3F,$FC,  0,  1,$FF,$80,$3F
-                dc.b $F8,$7F,$FF,$FE,$7E,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   3,$FF,$E0,$3F,$E0,  0,$3F,$FC
-                dc.b $7F,$E0,  0,$3F,$F7,$F8, $F,$FF
-                dc.b $FC,$1F,$FC,  0,  1,$FF,$80,$3F
-                dc.b $F8,$3F,$FF,$FF,$3F,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   7,$FF,$C0,$7F,$C0,  0,$3F,$FC
-                dc.b $7F,$E0,  0,$3F,$F7,$F8,$3F,$FF
-                dc.b $FC,$1F,$F8,  0,  1,$FF,$80,$7F
-                dc.b $F8,$1F,$FF,$FF,$9F,$80,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   7,$FF,$C0,$7F,$C0,  0,$3F,$F8
-                dc.b $7F,$F0,  0,$3F,$F7,$F8,$7F,$BF
-                dc.b $F8,$3F,$F8,  0,  1,$FF,$80,$7F
-                dc.b $F8, $F,$FF,$FF,$DF,$C0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  1,  0,$3F,  0,$19,$62,$CC
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,  0,  0,  0,  0,  0
-                dc.b $FF,  0,  0,  0,  0,  0,  0,  0
-                dc.b $FF,  0,  0,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,  0,  0,  0,  0,  0
-                dc.b $FF,  0,  0,  0,$10,  7,  0,  0
-                dc.b  $A,  7,  0,  0,  4,  7,  0,  0
-                dc.b $19,  9,  0,  0,$FF,  7,  0,  0
-                dc.b  $E,  7,  0,  0,  8,  7,  0,  0
-                dc.b $FF,  7,  0,  0,$12,  7,  0,  0
-                dc.b  $C,  7,  0,  0,  6,  7,  0,  0
-                dc.b $FF,  0,  0,  0,$10,  9,  0,  0
-                dc.b  $A,  9,  0,  0,  4,  9,  0,  0
-                dc.b $FF,  7,  0,  0,$FF,  7,  0,  0
-                dc.b  $E,  9,  0,  0,  8,  9,  0,  0
-                dc.b $FF,  7,  0,  0,$12,  9,  0,  0
-                dc.b  $C,  9,  0,  0,  6,  9,  0,  0
-                dc.b $FF,  0,  0,  0,  7, $C,  0,  0
-                dc.b   7, $A,  0,  0,  7,  8,  0,  0
-                dc.b $FF, $C,  0,  0, $B, $C,  0,  0
-                dc.b  $B, $A,  0,  0, $B,  8,  0,  0
-                dc.b $FF,  7,  0,  0,  9, $C,  0,  0
-                dc.b   9, $A,  0,  0,  9,  8,  0,  0
-                dc.b   8, $E,  1,  0,  5,  9,  0,  0
-                dc.b  $B,  9,  0,  0,  7,  5,  0,  0
-                dc.b   8,$10,  1,  0,  8,  8,  0,  0
-                dc.b   7, $B,  0,  0, $B,  7,  0,  0
-                dc.b $FF,  0,  0,  0,  5,  7,  0,  0
-                dc.b   9, $B,  0,  0,  9,  5,  0,  0
-                dc.b   0,$40,  0,  0,  0,  1,$11,  0
-                dc.b   0,$1E,$75,$40,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  1,$63,  0
-                dc.b   0,$1E,$75,$40,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$30,  0
-                dc.b   0,$1E,$75,$40,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$C0,  0
-                dc.b   0,$1E,$75,$40,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  1,  0,  0
-                dc.b   0,$1E,$75,$40,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$E0,  0
-                dc.b   0,$1E,$75,$40,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$C3,  0
-                dc.b   0,$1E,$75,$40,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$F3,$10
-                dc.b   0,$1E,$75,$40,  0,  0,  0,  0
-                dc.b   0,$80,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$16,  0,  0,  0,$30,  0
-                dc.b   0,$FF,$FF,  0,  0,  0,  0,  0
-                dc.b   0,  4,  0,  0,  0,$80,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$16,  0
-                dc.b   0,  0,$30,  0,  0,$FF,$FF,  0
-                dc.b   0,  0,  0,  0,  0,  4,  0,  0
-                dc.b  $A,  0,  1,  0,$C0,  0,  5,  0
-                dc.b   0,  4, $B,  0,  1,  0,$C0,  0
-                dc.b   5,  0,  0,  4, $C,  0,  2,  0
-                dc.b $C0,  0,  5,  0,  0,  4,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$7E,$67,$33,$3A
-                dc.b $35,$3A,$20,$20,$20,$20,$20,$20
-                dc.b $20,$20,$20,$20,$20,$20,$20,$20
-                dc.b $20,$20,$20,$20,$20,$20,$20,$20
-                dc.b $20,$20,$20,$20,$20,$20,$20,$20
-                dc.b $20,$20,$20,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  9,  0,$6F
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$1F,$F8,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0, $F,$FF,$F8,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   1,$FF,$FF,$F0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b $3F,$FF,$FF,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  7
-                dc.b $FF,$FF,$C0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,$FF
-                dc.b $FF,$FF,$E0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$1F,$FF
-                dc.b $FF,$FF,$E0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  7,$FF,$FF
-                dc.b $FF,$FF,$C0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$30,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  7,$FF,$FF,$FF
-                dc.b $FF,$FF,$80,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,$F8,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  1,$7E
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$FF,$BF,$FF,$FF,$FF
-                dc.b $FF,$FF,  0,$30,  0,  0,  0,  0
-                dc.b   0,  0,  3,$F8,  0,  0,  0,  0
-                dc.b   0,$18,  0,  0,  0,  0,  7,$FF
-                dc.b $E0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$FC,  4,$F8,  0,  0,  0,  0
-                dc.b   0,  0,  7,$FC,  0,  0,  0,  0
-                dc.b   0,$3C,  0,  0,  0,  3,$FF,$FF
-                dc.b $F0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  3,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$E0, $F,$FC,  0,  0,  1,$F0
-                dc.b   0,  0, $F,$FC,  0,  0,  0,  0
-                dc.b   0,$7F,$80,  0,  0,$3F,$FF,$FF
-                dc.b $FC,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$C0,$DF,$FC,  0,  0, $F,$FC
-                dc.b   0,  0, $F,$FE,  0,$10,  0,  0
-                dc.b   0,$7F,$F0,  0,  0,$FF,$FF,$FF
-                dc.b $FE,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  2,$7F,$FF,$FF,$FF,$FF
-                dc.b $FE,  1,$DF,$FC,  0,  0,$7F,$FE
-                dc.b   0,  0,$1F,$FF,  0,$3F,$80,  0
-                dc.b   0,$7F,$F8,  0, $F,$FF,$FF,$FF
-                dc.b $FF,$80,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  7,$FF,$FF,$FF,$FF,$FF
-                dc.b $F0,  1,$FF,$FC,  0,  0,$FF,$FE
-                dc.b   0,  0,$1F,$FF,  0,$7F,$C0,  0
-                dc.b   0,$7F,$F8,  0,$7F,$FF,$FF,$FF
-                dc.b $FF,$C0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  7,$FF,$FF,$FF,$FF,$FF
-                dc.b $E0,  3,$FF,$FE,  0,  3,$FF,$FF
-                dc.b   0,  0,$3F,$FF,  0,$FF,$E0,  0
-                dc.b   0,$FF,$F8,  1,$FF,$FF,$FF,$FF
-                dc.b $FF,$E0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  3,$FF,$FF,$FF,$FF,$FF
-                dc.b $C0,  3,$FF,$FE,  0,  7,$FF,$FF
-                dc.b $C0,  0,$3F,$FE,  1,$FF,$E0,  0
-                dc.b   1,$FF,$F8,  7,$FF,$FF,$FF,$FF
-                dc.b $FF,$E0,$7E,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,$FF,$FF,$FF,$FF,$FF
-                dc.b   0,  7,$FF,$FF,  0, $F,$FF,$FF
-                dc.b $E0,  0,$3F,$FE,  1,$FF,$E0,  0
-                dc.b   3,$FF,$F8,$1F,$FF,$FF,$FF,$FF
-                dc.b $FF,$F0,$2E,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,$FF,$FF,$FF,$FF,$F8
-                dc.b   0, $F,$FF,$FF,  0, $F,$FF,$FF
-                dc.b $E0,  0,$7F,$FC,  3,$FF,$E0,  0
-                dc.b   7,$FF,$F8,$7F,$FF,$FF,$FF,$FF
-                dc.b $FF,$F8,$2E,  0,  0,  0,  0,  0
-                dc.b   0,  0,  3,$FF,$FF,$FF,$FF,$F8
-                dc.b   0,$1F,$FF,$FE,  0,$1F,$FF,$FF
-                dc.b $E0,  0,$FF,$FC,  3,$FF,$F0,  0
-                dc.b  $F,$FF,$F0,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$F8,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,$7F,$FF,$FF,$FF,$F8
-                dc.b   0,$1F,$FF,$FE,  0,$3F,$FF,$FF
-                dc.b $C0,  0,$FF,$F8,  7,$FF,$F0,  0
-                dc.b $1F,$FF,$F0,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$F8,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$7F,$FE,  1,$FF,$F8
-                dc.b   0,$3F,$FF,$FE,  0,$7F,$FF,$FF
-                dc.b $80,  1,$FF,$F8,  7,$FF,$F0,  0
-                dc.b $3F,$FF,$F0,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$FC,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$3E,  0,  1,$FF,$F0
-                dc.b   0,$3F,$FF,$FE,  0,$FF,$FF,$FE
-                dc.b   0,  1,$FF,$F0, $F,$FF,$E0,  0
-                dc.b $7F,$FF,$F3,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$FC,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  1,$FF,$F0
-                dc.b   0,$3F,$FF,$FE,  1,$FF,$FF,$E0
-                dc.b   0,  1,$FF,$E0,$1F,$FF,$E0,  0
-                dc.b $FF,$FF,$F7,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$FC,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  3,$FF,$F0
-                dc.b   0,$7F,$FF,$FE,  1,$FF,$FF,$80
-                dc.b   0,  3,$FF,$E0,$1F,$FF,$C0,  1
-                dc.b $FF,$FF,$FF,$FF,$FF,$FF,$C0,$1F
-                dc.b $FF,$FC,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  3,$FF,$F0
-                dc.b   0,$7F,$FF,$FE,  3,$FF,$FE,  0
-                dc.b   0,  3,$FF,$C0,$3F,$FF,$C0,  1
-                dc.b $FF,$FF,$EF,$FF,$FF,$FF,$80,  7
-                dc.b $FF,$FC,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  3,$FF,$F0
-                dc.b   0,$FF,$DF,$FE,  7,$FF,$F8,  0
-                dc.b   0,  7,$FF,$C0,$1F,$FF,$80,  3
-                dc.b $FC,$FF,$EF,$FF,$FF,$FF,  0,  3
-                dc.b $FF,$FC,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  3,$FF,$E0
-                dc.b   1,$FF,$BF,$FE, $F,$FF,$F0,  0
-                dc.b   0,  7,$FF,$C0,$3F,$FF,$80,  7
-                dc.b $F9,$FF,$E7,$FF,$FF,$FF,  0,  1
-                dc.b $FF,$FC,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  7,$FF,$E0
-                dc.b   1,$FF,$3F,$FE, $F,$FF,$C0,  0
-                dc.b   0, $F,$FF,$80,$7F,$FF,  0,  7
-                dc.b $F3,$FF,$E1,$FF,$FF,$FE,  0,  3
-                dc.b $FF,$F8,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  7,$FF,$E0
-                dc.b   3,$FF,$3F,$FC,$1F,$FF,$80,  0
-                dc.b   0, $F,$FF,$80,$7F,$FF,  0, $F
-                dc.b $F3,$FF,$E0,$FF,$FF,$FC,  0,  7
-                dc.b $FF,$F8,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  7,$FF,$C0
-                dc.b   7,$FE,$3F,$FC,$1F,$FF,  0,  0
-                dc.b   0,$1F,$FF,  0,$FF,$FE,  0,$1F
-                dc.b $C3,$FF,$E0,$3F,$BF,$F0,  0,  7
-                dc.b $FF,$F8,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  7,$FF,$C0
-                dc.b   7,$FE,$3F,$FC,$3F,$FE,  0,  0
-                dc.b   0,$1F,$FF,  0,$FF,$FE,  0,$3F
-                dc.b $C3,$FF,$E0,$1E,$7F,$F0,  0, $F
-                dc.b $FF,$F0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0, $F,$FF,$C0
-                dc.b  $F,$FC,$3F,$FC,$3F,$FC,  0,  0
-                dc.b   0,$1F,$FE,  0,$FF,$FC,  0,$7F
-                dc.b $CF,$FF,$E0,  0,$7F,$F0,  0, $F
-                dc.b $FF,$E0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0, $F,$FF,$C0
-                dc.b  $F,$F8,$3F,$FC,$7F,$F8,  0,  0
-                dc.b $20,$3F,$FC,  0,$FF,$FC,  0,$FF
-                dc.b $FF,$FF,$E0,  0,$7F,$E0,  0,$1F
-                dc.b $FF,$E0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0, $F,$FF,$80
-                dc.b $1F,$F8,$3F,$FC,$7F,$F0,  0,  0
-                dc.b $74,$3F,$FC,  1,$FF,$FC,  1,$FF
-                dc.b $FF,$FF,$C0,  0,$FF,$E0,  0,$3F
-                dc.b $FF,$C0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0, $F,$FF,$80
-                dc.b $3F,$F0,$3F,$FC,$7F,$F0,  0,  1
-                dc.b $F6,$3F,$F8,  1,$FF,$F8,  1,$FF
-                dc.b $FF,$FF,$C0,  0,$FF,$E0,$E0,$7F
-                dc.b $FF,$80,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$1F,$FF,$80
-                dc.b $3F,$F0,$FF,$FC,$FF,$E0,  0,  7
-                dc.b $FE,$7F,$F8,  1,$FF,$F8,  3,$FF
-                dc.b $FF,$FF,$C0,  1,$FF,$C0,$F0,$7F
-                dc.b $FF,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$1F,$FF,  0
-                dc.b $3F,$E3,$FF,$FC,$FF,$E0,  0,$3F
-                dc.b $FE,$7F,$F8,  1,$FF,$F0,  3,$FF
-                dc.b $FF,$FF,$C0,  1,$FF,$80,$FF,$FF
-                dc.b $FE,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$1F,$FF,  0
-                dc.b $3F,$EF,$FF,$FC,$FF,$C0,  0,$FF
-                dc.b $FE,$7F,$F0,  3,$FF,$F0,  7,$FF
-                dc.b $FF,$FF,$C0,  1,$FF,$80,$7F,$FF
-                dc.b $FC,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$1F,$FF,  0
-                dc.b $7F,$FF,$FF,$FC,$FF,$C0,  3,$FF
-                dc.b $FE,$FF,$F0,  3,$FF,$E0, $F,$FF
-                dc.b $FF,$FF,$C0,  3,$FF,$80,$3F,$FF
-                dc.b $F8,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$3F,$FF,  0
-                dc.b $FF,$FF,$FF,$FC,$FF,$C0,  7,$FF
-                dc.b $FE,$FF,$E0,  3,$FF,$E0, $F,$FF
-                dc.b $FF,$FF,$C0,  3,$FF,  1,$FF,$FF
-                dc.b $E0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$3F,$FE,  0
-                dc.b $FF,$FF,$FF,$FC,$FF,$80,$1F,$FF
-                dc.b $FE,$FF,$C0,  7,$FF,$C0,$1F,$FF
-                dc.b $FD,$FF,$C0,  3,$FF,  3,$FF,$FF
-                dc.b $C0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$3F,$FE,  0
-                dc.b $FF,$FF,$FF,$FC,$FF,$80,$3F,$FF
-                dc.b $FD,$FF,$C0,  7,$FF,$C0,$3F,$FF
-                dc.b $E1,$FF,$C0,  7,$FF,  7,$FF,$FF
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$7F,$FE,  1
-                dc.b $FF,$FF,$9F,$FC,$FF,$80,$7F,$FF
-                dc.b $FD,$FF,$80,  7,$FF,$C0,$7F,$FF
-                dc.b $81,$FF,$C0,  7,$FE,$37,$FF,$FE
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$7F,$FC,  3
-                dc.b $FF,$FF,$3F,$FC,$FF,  0,$7F,$F7
-                dc.b $FD,$FF,$80, $F,$FF,$81,$FF,$FE
-                dc.b   1,$FF,$C0,  7,$FE,$7F,$FF,$FF
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$7F,$FC,$1F
-                dc.b $FF,$FC,$3F,$FC,$FF,$80,$FE,$1F
-                dc.b $FD,$FF,  0, $F,$FF,$83,$FF,$FC
-                dc.b   1,$FF,$C0, $F,$FE,$FF,$FF,$FF
-                dc.b $80,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$FF,$FC,$3F
-                dc.b $FF,$E0,$3F,$FC,$FF,$81,$F0,$1F
-                dc.b $FB,$FF,  0,$1F,$FF, $F,$FF,$B0
-                dc.b   1,$FF,$C0, $F,$FE,$7F,$FF,$FF
-                dc.b $C0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$FF,$F8,$7F
-                dc.b $FF,  0,$3F,$FC,$FF,$80,$C0,$1F
-                dc.b $FB,$FF,  0,$3F,$FF,$3F,$FF,$80
-                dc.b   1,$FF,$C0, $F,$FC,$FF,$FF,$FF
-                dc.b $E0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$FF,$F8,$3F
-                dc.b $FC,  0,$3F,$FC,$FF,$80,  0,$1F
-                dc.b $FB,$FE,  0,$7F,$FF,$3F,$FF,  0
-                dc.b   1,$FF,$C0,$1F,$FC,$7F,$FF,$DF
-                dc.b $F0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  1,$FF,$F8,$1F
-                dc.b $F8,  0,$3F,$FC,$FF,$80,  0,$1F
-                dc.b $FF,$FE,  0,$FF,$FE,$3F,$FF,  0
-                dc.b   3,$FF,$80,$1F,$FC,$1F,$FF,$EF
-                dc.b $F8,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  1,$FF,$F0,$1F
-                dc.b $F0,  0,$3F,$FC,$FF,$C0,  0,$3F
-                dc.b $FF,$FC,  1,$FF,$FE,$3F,$FE,  0
-                dc.b   1,$FF,$80,$1F,$FC,$71,$FF,$F1
-                dc.b $F8,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  3,$FF,$F0,$1F
-                dc.b $F0,  0,$3F,$FC,$FF,$C0,  0,$3F
-                dc.b $F7,$FC,  3,$FF,$FE,$7F,$FE,  0
-                dc.b   1,$FF,$80,$3F,$F8,$FE,$FF,$F8
-                dc.b $FC,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  3,$FF,$E0,$3F
-                dc.b $E0,  0,$3F,$FC,$FF,$C0,  0,$3F
-                dc.b $F7,$FC,  7,$FF,$FC,$3F,$FC,  0
-                dc.b   1,$FF,$80,$3F,$F8,$7F,$FF,$FE
-                dc.b $7E,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  3,$FF,$E0,$3F
-                dc.b $E0,  0,$3F,$FC,$7F,$E0,  0,$3F
-                dc.b $F7,$F8, $F,$FF,$FC,$1F,$FC,  0
-                dc.b   1,$FF,$80,$3F,$F8,$3F,$FF,$FF
-                dc.b $3F,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  7,$FF,$C0,$7F
-                dc.b $C0,  0,$3F,$FC,$7F,$E0,  0,$3F
-                dc.b $F7,$F8,$3F,$FF,$FC,$1F,$F8,  0
-                dc.b   1,$FF,$80,$7F,$F8,$1F,$FF,$FF
-                dc.b $9F,$80,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  7,$FF,$C0,$7F
-                dc.b $C0,  0,$3F,$F8,$7F,$F0,  0,$3F
-                dc.b $F7,$F8,$7F,$BF,$F8,$3F,$F8,  0
-                dc.b   1,$FF,$80,$7F,$F8, $F,$FF,$FF
-                dc.b $DF,$C0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0, $F,$FF,$C0,$FF
-                dc.b $80,  0,$3F,$F8,$3F,$F8,  0,$1F
-                dc.b $F7,$F8,$FF,$7F,$F8,$7F,$F0,  0
-                dc.b   1,$FF,$80,$3F,$F0,  7,$FF,$FF
-                dc.b $EF,$E0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0, $F,$FF,$80,$FF
-                dc.b $80,  0,$3F,$F8,$3F,$FC,  0,$1F
-                dc.b $F7,$FB,$FE,$FF,$F8,$FF,$E0,  0
-                dc.b   1,$FF,$80,$7F,$F0,  1,$FF,$FF
-                dc.b $E7,$F8,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$1F,$FF,$81,$FF
-                dc.b $80,  0,$1F,$F8,$1F,$FF,  0,$1F
-                dc.b $F7,$FF,$FC,$FF,$F9,$FF,$E0,  0
-                dc.b   1,$FF,$80,$FF,$F0,  0,$FD,$FF
-                dc.b $FB,$FC,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$1F,$FF,  1,$FF
-                dc.b   0,  0,$1F,$FC, $F,$FF,$C0,$7F
-                dc.b $F7,$FF,$F8,$FF,$FD,$FF,$C0,  0
-                dc.b   0,$FF,$80,$FF,$F0,  0,$7E,$FF
-                dc.b $FC,$FE,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$3F,$FF,  3,$FF
-                dc.b   0,  0,$1F,$FC,  7,$FF,$FF,$FF
-                dc.b $F7,$FF,$F0,$FF,$FD,$FF,$C0,  0
-                dc.b   0,$FF,$81,$FF,$E0,  0,$7E,$7F
-                dc.b $FE,$7F,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$7F,$FE,  7,$FE
-                dc.b   0,  0,$1F,$FC,  3,$FF,$FF,$FF
-                dc.b $F3,$FF,$E0,$FF,$FF,$FF,$80,  0
-                dc.b   0,$7F,$81,$FF,$E0,  0,$3F,$3F
-                dc.b $FF,$3F,$80,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$7F,$FE,  7,$FE
-                dc.b   0,  0,$1F,$FC,  1,$FF,$FF,$FF
-                dc.b $F3,$FF,$C0,$FF,$FF,$FF,$80,  0
-                dc.b   0,$7F,  1,$FF,$E0,  0,$1F,$9F
-                dc.b $FF,$DF,$C0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$FF,$FC, $F,$FC
-                dc.b   0,  0,$1F,$FC,  0,$FF,$FF,$F3
-                dc.b $F1,$FF,$80,$7F,$FF,$FF,  0,  0
-                dc.b   0,$7F,  3,$FF,$E0,  0, $F,$CF
-                dc.b $FF,$EF,$E0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  1,$FF,$F8, $F,$FC
-                dc.b   0,  0,$1F,$FC,  0,$7F,$FF,$F1
-                dc.b $F0,$FF,  0,$7F,$FF,$FE,  0,  0
-                dc.b   0,$7F,  3,$FF,$E0,  0,  7,$E7
-                dc.b $FF,$F7,$F8,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  1,$FF,$F8,$1F,$F8
-                dc.b   0,  0, $F,$FC,  0,$1F,$FF,$E0
-                dc.b $F0,  0,  0,$7F,$FF,$FE,  0,  0
-                dc.b   0,$7F,  3,$FF,$C0,  0,  1,$F3
-                dc.b $FF,$FB,$FC,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  3,$FF,$F0,$1F,$F8
-                dc.b   0,  0,  7,$D8,  0,  7,$FF,$C0
-                dc.b $60,  0,  0,$3F,$DF,$FC,  0,  0
-                dc.b   0,$3F,  3,$FF,$C0,  0,  1,$F9
-                dc.b $FF,$FC,$FE,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  7,$FF,$E0,$3F,$F8
-                dc.b   0,  0,  1,$D8,  0,  1,$FF,  0
-                dc.b   0,  0,  0,$1F,$7F,$FC,  0,  0
-                dc.b   0,$1F,  7,$FD,$C0,  0,  0,$FC
-                dc.b $7F,$FE,$7F,  0,  0,  0,  0,  0
-                dc.b $38,  0,  0, $F,$FF,$C0,$3F,$F0
-                dc.b   0,  0,  1,$80,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$7F,$F8,  0,  0
-                dc.b   0,$3F,  7,$FE,$80,  0,  0,$7E
-                dc.b $3F,$FF,$9F,$80,  0,  0,  0,  0
-                dc.b $7C,  0,  0,$1F,$FF,$80,$3F,$F0
-                dc.b   0,  0,  1,$C0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$FF,$F0,  0,  0
-                dc.b   0,$3F,  7,$FF,$80,  0,  0,$3F
-                dc.b  $F,$FF,$CF,$C0,  0,  0,  0,  0
-                dc.b $3C,  0,  0,$3F,$FF,$80,$7F,$E0
-                dc.b   0,  0,  0,$80,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$FF,$E0,  0,  0
-                dc.b   0,$1F,  7,$FF,$80,  0,  0,$1F
-                dc.b $87,$FF,$E7,$E0,  0,  0,  0,  0
-                dc.b $3F,  0,  0,$7F,$FF,  0,$FF,$E0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  1,$FF,$C0,  0,  0
-                dc.b   0,$1F, $F,$FB,$80,  0,  0, $F
-                dc.b $83,$FF,$F3,$F0,  0,  0,  0,  0
-                dc.b $1F,$C0,  1,$FF,$FE,  0,$FF,$C0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  1,$FF,$80,  0,  0
-                dc.b   0,$1F,$1F,$F7,$80,  0,  0,  7
-                dc.b $F3,$FF,$F8,$F8,  0,  0,  0,  0
-                dc.b $1F,$E0,  7,$FF,$FC,  0,$FF,$80
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  3,$FF,$80,  0,  0
-                dc.b   0,$1E,$1F,$FF,  0,  0,  0,  3
-                dc.b $F8,$FF,$FC,$7C,  0,  0,  0,  0
-                dc.b  $F,$F8,$1F,$FF,$F8,  1,$FF,$80
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  3,$FF,  0,  0,  0
-                dc.b   0, $E,$3F,$EF,  0,  0,  0,  1
-                dc.b $FC,$3F,$FE,$3E,  0,  0,  0,  0
-                dc.b   7,$FF,$FF,$FF,$F0,  1,$FD,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  7,$FF,  0,  0,  0
-                dc.b   0, $E,$3F,$FE,  0,  0,  0,  0
-                dc.b $7E,$1F,$FF,$1F,$80,  0,  0,  0
-                dc.b   1,$FF,$FF,$FF,$E0,  3,$D8,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $F,$FE,  0,  0,  0
-                dc.b   0, $E,$3F,$EC,  0,  0,  0,  0
-                dc.b $3F,  7,$DF,$87,$C0,  0,  0,  0
-                dc.b   0,$FF,$FF,$FF,$C0,  1,$F0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $F,$FC,  0,  0,  0
-                dc.b   0,  4,$3E,$E0,  0,  0,  0,  0
-                dc.b  $F,  3,$F7,$E3,$E0,  0,  0,  0
-                dc.b   0,$3F,$FF,$FF,$80,  1,$C0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$1F,$E8,  0,  0,  0
-                dc.b   0,  0,$3F,$40,  0,  0,  0,  0
-                dc.b   7,$C1,$FB,$F1,$F0,  0,  0,  0
-                dc.b   0, $F,$FF,$FE,  0,  1,$80,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $F,$C0,  0,  0,  0
-                dc.b   0,  0,$3E,  0,  0,  0,  0,  0
-                dc.b   3,$E0,$FC,$F8,$FC,  0,  0,  0
-                dc.b   0,  3,$FF,$FC,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $F,  0,  0,  0,  0
-                dc.b   0,  0,$3E,  0,  0,  0,  0,  0
-                dc.b   1,$F0,$7E,$7C,$7E,  0,  0,  0
-                dc.b   0,  0,$7F,$E0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  6,  0,  0,  0,  0
-                dc.b   0,  0,$3E,  0,  0,  0,  0,  0
-                dc.b   0,$FC,$3F,$3E,$1F,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$3C,  0,  0,  0,  0,  0
-                dc.b   0,$3E,$1F,$8F, $F,$80,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$1F,  7,$C7,$87,$C0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0, $F,$C3,$E3,$C3,$B0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  3,$E0,$F0,$F0,$78,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  1,$F8,$78,$78,$3E,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$FC,$1C,$3C,$1F,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$7E, $C,$1E, $F,$80,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$1F,  3,  7,  7,$C0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0, $F,$81,$C2,  1,$E0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  7,$E0,$F0,$40,$DC,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,$F0,$7C,$20,$3E,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$F8,$3F,$18,$1F,$80
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$7C, $F,$80, $F,$C0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$1F,  7,$C0,$C3,$F0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $F,$83,$E1,$F0,$F8
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  7,$C0,$F0,$F8,$3C
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  1,$F0,$7C,$3C,  8
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$F8,$3E,$1E,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$7C, $F,  4,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,$1F,  7,$80,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0, $F,$83,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  3,$C0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  1,$F0,$38,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$F8,$38,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$3C,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$1E,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0, $F,$80,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  3,$C0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  1,$E0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$E0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
+                dcb.w $1C,$118
+                dc.w $130, $138, $140, $148, $150, $158, $160, $168, $170
+                dc.w $178, $180, $188, $190, $198, $1A0, $1A8, $1B0, $1B8
+                dc.w $1C0, $1C8, $1D0, $1D8, $1E0, $1E8, $1F0, $3A0, $118
+                dc.w $128, $118, $120
+                dcb.w 2,$118
+                dc.w $2C8, $2D0, $2D8, $2E0, $2E8, $2F0, $2F8, $300, $308
+                dc.w $310, $318, $320, $328, $330, $338, $340, $348, $350
+                dc.w $358, $360, $368, $370, $378, $380, $388, $390
+                dcb.w 6,$118
+                dc.w $1F8, $200, $208, $210, $218, $220, $228, $230, $238
+                dc.w $240, $248, $250, $258, $260, $268, $270, $278, $280
+                dc.w $288, $290, $298, $2A0, $2A8, $2B0, $2B8, $2C0
+                dcb.w 5,$118
+                dc.w $3A8, $3B0, $3B8, $3C0, $3C8, $3D0, $3D8, $3E0, $3E8
+                dc.w $3F0
+                dcb.w 4,0
+                dc.l $20100804
+                dcb.l 2,$4081020
+                dc.l $20100804, $20202020, $20000020, $50505000, 0
+                dc.l $4848FE48, $48FE4848, $107E9070, $1014FE20, $60620408
+                dc.l $10204C8C, $20508870, $64989A64, $102040, 0
+                dc.l $10204040, $40402010, $20100808, $8081020, $925438
+                dc.l $38549200, $101010FE, $10101000, 0
+                dc.l $101020, $FE
+                dcb.l 2,0
+                dc.l $606000, $20408, $10204080, $7C82868A, $92A2C27C
+                dc.l $10305010, $101010FE, $78840408, $102040FE, $7C820204
+                dc.l $7C02827C, $40C1424, $4484FE04, $FE8080FC, $202827C
+                dc.l $384080FC, $8282827C, $FE020408, $10204080, $7C82827C
+                dc.l $8282827C, $7C828282, $7E02827C, $7C, $27E827E, $808080FC
+                dc.l $828282FC, $7E, $8080807E, $202027E, $8282827E, $7C
+                dc.l $82FC807C, $3E4040, $FE404040, $7E, $827E027C, $808080FC
+                dc.l $82828282, $100030, $10101038, $100010, $101010E0
+                dc.l $80808088, $90F08884, $60202020, $20202070, $7C, $92929282
+                dc.l $78, $84848484, $7C, $8282827C, $FC, $82FC8080, $7E
+                dc.l $827E0202, $FC, $82808080, $7E, $403804FC, $10FE
+                dc.l $1010100C, $82, $8282867A, $82, $82442810, $82, $8292AAC6
+                dc.l $84, $48304884, $82, $827E02FC, $FE, $41040FE, $10284482
+                dc.l $FE828282, $FC8284FC, $828282FC, $7EC08080, $8080C07E
+                dc.l $FC868282, $828286FC, $FE8080FE, $808080FE, $FE8080FE
+                dc.l $80808080, $7EC08080, $8086C27C, $828282FE, $82828282
+                dc.l $FE101010, $101010FE, $FE080808, $8888870, $848890E0
+                dc.l $90888482, $80808080, $808080FE, $82C6AA92, $82828282
+                dc.l $82C2A292, $8A868282, $7CC68282, $8282C67C, $FC828282
+                dc.l $FC808080, $7CC68282, $828AC67A, $FC828282, $FC888482
+                dc.l $7E80C030, $1C0602FC, $FE101010, $10101010, $82828282
+                dc.l $8282827C, $82828244, $44282810, $82828282, $8292AAC6
+                dc.l $82824438, $28448282, $82828244, $28101010, $FE020408
+                dc.l $102040FE, $C0F0FCFE, $FEFCF0C0, $3000, $300000, $3C6666
+                dc.l $66663C00, $381818, $18183C00, $386C0C, $18307C00
+                dc.l $7E060C, $6663C00, $1C3C6C, $7E0C0C00, $7E607C, $6067C00
+                dc.l $3C607C, $66663C00, $3E060C, $18181800, $3C663C, $66663C00
+                dc.l $3C663E, $6063C00
+                dcb.l 2,$FFFFFFFF
+                dc.l $FF8F8F8F, $8F8F8FFF, $FFF1F1F1, $F1F1F1FF, $FF818181
+                dc.l $818181FF
+dword_1990C8:   dc.l $40037, 0          ; DATA XREF: ROM:off_198C5C↑o
+                dc.l $3E0000
+                dcb.l 4,0
+                dc.l $FFC0000
+                dcb.l 3,0
+                dc.l 1, $FF800000
+                dcb.l 3,0
+                dc.l $3F, $FFC00000
+                dcb.l 3,0
+                dc.l $1FFF, $FF800000, $E0000, 7, 0
+                dc.l $FFFFF, $FE0E0000, $1E0000, $60001FF, $C0000000, $FFFFF
+                dc.l $F8BE003E, $3F0000, $7C00FFF, $F0000000, $1FFFFF
+                dc.l $C0FE00FF, $3F0780, $7E07FFF, $F8000000, $1FFFFF
+                dc.l $81FF01FF, $807F0FC0, $FE1FFFF, $FC700000, $FFFFE
+                dc.l $3FF03FF, $C07E1FC0, $1FE7FFFF, $FE700000, $7FFFE
+                dc.l $3FF07FF, $80FE1FC0, $3FCFFFFF, $FE000000, $700FC
+                dc.l $7FF0FFF, $FC3FC0, $7FDFFFFF, $FE000000, $1FC, $7FF0FF8
+                dc.l $1FC3F80, $FFFFFF83, $FE000000, $1FC, $FBF1FE0, $1F83F81
+                dc.l $EFFFFF01, $FE000000, $1FC, $F7F3F80, $3F87F01, $DFCFFF01
+                dc.l $FE000000, $1F8, $1F7E3F00, $3F0FF03, $9FC7FC01, $FE000000
+                dc.l $3F8, $3E7E7E00, $3F0FE07, $BFC07C03, $FC000000, $3F8
+                dc.l $3E7E7C00, $47E0FE0F, $FF80FC07, $F8000000, $3F8
+                dc.l $7CFEFC01, $F7E0FE1F, $FF80F8C7, $F0000000, $3F0
+                dc.l $7FFEF80F, $F7C1FC1F, $FF80F87F, $E0000000, $7F0
+                dc.l $FFFEF81F, $FFC1FC3F, $FF81F0FF, $C0000000, $7F0
+                dc.l $FFFEF87F, $EF81F87F, $CF81F1FF, 0
+                dc.l $7E1, $FF7EF07D, $EF83F8FF, $F81F7FF, 0
+                dc.l $FE7, $FC7EF8C3, $FF03F3FC, $F83F7FF, $80000000, $FE7
+                dc.l $E07EF803, $FF07F7F0, $F83E7FB, $C0000000, $FC3, $C07EF807
+                dc.l $FE0FF7F0, $F83E4FC, $E0000000, $1FC7, $C07EF807
+                dc.l $DE1FE7E0, $F87E7FF, $70000000, $1F87, $807E7C07
+                dc.l $DE7FE3E0, $F87E3FF, $B8000000, $3F8F, $807E7E03
+                dc.l $DEF7E7C0, $F87C1FF, $FC000000, $3F8F, $803E3F03
+                dc.l $DFEFEFC0, $F8FC0EF, $FE000000, $7F1F, $3E1FFF, $DFCFEF80
+                dc.l $F8FC077, $F7000000, $7F1F, $3E0FFF, $DF8FFF80, $70FC03B
+                dc.l $FB800000, $FE3E, $3E07FC, $CF07FF00, $71FC01D, $FDE00000
+                dc.l $1FC3E, $1A01F8, $4007BE00, $71F800E, $FEF00000, $6003F87C
+                dc.l $80000, $7E00, $71F8007, $7FB80000, $6007F87C, $80000
+                dc.l $FC00, $31F8003, $9FDC0000, $380FF0F8, 0
+                dc.l $F800, $33D8001, $DFEE0000, $3E3FE0F8, 0
+                dc.l $1F000, $37F0000, $E7F70000, $FFFC1A0, 0
+                dc.l $3F000, $37E0000, $71B98000, $7FF8080, 0
+                dc.l $3E000, $700000, $18FCC000, $1FE0000, 0
+                dc.l $30000, $700000, $C767000
+                dcb.l 3,0
+                dc.l $600000, $73B3800
+                dcb.l 4,0
+                dc.l $39D9C00
+                dcb.l 4,0
+                dc.l $E66700
+                dcb.l 4,0
+                dc.l $723380
+                dcb.l 4,0
+                dc.l $3890C0
+                dcb.l 4,0
+                dc.l $C6470
+                dcb.l 4,0
+                dc.l $63838
+                dcb.l 4,0
+                dc.l $39CCE
+                dcb.l 4,0
+                dc.l $C662
+                dcb.l 4,0
+                dc.l $6300
+                dcb.l 4,0
+                dc.l $3900
+                dcb.l 4,0
+                dc.l $C60
+                dcb.l 4,0
+                dc.l $600
+                dcb.l 4,0
+                dc.l $380
+                dcb.l 4,0
+                dc.l $C0, 0
+                dc.l $7FFE0, $1FF3FFE, $FFFC000, $FFF80, $7FFF0007, $F3FFE1FF
+                dc.l $FFFE0003, $FFF80000
+                dcb.l 2,0
+                dc.l $7FFE0, $3FF3FFC, $1FFF8000, $FFF80, $7FFF000F, $F3FFE0FF
+                dc.l $FFFC0007, $FFF80000
+                dcb.l 2,0
+                dc.l $7FFC0, $7FE3FFC, $1FFF0000, $1FFF00, $FFFE001F, $C3FFE03F
+                dc.l $BFF00007, $FFF80000
+                dcb.l 2,0
+                dc.l $7FFC0, $7FE3FFC, $3FFE0000, $1FFF00, $FFFE003F, $C3FFE01E
+                dc.l $7FF0000F, $FFF00000
+                dcb.l 2,0
+                dc.l $FFFC0, $FFC3FFC, $3FFC0000, $1FFE00, $FFFC007F, $CFFFE000
+                dc.l $7FF0000F, $FFE00000
+                dcb.l 2,0
+                dc.l $FFFC0, $FF83FFC, $7FF80000, $203FFC00, $FFFC00FF
+                dc.l $FFFFE000, $7FE0001F, $FFE00000
+                dcb.l 2,0
+                dc.l $FFF80, $1FF83FFC, $7FF00000, $743FFC01, $FFFC01FF
+                dc.l $FFFFC000, $FFE0003F, $FFC00000
+                dcb.l 2,0
+                dc.l $FFF80, $3FF03FFC, $7FF00001, $F63FF801, $FFF801FF
+                dc.l $FFFFC000, $FFE0E07F, $FF800000
+                dcb.l 2,0
+                dc.l $1FFF80, $3FF0FFFC, $FFE00007, $FE7FF801, $FFF803FF
+                dc.l $FFFFC001, $FFC0F07F, $FF000000
+                dcb.l 2,0
+                dc.l $1FFF00, $3FE3FFFC, $FFE0003F, $FE7FF801, $FFF003FF
+                dc.l $FFFFC001, $FF80FFFF, $FE000000
+                dcb.l 2,0
+                dc.l $1FFF00, $3FEFFFFC, $FFC000FF, $FE7FF003, $FFF007FF
+                dc.l $FFFFC001, $FF807FFF, $FC000000
+                dcb.l 2,0
+                dc.l $1FFF00, $7FFFFFFC, $FFC003FF, $FEFFF003, $FFE00FFF
+                dc.l $FFFFC003, $FF803FFF, $F8000000
+                dcb.l 2,0
+                dc.l $3FFF00, $FFFFFFFC, $FFC007FF, $FEFFE003, $FFE00FFF
+                dc.l $FFFFC003, $FF01FFFF, $E0000000
+                dcb.l 2,0
+                dc.l $3FFE00, $FFFFFFFC, $FF801FFF, $FEFFC007, $FFC01FFF
+                dc.l $FDFFC003, $FF03FFFF, $C0000000
+                dcb.l 2,0
+                dc.l $3FFE00, $FFFFFFFC, $FF803FFF, $FDFFC007, $FFC03FFF
+                dc.l $E1FFC007, $FF07FFFF
+                dcb.l 3,0
+                dc.l $7FFE01, $FFFF9FFC, $FF807FFF, $FDFF8007, $FFC07FFF
+                dc.l $81FFC007, $FE37FFFE
+                dcb.l 3,0
+                dc.l $7FFC03, $FFFF3FFC, $FF007FF7, $FDFF800F, $FF81FFFE
+                dc.l $1FFC007, $FE7FFFFF
+                dcb.l 3,0
+                dc.l $7FFC1F, $FFFC3FFC, $FF80FE1F, $FDFF000F, $FF83FFFC
+                dc.l $1FFC00F, $FEFFFFFF, $80000000
+                dcb.l 2,0
+                dc.l $FFFC3F, $FFE03FFC, $FF81F01F, $FBFF001F, $FF0FFFB0
+                dc.l $1FFC00F, $FE7FFFFF, $C0000000
+                dcb.l 2,0
+                dc.l $FFF87F, $FF003FFC, $FF80C01F, $FBFF003F, $FF3FFF80
+                dc.l $1FFC00F, $FCFFFFFF, $E0000000
+                dcb.l 2,0
+                dc.l $FFF83F, $FC003FFC, $FF80001F, $FBFE007F, $FF3FFF00
+                dc.l $1FFC01F, $FC7FFFDF, $F0000000
+                dcb.l 2,0
+                dc.l $1FFF81F, $F8003FFC, $FF80001F, $FFFE00FF, $FE3FFF00
+                dc.l $3FF801F, $FC1FFFEF, $F8000000
+                dcb.l 2,0
+                dc.l $1FFF01F, $F0003FFC, $FFC0003F, $FFFC01FF, $FE3FFE00
+                dc.l $1FF801F, $FC71FFF1, $F8000000
+                dcb.l 2,0
+                dc.l $3FFF01F, $F0003FFC, $FFC0003F, $F7FC03FF, $FE7FFE00
+                dc.l $1FF803F, $F8FEFFF8, $FC000000
+                dcb.l 2,0
+                dc.l $3FFE03F, $E0003FFC, $FFC0003F, $F7FC07FF, $FC3FFC00
+                dc.l $1FF803F, $F87FFFFE, $7E000000
+                dcb.l 2,0
+                dc.l $3FFE03F, $E0003FFC, $7FE0003F, $F7F80FFF, $FC1FFC00
+                dc.l $1FF803F, $F83FFFFF, $3F000000
+                dcb.l 2,0
+                dc.l $7FFC07F, $C0003FFC, $7FE0003F, $F7F83FFF, $FC1FF800
+                dc.l $1FF807F, $F81FFFFF, $9F800000
+                dcb.l 2,0
+                dc.l $7FFC07F, $C0003FF8, $7FF0003F, $F7F87FBF, $F83FF800
+                dc.l $1FF807F, $F80FFFFF, $DFC00000
+                dcb.l 2,0
+dword_199990:   dc.l $1003F             ; DATA XREF: ROM:00198C64↑o
+                                        ; ROM:00198C68↑o
+off_199994:     dc.l locret_1962CC      ; DATA XREF: sub_192000+E↑w
+                                        ; ROM:00192044↑w ...
+                dcb.l $20,0
+                dc.l $18000000, 0
+                dc.l $18000000, 0
+                dc.l $18000000, 0
+                dc.l $FF000000, 0
+                dc.l $FF000000, 0
+                dc.l $18000000, 0
+                dc.l $18000000, 0
+                dc.l $18000000, 0
+dword_199A58:   dc.l $FF000000, $10070000, $A070000, $4070000
+                                        ; DATA XREF: sub_19546E+6A↑o
+                dc.b $19, 9
+word_199A6A:    dc.w 0                  ; DATA XREF: ROM:00195630↑w
+                dc.l $FF070000, $E070000, $8070000, $FF070000, $12070000
+                dc.l $C070000, $6070000
+dword_199A88:   dc.l $FF000000, $10090000, $A090000, $4090000
+                                        ; DATA XREF: sub_19454C+D4↑o
+                                        ; sub_1943FC+1CB4↑o
+                dcb.l 2,$FF070000
+                dc.l $E090000, $8090000, $FF070000, $12090000, $C090000
+                dc.l $6090000
+dword_199AB8:   dc.l $FF000000, $70C0000, $70A0000, $7080000, $FF0C0000
+                                        ; DATA XREF: ROM:00195334↑o
+                dc.l $B0C0000, $B0A0000, $B080000, $FF070000, $90C0000
+                dc.l $90A0000, $9080000
+dword_199AE8:   dc.l $80E0100, $5090000, $B090000, $7050000, $8100100
+                                        ; DATA XREF: sub_1946B2+62↑o
+                dc.l $8080000, $70B0000, $B070000, $FF000000, $5070000
+                dc.l $90B0000, $9050000, $400000, $11100, $1E7540
+                dcb.l 2,0
+                dc.l $16300, $1E7540
+                dcb.l 2,0
+                dc.l $3000, $1E7540
+                dcb.l 2,0
+                dc.l $C000, $1E7540
+                dcb.l 2,0
+                dc.l $10000, $1E7540
+                dcb.l 2,0
+                dc.l $E000, $1E7540
+                dcb.l 2,0
+                dc.l $C300, $1E7540
+                dcb.l 2,0
+                dc.l $F310, $1E7540, 0
+dword_199B98:   dc.l $800000, 0         ; DATA XREF: sub_192726+30↑o
+                                        ; sub_192726+4E↑r ...
+                dc.l $1600, $3000, $FFFF00, 0
+                dc.l $40000
+dword_199BB4:   dc.l $800000, 0         ; DATA XREF: sub_192726+42↑o
+                                        ; sub_192726+62↑r ...
+                dc.l $1600, $3000, $FFFF00, 0
+                dc.l $40000
+dword_199BD0:   dc.l $A000100, $C0000500, $40B00, $100C000, $5000004, $C000200
+                                        ; DATA XREF: sub_19279E+48↑o
+                                        ; ROM:loc_193E7A↑o
+                dc.l $C0000500, $40000
+dword_199BF0:   dc.l 0                  ; DATA XREF: sub_192726+70↑w
+dword_199BF4:   dc.l 0                  ; DATA XREF: sub_192726+5C↑w
+word_199BF8:    dc.w 0                  ; DATA XREF: sub_192B2A↑w
+                                        ; sub_192088+D76↑o ...
+word_199BFA:    dc.w 0                  ; DATA XREF: sub_192B2A+8↑w
+                                        ; sub_19510A↑r ...
+dword_199BFC:   dc.l 0                  ; DATA XREF: sub_192B2A+42↑w
+                                        ; sub_19510A+6↑r ...
+word_199C00:    dc.w 0                  ; DATA XREF: sub_192B2A+E↑w
+                                        ; ROM:001943B2↑r ...
+word_199C02:    dcb.w 9,0               ; DATA XREF: sub_192B2A+16↑w
+                                        ; ROM:001943B8↑r ...
+asc_199C14:     dc.b '~g3:5:                                 ',0
+                                        ; DATA XREF: ROM:0019439E↑o
+                                        ; ROM:0019439E↑o
+                dcb.l 2,0
+dword_199C44:   dc.l $9006F             ; DATA XREF: ROM:00198C60↑o
+dword_199C48:   dcb.l 2,0               ; DATA XREF: sub_192088+150↑o
+                dc.l $1FF8
+                dcb.l 9,0
+                dc.l $FFFF8
+                dcb.l 9,0
+                dc.l $1FFFFF0
+                dcb.l 9,0
+                dc.l $3FFFFF00
+                dcb.l 8,0
+                dc.l 7, $FFFFC000
+                dcb.l 8,0
+                dc.l $FF, $FFFFE000
+                dcb.l 8,0
+                dc.l $1FFF, $FFFFE000
+                dcb.l 8,0
+                dc.l $7FFFF, $FFFFC000, 0
+                dc.l $30
+                dcb.l 6,0
+                dc.l $7FFFFFF, $FFFF8000, 0
+                dc.l $1F8
+                dcb.l 2,0
+                dc.l $17E
+                dcb.l 2,0
+                dc.l $FF, $BFFFFFFF, $FFFF0030, 0
+                dc.l $3F8, 0
+                dc.l $180000, $7FF, $E0000000, 0
+                dc.l $1FF, $FFFFFFFF, $FFFC04F8, 0
+                dc.l $7FC, 0
+                dc.l $3C0000, $3FFFF, $F0000000, 0
+                dc.l $3FF, $FFFFFFFF, $FFE00FFC, $1F0, $FFC, 0
+                dc.l $7F8000, $3FFFFF, $FC000000, 0
+                dc.l $1FF, $FFFFFFFF, $FFC0DFFC, $FFC, $FFE, $100000, $7FF000
+                dc.l $FFFFFF, $FE000000, 0
+                dc.l $27F, $FFFFFFFF, $FE01DFFC, $7FFE, $1FFF, $3F8000
+                dc.l $7FF800, $FFFFFFF, $FF800000, 0
+                dc.l $7FF, $FFFFFFFF, $F001FFFC, $FFFE, $1FFF, $7FC000
+                dc.l $7FF800, $7FFFFFFF, $FFC00000, 0
+                dc.l $7FF, $FFFFFFFF, $E003FFFE, $3FFFF, $3FFF, $FFE000
+                dc.l $FFF801, $FFFFFFFF, $FFE00000, 0
+                dc.l $3FF, $FFFFFFFF, $C003FFFE, $7FFFF, $C0003FFE, $1FFE000
+                dc.l $1FFF807, $FFFFFFFF, $FFE07E00, 0
+                dc.l $1FF, $FFFFFFFF, $7FFFF, $FFFFF, $E0003FFE, $1FFE000
+                dc.l $3FFF81F, $FFFFFFFF, $FFF02E00, 0
+                dc.l $1FF, $FFFFFFF8
+                dcb.l 2,$FFFFF
+                dc.l $E0007FFC, $3FFE000, $7FFF87F, $FFFFFFFF, $FFF82E00
+                dc.l 0
+                dc.l $3FF, $FFFFFFF8, $1FFFFE, $1FFFFF, $E000FFFC, $3FFF000
+                dc.l $FFFF0FF, $FFFFFFFF, $FFF80000, 0
+                dc.l $17F, $FFFFFFF8, $1FFFFE, $3FFFFF, $C000FFF8, $7FFF000
+                dc.l $1FFFF0FF, $FFFFFFFF, $FFF80000, 0
+                dc.l $7F, $FE01FFF8, $3FFFFE, $7FFFFF, $8001FFF8, $7FFF000
+                dc.l $3FFFF0FF, $FFFFFFFF, $FFFC0000, 0
+                dc.l $3E, $1FFF0, $3FFFFE, $FFFFFE, $1FFF0, $FFFE000, $7FFFF3FF
+                dc.l $FFFFFFFF, $FFFC0000
+                dcb.l 2,0
+                dc.l $1FFF0, $3FFFFE, $1FFFFE0, $1FFE0, $1FFFE000, $FFFFF7FF
+                dc.l $FFFFFFFF, $FFFC0000
+                dcb.l 2,0
+                dc.l $3FFF0, $7FFFFE, $1FFFF80, $3FFE0, $1FFFC001, $FFFFFFFF
+                dc.l $FFFFC01F, $FFFC0000
+                dcb.l 2,0
+                dc.l $3FFF0, $7FFFFE, $3FFFE00, $3FFC0, $3FFFC001, $FFFFEFFF
+                dc.l $FFFF8007, $FFFC0000
+                dcb.l 2,0
+                dc.l $3FFF0, $FFDFFE, $7FFF800, $7FFC0, $1FFF8003, $FCFFEFFF
+                dc.l $FFFF0003, $FFFC0000
+                dcb.l 2,0
+                dc.l $3FFE0, $1FFBFFE, $FFFF000, $7FFC0, $3FFF8007, $F9FFE7FF
+                dc.l $FFFF0001, $FFFC0000
+                dcb.l 2,0
+                dc.l $7FFE0, $1FF3FFE, $FFFC000, $FFF80, $7FFF0007, $F3FFE1FF
+                dc.l $FFFE0003, $FFF80000
+                dcb.l 2,0
+                dc.l $7FFE0, $3FF3FFC, $1FFF8000, $FFF80, $7FFF000F, $F3FFE0FF
+                dc.l $FFFC0007, $FFF80000
+                dcb.l 2,0
+                dc.l $7FFC0, $7FE3FFC, $1FFF0000, $1FFF00, $FFFE001F, $C3FFE03F
+                dc.l $BFF00007, $FFF80000
+                dcb.l 2,0
+                dc.l $7FFC0, $7FE3FFC, $3FFE0000, $1FFF00, $FFFE003F, $C3FFE01E
+                dc.l $7FF0000F, $FFF00000
+                dcb.l 2,0
+                dc.l $FFFC0, $FFC3FFC, $3FFC0000, $1FFE00, $FFFC007F, $CFFFE000
+                dc.l $7FF0000F, $FFE00000
+                dcb.l 2,0
+                dc.l $FFFC0, $FF83FFC, $7FF80000, $203FFC00, $FFFC00FF
+                dc.l $FFFFE000, $7FE0001F, $FFE00000
+                dcb.l 2,0
+                dc.l $FFF80, $1FF83FFC, $7FF00000, $743FFC01, $FFFC01FF
+                dc.l $FFFFC000, $FFE0003F, $FFC00000
+                dcb.l 2,0
+                dc.l $FFF80, $3FF03FFC, $7FF00001, $F63FF801, $FFF801FF
+                dc.l $FFFFC000, $FFE0E07F, $FF800000
+                dcb.l 2,0
+                dc.l $1FFF80, $3FF0FFFC, $FFE00007, $FE7FF801, $FFF803FF
+                dc.l $FFFFC001, $FFC0F07F, $FF000000
+                dcb.l 2,0
+                dc.l $1FFF00, $3FE3FFFC, $FFE0003F, $FE7FF801, $FFF003FF
+                dc.l $FFFFC001, $FF80FFFF, $FE000000
+                dcb.l 2,0
+                dc.l $1FFF00, $3FEFFFFC, $FFC000FF, $FE7FF003, $FFF007FF
+                dc.l $FFFFC001, $FF807FFF, $FC000000
+                dcb.l 2,0
+                dc.l $1FFF00, $7FFFFFFC, $FFC003FF, $FEFFF003, $FFE00FFF
+                dc.l $FFFFC003, $FF803FFF, $F8000000
+                dcb.l 2,0
+                dc.l $3FFF00, $FFFFFFFC, $FFC007FF, $FEFFE003, $FFE00FFF
+                dc.l $FFFFC003, $FF01FFFF, $E0000000
+                dcb.l 2,0
+                dc.l $3FFE00, $FFFFFFFC, $FF801FFF, $FEFFC007, $FFC01FFF
+                dc.l $FDFFC003, $FF03FFFF, $C0000000
+                dcb.l 2,0
+                dc.l $3FFE00, $FFFFFFFC, $FF803FFF, $FDFFC007, $FFC03FFF
+                dc.l $E1FFC007, $FF07FFFF
+                dcb.l 3,0
+                dc.l $7FFE01, $FFFF9FFC, $FF807FFF, $FDFF8007, $FFC07FFF
+                dc.l $81FFC007, $FE37FFFE
+                dcb.l 3,0
+                dc.l $7FFC03, $FFFF3FFC, $FF007FF7, $FDFF800F, $FF81FFFE
+                dc.l $1FFC007, $FE7FFFFF
+                dcb.l 3,0
+                dc.l $7FFC1F, $FFFC3FFC, $FF80FE1F, $FDFF000F, $FF83FFFC
+                dc.l $1FFC00F, $FEFFFFFF, $80000000
+                dcb.l 2,0
+                dc.l $FFFC3F, $FFE03FFC, $FF81F01F, $FBFF001F, $FF0FFFB0
+                dc.l $1FFC00F, $FE7FFFFF, $C0000000
+                dcb.l 2,0
+                dc.l $FFF87F, $FF003FFC, $FF80C01F, $FBFF003F, $FF3FFF80
+                dc.l $1FFC00F, $FCFFFFFF, $E0000000
+                dcb.l 2,0
+                dc.l $FFF83F, $FC003FFC, $FF80001F, $FBFE007F, $FF3FFF00
+                dc.l $1FFC01F, $FC7FFFDF, $F0000000
+                dcb.l 2,0
+                dc.l $1FFF81F, $F8003FFC, $FF80001F, $FFFE00FF, $FE3FFF00
+                dc.l $3FF801F, $FC1FFFEF, $F8000000
+                dcb.l 2,0
+                dc.l $1FFF01F, $F0003FFC, $FFC0003F, $FFFC01FF, $FE3FFE00
+                dc.l $1FF801F, $FC71FFF1, $F8000000
+                dcb.l 2,0
+                dc.l $3FFF01F, $F0003FFC, $FFC0003F, $F7FC03FF, $FE7FFE00
+                dc.l $1FF803F, $F8FEFFF8, $FC000000
+                dcb.l 2,0
+                dc.l $3FFE03F, $E0003FFC, $FFC0003F, $F7FC07FF, $FC3FFC00
+                dc.l $1FF803F, $F87FFFFE, $7E000000
+                dcb.l 2,0
+                dc.l $3FFE03F, $E0003FFC, $7FE0003F, $F7F80FFF, $FC1FFC00
+                dc.l $1FF803F, $F83FFFFF, $3F000000
+                dcb.l 2,0
+                dc.l $7FFC07F, $C0003FFC, $7FE0003F, $F7F83FFF, $FC1FF800
+                dc.l $1FF807F, $F81FFFFF, $9F800000
+                dcb.l 2,0
+                dc.l $7FFC07F, $C0003FF8, $7FF0003F, $F7F87FBF, $F83FF800
+                dc.l $1FF807F, $F80FFFFF, $DFC00000
+                dcb.l 2,0
+                dc.l $FFFC0FF, $80003FF8, $3FF8001F, $F7F8FF7F, $F87FF000
+                dc.l $1FF803F, $F007FFFF, $EFE00000
+                dcb.l 2,0
+                dc.l $FFF80FF, $80003FF8, $3FFC001F, $F7FBFEFF, $F8FFE000
+                dc.l $1FF807F, $F001FFFF, $E7F80000
+                dcb.l 2,0
+                dc.l $1FFF81FF, $80001FF8, $1FFF001F, $F7FFFCFF, $F9FFE000
+                dc.l $1FF80FF, $F000FDFF, $FBFC0000
+                dcb.l 2,0
+                dc.l $1FFF01FF, $1FFC, $FFFC07F, $F7FFF8FF, $FDFFC000
+                dc.l $FF80FF, $F0007EFF, $FCFE0000
+                dcb.l 2,0
+                dc.l $3FFF03FF, $1FFC, $7FFFFFF, $F7FFF0FF, $FDFFC000
+                dc.l $FF81FF, $E0007E7F, $FE7F0000
+                dcb.l 2,0
+                dc.l $7FFE07FE, $1FFC, $3FFFFFF, $F3FFE0FF, $FFFF8000
+                dc.l $7F81FF, $E0003F3F, $FF3F8000
+                dcb.l 2,0
+                dc.l $7FFE07FE, $1FFC, $1FFFFFF, $F3FFC0FF, $FFFF8000
+                dc.l $7F01FF, $E0001F9F, $FFDFC000
+                dcb.l 2,0
+                dc.l $FFFC0FFC, $1FFC, $FFFFF3, $F1FF807F, $FFFF0000, $7F03FF
+                dc.l $E0000FCF, $FFEFE000, 0
+                dc.l 1, $FFF80FFC, $1FFC, $7FFFF1, $F0FF007F, $FFFE0000
+                dc.l $7F03FF, $E00007E7, $FFF7F800, 0
+                dc.l 1, $FFF81FF8, $FFC, $1FFFE0, $F000007F, $FFFE0000
+                dc.l $7F03FF, $C00001F3, $FFFBFC00, 0
+                dc.l 3, $FFF01FF8, $7D8, $7FFC0, $6000003F, $DFFC0000
+                dc.l $3F03FF, $C00001F9, $FFFCFE00, 0
+                dc.l 7, $FFE03FF8, $1D8, $1FF00, $1F, $7FFC0000, $1F07FD
+                dc.l $C00000FC, $7FFE7F00, 0
+                dc.l $3800000F, $FFC03FF0, $180
+                dcb.l 2,0
+                dc.l $7FF80000, $3F07FE, $8000007E, $3FFF9F80, 0
+                dc.l $7C00001F, $FF803FF0, $1C0
+                dcb.l 2,0
+                dc.l $FFF00000, $3F07FF, $8000003F, $FFFCFC0, 0
+                dc.l $3C00003F, $FF807FE0, $80
+                dcb.l 2,0
+                dc.l $FFE00000, $1F07FF, $8000001F, $87FFE7E0, 0
+                dc.l $3F00007F, $FF00FFE0
+                dcb.l 2,0
+                dc.l 1, $FFC00000, $1F0FFB, $8000000F, $83FFF3F0, 0
+                dc.l $1FC001FF, $FE00FFC0
+                dcb.l 2,0
+                dc.l 1, $FF800000, $1F1FF7, $80000007, $F3FFF8F8, 0
+                dc.l $1FE007FF, $FC00FF80
+                dcb.l 2,0
+                dc.l 3, $FF800000, $1E1FFF, 3, $F8FFFC7C, 0
+                dc.l $FF81FFF, $F801FF80
+                dcb.l 2,0
+                dc.l 3, $FF000000, $E3FEF, 1, $FC3FFE3E, 0
+                dc.l $7FFFFFF, $F001FD00
+                dcb.l 2,0
+                dc.l 7, $FF000000, $E3FFE, 0
+                dc.l $7E1FFF1F, $80000000, $1FFFFFF, $E003D800
+                dcb.l 2,0
+                dc.l $F, $FE000000, $E3FEC, 0
+                dc.l $3F07DF87, $C0000000, $FFFFFF, $C001F000
+                dcb.l 2,0
+                dc.l $F, $FC000000, $43EE0, 0
+                dc.l $F03F7E3, $E0000000, $3FFFFF, $8001C000
+                dcb.l 2,0
+                dc.l $1F, $E8000000, $3F40, 0
+                dc.l $7C1FBF1, $F0000000, $FFFFE, $18000
+                dcb.l 2,0
+                dc.l $F, $C0000000, $3E00, 0
+                dc.l $3E0FCF8, $FC000000, $3FFFC
+                dcb.l 3,0
+                dc.l $F, 0
+                dc.l $3E00, 0
+                dc.l $1F07E7C, $7E000000, $7FE0
+                dcb.l 3,0
+                dc.l 6, 0
+                dc.l $3E00, 0
+                dc.l $FC3F3E, $1F000000
+                dcb.l 6,0
+                dc.l $3C00, 0
+                dc.l $3E1F8F, $F800000
+                dcb.l 8,0
+                dc.l $1F07C7, $87C00000
+                dcb.l 8,0
+                dc.l $FC3E3, $C3B00000
+                dcb.l 8,0
+                dc.l $3E0F0, $F0780000
+                dcb.l 8,0
+                dc.l $1F878, $783E0000
+                dcb.l 8,0
+                dc.l $FC1C, $3C1F0000
+                dcb.l 8,0
+                dc.l $7E0C, $1E0F8000
+                dcb.l 8,0
+                dc.l $1F03, $707C000
+                dcb.l 8,0
+                dc.l $F81, $C201E000
+                dcb.l 8,0
+                dc.l $7E0, $F040DC00
+                dcb.l 8,0
+                dc.l $1F0, $7C203E00
+                dcb.l 8,0
+                dc.l $F8, $3F181F80
+                dcb.l 8,0
+                dc.l $7C, $F800FC0
+                dcb.l 8,0
+                dc.l $1F, $7C0C3F0
+                dcb.l 8,0
+                dc.l $F, $83E1F0F8
+                dcb.l 8,0
+                dc.l 7, $C0F0F83C
+                dcb.l 8,0
+                dc.l 1, $F07C3C08
+                dcb.l 9,0
+                dc.l $F83E1E00
+                dcb.l 9,0
+                dc.l $7C0F0400
+                dcb.l 9,0
+                dc.l $1F078000
+                dcb.l 9,0
+                dc.l $F830000
+                dcb.l 9,0
+                dc.l $3C00000
+                dcb.l 9,0
+                dc.l $1F03800
+                dcb.l 9,0
+                dc.l $F83800
+                dcb.l 9,0
+                dc.l $3C0000
+                dcb.l 9,0
+                dc.l $1E0000
+                dcb.l 9,0
+                dc.l $F8000
+                dcb.l 9,0
+                dc.l $3C000
+                dcb.l 9,0
+                dc.l $1E000
+                dcb.l 9,0
+                dc.l $E000
+                dcb.l 2,0
 ; vlm-grafix.cry
-byte_19ADD0:    dc.b   0,  0,$D4,$F2,$D4,$F2,$D4,$F2
-                                        ; DATA XREF: sub_192088+226↑o
-                dc.b $D4,$F2,$D4,$F2,$D4,$F2,$D4,$F2
-                dc.b $D4,$F2,$D4,$F2,  0,  0,  0,  0
-                dc.b $8D,$DB,$8D,$DB,$8D,$DB,$8D,$DB
-                dc.b $8D,$DB,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$35,$F5,$35,$F5,$35,$F5
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$35,$F5,$35,$F5,$35,$F5
-                dc.b   0,  0,$F0,  9,$F0,$8B,$F0,$8B
-                dc.b $F0,$8B,$F0,$8B,$F0,$8B,$F0,$8B
-                dc.b $F0,$8B,$D4,$F2,  0,  0,$7F, $B
-                dc.b $8F,$8B,$8F,$8B,$8F,$8B,$8F,$8B
-                dc.b $8D,$DB,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $B,  0,$9E,  0,$8C
-                dc.b $35,$F5,  0,  0,  0,  0,  0,  0
-                dc.b $35,$F5,  0,$8C,  0,$9E,$35,$F5
-                dc.b   0,  0,$F0,  9,$F0,$7A,$F0,$7A
-                dc.b $F0,$7A,$F0,$7A,$F0,$7A,$F0,$7A
-                dc.b $F0,$7A,$D4,$F2,  0,  0,$7F, $B
-                dc.b $8F,$7B,$8F,$7B,$8F,$7B,$8F,$7B
-                dc.b $8D,$DB,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $B,  0,$8C,  0,$8C
-                dc.b   0,$7A,$35,$F5,  0,  0,$35,$F5
-                dc.b   0,$7A,  0,$8C,  0,$8C,$35,$F5
-                dc.b   0,  0,$F0,  9,$F0,$58,$F0,$69
-                dc.b $F0,$69,$F0,$69,$F0,$69,$F0,$69
-                dc.b $F0,$58,$D4,$F2,  0,  0,$7F, $B
-                dc.b $8F,$6B,$8F,$6B,$8F,$6B,$8F,$6B
-                dc.b $8D,$DB,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $B,  0,$7A,  0,$7A
-                dc.b   0,$7A,  0,$67,$35,$F5,  0,$67
-                dc.b   0,$7A,  0,$7A,  0,$7A,$35,$F5
-                dc.b   0,  0,  0,  0,$F0,  9,$F0,$47
-                dc.b $F0,$58,$F0,$58,$F0,$58,$F0,$47
-                dc.b $D3,$EB,  0,  0,  0,  0,$7F, $B
-                dc.b $8F,$5B,$8F,$5B,$8F,$5B,$8F,$5B
-                dc.b $8D,$DB,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $B,  0,$67,  0,$67
-                dc.b   0,$67,  0,$67,  0,$67,  0,$67
-                dc.b   0,$67,  0,$67,  0,$67,$35,$F5
-                dc.b   0,  0,  0,  0,$F0,  9,$F0,$36
-                dc.b $F0,$47,$F0,$47,$F0,$47,$F0,$36
-                dc.b $D4,$F2,  0,  0,  0,  0,$7F, $B
-                dc.b $8F,$4B,$8F,$4B,$8F,$4B,$8F,$4B
-                dc.b $8D,$DB,$8D,$DB,$8D,$DB,$8D,$DB
-                dc.b   0,  0,  0, $B,  0,$55,  0,$55
-                dc.b   0,$55,  0,$55,  0,$55,  0,$55
-                dc.b   0,$55,  0,$55,  0,$55,$35,$F5
-                dc.b   0,  0,  0,  0,  0,  0,$F0,  9
-                dc.b $F0,$24,$F0,$36,$F0,$24,$D3,$EB
-                dc.b   0,  0,  0,  0,  0,  0,$7F, $B
-                dc.b $8F,$3B,$8F,$3B,$8F,$3B,$8F,$3B
-                dc.b $8F,$3B,$8F,$3B,$8F,$3B,$8D,$DB
-                dc.b   0,  0,  0, $B,  0,$42,  0,$42
-                dc.b   0,$42,  0,$42,  0,$42,  0,$42
-                dc.b   0,$42,  0,$42,  0,$42,$35,$F5
-                dc.b   0,  0,  0,  0,  0,  0,$F0,  9
-                dc.b $F0,$1B,$F0,$24,$F0,$1B,$D4,$F2
-                dc.b   0,  0,  0,  0,  0,  0,$7F, $B
-                dc.b $8F,$2B,$8F,$2B,$8F,$2B,$8F,$2B
-                dc.b $8F,$2B,$8F,$2B,$8F,$2B,$8D,$DB
-                dc.b   0,  0,  0, $B,  0,$30,  0,$30
-                dc.b   0,$30,  0,$30,  0,$30,  0,$30
-                dc.b   0,$30,  0,$30,  0,$30,$35,$F5
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b $F0,  9,$F0,$1B,$D4,$F2,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$7F, $B
-                dc.b $8F,$1B,$8F,$1B,$8F,$1B,$8F,$1B
-                dc.b $8F,$1B,$8F,$1B,$8F,$1B,$8D,$DB
-                dc.b   0,  0,  0, $B,  0,$1D,  0,$1D
-                dc.b   0,$1D,  0,$1D,  0,$1D,  0,$1D
-                dc.b   0,$1D,  0,$1D,  0,$1D,$35,$F5
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$F0,  9,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,$7F, $B
-; more.bin
+dword_19ADD0:   dc.l $D4F2              ; DATA XREF: sub_192088+226↑o
+                dcb.l 4,$D4F2D4F2
+                dc.l 0
+                dcb.l 2,$8DDB8DDB
+                dc.l $8DDB0000, 0
+                dc.l $35F5, $35F535F5
+                dcb.l 2,0
+                dc.l $35F5, $35F535F5, $F009
+                dcb.l 3,$F08BF08B
+                dc.l $F08BD4F2, $7F0B
+                dcb.l 2,$8F8B8F8B
+                dc.l $8DDB0000, 0
+                dc.l $B, $9E008C, $35F50000, 0
+                dc.l $35F5008C, $9E35F5, $F009
+                dcb.l 3,$F07AF07A
+                dc.l $F07AD4F2, $7F0B
+                dcb.l 2,$8F7B8F7B
+                dc.l $8DDB0000, 0
+                dc.l $B, $8C008C, $7A35F5, $35F5, $7A008C, $8C35F5, $F009
+                dc.l $F058F069
+                dcb.l 2,$F069F069
+                dc.l $F058D4F2, $7F0B
+                dcb.l 2,$8F6B8F6B
+                dc.l $8DDB0000, 0
+                dc.l $B, $7A007A, $7A0067, $35F50067, $7A007A, $7A35F5
+                dc.l 0
+                dc.l $F009F047, $F058F058, $F058F047, $D3EB0000, $7F0B
+                dcb.l 2,$8F5B8F5B
+                dc.l $8DDB0000, 0
+                dc.l $B
+                dcb.l 4,$670067
+                dc.l $6735F5, 0
+                dc.l $F009F036, $F047F047, $F047F036, $D4F20000, $7F0B
+                dcb.l 2,$8F4B8F4B
+                dcb.l 2,$8DDB8DDB
+                dc.l $B
+                dcb.l 4,$550055
+                dc.l $5535F5, 0
+                dc.l $F009, $F024F036, $F024D3EB, 0
+                dc.l $7F0B
+                dcb.l 3,$8F3B8F3B
+                dc.l $8F3B8DDB, $B
+                dcb.l 4,$420042
+                dc.l $4235F5, 0
+                dc.l $F009, $F01BF024, $F01BD4F2, 0
+                dc.l $7F0B
+                dcb.l 3,$8F2B8F2B
+                dc.l $8F2B8DDB, $B
+                dcb.l 4,$300030
+                dc.l $3035F5
+                dcb.l 2,0
+                dc.l $F009F01B, $D4F20000, 0
+                dc.l $7F0B
+                dcb.l 3,$8F1B8F1B
+                dc.l $8F1B8DDB, $B
+                dcb.l 4,$1D001D
+                dc.l $1D35F5
+                dcb.l 2,0
+                dc.l $F009
+                dcb.l 2,0
+                dc.l $7F0B
+                dcb.l 3,$7F0B7F0B
+                dc.l 0
+                dc.l $B
+                dcb.l 4,$B000B
+                dc.l 0
+dword_19B050:   dc.l $800000            ; DATA XREF: sub_192D0E↑o
+                                        ; sub_192E82:loc_192ED8↑r ...
+dword_19B054:   dc.l 0                  ; DATA XREF: sub_19454C:loc_194594↑w
+                                        ; sub_19546E+18↑w
+                dc.l $400, $20000, $FFFF00, 0
+                dc.l $20000
+dword_19B06C:   dc.l $800000            ; DATA XREF: sub_1928D4:loc_192D2C↑o
+                                        ; sub_192E82:loc_192EEC↑r ...
+dword_19B070:   dc.l 0                  ; DATA XREF: sub_19454C+4E↑w
+                dc.l $400, $20000, $FFFF00, 0
+                dc.l $20000
+byte_19B088:    dc.b 0, 6               ; DATA XREF: ROM:0019437A↑o
+word_19B08A:    dc.w 0                  ; DATA XREF: ROM:loc_194374↑w
+                dc.l asc_1977AC         ; "~g1:18:Hold down b and use up,down to//"...
+                dc.l asc_197ACD         ; "Off"
+                dc.l locret_1962CC
+                dc.l asc_197AD1         ; "channel 1"
+                dc.l locret_1962CC
+                dc.l asc_197ADB         ; "channel 2"
+                dc.l locret_1962CC
+                dc.l asc_197AE5         ; "channel 3"
+                dc.l locret_1962CC
+                dc.l asc_197AEF         ; "channel 4"
+                dc.l locret_1962CC
+                dc.l asc_197AF9         ; "channel 5"
+                dc.l locret_1962CC
+                dc.l asc_197B03         ; "channel 6"
+                dc.l locret_1962CC
+dword_19B0C8:   dc.l $10006, $70001000, $7000A, $60001000, $B0018, $50001000
+                                        ; DATA XREF: ROM:00193548↑o
+                                        ; ROM:00193694↑o ...
+                dc.l $190028, $40001000, $29003F, $30001000
+                dcb.l 2,0
+                dc.l $A, $90B69C, $900038, $F4352AC6, $900200, $901856
+                dc.l $9034A4, $904482, $905776, $9061D8, $9075A6, $908806
+                dc.l $909A72, $90A6B4, $66049EA9, $C8316528, $8AEDDC28
+                dc.l $8742427, $422BCE06, $B3085A2B, $27345582, $D68A4242
+                dc.l $DAA7482F, $4EE8292B, $F8084306, $7FAF2498, $42203EC5
+                dc.l $FEC904D6, $3EE3CAD8, $C53CA709, $A50AC500, $A383DE52
+                dc.l $6F0EFE86, $384B8AFA, $7AE88C4D, $83D50A2E, $810A653A
+                dc.l $4D70ACA7, $42662BEF, $78AF63F8, $6F10BAB8, $30BF0228
+                dc.l $E248DFA, $3C26F88E, $CB5675C2, $3655642A, $A66E2AC0
+                dc.l $292B0E24, $F2DC30EA, $30D0EEF0, $52C46B0, $F654CFFC
+                dc.l $758704CE, $CD831070, $949A2E22, $D2AB4B11, $4E2E6D47
+                dc.l $A5A92B, $14CEE112, $695912A4, $E912E845, $13273255
+                dc.l $32640A3, $18307141, $144D8314, $891C6AE2, $4118E723
+                dc.l $15623315, $A4822504, $102A62BC, $9945602D, $27B838C5
+                dc.l $4A434FBC, $EA0A8301, $4988D6A2, $626FC752, $FA4254F2
+                dc.l $621E3CC5, $DC2E874A, $A563EE6B, $63251C8, $1888C222
+                dc.l $6C26E0D8, $27627450, $E03A2316, $C9630E13, $C4F07A86
+                dc.l $44B3073A, $C00E3F1F, $22150845, $60B0E26C, $9EEC243A
+                dc.l $456C2E50, $B4258E38, $214A4474, $CA3A5611, $1231E6A6
+                dc.l $30E8A671, $222AA1E7, $F50725D0, $46CC8AA3, $E8F8A482
+                dc.l $8238E29A, $BDA5A28C, $F1631844, $32ED46CA, $2CC6EEAF
+                dc.l $A7C8AEE2, $2E4AA8C8, $810D2725, $12F1232D, $D718CCBE
+                dc.l $55EA5CAB, $872274CE, $1E510BD2, $D0124F27, $4B7EADAD
+                dc.l $B731D25E, $A7126294, $A4CCDD52, $6C8E8777, $2724FAE2
+                dc.l $A7DF27C4, $AB28127D, $2872F845, $928EE992, $92493296
+                dc.l $DF6A884A, $1140080, $1010048, $380101, $120020, $FFC0378
+                dc.l $25E00EB, $FF5D00, $650040, $B016065, $210093, $20704
+                dc.l $1010100, $1A800000, $2800000, $DFFF19EF, $2802B9
+                dc.l $DFE000, $3200FA, $B10D8E, $DC0043, $D3500EE, $300DD7
+                dc.l $B800C0, $D1F00A1, $EFB00AC, $E00DDB, $1700A3, $D110017
+                dc.l $CD0010, $6F90011B, $F300F0, $1700FF00, $FFFFFF00
+                dc.l $E0FF00FF, $3010078, $C01700, $1140080, $16BF0070
+                dc.l $AE300D4, $8001DF, $1E0080, $D09000C, $5FF00B4, $102E5A
+                dc.l $EA0E06, $4D20FF, $30010006, $800308, $308020D, $E50080
+                dc.l $FF00F6, $A20080, $3020465, $210093, $20703, $3092510
+                dc.l $800000, $1200080, $4404, $40E04, $40023, $805010
+                dc.l $40013, $2427FF, $25BE0056, $2BE0008, $AAF52900, $C2007D
+                dc.l $750DFC, $95004F, $D010041, $100201, $800806, $88009B
+                dc.l $C00DB6, $250E9F, $600060, $D8A00BE, $2F0DAC, $F00081
+                dc.l $506E0D, $DE0273, $18000114, $802101, $38, $1010005
+                dc.l $8E0080, $CFF00ED, $AC05FF, $A2008C, $3E070090, $20FF3150
+                dc.l $30000EE, $1FF00FF, $C00205, $3F00E0, $10B00EA, $C00302
+                dc.l $10100A3, $FF0065, $210093, $20703, $3092510, $800000
+                dc.l $1200080, $4510, $10800000, $50010004, $200080, $8010004
+                dc.l $32019FF, $24010138, $2F30090, $56070090, $51FF00FD
+                dc.l $3010028, $7240208, $EB1800, $C0073, $800D5C, $C20080
+                dc.l $D010041, $700C06, $BC00A0, $EFB0080, $EDC0010, $EBF0092
+                dc.l $800DEE, $CA0038, $6DFF00FF, $4631800, $1140080, $53000300
+                dc.l $1667008C, $A490044, $22C00F0, $20FF3148, $D00A05
+                dc.l $9A020F, $FF00E0, $3020101, $A300FF, $650021, $930002
+                dc.l $7030309, $71400B01, $56100004, $540037, $27FF7D17
+                dc.l $8055FF, $FC2900, $4C0010, $980D62, $960048, $E3A0080
+                dc.l $2010060, $8060035, $520E47, $180E3E, $350E36, $270048
+                dc.l $D430080, $390080, $6E1200EF, $3F81700, $1140080
+                dc.l $22510096, $28200A4, $5F0018FF, $34FF00FD, $3D0080
+                dc.l $1040005, $1FF00FD, $730060, $FF00F6, $890403, $10400E3
+                dc.l $FF0065, $210093, $2070E, $1090100, $FFFFFF00, $200037
+                dc.l $9A0D29, $9100AE, $D05009E, $E00D16, $7B0080, $D1D00FA
+                dc.l $E1A003A, $C00D16, $D5006E, $D1C0076, $2D00A0, $6E020036
+                dc.l $1B00090F, $E0284, $FF00FF, $18400FF, $FFDE91, $B00
+                dc.l $FFFFFF00, $CF00AC, $A20D0D, $BA0046, $D240078, $600D91
+                dc.l $E10080, $DC20082, $EAA0031, $C00D94, $290006, $DB800AD
+                dc.l $8E0020, $6F001B00, $FF00FFFF, $FF00FF00, $1000000
+                dc.l $16C00000, $AC00000, $1C0, 0
+                dc.l $D000000, $5000000, $2E00, $E14, $2003, $30000008
+                dc.l $300, $3000208, $F00000, 8, $F00000, $3000400, 0
+                dc.l $700, $3002500, $FF00FF, $10000FF, $FF4400, $E00
+                dc.l $FF, $FF5000, $FF, $FF27FF, $25000000, $2000000, $AA002900
+                dc.l $40, $D00, 0
+                dc.l $D000000, $200, $300800, 0
+                dc.l $D00, $E00, 0
+                dc.l $D000000, $D00, 0
+                dc.l $6CFF, $FF0000, $2010078, $C01700, $240000C0, $600100
+                dc.l $BF00CA, $4556, $FC0E10, $782003, $3001003D, $8001FF
+                dc.l $FF00C4, $2F500C6, $80010A, $A200C0, $1090076, $200A91
+                dc.l $B09, $25000300, $AC5400B8, $8040308, $419FF, $240000BF
+                dc.l $B802BD, $F0560A, $205E09, $80209, $81800, $A90025
+                dc.l $710DDB, $A00083, $1D7600C8, $C00D9E, $610E8A, $9400E0
+                dc.l $D7800A3, $E30D96, $5F00F9, $108B00, $25BE00F8, $2B80038
+                dc.l $20010119, $5F00FF, $6800380, $16000000, $A400000
+                dc.l $2140000, $7001601, $100F0033, $21080000, $2030096
+                dc.l $800100, $200080, $FF00FF, $E701FF, $FF0026, $800303
+                dc.l $1030017, $3910000, $70E0109, $1007100, $B005600
+                dc.l $FF, $FF27FF, $7D000000, $55000000, $29000052, $14007C
+                dc.l $D6A0068, $B40D0E, $630040, $2000030, $8000039, $8D0E4C
+                dc.l $BC0E43, $240080, $D3A0073, $340D48, $DB003F, $C06CFF
+                dc.l $FF0000, $263, $1700, $1000000, $22C00000, $2C00000
+                dc.l $5F041803, $34000001, 0
+                dc.l $1010000, $1000008, $F00000, 8, $F00400, $1000000
+                dcb.l 2,0
+                dc.l $700, $1000100, $FFFFFF00, $40, $D00, 0
+                dc.l $D000000, $D00, 0
+                dc.l $D000000, $E000000, $D00, 0
+                dc.l $D000000, 0
+                dc.l $6CFF00FF, $FA00DE, $1010078, $C01700, $90A0040, $2850000
+                dc.l $185, 0
+                dc.l $DE820018, $B00FFFF, $FF00004C, $5A002C, $DAF00DA
+                dc.l $C40D3A, $640040, $DE90091, $D37, $6C0E10, $7E0080
+                dc.l $DED0037, $440D27, $AE00FA, $C06E01, $7E1B00, $FF00FFFF
+                dc.l $FF00FF00, $1140080, $227C00E7, $8001D9, $4B0080
+                dc.l $157F00FF, $2E2A005C, $E020034, $20FF3502, $130080
+                dc.l $102003C, $1FF00FA, $B901FF, $F00066, $4020101, $9900FF
+                dc.l $650021, $820018, $7030309, $251000B3, $E40001, $40080
+                dc.l $4520, $E040004, $200064, $7BFF25BE, $C802B5, $20D400
+                dc.l $9F00F9, $370DCF, $B200F5, $D030042, $400202, $100806
+                dc.l $700055, $400D95, $C70E83, $E0020, $D720016, $950D8E
+                dc.l $350041, $706C00, $1010D, $11B0063, $E81700, $25410092
+                dc.l $8001B4, $5A4679, $F0A000C, $20FF3000, $4900A0, $1000001
+                dc.l $310080, 2, $A20000, $1090021, $1FF00F4, $8400A0
+                dc.l $A820018, $B092540, $38058FF, $FF5220, $1427FF, $256E0040
+                dc.l $2940008, $56000000, $52E90B06, $F401FF, $F300F9
+                dc.l $18000025, $D200FB, $D7D00C1, $11DCE, $780040, $D13004B
+                dc.l $EF000E1, $A00DD1, $B20021, $D050061, $6500B0, $8B0025C0
+                dc.l $2C0, $2000, $1080000, $2902, $3E3712, $4A24FF, $F800ED
+                dc.l $10C, $450000, $F, $FF00E0, $F, $FF00E0, $5020069
+                dc.l $3820018, $B007920, $800000, $83FFFF00, $5A0071, $D40D75
+                dc.l $49003C, $D0F00DB, $C00D3F, $6F0E54, $940E4A, $10E40
+                dc.l $6C00BC, $D50004D, $C50040, $6C000002, $5600F5, $2731800
+                dc.l $FF00FFFF, $FF00FF00, $90D0010, $E7900000, $B00FFFF
+                dc.l $FF00002F, $81004E, $DD7003C, $8A0D62, $5400A0, $D890052
+                dc.l $800D0C, $6E0ECA, $E00040, $D8F0077, $CA0DF1, $ED0030
+                dc.l $E06FB7, $1B000114, $80227F, $E002BF, $A05F01, $F717FF
+                dc.l $35080097, $2040037, $800103, $190080, $1030065, $4030103
+                dc.l $C500FF, $650021, $90080E, $1090100, $FFFFFF00, $E4001F
+                dc.l $9F0D28, $5100AD, $D280010, $D00DA0, $430040, $DD500AF
+                dc.l $EBA00F9, $200DA2, $C4004D, $DCA00E2, $7700F0, $6C000002
+                dc.l $58005B, $11B0073, $E81700, $258F00B5, $1D3, $8A0F50
+                dc.l $5FF009A, $B10001, $7000A0A, $870200, $166B000C, $66B000C
+                dc.l $32A0200, $21E01, $100C0077, $6210058, $21816C1, $300007D
+                dc.l $1FF00FF, $6E0100, $200A1, $1000002, $C90080, $5000001
+                dc.l $290, $B09, $268600CC, $80, $DF0064, $15400080, $3520
+                dc.l $2010004, $800000, $2303501, $41C80, $1401, $40012
+                dc.l $900FFF, $25C00048, $2BA00F0, $15FF0080, $1013940
+                dc.l $3C201AC1, $2900002F, $8500E9, $20000C1, $9F70014
+                dc.l $BB1D10, $1600C0, $D6A00C9, $E0000EB, $100207, $900378
+                dc.l $4C0303, $140057, $1B0D58, $730077, $908B00, $25C00000
+                dc.l $1C0, $D00, 0
+                dc.l $5000064, $D01300, $3001676, $5C0E0E, $5C2003, $30FF00FF
+                dc.l $C00308, $101, $80208, $FB0080, 3, $790080, $5000000
+                dc.l $290, $B09, $250000FF, $FF0100, $FF00FF, $4520644C
+                dc.l $430800, $200, $880, $FFF, $25000000, $2000000, $AAFF0300
+                dc.l $600, $100, 0
+                dc.l $180000C7, $4700D3, $D0200D0, $90E4C, $400D8B, $FA0EBA
+                dc.l $A30EA3, $4E0E8E, $2A0029, $DB10034, $630030, $6C000002
+                dc.l $67004F, $2731800, $1000000, $48082D00, $F04, $16000103
+                dc.l $E080000, $24000001, $201, $208, $F00000, $10800F0
+                dc.l $300, $1000000
+                dcb.l 2,0
+                dc.l $700, $1000100, $790000FF, $FF83FF, $FF000000, $400000
+                dc.l $D000000, $D00, 0
+                dc.l $D000000
+                dcb.l 2,$E000000
+                dc.l $D00, 0
+                dc.l $D000000, 0
+                dc.l $6E0700AC, $2631800, $FF00FFFF, $FF00FF00, $915001A
+                dc.l $E7940C00, $FFFFFF00, $B0080, $5B0DA8, $6B0021, $D5C0000
+                dc.l $100D70, $40, $DEA00AB, $EAD0055, $A00D75, $C00041
+                dc.l $DD100DE, $FB00B0, $6F1E1B00, $1000000, $22C00000
+                dc.l $2C00000, $5F040000, $17033501, $201, 0
+                dc.l $10800F0, $108, $F00400, $1000000
+                dcb.l 2,0
+                dc.l $8000100, $100FFFF, $FF000000, $400000, $D000000
+                dc.l $D00, 0
+                dc.l $D000000, $D00, $E00, 0
+                dc.l $D000000, $D00, 0
+                dc.l $6E6D, $9A1B00, $25C70062, $2EC00FB, $167500AA, $1212
+                dc.l $5F1918, $5C0618, $5C0267, $8E0205, $401E00, $1701005C
+                dc.l $701934, $200202, $130100, $2003C, $2030003, $80010F
+                dc.l $DA0000, $5010024, $3940C09, $80000000, $800000, $50010004
+                dc.l $1B002C, $160E00C8, $FFF418B, $D80000, $3D050040
+                dc.l $51FF00F1, $29000016, $1100E6, $DC80043, $521DF6
+                dc.l $C40080, $D490006, $E010098, $600DFA, $9F0092, $D380065
+                dc.l $420060, $8B002571, $4002DC, $9B167A, $64130F, $7718FF
+                dc.l $900010, $A25005C, $20B00E8, $20FF3000, $1B0040, $1FF00F5
+                dc.l $9800A0, $1030093, $800100, $1A0000, $FF00FF, $A50000
+                dc.l $A940C09, $25100320, $AB005C, $45400B80, $800000
+                dc.l $28C00D0, $520D0010, $1010011, $40102, $80020, $EFF00FF
+                dc.l $FFF25C0, $3C05340, $30A00C0, $52FB02FF, $F500E1
+                dc.l $800103, $B30080, $1F00006B, $970028, $D8B0094, $F80E41
+                dc.l $900201, $40094B, $7E0000, $D6400A8, $E580013, $D4C
+                dc.l $AB00F8, $D5F0091, $C20080, $6E810013, $1B00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF000110, $613
+                dc.l $DCE79A, $80B00, $FFFFFF00, $F8007C, $360D8F, $B000C2
+                dc.l $D5800A8, $200D62, $A00080, $DD800D6, $E9D00BB, $400D68
+                dc.l $2B0002, $DC000F0, $AF0060, $6E02000C, $1B000110
+                dc.l $32FF001A, $4B5C00C0, $68030465, $21009A, $80702
+                dc.l $3003508, $C9FFFF00, $3C0036, $EB0D4D, $F900D1, $D0A008B
+                dc.l $100DAA, $460080, $2030030, $378004C, $3030038, $3B0E31
+                dc.l $3300A0, $D2A00D4, $F10D35, $630084, $B06EC2, $B31B00
+                dc.l $1100000, $22BF0046, $2C00018, $CFF, $D700B4, $5000087
+                dc.l $BC1380, $280, $163D008C, $63D008C, $2A40068, $348376D
+                dc.l $A0196E, $B020023, $6000FF, $F70035, $A00502, $720080
+                dc.l $29A0008, $B092500, $3005204, $1E10020, $2700088
+                dc.l $523E0004, $9400380, $81E0010, $FFF4000, $7F00FF
+                dc.l $3E000000, $52CC0080, $B3401FF, $F50084, $18000008
+                dc.l $A00051, $DAF0088, $F31DE9, $6400C0, $D370031, $E7A00BD
+                dc.l $900DED, $A0053, $D270076, $F60010, $8B000110, $22C0
+                dc.l $2C0, $167D, $DF1380, $280, $1500000D, $DC0A40, $203
+                dc.l $C4520C, $200100, $10008, $101, $80000, $FF00F2, $F0080
+                dc.l $1FE00A9, $B9A0008, $B092501, $800000, $1020080, $4520
+                dc.l $B0000FF, $FF02FF, $FF5207, $5C0100, $FF00FF, $10000FF
+                dc.l $FF1FFF, $7D000300, $52F9, $2000000, 0
+                dc.l $1000000, $1F00, $340006, $5D0C08, $430053, $870C07
+                dc.l $2003E, $500200, $300924, $6900C0, $D30008D, $E2A007B
+                dc.l $600D24, $FB0067, $D2E0018, $DF00D0, $6ECA0061, $1B00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF000114, $800609
+                dc.l $ECE796, $10B00, $FFFFFF00, $800EB, $2E0DF1, $F4002A
+                dc.l $D88008E, $A00D22, $3A0F4E, $E7D0044, $E2A00C3, $6A0DB3
+                dc.l $7F008E, $E00D8B, $C61A70, $3C3B70, $3C028B, $C60354
+                dc.l $1B000114, $803100, $5300F0, $6C014E96, $10B00, $FFFFFF00
+                dc.l $4C00A5, $E30DB0, $3D0039, $D3A0071, $900DD8, $950000
+                dc.l $D3700B3, $E1000BC, $EED006D, $590D27, $F20064, $308B00
+                dc.l $1140080, $22C800E5, $2B1008D, $ECE00D0, $68200EF
+                dc.l $8060120, $7F00FF, $613005F, $2001650, $9E077C, $27200F0
+                dc.l $2130000, $20A51662, $781951, $F001FF, $FF006D, $1FF00FF
+                dc.l $8C0200, $F00020, $1F40087, $C0062A, $296, $10B09
+                dc.l $254000CB, $28000FF, $FF2802, $40080, $1801, $41089
+                dc.l $D85002, $127003B, $161B0084, $FFF25C1, $E002BD, $604E04
+                dc.l $700605, $4052F3, $2800, $C90039, $C90D11, $CC005B
+                dc.l $1DA800FE, $E3600A9, $E0600B9, $100DAF, $A200BB, $C08001A
+                dc.l $500D5, $900B07, $7F000114, $802696, $460080, $451A006A
+                dc.l $E0A00A4, $20A5312B, $9001FF, $FF00F2, $1FF00FD, $520100
+                dc.l $C002A, $1FA, $3A0601, $F300FF, $2960001, $B092500
+                dc.l $4A100004, $108400B0, $5010013D, $5027FF, $299C0030
+                dc.l $560300C0, $7C000044, $750055, $DA50096, $EF1DE4
+                dc.l $30F05, $E7A0051, $3010090, $378004C, $30300E7, $9300CF
+                dc.l $D2000A7, $BF0050, $8B00FF00, $FFFFFF00, $FF00FF00
+                dc.l $FFFFFF00, $FF000110, $60A, $82E78E, $B00, $FFFFFF00
+                dc.l $2B007A, $160D1E, $E40062, $D8E00A2, $200D3A, $880EF8
+                dc.l $B60E99, $9F0E43, $7200A2, $DD20044, $4D0060, $DFF00FF
+                dc.l $1AFF00FF, $3BFF00FF, $2FF00FF, $2010028, $1B000110
+                dc.l $3101, $81BC8E, $B00, $FFFFFF00, $6F0034, $CB0DDD
+                dc.l $2D0071, $D400085, $100D3F, $E00080, $D58001B, $E2D0017
+                dc.l $E06001C, $910D46, $B70022, $B08B00, $1100000, $22C00000
+                dc.l $2C00000, $D000012, $30065B, $850808, $1080000, $600
+                dc.l $1904, $D60600, $2A0, $FC020B, $B420FF, $E080000
+                dc.l $5000010, $200, $167E00E0, $1000001, $80000, 1, $80207
+                dc.l $460000, $1FB00A6, $500, $38E, $B09, $250000FF, $FF0100
+                dc.l $17801200, $FF, $FF1810, $8000200, $1000FF, $FF02FF
+                dc.l $FF3400, $1A04, $18E0060, $9000300, $6000000, $FF00FF
+                dc.l $FFF2500, $200, $1662, $8C3600, $600, $3700, $1AF00C00
+                dc.l $1000000, $1800, $9C0054, $1C0201, $1109CA, $F50094
+                dc.l $D010043, $200300, $96D00C5, $D92, $5C0E80, $100080
+                dc.l $20000E0, $3750040, $300006F, $7C0014, $C00008A, $F60079
+                dc.l $C00B00, $1810066, $1A8B00D6, $3B8B00D6, $2810066
+                dc.l $10200D7, $740273, $18000110, $22EF, $FE0080, $1EF00FE
+                dc.l $15FF00B7, $171300, $3001601, $560E04, $420FF, $310900A0
+                dc.l $1000001, $100100, $10010, $1FF00F2, $1002FE, $B00600
+                dc.l 0
+                dc.l $28E0000, $B092501, $4A08656D, $F427FF, $29C00000
+                dc.l $D4000067, $4003D, $DD20087, $271DFC, $510E50, $6D0EAC
+                dc.l $F300E0, $D000043, $70D3F, $6C007D, $D08B00, $1102201
+                dc.l $220085, $101001F, $D467F, $FC0A28, $34700E4, $20FF30FF
+                dc.l $F50410, $3100202, $A00020, $1110038, $C00302, $10100A7
+                dc.l $FF0065, $21008E, $8030309, $25400380, $47406240
+                dc.l $4005E, $40802, $40201, $419FF, $25C20088, $2BF0010
+                dc.l $A9FF00F5, $B020038, $20D0040, $18000084, $BB00FC
+                dc.l $DAC0047, $340D01, $3E0040, $20100D0, $806005D, $2D0E7C
+                dc.l $3C0E6C, $B40080, $D5E00A1, $B40C08, $7500F4, $B700C0
+                dc.l $B070181, $661A8B, $D63B8B, $D60281, $6602ED, $940273
+                dc.l $1800FF00, $FFFFFF00, $FF000114, $800617, $1EE795
+                dc.l $C00FFFF, $FF000027, $770023, $D1900AC, $F90D8D, $ED0090
+                dc.l $D3700B6, $400DF4, $F30E96, $5400A0, $D400095, $190DCE
+                dc.l $B100F8, $302980, $C13B80, $C10711, $1B000114, $80328B
+                dc.l $B0BB95, $C00FFFF, $FF00006B, $3100D8, $DD700F6, $80D3F
+                dc.l $D00080, $D3300E2, $F00D54, $580E29, $CD0000, $D03003F
+                dc.l $80D43, $2400CD, $808B00, $1140080, $22C20028, $2BB0080
+                dc.l $15FF00A8, $F0800, $12600CF, $FF0A12, $5F14FF, $B70000
+                dc.l $64F0090, $23400C0, $35C1E01, $133058C, $4C02BB, $14030E
+                dc.l $43210D, $700300, $300033A, $8002A2, $B950C09, $26800000
+                dc.l $2800000, $44000010, $7800300, $4800000, $52820063
+                dc.l $27FF25C2, $3402BB, $8C15FF, $94002B, $3E147D00, $980051
+                dc.l $290DC5, $BE002B, $1D6A00F2, $C00D8E, $990E7C, $C500E0
+                dc.l $D6C009E, $8B0D87, $640024, $908B00, $1140080, $26C00046
+                dc.l $1500007D, $DF0803, $1340097, $FF0A80, $15FF0093
+                dc.l $300F00, $1E010103, $310D0030, $1B950C09, $70000020
+                dc.l $10800000, $52830014, $27FF8104, $7C00, $630001, $4A0DCD
+                dc.l $4F00BE, $1DF9007F, $800D4C, $AA0EA7, $130030, $DFD0065
+                dc.l $7E0D3B, $DA0028, $A08B00, $1140080, $250000BF, $9E0080
+                dc.l $1F060111, $4B00FF, $6000300, $262E00A8, $1E010103
+                dc.l $E0E0074, $26000300, $2080009, $800107, $D500A0, $6AB0395
+                dc.l $C098280, $5230, $1827FF, $81145F07, $1C0080, $10200E8
+                dc.l $18000080, $B90009, $DA7000F, $CB1D5A, $5A00C0, $D780079
+                dc.l $E690069, $E00D5B, $C4002B, $D720062, $620090, $8B00FF00
+                dc.l $FFFFFF00, $FF000114, $800101, $480038, $1010011
+                dc.l $D20FFC, $378026D, $7700FF, $5D000065, $400B01, $60650021
+                dc.l $900804, $1010100, $1A800000, $2800000, $DFFF19EF
+                dc.l $2802B9, $DFE000, $B700DD, $D0D3B, $A80097, $D4D004B
+                dc.l $700D35, $2D00C0, $D9C003D, $E6800B5, $600D3A, $20077
+                dc.l $D870067, $AA00D0, $DF100E3, $1AFF00FF, $3BFF00FF
+                dc.l $2F100E3, $2020014, $11B00F3, $F01700, $1140080, $22D30020
+                dc.l $2880092, $9010015, $3700FF, $1E88007F, $288007F
+                dc.l $1566009A, $2050120, $4FF00FF, $2024FF, $14FF00FF
+                dc.l $FC01FF, $FF00FB, $602107, $200C0, $1010017, $400303
+                dc.l $102002F, $FF0065, $210090, $80C0105, $1002540, $5200A0
+                dc.l $18000AB, $5C0940, $4000FC, $391000D0, $7C0140, $6B100320
+                dc.l $19FF25C0, $3C00BC4, $FF00FF, $3E1469FF, $FF0023
+                dc.l $1FF00FF, $C10080, $170000DC, $330051, $D1E0004, $230D26
+                dc.l $AC0030, $D9A00B0, $C00DCE, $410EB4, $7800E0, $D9D001B
+                dc.l $830DC3, $D40097, $106E50, $F1B00, $1140080, $21010015
+                dc.l $680101, $1F00FD, $16480048, $2DFF0039, $1E0001, $D0021FF
+                dc.l $312100C0, $3080308, $C020465, $210090, $8030309
+                dc.l $25400380, $47200080, $C40, $40059, $EF7BFF, $25C003C0
+                dc.l $46FF0201, $8B0000E0, $570017, $3310905, $C700F5
+                dc.l $D030039, $B00202, $100806, $8D0095, $400DBC, $C70EA5
+                dc.l $2E0020, $D8F00CB, $950C08, $B3003C, $B10070, $B076259
+                dc.l $2C1B00, $1140080, $22B60070, $2BD00C0, $E060060
+                dc.l $5FF00FD, $831300, $31300DB, $16240A0F, $F0020C, $A020FF
+                dc.l $30FF00F9, $E00204, $680203, $AE01FF, $FF0062, $8000FF
+                dc.l $FF00E8, $800302, $4650021, $900803, $3092510, 0
+                dc.l $1200000, $E80, $404, $40080, $2C10, $40080, $910
+                dc.l $800000, $54020004, $5C0044, $27FF25B6, $7002BD, $C00E06
+                dc.l $6005FF, $FD0020, $3A4E0080, $55FF00F5, $29000093
+                dc.l $5400AC, $DBF0042, $440E42, $A00201, $D00806, $670071
+                dc.l $EAC00BA, $200203, $6009C1, $320040, $2030090, $969000E
+                dc.l $C40D82, $F300A2, $C00D6C, $981AD7, $A13BD7, $A1026C
+                dc.l $980218, $C002A3, $18000114, $802677, $9A2003, $140003F
+                dc.l $FF0208, $36C0087, $2420036, $25400FE, $27000A7, $26C0087
+                dc.l $2420036, $D1F0020, $B470073, $246004B, $D0400FF
+                dc.l $FF0501, $1010001F, $3C650021, $900401, $3010102
+                dc.l $1005540, $3800301, $3020340, $38095FF, $56800380
+                dcb.l 2,$3800380
+                dc.l $940000A0, $9E0082, $DD00089, $E60D1C, $320060, $D7000C9
+                dc.l $800D96, $620E83, $9500C0, $D72008C, $A60D8E, $C8006C
+                dc.l $200D81, $9D1B37, $3C370281, $9D020C, $4A02A3, $18000114
+                dc.l $80361D, $540614, $C21312, $8B0225, $9F0236, $6B0683
+                dc.l $DB1900, $38000020, $FF00FF, $E900A0, $20FF00FA, $6A00C0
+                dc.l $FF00FB, $FA00C0, $8650021, $90080D, $1060100, $39010702
+                dc.l $12010004, $8B100320, $19FF5614, $B788FF, $F80082
+                dc.l $1FF00F4, $941800, $6300B7, $A60619, $6F000C, $3050081
+                dc.l $580012, $619006F, $C0305, $400BE, $600202, $700806
+                dc.l $4500F4, $800DB6, $7500D0, $20400D0, $9B3004E, $900205
+                dc.l $200947, $C0052, $D58008F, $460060, $D6D0028, $1A90000C
+                dc.l $3B90000C, $26D0028, $3551B00, $1100000, $60E00E4
+                dc.l $28400FF, $FF0184, $FF00FF, $DE800C00, $FFFFFF00
+                dc.l $C900E0, $310D53, $1400C3, $D500076, $300D41, $D80EAD
+                dc.l $210E77, $7C00E0, $D4600E0, $230D97, $710025, $100D18
+                dc.l $A71A55, $733B55, $730218, $A70201, $7F1B00, $1100000
+                dc.l $22BB004A, $2910060, $800800, $B1003F, $3A51006E
+                dc.l $1FF00FE, $DC00C0, $2BA53D05, $620207, $A10B80, $C00FFFF
+                dc.l $FF0000EE, $360075, $D350070, $4F0D29, $D600F0, $DA7005B
+                dc.l $EDF0025, $EC30040, $600DA9, $F9002F, $DD300DE, $110050
+                dc.l $8B000110, $2100, $72007C, $800000, $A00015, $8014FF
+                dc.l $A100EC, $13000300, $15FE00F0, $7030A5, $31080000
+                dc.l $3200320, $1FF00FD, $460080, $FF00F7, $DA0B80, $C09D440
+                dc.l $40037, $4027FF, $D5082900, $F40076, $BB0D1D, $340021
+                dc.l $1D9A0040, $ECD00AB, $EB300F5, $A00D9C, $A90041, $DC30046
+                dc.l $2B00B0, $8B000110, $3EFF, $42E04, $480B80, $24A53000
+                dc.l $1400C0, $1B800C09, $FFFFFF00, $A50057, $D00DD6, $AE0070
+                dc.l $1D74001C, $EE500BB, $A00DFD, $5E0080, $D7500EC, $700D92
+                dc.l $FD001D, $8B00, $1000000, $26C00000, $20080108, 0
+                dc.l $2000380
+                dcb.l 5,$280
+                dc.l $D00, $B04, $204, $D00, 0
+                dc.l $5001008, $3C00, 0
+                dc.l $4000300, $1000100, $55000300
+                dcb.l 2,$3000300
+                dc.l $95FF5600
+                dcb.l 2,$3000300
+                dc.l $3009400, $40, $D00, 0
+                dc.l $D000000, $D00, 0
+                dc.l $D000000, $E000000, $D00, 0
+                dc.l $D000000, 0
+                dc.l $DF100E3, $1AFF00FF, $3BFF00FF, $2F100E3, $20500AF
+                dc.l $2B31800, $1100000, $363300CA, $62900FB, $11FF00FF
+                dc.l $E10031, $89F000A2, $1EE, $E60000, $A800C00, $FFFFFF00
+                dc.l $7500BA, $CA076E, $F40498, $C4003E, $76E00F4, $1452009F
+                dc.l $E0700BF, $100D09, $DF0010, $D5300E9, $FE0D68, $9800C0
+                dc.l $A08B00, $A120FF0, $D8020B00, $FFFFFF00, $E00BC, $F40DAC
+                dc.l $A0009C, $D5C0091, $C00D72, $470000, $DED00B4, $EAF00FD
+                dc.l $800D78, $10001C, $DD400C0, $B70040, $D80007E, $1A000000
+                dc.l $3B000000, $280007E, $202003B, $1B0025D9, $F802F9
+                dc.l $A0901, $95000F, $39FF009B, $40100, $600C8, $2CFF3CFF
+                dc.l $F70063, $FF, $F700E1, $800B02, $B00FFFF, $34010028
+                dc.l $1FC800, $330013, $380D8E, $FC0028, $D3500F2, $800DD7
+                dc.l $CA0000, $D1F00B8, $EFB00C1, $DDB, $290028, $D11002D
+                dc.l $A30080, $8B0025C0, $5B0260, $145FF, $E009E, $30FF4F02
+                dc.l $B09FFFF, $FF000041, $6500DE, $D7600BF, $FA1DCA, $AE0080
+                dc.l $D0E003E, $EEC0076, $400DCD, $D9003A, $D000095, $BD00E0
+                dc.l $8B000100, $23C00000, $2C00000, $E000000, $5000000
+                dc.l $1380, $3800000, $15000000, $A400000, $2140000, $20033108
+                dcb.l 2,$201
+                dc.l $100, $800F0, 0
+                dc.l $800F0, $300, $4000000, $800, $3002500, $FF00FF, $10000FF
+                dc.l $FF0EFF, $FF0400, $FF, $FF2C00, $FF, $FF0900, $FF00FF
+                dc.l $54000000, $FF00FF, $27FF2500, $200, $E00, $500, 0
+                dc.l $3A000000, $55000000, $29000000, $400000, $D000000
+                dc.l $E00, $200, $300800, 0
+                dc.l $E000000, $201, $900, 0
+                dc.l $20000E0, $9000000, $D00, 0
+                dc.l $E1800A7, $1A550073, $3B550073, $21800A7, $2010005
+                dc.l $2B31800, $FF00FFFF, $FF00FF00, $38FF00DD, $D00626
+                dc.l $8013DD, $4F0220, $3F0A90, $4A79F8, $A02ED, $520C02
+                dc.l $B006404, $499FF, $669500EF, $970000BA, $97008D, $DF20050
+                dc.l $171D83, $D00C0, $D3E0082, $800D54, $D00070, $D850019
+                dc.l $F70DA5, $E80052, $D08B00, $90B0000, $FFCD79C, $160B00
+                dc.l $FFFFFF00, $3200F1, $170DDB, $B40095, $D6200EF, $500D8B
+                dc.l $BD0040, $D0F00A7, $ECD00B2, $200D91, $EC0035, $DF400FC
+                dc.l $7F0070, $DA10018, $1A5300A7, $3B5300A7, $2A10018
+                dc.l $20000EA, $1B0025C3, $CF02E1, 0
+                dc.l $9380017, $161C00F3, $FF21A6, $6A0201, $100000, $29010103
+                dc.l $3DF80043, $1000001, $B30040, $A9C0016, $B00FFFF
+                dc.l $FF000057, $47005B, $DBE0010, $210D3C, $500010, $DF10040
+                dc.l $400D41, $AB0E19, $7500A0, $DF50005, $410D31, $69006B
+                dc.l $B08B00, $25D800CF, $19E, $BC1500, $7F00FF, $802013A
+                dc.l $8300FF, $213600EE, $E01009A, $1E010103, $E0E003F
+                dc.l $212800A0, $3280328, $E010031, $FF029C, $160B09, $80040137
+                dc.l $51040147, $2827FF, $FF000069, $D80061, $DA500D3
+                dc.l $F31DE4, $2400C0, $D300031, $E0A002A, $E00DE7, $B50053
+                dc.l $D2000D1, $860010, $8B00FF00, $FFFFFF00, $FF00FF00
+                dc.l $FFFFFF00, $FF003800, $7001E, $5FF00FB, $B813D9, $290227
+                dc.l $C70A8E, $8779F3, $8F0321, $B9C0016, $B00FFFF, $FF0000DE
+                dc.l $CB00B0, $D210064, $101D9C, $840000, $DE100E3, $F00D02
+                dc.l $CD00D0, $D9E00F6, $100DC6, $24001B, $8B00, $90C00B6
+                dc.l $2850000, $185, 0
+                dc.l $DE8D001E, $B00FFFF, $FF000068, $C00B4, $D2000C3
+                dc.l $DC0D6C, $4500C0, $DB10017, $D41, $740EF9, $450080
+                dc.l $DB700DB, $5C0D24, $450033, $400D75, $8D1A77, $803B77
+                dc.l $800275, $8D0201, $8D1B00, $25CF008B, $8001C0, $A000000
+                dc.l 0
+                dc.l $13050131, $370780, $280, $1400, 0
+                dc.l $2000004, $1FF00A2, $400100, $400000, $B02008B, $2C000000
+                dc.l $100100, $20000, $1909, $D00203, $A00100, $80018
+                dc.l $200008A, $506, $7F038D, $1E070E, $1090100, $24010004
+                dc.l $3E0020, $10000FF, $FF0900, $FF00FF, $390000FF, $FF0100
+                dc.l $3201000, $5500, $30019FF, $29000A00, 0
+                dc.l $3E00, $69000000, $100, 0
+                dc.l $1700, $450045, $490D59, $C0008B, $D0301B0, $2020010
+                dc.l $8060030, $8A00C0, $D4000B9, $E3800A1, $E00D31, $4C00EB
+                dc.l $D3D0073, $A60090, $D7C0069, $1AA300FD, $3BA300FD
+                dc.l $27C0069, $20200B3, $2A31800, $25B80029, $2B900A0
+                dc.l $D18, $E80643, $400804, $123001B, $7800380, $15FE00C1
+                dc.l $E00, $2F10, $E52108, $308, $3080100, $80060, $C00000
+                dc.l $80080, $6000000, $28D, $1E0B09, $80400135, $B75000
+                dc.l $FF, $FF0940, $38019FF, $D5000B09, $80209, $81800
+                dc.l $A5002D, $9E0DEA, $E3003A, $1D09007E, $800D61, $FE0E35
+                dc.l $BE0040, $D0D00A4, $7A0D50, $1A0039, $E08B00, $FF00FFFF
+                dc.l $FF00817C, $691AA3, $FD3BA3, $FD027C, $690202, $802A3
+                dc.l $18000110, $275100EB, $801F06, $1240047, $FF0208
+                dc.l $3A500F3, $24D000C, $2440094, $24D00D5, $2A500F3
+                dc.l $24D000C, $6980614, $300B65, $EA0246, $4B0D04, $FF00FF
+                dc.l $5011010, $1F3C65, $21008D, $1E0301, $3010102, $1002801
+                dc.l $42B40, $3800301, $3020340, $38095FF, $29770088, $2B800380
+                dcb.l 2,$3800380
+                dc.l $E1F0020, $84000050, $CE0029, $DB500A5, $2B0D33, $E80090
+                dc.l $20100E0, $80600EC, $B200C0, $D3B0099, $E1B00B4, $700205
+                dc.l $D00378, $4C0303, $F00065, $8B0D2B, $A500F4, $900D81
+                dc.l $9D1A80, $373B00, $370281, $9D020C, $4A02A3, $180034FF
+                dc.l $530300, $500, 0
+                dc.l $11000000, $800000
+                dcb.l 2,$2800000
+                dc.l $6800000, $194100B8, $37100000, 2, 0
+                dc.l $20000008, $F00100, $800F0, $403068D, $1E0702, $1000100
+                dc.l $35200300, $7001200, $E00, $7B00, $30019FF, $56000000
+                dc.l $E000000, $78000000, $100, 0
+                dc.l $18000075, $2E0006, $61E0075, $400300, $98000D, $32061E
+                dc.l $750040, $3000014, $8F0020, $2000030, $8000052, $3C0080
+                dc.l $D6D00A6, $201, $95F, $F10040, $20000E0, $9530085
+                dc.l $720D68, $1B006C, $600DBF, $681A8E, $23B8E, $202BF
+                dc.l $680220, $6E02A3, $18000114, $80060B, $F0E784, $B00
+                dc.l $FFFFFF00, $EB0073, $6C0DCB, $A20084, $D830060, $400D0D
+                dc.l $810EBC, $AC0E65, $160E15, $B70004, $D990043, $E00C0
+                dc.l $D69006F, $1A6900ED, $23180080, $30080, $CE0080, $131169
+                dc.l $ED0269, $6F03BC, $1B000114, $8022A7, $280000, $1C60018
+                dc.l $90100AC, $7F00FF, $102003C, $60F0064, $8080108, 0
+                dc.l $2505006B, $C00000, 0
+                dc.l $61800C4, $6010016, $20118, $401200, $2B090001, $200901
+                dc.l $201, $20E, $7700C0, $11000F7, $C00503, $2F0384, $705
+                dc.l $1000102, $24000000, $FF00FF, $12800000, $6800000
+                dc.l $31100300, $E040004, $432000DF, $EC1110, $32019FF
+                dc.l $25001302, $10060C, $C031FF, $FF00FC, $13960003, $41020010
+                dc.l $12090008, $2090008, $1800008E, $2A0054, $DB8008A
+                dc.l $BC0D0E, $2C0000, $20100E0, $96300CF, $D85, $140876
+                dc.l $440301, $6900FF, $800203, $376, $440301, $65005E
+                dc.l $3C0D7E, $5A004D, $400D75, $8D1A77, $803B77, $800275
+                dc.l $8D0203, $6A02B3, $18000114, $8022AF, $120080, $1AF0071
+                dc.l $FF005FF, $B40024, $13000300, $16E800A0, $2E0001C3
+                dc.l $319C00C0, $A0B0005, $E00102, $4400C0, $A840000, $B09D680
+                dc.l $27FF, $D5080B0C, $6F0203, $A61800, $3700FB, $560D95
+                dc.l $C100E2, $1D6500E8, $EDD0036, $EA1008F, $E6B0080
+                dc.l $220DC5, $180015, $608B00, $1140080, $22C6003D, $8001C1
+                dc.l $51638, $C11355, $DF1945, $9C0E0D, $A0521C, $B00A06
+                dc.l $B700C0, $FF00FC, $8B00E0, $3020465, $210084, $8030309
+                dc.l $25010302, $D8009C, $E800000, $4010004, $DB00F8, $2D201080
+                dc.l $5001, $40011, $580908, $3100080, $17FF, $25BE0050
+                dc.l $29A0098, $160D0060, $3E0D00A8, $51FF00E6, $C5001FF
+                dc.l $FB00B4, $180000F2, $30087, $20200B1, $9180014, $850203
+                dc.l $130A44, $F00201, $A00806, $4E0059, $400D68, $770E5B
+                dc.l $680020, $D4F0092, $A50D63, $2F007C, $700D95, $301A71
+                dc.l $F83B71, $F80295, $300220, $702B3, $18000100, $27C00000
+                dc.l $1F08, $1080000, $200, $3800000
+                dcb.l 5,$2800000
+                dc.l $6000600, $B04, $204, $D00, 0
+                dc.l $5001008, $3C00, 0
+                dc.l $300, $3000100, $1002800, $2B00
+                dcb.l 2,$3000300
+                dc.l $30095FF, $29000000, $2B000300
+                dcb.l 2,$3000300
+                dc.l $E000000, $84000000, $400000, $D000000, $D00, 0
+                dc.l $2000030, $8000000, 0
+                dc.l $D000000, $E000000, $200, $E00325, $380300, 0
+                dc.l $D00, 0
+                dc.l $D75, $8D1A77, $803B77, $800275, $8D0201, $7702B3
+                dc.l $18000114, $8031FE, $8BC84, $B00, $FFFFFF00, $F80094
+                dc.l $BE0D42, $EB00DA, $D2B00A9, $A00DAE, $A60EE8, $DE0ECB
+                dc.l $C20EB1, $61001A, $DDD0019, $4700E0, $8B000A4E, $E792001E
+                dc.l $B00FFFF, $FF00004C, $5F007F, $D4900AB, $4D0D94, $6A00D0
+                dc.l $D5100AB, $400D17, $8F0EB4, $9D0020, $D5A00F1, $ED0DEF
+                dc.l $8E0035, $F00DD3, $261ACF, $563BCF, $5602D3, $260202
+                dc.l $571B00, $340000E9, $9F0204, $700614, $9E3206, $EB0A0C
+                dc.l $180713, $550110, $7C14FF, $28FF00FF, $8C120F, $F70206
+                dc.l $280000, $502001F, $392001E, $B023808, $40602, $4BDFF
+                dc.l $3A604F93, $567300, $EF0016, $670D36, $930085, $1DA700F9
+                dc.l $400DDF, $F70E7A, $A80EAA, $990025, $DD400A5, $740070
+                dc.l $8B0025F5, $6202E8, $90080, $CFF00FA, $800500, $4F0020
+                dc.l $2DFF0040, $9C0E05, $5420FF, $30FF00E9, $340, $3400205
+                dc.l $8F00A0, $1010047, $200501, $6300FF, $292001E, $B0926DB
+                dc.l $2F02AC, $4F46FF, $FF0C00, $24, $DF5040, $40067, $F027FF
+                dc.l $D4FF00E9, $B00005D, $8000FF, $FC0052, $180000A4
+                dc.l $4300C9, $D1300CA, $AB1DAA, $1200C0, $D380019, $EF10015
+                dc.l $E00DB0, $BB000B, $D1B0063, $3C0090, $8B00257A, $190000
+                dc.l $1A10044, $8014FF, $AE00F0, $11200, $200, $15FF00CD
+                dc.l $400E07, $7020FF, $31F10030, $3080308, $1FF00F9, $480000
+                dc.l $1F30035, $601005D, $FF0292, $1E0B09, $D6490000, $27FF40FF
+                dc.l $800000, $191F8, $AFF00F9, $F002F0, $E1800, $E600A0
+                dc.l $7A0D2F, $7C005E, $1D920083, $800DC3, $5A0EAA, $EE00C0
+                dc.l $D9400CD, $8E0DB9, $7A00A3, $A08B00, $FF00FFFF, $FF00FF00
+                dc.l $340100EC, $70BB92, $1E0B00, $FFFFFF00, $590080, $D10DC0
+                dc.l $F400A3, $D3C00B4, $300DF2, $D000C0, $D4300C1, $E1B0048
+                dc.l $E00DF6, $9C0003, $D330064, $6F0010, $8B00090F, $32E787
+                dc.l $180B00, $FFFFFF00, $A500C0, $4F0DBD, $E400BD, $DA40021
+                dc.l $E900087, $E6B005F, $EFD00F3, $E9A00C9, $5D0D3F, $2100E2
+                dc.l $E000000, $1A3400BC, $3B3400BC
+                dcb.l 2,$2000000
+                dc.l $1B00367F, $206001B, $615000F, $8050129, $6700FF
+                dc.l $25002B01, $10314FF, $FF00EA, $A00100, $E0D00, $60053
+                dc.l $601109, $30D00E7, $C00A87, $180B02, $FFFF3904, $24C400
+                dc.l $480077, $370DAA, $CC00F5, $1DE600D5, $E3300C7, $E760018
+                dc.l $EEA0070, $950D24, $390021, $8C000100, $22C0, 0
+                dc.l $1C00000, $C00, 0
+                dc.l $6000000, $8080108, 0
+                dc.l $6800380, $15000000, 0
+                dc.l $D140000, $20030E08, $2000, $80400, $3000208, $F00000
+                dc.l $10800F0, $300, $1000000
+                dcb.l 2,0
+                dc.l $700, $3002500, $FF00FF, $10000FF, $FF4500, $10FF00FF
+                dc.l $50000000, $FF00FF, $9000300, $19FF2500, $3004600
+                dc.l $2006000, $C00
+                dcb.l 2,0
+                dc.l $18000000, $400000, $3110900, 0
+                dc.l $D000000, $200, $300800, 0
+                dc.l $D00, $E00, 0
+                dc.l $D000000, $C00
+                dcb.l 2,0
+                dc.l $B000100, $1B3400BC, $23180080, $30080, $CE0080, $131134
+                dc.l $BC0600, $53011B, $C300F0, $17000100, $22C0, $2C0
+                dc.l 0
+                dc.l $14000000, 0
+                dc.l $12800380, $15000000, $E14, $2003, $31080000, $3000300
+                dc.l $1000008, $F00100, $800F0, $300, $1000000
+                dcb.l 2,0
+                dc.l $700, $3002500, $30000FF, $FF0EFF, $FF0400, $FF, $FF2D00
+                dc.l $10FF00FF, $50000000, $FF00FF, $9000300, $FF00FF
+                dc.l $17FF2500, $200, $1500, $100, $3D000000, $51000000
+                dc.l $A000000, $100, 0
+                dc.l $18000000, $400000, $2010011, $9000000, $201, $630A00
+                dc.l $200, $300800, 0
+                dc.l $D00, $E00, 0
+                dc.l $D000000, $D00, 0
+                dc.l $D00, $1A34, $BC2318, $800003, $8000CE, $800013, $113400BC
+                dc.l $2000000, $2000053, $11B00C3, $F01700, $FF00FFFF
+                dc.l $FF00FF00, $34FE00A5, $BB87, $180B00, $FFFFFF00, $B200E1
+                dc.l $A10D35, $2E0013, $D4C006B, $E3100AC, $E970091, $E64009E
+                dc.l $E360073, $730D82, $F8001C, $8C000110, $60E, $D2E794
+                dc.l $20B00, $FFFFFF00, $6300CE, $80D68, $230098, $D980089
+                dc.l $800D62, $260000, $D2D0088, $EC700D7, $D6B, $AE0098
+                dc.l $D04006A, $F00080, $D830055, $1A5F0052, $231F0000
+                dc.l $1001C0, $F, $80105F, $520283, $550202, $D01B00, $1000000
+                dc.l $22C00000, $2C00000, $A000000, $100, $600, $808, $1080000
+                dc.l $2604, $914, $600, $40000, $1000000, $12001600, $10
+                dc.l $102, $E02, $150055, $110800F0, $108, $F00000, $3000100
+                dcb.l 3,0
+                dc.l $7000300, $38000000, $FF00FF, $4000000, $FF00FF, $31001200
+                dc.l $FF, $FF4100, $FF00FF, $11000300, $19FF3900, $600
+                dc.l $3100, 0
+                dc.l $13000000, $41000000, $12000000, $2000000, $18000000
+                dc.l $400000, $D000000, $D00, $300, $300800, 0
+                dc.l $D00, $825, $380300, 0
+                dc.l $200, $E00325, $380300, 0
+                dc.l $D00, 0
+                dc.l $D00, $1A83, $4A3B83, $4A0200, $200, $6C1B00, $11023C2
+                dc.l $7D0080, $1A7007D, $800CFF, $F70084, $67500E0, $8040123
+                dc.l $1B00FF, $6000300, $15FF0010, $9C0001, $951004E, $2001F01
+                dc.l $101000E5, $26100310, $2090049, $200107, $90020, $3020101
+                dc.l $8700FF, $650021, $940002, $7030309, $25400380, $46020004
+                dc.l $A040004, $2400004, $140033, $5D400380, $19FF25C0
+                dc.l $3C046FF, $2010940, $63090014, $2090014, $180000BE
+                dc.l $710072, $3310932, $4200F6, $D030039, $B00202, $100806
+                dc.l $BA008D, $800D4E, $120E04, $4F00C0, $DC10077, $B60C08
+                dc.l $30003F, $F70020, $B070180, $1B800000, $230B0000
+                dc.l $10000, $C00000, $51100, $659, $2C0100, 0
+                dc.l $17000110, $2201000B, $D0080, $1CC009D, $800CFF, $BC002C
+                dc.l $64F0027, $2E1000BE, $A510072, $20500EC, $20FF3191
+                dc.l $E0039D, $600299, $600100, $C01FF, $FF003B, $E00302
+                dc.l $1020021, $FF0065, $210094, $20703, $3092401, $40204
+                dc.l $41080, $401, $400DB, $F82C02, $40A04, $40480, $5001
+                dc.l $40038, $3C0008, $40210, $40308, $3100080, $17FF
+                dc.l $25C100B0, $2BF0088, $16250020, $3A40030D, $A851FF
+                dc.l $E60301, $100201, $100350, $1FF00FB, $B41800, $2100C3
+                dc.l $A30202, $B10973, $800D9, $2030013, $A4400F0, $20100A0
+                dc.l $80600A2, $FE0040, $DD90053, $EBE0028, $A00DA5, $8A0039
+                dc.l $DCE0057, $5E0030, $D950030, $1A7100F8, $230B0000
+                dc.l $10000, $C00000, $51171, $F80295, $300220, $70100
+                dc.l $B30000, $17000110, $233E00A4, $800179, $30080, $44FF00DE
+                dc.l $400A48, $D624FF, $31350010, $BF100C0, $10D00DC, $400302
+                dc.l $1010025, $FF0065, $210094, $20703, $3092501, $800000
+                dc.l $1020080, $4520, $A080004, $56100004, $EB0020, $9400380
+                dc.l $19FF255E, $E00285, $B05240, $56FF00F6, $B090008
+                dc.l $2090008, $18000002, $9E007A, $2090A48, $8A00EE, $20600C3
+                dc.l $901003F, $3020010, $806004C, $3F0080, $D6500AA, $E5800F4
+                dc.l $C00775, $400402, $FF004E, $20800A3, $90A0064, $E800A0
+                dc.l $10B00A3, $A21002C, $1A763C76, $321002C, $203000D
+                dc.l $3F81700, $1000000, $31000000, $4B140000, $68000400
+                dc.l 0
+                dc.l $700, $3003500, $C9FFFF00, $40, $725, $380400, 0
+                dc.l $7250038, $4000000, $D00, 0
+                dc.l $D000000, $E000000, $D00, 0
+                dc.l $D000000, 0
+                dc.l $D75008D, $1A770080, $3B770080, $275008D, $20C0058
+                dc.l $2B31800, $1100201, $3100D0, $101000A, $4164F, $FB00C4
+                dc.l $5D000062, $C00B01, $60650021, $910804, $1010100
+                dc.l $FFFFFF00, $E100D4, $40D58, $E800CC, $DDB00B4, $C00D6E
+                dc.l $D30E93, $C40E01, $4B0080, $D7C008E, $4C0D58, $8C0048
+                dc.l $406E03, $1011B, $F300F0, $17000110, $32FF0095, $381400
+                dc.l $2D7000BC, $67100AC, $1C1D01, $1014703, $1020087
+                dc.l $FC0065, $210091, $8020300, $35014320, $85FFFF00
+                dc.l $EF0065, $4F0778, $4C0303, $D000C3, $BD0D84, $1100D0
+                dc.l $D100047, $400DC0, $5F0E68, $530020, $D180088, $5D0D9C
+                dc.l $C60032, $F00D07, $EC5B07, $EC0241, $730101, $760040
+                dc.l $31B1300, $FF00FFFF, $FF00E203, $1011B, $F300F0, $1700FF00
+                dc.l $FFFFFF00, $810700EC, $5B0700EC, $35A0101, $780098
+                dc.l $17000110, $23B900D6, $4901B1, $1E0046, $1F0C0114
+                dc.l $300FF, $66300E7, $261004D, $25E00E7, $27F00BF, $25B009F
+                dc.l $261004D, $57C005C, $137200CF, $2730075, $D05002F
+                dc.l $FD0501, $1FC0E1A, $9900FF, $FF00FF, $FF3865, $210091
+                dc.l $4080301, $1020100, $55400380, $3010302, $3400380
+                dc.l $7088DFF, $56880048, $2800380, $3800380, $3809400
+                dc.l $7C00E9, $450DEE, $FF00BF, $D4200ED, $F00DEA, $FC0060
+                dc.l $2020030, $378004C, $3030064, $F50E38, $560060, $D0F00E6
+                dc.l $9F0D52, $EA00DE, $506CFF, $FF01F9, $1010078, $981700
+                dc.l $110254C, $16C0054, $2A211B, $CF00F4, $20700FF, $24800C8
+                dc.l $25F0082, $2A90022, $29D002A, $24800C8, $25F0082
+                dc.l $58100FF, $E504FF, $CE0C61, $100258, $640D04, $AB00FE
+                dc.l $501100D, $863C65, $210091, $4020301, $1020100, $55400380
+                dc.l $3010302, $3400380, $F0885FF, $56800380
+                dcb.l 2,$3800380
+                dc.l $9400008D, $6200E8, $D04006C, $380D45, $D30080, $D17004E
+                dc.l $878004C, $3030074, $680E45, $DB0E1B, $AB0038, $D610095
+                dc.l $FE0080, $6CFF00FF, $1F90101, $780098, $17000114
+                dc.l $800245, $80020F, $380100, $7E0073, $FF019E, $A300FF
+                dc.l $FF0220, $3600360, $1720003, $FF5E65, $400B00, $62920C00
+                dc.l $D4000AC, $880180, $800000, $C010004, $AC0088, $DBFF0C01
+                dc.l $2600EF, $FF0001, $2D00FF, $FF0D4D, $8700FF, $DB00003D
+                dc.l $F400AD, $D50003D, $770D06, $3F00E0, $2010070, $806002B
+                dc.l $6500C0, $D3900DD, $E3200A1, $600D6C, $C50017, $20300E3
+                dc.l $95C0033, $5400D0, $10200C3, $3790050, $30401D6, $8B1AC0
+                dc.l $CF3BC0, $CF02D6, $8B0200, $100, 0
+                dc.l $17000114, $803100, 0
+                dc.l $14082D00, $614, 0
+                dc.l $21F00F8, $2201600, $10314FF, $FE00DD, $C700FF, $FD009C
+                dc.l $2318FF, $F6009C, $300FF, $FE0054, $E20104, $9A0080
+                dc.l $10200C8, $C00300, $1000000, $292, $494030A, $1040102
+                dc.l $35004300, $3F1000FD, $40120, $1B400380, $3010302
+                dc.l $19FFB8FF, $FF0093, $A700FF, $FF0094, $2318FF, $FE007C
+                dc.l $300FF, $FE009E, $200FF, $FF0032, $1FF00FE, $BC1800
+                dc.l $4B007E, $7F0775, $400308, $6100D8, $4D0C07, $D003A
+                dc.l $E3400EB, $E46008F, $E3D00BD, $E3500BE, $ED0D42, $FE0025
+                dc.l $E390010, $57A10339, $1000FF, $FF0000, $DE0278, $C0030F
+                dc.l $1300FF00, $FFFFFF00, $E0FF00FF, $DE, $1010078, $C01700
+                dc.l $FF00FFFF, $FF00FF00, $10023C0, 0
+                dc.l $1C00000, $1F08, $1080000, $680
+                dcb.l 5,$280
+                dc.l $500, $1304, $204, $D00, 0
+                dc.l $5000103, $E080000
+                dcb.l 2,0
+                dc.l $38000000, $400, $3000100, $1005500
+                dcb.l 2,$3000300
+                dc.l $3000700, $8DFF5600, $200
+                dcb.l 2,$3000300
+                dc.l $94000000, $400000, $D000000, $D00, 0
+                dc.l $D000000, $200, $C003EA, $80300, 0
+                dc.l $E000000, $D00, 0
+                dc.l $D000000, 0
+                dc.l $6FDE03C0, $17000100, $250001C0, 0
+                dc.l $21080000, $200
+                dcb.l 6,$280
+                dc.l $500, 0
+                dc.l $4000000, $C040000, $2040000, $D000000, $500, $10080000
+                dc.l $3C000000, $400, $3000100, $1005500
+                dcb.l 2,$3000300
+                dc.l $3000F00, $85FF5600
+                dcb.l 2,$3000300
+                dc.l $3009400, $40, $D00, 0
+                dc.l $D000000, $D00, $8EA, $80300, 0
+                dcb.l 2,$E000000
+                dc.l $D00, 0
+                dc.l $6FDE, $3C01700, $1100000, $624008C, $101007F, $1F029F
+                dc.l $AF0100, $76007A, $1BF, $B2005F, $1BF0070, $10184
+                dc.l $C7CF93, $C000D00, $FF00FF, $10000FF, $FF0180, $A9004C
+                dc.l $AFF00FF, $DBFF0C00
+                dcb.l 3,0
+                dc.l $1CB, $200A5E, $ABDC00, $4E00DC, $270D66, $3800C5
+                dc.l $D070039, $500202, $900937, $490040, $D4900B7, $E400080
+                dc.l $200D38, $260065, $20000C3, $94500FD, $500070, $10000F3
+                dc.l $3750040, $3080100, $1AFF, $FF3BFF, $FF0200, $1F00
+                dc.l $1100000, $22C30078, $2B80015, $805A08, $5C020F, $D02C00
+                dc.l $A0, $3001FE, $450000, $18000006, $DE00DF, 1, $3000C0
+                dc.l $1110013, $C002C2, $E00A93, $4010704, $2510001C, $80120
+                dc.l $190058, $8EFF00FF, $43FF25C0, $9002C0, $D88D00, $12
+                dc.l $800000, $1D, $1800, $25, $FF01FF, $1000000, $90014
+                dc.l $1000009, $141800, $4C001C, $530C07, $6200A5, $890C00
+                dc.l $1560090, $D35005A, $F740030, $2080050, $9D300B1
+                dc.l $20B, $A370029, $490204, $F30925, $77009B, $300104
+                dc.l $A38800, $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00, $1140080
+                dc.l $1000054, $100, $5C00AC, $28B00FF, $2A200FF, $1FF0000
+                dc.l 1, $12A00F0, $15012E, $F2000E, $1A400BD, $E0092B
+                dc.l $380015, $12F0040, $176502, $470D0020, $D010C, $37007A
+                dc.l $A9C0C00, $15000015, $BCC910, $870044, $12019FF, $14FF0000
+                dc.l $20, $97C002F, $E0BD09, $700ED, $1090007, $BA1700
+                dc.l $AC002C, $B80DDF, $9000A8, $D08001F, $E003D0, $97800EA
+                dc.l $DA1, $380E8D, $110000, $D7A00CD, $A80D99, $12003B
+                dc.l $800B00, $1910071, $1A9C0067, $3B9C0067, $2910071
+                dc.l $1F000114, $80222E, $F8022F, $B80000, $5A1800A3, $2240044
+                dc.l $2CFF00FF, $1D00FF, $230003C, $18FF00FD, $E700FF
+                dc.l $FF00F8, $D80080, $10A0036, $E0010A, $E60040, $A9C0C04
+                dc.l $250000FF, $FF0100, $FF00FF, $D3FF2500, $200, $907F
+                dc.l $21C00FC, $1A2D03A4, $3200320, $180000B2, $9B0040
+                dc.l $C0800E7, $ED00C0, $C070061, $B60000, $2060020, $9B00086
+                dc.l $300205, $B009C1, $940060, $2070010, $98D00B6, $300203
+                dc.l $957, $F300E0, $2020A9C, $D500A4, $102, $F38800, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00
+                dc.l $FF00FFFF, $FF00FF00, $59F0391, $B002BD, $DF023B
+                dc.l $BF065D, $D80000, $15F007C, $175, $6D00FF, $95E00F2
+                dc.l $160, $1E0000, $4D1A00A0, $781501, $470800F0, $108
+                dc.l $F00000, $A850C00, $E800000, $1200080, $2FF, $FFC900
+                dc.l $FF00FF, $10019FF, $C01005F, $7F00FF, $1005F, $3F00FF
+                dc.l $200, $95600F3, $FFBD00, 0
+                dc.l $1000000, $1700, $82001A, $40DA8, $DA00CC, $D06003C
+                dc.l $B00200, $30095B, $530E79, $C40E6A, $8B0080, $D5C00C0
+                dc.l $4C0D73, $9C00A8, $400D80, $1A80, $2200, $9000900
+                dc.l $4800000, $2800000, $51B00F3, $F00102, $10F1300, $255D00F0
+                dc.l $26000F0, $5B0C005C, $28700FF, $2E080038, 1, $9000F0
+                dc.l $19FA0040, $8301FB, $380042, $FF00FF, $320000, $FF00FE
+                dc.l $BC0000, $A850C02, $BAFD0004, $43FFB8FF, $FF009A
+                dc.l $8000FF, $FF009B, $18FF, $FE007C, $301FE, $9E0002
+                dc.l $FF00FF, $3201FF, $FE00BC, $180000B6, $1F004C, $DEC0080
+                dc.l $240D1F, $FA0040, $2000030, $97F00E9, $200, $C009AA
+                dc.l $8C0000, $2010000, $995003A, $800200, $E00981, $E800A4
+                dc.l $20000C3, $9A100ED, $8C00C0, $1008900, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00
+                dc.l $FF00FFFF, $FF00FF00, $1100000, $30C0500, $E500C3
+                dc.l $2BE00FF, $1000200, $6B80278, $DBCF8F, $20B00, $D20009C
+                dc.l $9C0100, $FF00FF, $EBFF0D6C, $2000000, 0
+                dc.l $D41001F, $DC000056, $9A009A, $D70004A, $AE0D09, $360010
+                dc.l $D3C00BB, $800D50, $FA0E5E, $D400E0, $2020020, $93D00AE
+                dc.l $6E0D4C, $E2005D, $A04D04, $9040904, $F000000, $100
+                dc.l $1001300, $1100000, $83AA004D, $209004C, $2DFD00A8
+                dc.l $6000FF, $FF0022, $19F7, $D400C3, 6, $2100E2, $2260001
+                dc.l $2B00002, $A8F0002, $3000702, $FFFFE226, $102B0, $21700
+                dc.l $8A009F, $E20DB3, $F00006, $D180054, $600D61, $510080
+                dc.l $D8100C2, $E710089, $C00D62, $D600C6, $D7B0033, $420020
+                dc.l $8B00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00, $FF00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF000114, $8002B6
+                dc.l $E802B7, $180102, $600FF, $2FD007B, $22400B6, $2580050
+                dc.l $26000D8, $286001B, $DE0959, $C4002C, $1610008, $304D00
+                dc.l $650040, $6E9A0000, $B000D40, $8A0090, $1400070, $C40104
+                dc.l $800000, $8000000, $DDFF0D7E, $9F0101, $8E007F, $FF0121
+                dc.l $C00A00, 0
+                dc.l $DB0000CF, $E40016, $D0E0002, $620D24, $820020, $C080092
+                dc.l $80EC2, $B60EAA, $5F0040, $20000E0, $978003C, $420203
+                dc.l $4309B8, $DE00ED, $600D85, $F01ADB, $E73BDB, $E70285
+                dc.l $F01F00, $1140080, $225700A8, $25E00FE, $5B090045
+                dc.l $20700F3, $2C000000, $310070, 1, $8B00F0, $18000000
+                dc.l $9E0080, $2860000, $29000C0, 4, $7A0040, $A9A0000
+                dc.l $3010702, $BAFF00FF, $43FFBAA1, $3A21B88, $2AA, $232
+                dc.l $2BC, $1700, $E40082, $CC0D28, $D200A4, $D280022
+                dc.l $400DA0, $890000, $DD6000C, $EBB004A, $800DA3, $B0024
+                dc.l $DCB003A, $C400C0, $8B00FF00, $FFFFFF00, $FF00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00
+                dc.l $FF000110, $2A1, $D00050, $1990012, $4C0001, $33003B
+                dc.l $2A900FF, $22900DC, $A9B001F, $FFBD0A, $940060, $10F00FF
+                dc.l $E00A95, $80B00, $D1000DD, $AC0100, $FF00FF, $10800FF
+                dc.l $FFE7FF, $DC1003F, $1000000, 0
+                dc.l $FF00FF, $A0E800, $7800A2, $130D9C, $8A00C9, $D15002A
+                dc.l $900C00, $5400AA, $400778, $4C0303, $7000E3, $E6200C6
+                dc.l $A00D55, $FC00E9, $20000C3, $96B002E, $870030, $D800000
+                dc.l $1A800000, $3B800000, $2800000, $1F000110, $2258
+                dc.l $5C002C, $16100A4, $305A14, $16020D, $442D01, $8100BF
+                dc.l $FF00FD, $B800A3, $18FF00F6, $BC0003, $FF00FC, $9C0062
+                dc.l $2320000, $FF00FE, $BC0000, $A950008, $B02BAFD, $443FF
+                dc.l $BA9300A7, $2940023, $1A7C0003, $29E0002, $1F00008D
+                dc.l $4000C9, $DB7005B, $B0D18, $CA00B0, $D63002A, $C00D84
+                dc.l $390E73, $B100E0, $D6400B7, $6B0D7D, $8A005E, $908B00
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF00FF00, $1140080, $2A9000E
+                dc.l $1B2, $C20000, $19E0013, $2C30003, $1FF008C, $7E0338
+                dc.l $6B800F8, $BE0800F0, $108, $F00000, $B000B00, $C010004
+                dc.l $FF00FF, $10004, $3400310, 0
+                dc.l $1200000, 1, $4DDFF, $C0000D2, $AF02F7, $9F00FF, $1EA00C0
+                dc.l $2580038, $26000D8, $286001F, $FFDB00, $CF0049, $750779
+                dc.l $500304, $D0039, $4F0779, $500304, $180036, $B0021A
+                dc.l $200806, $9800C5, $A00206, $7009C2, $250EA9, $E00060
+                dc.l $D9300E2, $2F0C08, $B80055, $410050, $D2100BE, $1A870096
+                dc.l $3B870096, $22100BE, $1F000114, $80B5FF, $FF00CE
+                dc.l $E702AE, $1AF9005A, $C301F7, $3C0082, $1F90041, $E101FF
+                dc.l $290022, $B000B02, $FFFFE226, $102B0, $21700, $E300E8
+                dc.l $2B0D28, $90091, $D280007, $100DA0, $1C0040, $DD5007B
+                dc.l $EBA00CB, $A00DA2, $9C00B1, $DCA00B1, $1800B0, $8B00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $FF000114, $8002A1, $D00286
+                dc.l $280102, $54009F, $B50002, $3F002F, $DC0120, $6C0258
+                dc.l $500260, $D80259, $ED00FF, $95900B8, $2610008, $4E000065
+                dc.l $401501, $46FF00F6, $E00002, $FF00F9, $CF00FF, $8650021
+                dc.l $900804, $1010100, $15C10080, $801, $4BF10, $32019FF
+                dc.l $2156004B, $FFBCFF, $FE00C0, $2021B, $FF1700, $920011
+                dc.l $8D0DBD, $9E0017, $D0A0041, $800C06, $66008D, $C00D88
+                dc.l $BD0E77, $A50060, $D680027, $F70D81, $D300F2, $D08B00
+                dc.l $FF00FFFF, $FF00E0FF, $FF0301, $7800C0, $1700FF00
+                dc.l $FFFFFF00, $E0FF00FF, $1DE0101, $7800C0, $1700FF00
+                dc.l $FFFFFF00, $810700EC, $5B0700EC, $35A0101, $780098
+                dc.l $1700FF00, $FFFFFF00, $E0FF00FF, $1DE0101, $7800C0
+                dc.l $1700FF00, $FFFFFF00, $E0FF00FF, $1DE0101, $7800C0
+                dc.l $17000110, $2CC, $B402AB, $120101, $260077, $FF0001
+                dc.l $7F00D3, $FF00FF, $FF00D8, $26D0083, $25A00A6, $80016D
+                dc.l $C2BD00, $100004, $C00000, $A00A1, $C00A9C, $150B00
+                dc.l $D400340, $AE00EC, $10200FF, $FF0110, $130024, $1200011
+                dc.l $200D40, 0
+                dc.l $1800000, $B004, $419FF, $C020018, $2F00FF, $20024
+                dc.l $FF00FF, $FF00F1, $600266, $C00260, $D80230, $470A59
+                dc.l $B80261, $8AD00, $8007A, $109, $E0000, $170000CD
+                dc.l $F70067, $D200001, $290206, $230808, $90040, $3040A44
+                dc.l $B90040, $D9B004C, $500202, $7009D1, $C80080, $2010020
+                dc.l $94900CC, $250D9B, $150084, $700D8E, $7C5B8E, $7C051B
+                dc.l $F300F0, $17000110, $2352009E, $24A0079, $20030151
+                dc.l $B700FF, $2080326, $6F021B, $1314FF, $B00066, $61F00FC
+                dc.l $25F00FC, $25B0070, $1E010101, $56600CC, $25D0018
+                dc.l $30D00AB, $21750B0F, $90040, $1010037, $E00302, $101004F
+                dc.l $FF0065, $21009C, $150703, $3092510, $44004B, $102003D
+                dc.l $2B4510, $D20014, $5200320, $2010004, $52010004, $2300E7
+                dc.l $9400380, $19FF2566, $6025A, $FC5240, $31D0078, $51FF00EA
+                dc.l $B090008, $2090008, $180000DE, $FA009C, $D2100A1
+                dc.l $140D01, $FA0030, $2010090, $3280044, $306009C, $A50ED0
+                dc.l $DC0E87, $A00302, $700378, $4C0303, $3F005C, $740216
+                dc.l $F30976, $BA0001, $C00115, $336900, $2031B, $B300F0
+                dc.l $1700FF00, $FFFFFF00, $FF00FF00, $FFFFFF00, $81FF00FF
+                dc.l $5BFF00FF, $300011B, $B300F0, $1700FF00, $FFFFFF00
+                dc.l $E0000002, $100011B, $B300F8, $1700FF00, $FFFFFF00
+                dc.l $FF000114, $8002A9, $5C028A, $360102, $F90073, $10200F0
+                dc.l $AB0100, $1300F2, $250001D, $800165, $4C0000, $18B007D
+                dc.l $BE080081, $4000FF, $F5006E, $A93, $B00, $EB5002C
+                dc.l $18000E6, $6C0280, $232, $2C0208, $D80D00, $FF00FF
+                dc.l $10000FF, $FFAC01, $40200, $1019FF, $DF00203, $30200
+                dc.l 0
+                dc.l $25A00D8, $2620010, $26200C3, $A000000, $2000000
+                dc.l $AE03006A, $1FF00F9, $FE1800, $580045, $290DBF, $5A002B
+                dc.l $2010063, $90A0400, $AF100F2, $C00D42, $990000, $2010000
+                dc.l $91A0045, $E00200, $E00950, $7D007B, $2060023, $9BC0083
+                dc.l $940090, $1090013, $AA700E8, $1ADA00C4, $3BDA00C4
+                dc.l $2A700E8, $5000000, $1700, $10023C0, $2C0, $2008
+                dc.l $1080000, $200, $3800000, $2800000, $14000000, $600
+                dc.l $240, $214, $1E00, $10305C0, $2C0, $308, $2108, $B0800F0
+                dc.l $108, $F00000, $3000100
+                dcb.l 3,0
+                dc.l $7000300, $250000FF, $FF0100, $FF00FF, $450000FF
+                dc.l $FF0500, $3000200, $5200, $FF, $FF0900, $30019FF
+                dc.l $25000000, $2000000, $52000300, $5100, $B00, $200
+                dc.l $1800, $40, $D00, 0
+                dc.l $D000000, $200, $300325, $380300, 0
+                dcb.l 2,$E000000
+                dc.l $30000E0, $3250038, $3000000, 0
+                dc.l $20000C3, $9000000, 0
+                dc.l $10000F3, $69FF00FF, $3010078, $C01700, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF008107, $EC5B07, $EC035A
+                dc.l $1010078, $981700, $FF00FFFF, $FF00E0FF, $FF01DE
+                dc.l $1010078, $C01700, $1140080, $2281009C, $24C00AA
+                dc.l $5B340033, $2360079, $2CFF00FE, $690008, $100004B
+                dc.l $101908, $5700C0, $FF00FF, $520201, $6400C0, $11000C0
+                dc.l $E00865, $210093, $401030A, $1040102, $250400D3, $100108
+                dc.l $880040, $8D010302, $1B100320, $3400380, $19FF2558
+                dc.l $80025F, $A08DFF, $FF0022, $8000FF, $FF00E9, $1A010018
+                dc.l $2010018
+                dcb.l 2,$2090008
+                dc.l $18000052, $8F001F, $D6B0008, $2D0D28, $160080, $2050020
+                dc.l $998008F, $800206, $F0094D, $2F0E43, $890020, $D3A00CA
+                dc.l $CD0D49, $48006F, $F00DA7, $E81ADA, $C43BDA, $C402A7
+                dc.l $E80000, $20100, $11B00B3, $F01700, $1100000, $2B70090
+                dc.l $2AB0018, $28D0007, $2660047, $2020050, $2580050
+                dc.l $160, $D8027A, $FC0BC4, $2C0330, $AD0F00FF, $E00000
+                dc.l $B0049, $E00A87, $C000E80, $280, $500, $FF00FF, $10000FF
+                dc.l $FFC000, $300, $19FF0D35, $3F0102, $3102FF, $F800E0
+                dcb.l 2,$2000000
+                dc.l $249000F, $BDFF00FE, $DE0100, $44, $18000003, $C7003E
+                dc.l $D51007B, $5A0E41, $EB60086, $800DE3, $EC0307, $D00939
+                dc.l $840090, $2090050, $3790050, $30400B9, $60009A, $20000C3
+                dc.l $9E70011, $6F00E0, $10000F3, $A9200E5, $1A800000
+                dc.l $3B800000, $29200E5, $1F00FF00, $FFFFFF00, $FF00FF00
+                dc.l $FFFFFF00, $FF000110, $235B0068, $25D00F0, $15FF00AA
+                dc.l $201300, $30015FF, $C600D2, $9FF00CD, $C00215, $742001
+                dc.l $316A0040, $20300EE, $800102, $240201, $D700E0, $10500E2
+                dc.l $200302, $1010077, $FF0065, $210087, $8030309, $71200080
+                dc.l $200920, $56010002, $280070, $9400380, $19FF7D40
+                dc.l $56FF00ED, $B090008, $2090008, $18000071, $33009B
+                dc.l $D03003A, $130200, $B30806, $1300DC, $100D4F, $700040
+                dc.l $D6900EB, $E5C00AD, $A00D50, $AE0001, $D640090, $AF00B0
+                dc.l $D800000, $5B800000, $300011B, $B300F0, $1700FF00
+                dc.l $FFFFFF00, $FF000100, $22C0, $2C0, $5B04, $204, $2C00
+                dc.l $10, $102, 0
+                dc.l $19010000, 0
+                dc.l $10000, $20800F0, $108, $F00000, $8000000, $400, $3000100
+                dc.l $1002500, $FF00FF, $10000FF, $FF8D00, $3001B00, $3000300
+                dc.l $30019FF, $25000000, $2000000, $8D000000
+                dcb.l 2,0
+                dc.l $1A00
+                dcb.l 3,$200
+                dc.l $1800, $40, $D00, 0
+                dc.l $D000000, $200, $300900, 0
+                dc.l $20000C0, $9000000, $E000000, $D00, 0
+                dc.l $D000000, 0
+                dc.l $DFF00FF, $1A800000, $3B800000, $2FF00FF, $FF00FF
+                dc.l $1DE0101, $7800C0, $17000114, $800901, $DF0083, $1000065
+                dc.l $D30226, $8A0A73, $DBBDFF, $F80044, $102, $F200C0
+                dc.l $A820C00, $EC5006C, $2BB00B0, $C000000, $BF100320
+                dc.l $19FF0C01, $23001F, $1010011, $5F0E35, $8FBFCC, $32C1800
+                dc.l $D0075, $920D5E, $120016, $1DBD0055, $E2A00D8, $400D8E
+                dc.l $E00D0, $7750040, $30000C0, $4A00D6, $DEF00AF, $FD0020
+                dc.l $DDB0059, $5BDB0059, $1F00FF00, $FFFFFF00, $FF00FF00
+                dc.l $FFFFFF00, $FF000114, $802260, $60025C, $B80E09, $4C0680
+                dc.l 1, $92000FB, $FF21A8, $A00900, $400000, $2080030
+                dc.l $1E01075C, $94025C, $D60314, $A72152, $2001FF, $FE00AA
+                dc.l $100, $ED0080, $100003E, $FF, $FA0048, $500, $290382
+                dc.l $C0972FF, $FF0900, $63100320, $19FF7D00, $6300005E
+                dc.l $1FF00FF, $BE1800, $7A00E1, $EF1D11, $710D06, $56003F
+                dc.l $E7200FF, $E64009F, $200D57, $98003D, $D6D002F, $3C00F0
+                dc.l $8B00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00, $FF000D4F
+                dc.l $3F0101, $7700AB, $1FF00DD, $66025A, $EA025D, $6024D
+                dc.l $F2BD00, $500A6, $C000FF, $FD0088, $A8D, $C000D80
+                dc.l $980030, $6FF00FF, $2800000, $4010004, $6300B4, $DBFF0D32
+                dc.l $AF0254, $6F065E, $8D0080, $53E00FF, $DC000086, $710035
+                dc.l $DFB0064, $8F1D12, $6B00C0, $DA1002A, $B00DAE, $8D00C0
+                dc.l $DB100A2, $AF0202, $730928, $770150, $1030003, $A640087
+                dc.l $5B640087, $1F00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00
+                dc.l $FF000100, $22C0, $2C0, $E00, $500, $100, $9080000
+                dc.l $680, $3801500, 0
+                dc.l $E140000, $1E000103, $5C00000, $2C00000, $3080000
+                dc.l $21080000, $1000001, $201, 0
+                dc.l $10800F0, $1000008, $F00400, $2000000, 0
+                dc.l $800, $3007100, $62000000, $FF00FF, $9000300, $19FFD400
+                dc.l $C00, $1000000, $1800, $40, $D00, 0
+                dc.l $2010063, $8000000, 0
+                dc.l $C000000, 0
+                dc.l $D000000, $E000000, $D00, 0
+                dc.l $D000000, 0
+                dc.l $DDB0059, $5BDB0059, $1F000114, $802232, $B8025D
+                dc.l $F0221D, $F00FF, $28FF00BC, $2A0F00, $16010101, $55C002E
+                dc.l $25E007A, $9FF00FF, $C30200, $1AFF00F4, $EA0080, $FF00FE
+                dc.l $EF0201, $E4020A, $8700C0, $3030103, $2300FF, $650021
+                dc.l $8D080E, $1090100, $25100080, $280, $4D02, $67100320
+                dc.l $19FF255D, $D8025E, $20B609, $140209, $141800, $79007A
+                dc.l $8E0DBC, $3C002A, $3030378, $4C0303, $150050, $A00D55
+                dc.l $420080, $D7100AE, $E630078, $400D56, $97008A, $D6B00EF
+                dc.l $4400E0, $DDB0059, $5BDB0059, 2, $100011B, $B300F0
+                dc.l $1700FF00, $FFFFFF00, $FF0005A7, $BE028B, $CE0102
+                dc.l $51006F, $10300E6, $CB0100, $1300F2, $2600021, $25E00D2
+                dc.l $80019F, $4B0BB8, $300, $AD0A00FB, $1FC, $3D00C0
+                dc.l $A990C00, $D4000B5, $2C02E6, $6C0280, $110, $32002C
+                dc.l $1200008, $D802FF, $FFBC01, $40310, $19FF0C02, $F0002F
+                dc.l $1030003, $FF0100, 0
+                dc.l $25A00D8, $162, $100262, $C3BD00, $3006A, $1FF00F9
+                dc.l $FE1800, $4A0040, $B40DAD, $1F00DC, $E400EE8, $170000
+                dc.l $D350074, $201, $90E, $C50080, $20000E0, $9FF00D3
+                dc.l $6C0206, $230945, $3C0003, $400109, $130AA7, $E81ADA
+                dc.l $C43BDA, $C402A7, $E81F00, $1140080, $229700FE, $27800F0
+                dc.l $221C003B, $FF06A7, $1A02B8, $F6030A, $2A50016, $2A7001A
+                dc.l $2B800F6, $D2500FC, $B4C0084, $22300BD, $D0400DB
+                dc.l $FF0501, $75D00A2, $25F00E8, $30A0031, $3C650021
+                dc.l $990401, $3010102, $1005540, $3800301, $3020340, $3800F08
+                dc.l $85FF5680
+                dcb.l 2,$3800380
+                dc.l $3809400, $440000, $80D58, $190098, $D0B00E9, $800775
+                dc.l $40042F, $A60878, $4C0303, $3F0088, $E370097, $8750040
+                dc.l $4300064, $980D3C, $520010, $800DA7, $E81ADA, $C43BDA
+                dc.l $C402A7, $E80000, $2031B, $B300F0, $1700FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $810700EC, $5B0700EC, $35A0101
+                dc.l $780098, $17000100, $22C0, $2C0, $2208, 0
+                dc.l $28000000, $F04, $16000103, $5C00000, $2C00000, $9000000
+                dc.l $100202, $1A000001, 0
+                dc.l 1, $208, $F00208, $F00000, $3000100
+                dcb.l 2,0
+                dc.l $800, $1000100, $250000FF, $FF02FF, $FF4D00, $67000300
+                dc.l $19FF2500, $200, $B600, $200, $1800, $40, $D00, 0
+                dc.l $3630325, $380300, 0
+                dc.l $D00, 0
+                dc.l $D000000, $E000000, $D00, 0
+                dc.l $D000000, 0
+                dc.l $DFF00FF, $5BFF00FF, $FF00FF, $1DE0101, $7800C0, $1700FF00
+                dc.l $FFFFFF00, $FF0005B3, $5802AE, $D80101, $DF00DF, $10100E0
+                dc.l $1F0200, $259, $EF0080, $160006A, $26F00EF, $A560088
+                dc.l $26000D8, $AE0800F0, $1000008, $F00000, $A8C0C00
+                dc.l $D0000FF, $FF0100, $FF00FF, $10000FF, $FF0140, $A00FC
+                dc.l $180000F, $800000, $BE00, $300, $19FF0C00
+                dcb.l 3,0
+                dc.l $559, $A00260, $200, 0
+                dc.l $BD000000, $1000000, $1800, $5200F2, $4C0D6B, $890024
+                dc.l $C00000E, $8A0040, $C00003A, $290E4D, $8C0E43, $DA0E3B
+                dc.l $1100A4, $20000C3, $8080049, $A000BC, $C00100, $F30807
+                dc.l $18900C5, $1A890033, $3B890033, $28900C5, $1F000100
+                dc.l $22C0, $2C0, $2208, 0
+                dc.l $6800000, $2800000, $3000280
+                dcb.l 2,$280
+                dc.l $D00, $B04, $204, $D00, 0
+                dc.l $50007C0, $2C0, $308, $3C00, 0
+                dc.l $4000300, $1000100, $55000300
+                dcb.l 2,$3000300
+                dc.l $F0085FF, $56000300
+                dcb.l 2,$3000300
+                dc.l $94000000, $400000, $D000000, $D00, 0
+                dc.l $7250038, $4000000, $8250038, $3000000, $E00, $825
+                dc.l $380400, 0
+                dc.l $D000000, 0
+                dc.l $DFF00FF, $1A800000, $3B800000, $2FF00FF, $FF00FF
+                dc.l $3010078, $C01700, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF008180, $5B00, $1F00, $1140080
+                dc.l $165D00F0, $26100C8, $69F015A, $1B50098, $5A1F00
+                dc.l $FF00FB, $802A39, $B80F01, $B71501, $1FF05B2, $140059
+                dc.l $1B500EC, $5A0204, $C624FF, $FD009C, $840100, $5700FF
+                dc.l $FF00FE, $7B00C4, $10100D9, $BF0303, $1040097, $FD0065
+                dc.l $21008C, $80E0109, $1004D08, $2B806710, $3800080
+                dc.l $17FF, $E0FF00FD, $BC0004, $20B00FF, $170000B5, $8E0044
+                dc.l $DEB00C3, $8C0D1F, $E000C0, $D7F0083, $EAA0004, $E9400C3
+                dc.l $800D81, $81000C, $DA1006C, $6C0040, $6F001B00, $7590304
+                dc.l $20003, $670102, $4B00FB, $1FF00F0, $BB00FF, $15D009A
+                dc.l $AC0161, $D500B0, $17D00B3, $C2B02DE, $30BE9F, $C000D10
+                dc.l $B200A0, $1200080, $102, $2300D8, $22900EC, $22200AC
+                dc.l $DFFF0C01, $80003F, $FF0001, $F7007F, $FF02FF, $FF0158
+                dc.l $F8002C, $330DF00, $8800E4, $420DB1, $AF0026, $D180006
+                dc.l $600D60, $190080, $D800022, $E70001D, $C00D61, $9900E6
+                dc.l $D7900A8, $480020, $DA500C3, $1A920019, $3B920019
+                dc.l $2A500C3, $1F00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00, $FF00195F
+                dc.l $AC025F, $CA2D00, $1200BE, $2A120016, $F000000, $260100C7
+                dc.l $25FF0056, $2010039, $3F0000, $300E6, $800105, $5500A0
+                dc.l $5070013, $FF029F, $C00D940, $B6007C, $18000B9, $1C1FFF
+                dc.l $D8FF00FD, $A80004, $26700FF, 8, $A60080, $10400C5
+                dc.l $1700, $EB0080, $3A0D31, $E9008E, $D29005C, $E00DA5
+                dc.l $730080, $DDC009A, $EC10006, $C00DA8, $9004E, $C0800D1
+                dc.l $7300F7, $A00B07, $7F000114, $800101, $480038, $101000F
+                dc.l $380EEF, $2802C3, $C00273, $E300FF, $5D000065, $400B01
+                dc.l $60650021, $900804, $1010100, $1A800000, $21400FC
+                dc.l $DFFF19EF, $2802C0, $D8E000, $940023, $8E0DC0, $4F004A
+                dc.l $D1A01A0, $D680002, $800D8A, $AE0E79, $580040, $D6900A2
+                dc.l $8A0D83, $AB00D4, $E0711B, $C300F0, $1700FF00, $FFFFFF00
+                dc.l $E0FF00FF, $3010078, $C01700, $FF00FFFF, $FF00E0FF
+                dc.l $FF01DE, $1010078, $C01700, $FF00FFFF, $FF00E51B
+                dc.l $C300F0, $17000114, $801901, $25001C, $6CD006E, $2BF00B8
+                dc.l $20030122, $9300FF, $297700A0, $F0200AB, $15011012
+                dc.l $C32D02, $300ED, $10F00B7, $AD0303, $1030087, $FE0065
+                dc.l $210090, $80E0109, $100268E, $1C02A9, $10B510, $32019FF
+                dc.l $25BD00F0, $2BD00A8, $B6090013, $ED0109, $1300ED
+                dc.l $1700009C, $AA007D, $DCB0065, $E70D1B, $800070, $D6E0001
+                dc.l $C00D92, $AD0E80, $570060, $D6F00B9, $C70D8B, $430061
+                dc.l $D06CFF, $FF0301, $7800C0, $1700FF00, $FFFFFF00, $E0FF00FF
+                dc.l $1DE0101, $7800C0, $17000110, $714, $16790047, $DC00FFFF
+                dc.l $FF0000B7, $700C6, $DED00AE, $720D20, $230020, $D80008C
+                dc.l $EAB0066, $E9500F9, $E82008E, $B20DA2, $BC0088, $608B00
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $1100000, $769E001E, $660D00E3, $AD0107
+                dc.l $B500ED, $17004A80, $2D10, $800000, $83FF4B03, $2D7700A0
+                dc.l $840000BF, $8E00B5, $DF800C5, $F0D21, $A200F0, $D86008B
+                dc.l $EB30065, $E9C00F8, $E8800A5, $EF0DAA, $540015, $508B00
+                dc.l $FF00FFFF, $FF00FF00, $1140080, $609008C, $28400FF
+                dc.l $FF0184, $FF00FF, $5C000D8, $6001C0, $DE0060, $171008F
+                dc.l $8DFF00FF, $FF0016, $3E9F001F, $B001680, $609, $68DFFF
+                dc.l $1A3E00D8, $360DF00, $4700DE, $B90D5D, $2100DB, $D0C0097
+                dc.l $B00D32, $5E00C0, $D430029, $E3A00C3, $E00D33, $28003B
+                dc.l $D3F00C4, $1D0090, $72F31800, $FF00FFFF, $FF00FF00
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF008107, $EC5B07
+                dc.l $EC035A, $1010078, $981700, $1140080, $190000C0, $671
+                dc.l $880022, $1BE000E, $5F1F04, $134002F, $F2297D, $FC0F00
+                dc.l $260B, $63250F, $C600C0, $10900B4, $6C010F, $A30201
+                dc.l $330B9F, $1F0B00, $4AFF00FF, $2D4000FF, $FF83FF, $275E035E
+                dc.l $1F002D00, $8400, $500065, $A80D68, $380078, $D0E0017
+                dc.l $800D38, $5E0000, $D4B0028, $E4100C3, $D39, $3F0078
+                dc.l $D47005B, $AA0080, $8B00FF00, $FFFFFF00, $FF000400
+                dc.l $A90200, $A300F8, $102002F, $5B0102, $4C00A3, $1FE00FF
+                dc.l $680001, $158003E, $164, $AA0000, $1750063, $A59000A
+                dc.l $2C0165, $820032, $5B000901, $16000000, $80000, $3E9C0000
+                dc.l $B000D10, $2C0050, $1200038, $C00104, $A400A8
+                dcb.l 2,$2FF00FF
+                dc.l $DFFF0C02, $300BF, $FF0002, $2F007F, $FF00FF, $2010100
+                dc.l 0
+                dc.l $1000000, $DF00, $9B0023, $1E0DC9, $6800FA, $D1B003B
+                dc.l $A00C08, $6C00EE, $800D91, $3E0E7F, $160040, $D6E00A2
+                dc.l $3A0D89, $E600ED, $E00D7F, $155B7F, $1506C3, $1800FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00
+                dc.l $FF001960, $AE025F, $520665, $640000, $1740052, $4D2D
+                dc.l $783060, $3600204, $F32500, $E0080, $102002E, $107
+                dc.l $590080, $10400E3, $800A9C, $B00, $79006700, $30019FF
+                dc.l $E22C0000, $22C0000, $170000D9, $F50097, $D1B001A
+                dc.l $150D26, $470050, $D99001D, $400DCC, $270EB2, $A20020
+                dc.l $D9B0081, $B50DC1, $D500C7, $708B00, $FF00FFFF, $FF00FF00
+                dc.l $1100000, $1010054, $2002E8, $A40216, $1F0224, $BF0100
+                dc.l 0
+                dc.l $1C0, $2C0, $278, 0
+                dc.l $9C00000, $1C0, 0
+                dc.l $4D1A00A0, $781500, $58860C00, $D0000FF, $FF0100
+                dc.l $FF00FF, $10000FF, $FFE7FF, $C000000
+                dcb.l 3,0
+                dc.l $200, $E7000018, $2400E8, $D1F0012, $380D04, $330080
+                dc.l $C000010, $CE0000, $D160068, $E13009B, $D11, $110038
+                dc.l $D150046, $1E0080, $D800000, $5B000000, $5000000
+                dc.l $F81700, $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00
+                dc.l $FF00FFFF, $FF00FF00, $1100000, $16BA0078, $2BC0040
+                dc.l $5010002, $120101, $32007E, $4DFF00CD, $942600, $10F0E07
+                dc.l $B3250F, $C600C0, $10900B4, $6C0106, $DF00ED, $1070027
+                dc.l $ED0671, $FF0286, $C007940, $67100320, $19FFE21F
+                dc.l $ED021F, $ED1700, $B3005B, $340DE8, $E7005C, $D1F007D
+                dc.l $C00D7D, $F70000, $DA700F4, $E9200F5, $800D7F, $EE00DC
+                dc.l $D9F0077, $1B0040, $8B00FF00, $FFFFFF00, $FF000525
+                dc.l $280101, $8009C, $10100E1, $BF0101, $E5003F, $1FF00FF
+                dc.l $E00306, $2BF0068, $800173, $6B00FF, $CE8E0006, $B000E34
+                dc.l $AC021B, $100215, $F80104, $1E00BB, $1080038, $98DFFF
+                dc.l $C020006, $BF00FF, $20012, $3F00FF, $FF00FF, $E002BF
+                dc.l $5802BF, $88E000, $880042, $2A0DB0, $DC005E, $D1700E9
+                dc.l $E00C08, $5F00A7, $800C07, $7F008A, $E6F0098, $C00D61
+                dc.l $26001E, $D790017, $F600A0, $D870092, $1A7F0046, $22000900
+                dc.l $900047F, $460287, $920102, $31B00C3, $F00102, $10F1300
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $19BF0058, $2C10026, $50000BF, $580100
+                dc.l $C10050, $4D00000B, $420F03, $1617FF, $34FF00F8, $F40000
+                dc.l $FF00FF, $CC0000, $10D0047, $C00106, $D40000, $5020037
+                dc.l $38E0006, $B00FFFF, $E2380000, $2380000, $17000023
+                dc.l $780076, $D7A00B1, $820D33, $340020, $DCC00D0, $800D11
+                dc.l $160EEE, $F30040, $DD00003, $C20D03, $4800F3, $608B00
+                dc.l $FF00FFFF, $FF00FF00, $1140080, $61B0050, $2F9007F
+                dc.l $2EA00EF, $6BF0083, $800258, $179, $1FCF9A, $B00
+                dc.l $1A0600AB, $100E1FF, $FF00009E, $690050, $DCD00AA
+                dc.l $F00D1B, $CF0000, $D6F003C, $D94, $500E81, $C60000
+                dc.l $D7000F8, $F00D8C, $D10035, $D88, $C51A80, $CE3B80
+                dc.l $CE0288, $C51F00, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF00FF00, $1140080, $75FF0095
+                dc.l $28280F, $3D030034, $10E, $EB00C0, $A9A0000, $B00FFFF
+                dc.l $E2440344, $18000039, $9F009C, $D970080, $140D37
+                dc.l $190040, $DDC0065, $D25, $DC0E01, $200080, $DDF00D6
+                dc.l $940D17, $20031, $C08B00, $FF00FFFF, $FF00FF00, $91400B4
+                dc.l $1020012, $FF02D2, $3F0AC7, $50D381, $C00FFFF, $FF0000D0
+                dc.l $D50018, $D0F003B, $C80D24, $AC0080, $D9200B2, $EC30098
+                dc.l $EAB0025, $E9400FC, $C80DB9, $B50081, $808B00, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00
+                dc.l $28010017, $C04E9B, $D80F05, $5D1701, $3D0F0063, $C00109
+                dc.l $530605, $390381, $C00FFFF, $FF00006C, $B0064, $DD90010
+                dc.l $EC0D3F, $F600C0, $DFF00DB, $E550024, $E2A007F, $E0300DA
+                dc.l $6C0D43, $E6007E, $408B00, $FF00FFFF, $FF00FF00, $5430058
+                dc.l $20600BC, $20D003F, $2D7007F, $7D702B5, $80027F, $DCF9B
+                dc.l $C002001, $200E0, $33DBFF, $214800BF, $FFDB00, $9D0049
+                dc.l $610D8C, $3E0040, $C060048, $9F0030, $D22007C, $C00D83
+                dc.l $510E52, $E600E0, $D270006, $B30D6F, $BE0018, $100D99
+                dc.l $A45B99, $A41F00, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF00FF00, $24010018, $AA022B
+                dc.l $884EB1, $AE0F04, $CC170C, $3400000A, $2300C0, 1
+                dc.l $960060, $10C00A6, $40010E, $650040, $503008B, $39B0C00
+                dc.l $D9200204, $40080, $290, $6F02C9, $8717FF, $D9020044
+                dc.l $302020F, $FF00E0, $1080032, $801700, $38007F, $AD0DE2
+                dc.l $EE0077, $D590042, $700202, $A00806, $8F00A5, $C00D14
+                dc.l $DD0ED2, $410060, $D9500E4, $570DF9, $EF0014, $D08B00
+                dc.l $FF00FFFF, $FF008184, $D11BCE, $3CCE0284, $D10000
+                dc.l $20100, $11B00C3, $F01700, $1140080, $6DF00F8, $EEF0028
+                dc.l $3900273, $E300FF, $5D000065, $400B01, $60650021
+                dc.l $950804, $1010100, $1A800000, $21400FC, $DFFF19EF
+                dc.l $2802C0, $D8E000, $C50000, $7F0D4C, $BE004D, $D4F009A
+                dc.l $D00D3E, $6B0040, $DA8008F, $E73007D, $200D43, $6400ED
+                dc.l $D93001A, $4500F0, $D8A006B, $1AFF00FF, $3BFF00FF
+                dc.l $28A006B, $21100E9, $1B00FF00, $FFFFFF00, $E0FF00FF
+                dc.l $3010078, $C01700, $1140080, $2101001B, $120080, $1FE00A4
+                dc.l $800D0C
+                dc.b 0, $48, 6
+                dc.b $2E
+                dc.l $301325, $BB0200, $260300D5, $20C33CFF, $FA0010, $2030095
+                dc.l $C00302, $4650021, $950803, $3092501, $3025602, $400FD
+                dc.l $1C5D10, $32019FF, $25C003C0, $B6FF00FF, $8001FF
+                dc.l $FB00F8, $18000047, $4B008F, $D5C0062, $7D0E44, $D00201
+                dc.l $E00806, $3100F7, $400D42, $9F0E3A, $4B0020, $D3200BF
+                dc.l $1D0D3F, $410016, $F0711B, $F300F8, $1700FF00, $FFFFFF00
+                dc.l $E51B00C3, $F01700, $1140080, $36390059, $5FF00F2
+                dc.l $D131D, $D3022B, $7F0ACD, $CF1900, $12FF0087, $D82201
+                dc.l $BA0070, $10100A6, $C80D09, $CB00C0, $111000B7, $C00102
+                dc.l $200965, $210095, $80D0106, $1003901, $7021201, $400DA
+                dc.l $486140, $3010E01, $41340, $38019FF, $40FF00F9, $7C1320
+                dc.l $DF60FF, $FF00CE, $8000FF, $FF00DC, $E0A003E, $12090008
+                dc.l $2090008, $18000036, $D00B3, $619006F, $C0305, $9200DB
+                dc.l $A90619, $6F000C, $305000D, $C70090, $2020060, $80600D9
+                dc.l $E20040, $D220083, $EFE0032, $A00DDD, $4900C9, $D1300D4
+                dc.l $810030, $711B00C3, $F01700, $1140080, $22C400B6
+                dc.l $2F60075, $90100AD, $7F00FF, $38FF00FE, $6801FF, $FF00DC
+                dc.l $80052B, $786C03, $1030065, $FF0065, $210095, $80C0105
+                dc.l $1002540, $380D5FF, $25BC00E8, $2960078, $D4000039
+                dc.l $690039, $D970039, $5B0D37, $F00B0, $DDC003E, $C00D25
+                dc.l $A90FF3, $E00DDF, $AF00BB, $C080016, $D400C5, $900B07
+                dc.l $651B00C3, $F01700, $1100000, $101002C, $A80101, $B0006
+                dc.l $E7930C00, $FFFFFF00, $D300DE, $800D60, $130080, $D520038
+                dc.l $D48, $E00000, $DB60080, $E7F00B0, $D4E, $30080, $DA00056
+                dc.l $E80000, $D800000, $1A800000, $3B800000, $2800000
+                dc.l $2000000, $1B00FF00, $FFFFFF00, $FF000100, $2100
+                dc.l $C00000, $1C0, 0
+                dc.l $D000000, $6000000, $13800000, $2802614, $2003, $3C000008
+                dc.l $F00208, $F00000, $3000400, 0
+                dc.l $8000300, $25000300, $56000000, $FF00FF, $5D000300
+                dc.l $19FF2500, $300B600, 0
+                dc.l $1000000, $1800, $40, $D00, 0
+                dc.l $E000000, $2000030, $8000000, 0
+                dc.l $D000000, $E000000, $D00, 0
+                dc.l $D000000, 0
+                dc.l $6CFF00FF, $1DE0101, $7800C0, $17000110, $23E00050
+                dc.l $8001DF, $C0080, $2A1900E7, $20015FF, $E80080, $E31008C
+                dc.l $524300D0, $A0300E5, $8000FF, $FD008A, $800302, $4650021
+                dc.l $930803, $3092502, $800000, $1010080, $4510, $800000
+                dc.l $60040004, $3600B4, $27FF25CE, $8802C0, $AAFF00F7
+                dc.l $29000064, $1C00F0, $2040031, $92F000F, $D00E3E, $F00201
+                dc.l $E00806, $190074, $E2100F0, $E1D00B2, $E1900D9, $D00D20
+                dc.l $3800EF, $73F300F8, $17000110, $3624, $4E06C3, $7A11FF
+                dc.l $FF00F6, $3C60FF, $FE00BD, $600100, $FE0070, $D0300FD
+                dc.l $E01104, $C30080, $10C003E, $600A93, $C00FFFF, $FF000044
+                dc.l $EB00B4, $76E00F4, $4A60030, $DC076E, $F414E4, $570000
+                dc.l $D300074, $E0A0065, $800DE7, $E8005C, $D210011, $230040
+                dc.l $8B000110, $227F, $9202C9, $F00900, $D0003F, $1F91008F
+                dc.l $288007F, $14000000, $180100, $500FA, $53D, $A06E04
+                dc.l $E50393, $C002500, $3004B80, $89FF2500, $200, $4A05
+                dc.l $FA8800, $480047, $3A0DAA, $8E008E, $D3900AC, $E00DE6
+                dc.l $B30080, $D33009A, $E0D0026, $C00DEA, $4E004E, $C000024
+                dc.l $E0067, $A00B08, $7F000114, $80023D, $28020A, $6AE784
+                dc.l $C00FFFF, $FF000035, $2F00E2, $DDE00A0, $60D63, $540060
+                dc.l $D8D0051, $800D11, $C20ECF, $8900C0, $D930086, $C60DF6
+                dc.l $FC0042, $200D81, $CA1A85, $163B85, $160281, $CA0208
+                dc.l $8A1B00, $FF00FFFF, $FF00FF00, $1140080, $22C10054
+                dc.l $8001C3, $CD0080, $157F00FF, $13000300, $162E00EE
+                dc.l $E17005C, $5E0200B8, $20300AE, $4020465, $210084
+                dc.l $8030309, $25400380, $46020004, $800000, $8BFF25C0
+                dc.l $3C0D500, $2000AF, $A0D2A, $2C00FE, $D010042, $100202
+                dc.l $700806, $1600CF, $800D1E, $6A0E1A, $9C00C0, $D17002A
+                dc.l $BE0C08, $1C00E0, $8400A0, $B074100, $9000900, $4800380
+                dc.l $1000002, $100011B, $F300F8, $102010F, $13000100
+                dc.l $23C00000, $1C0, 0
+                dc.l $2A800000, $2801500, 0
+                dc.l $E140000, $52080000, $A0800F0, 0
+                dc.l $800F0, $300, $4000000, $800, $3002500, $FF00FF, $10000FF
+                dc.l $FF4500, $FF00FF, $60000000, $FF00FF, $27FF2500, $200
+                dc.l $AA000000, $29000000, $400000, $2010011, $9000000
+                dc.l $E00, $200, $300800, 0
+                dcb.l 3,$E000000
+                dc.l $D00, 0
+                dc.l $73C300F0, $17000114, $8035FF, $D700B9, $5000014
+                dc.l $8113FA, $64025C, $A75C00, $BE, $D800FF, $FE0099
+                dc.l $C80ECD, $40110C, $C90060, $1010050, $200A84, $C00FFFF
+                dc.l $56260053, $A70000A6, $3D0016, $D2400BD, $621D28
+                dc.l $C80080, $D8B00B6, $E5A003F, $400D2D, $6B00A2, $D7700B6
+                dc.l $7D0060, $8B000114, $803271, $1F1404, $1190013, $FF0680
+                dc.l $280, $1545, $2801FF, $FF00E6, $22900B0, $23700C8
+                dc.l $22014B03, $650384, $C007500, $89FF7500, $8800, $A90098
+                dc.l $9C0D29, $1B0014, $D4A00C9, $400D2B, $250000, $D8E00DC
+                dc.l $E5D0000, $800D2F, $D10094, $D7A00B3, $C100C0, $B007F00
+                dc.l $53E0018, $20E001E, $167C0037, $CF8B000A, $B00FFFF
+                dc.l $FF0000E3, $250003, $D7300F0, $990D65, $6800D0, $2010040
+                dc.l $8060053, $9E0040, $DC400D3, $E8C0038, $A00D58, $EC00B9
+                dc.l $DAD00F0, $960030, $D800000, $1A800000, $3B800000
+                dc.l $2800000, $21A0006, $11B00F3, $F81700, $FF00FFFF
+                dc.l $FF00FF00, $25AE009D, $2A60012, $165F0080, $8000107
+                dc.l $FF00FF, $613007F, $18FF00E2, $140672, $3C0604, $911E01
+                dc.l $1A50E0D, $102CFF, $FD0029, $1FF00F7, $D50080, $6D700FF
+                dc.l $28B000A, $B092501, $800000, $1020080, $1E80, $2400
+                dc.l $400720, $6080004, $890078, $7BFFFF00, $1E00F0, $370D27
+                dc.l $E700F5, $D000044, $A00200, $300915, $950040, $D1C00C7
+                dc.l $E19002E, $200D15, $EB0095, $C00001B, $5200B1, $700B00
+                dc.l $7F00FF00, $FFFFFF00, $FF003800, $2E007F, $63100B0
+                dc.l $13E60053, $2690067, $A7B004F, $2DE000A0, $21FF00FE
+                dc.l $400D0, 1, $4F00F8, $CFF00FA, $450080, $110100E1
+                dc.l $400102, $2A00E0, $A8B000A, $B0056FF, $FFA7FF, $42801313
+                dc.l $9B74FF, $FF00EE, $802F00, $540032, $370DBA, $D00F5
+                dc.l $EC10EEF, $150040, $D3E00C7, $E1600EE, $200DF2, $D10095
+                dc.l $D2E00AA, $D10070, $8B002596, $E10240, $300080, $988009F
+                dc.l $1410010F, $2F0788, $7F18FF, $E100D4, $3E40200, $1FF
+                dc.l $B70020, $24014E8B, $A0B00, $25400380, $47100082
+                dc.l $800920, $81FF253A, $3E028F, $1045FF, $FE0060, $A2B0080
+                dc.l $80000057, $8D00BD, $DBE006B, $A70D3C, $5C0070, $DF10071
+                dc.l $C00D41, $ED0E19, $AF0060, $DF50037, $870D31, $A80015
+                dc.l $D08B00, $1100000, $2460070, $20C0026, $164C00FB
+                dc.l $CF8F0000, $B00FFFF, $FF0000FB, $BC0002, $D9300EA
+                dc.l $661D64, $E90080, $DDB00E2, $EA00065, $C00D6A, $7D0026
+                dc.l $DC300D5, $440020, $4D000900, $9000B02, 0
+                dc.l $11C0003, $202010F, $13000110, $23810054, $2BF0076
+                dc.l $5F00180F, $3503009F, $2030024, $800103, $5A0040
+                dc.l $FF00FF, $DA0403, $10200C9, $FF0065, $21008F, $80E0109
+                dc.l $100E101, $1DFFE0FF, $FF00CC, $1C000026, $1200F8
+                dc.l $D31002F, $680D06, $A60080, $D1A009A, $E230078, $E1F0009
+                dc.l $E1B0004, $680D21, $AD001F, $806C00, $2031B, $F300F8
+                dc.l $17000100, $22C0, 0
+                dc.l $1C00000, $1500, $808, $1080000, $680, $280, $15000000
+                dc.l $600, $614, $1E00, $1030E08, $2C00, $800F0, $1000008
+                dc.l $F00000, $3000200
+                dcb.l 2,0
+                dc.l $700, $3002500, $FF00FF, $10000FF, $FF1EFF, $FF2500
+                dc.l $FF00FF, $5000600, $FF, $FF7BFF, $25000300, $D5000000
+                dc.l $400000, $D000000, $E00, $C00, 0
+                dc.l $D00, $E00, 0
+                dc.l $D000000, $D00, 0
+                dc.l $4D04, $9040904, $4000300, $1FF00FF, $1DE0101, $7800C0
+                dc.l $1000100, $1300FF00, $FFFFFF00, $FF000110, $3604
+                dc.l $9E05FF, $D30022, $13DC007B, $60000001, $220058, $1000000
+                dc.l $F00DF9, $A120E, $570060, $1060010, $200A8F, $B00
+                dc.l $FFFFFF00, $6C00C9, $36076F, $C04DA, $700C2, $76F000C
+                dc.l $14000060, $800D55, $D60E2B, $1B0040, $D040062, $20D44
+                dc.l $8F007F, $608B00, $1100000, $21FF00DD, $350271, $982009
+                dc.l $1070073, $22F800C4, $ACB0080, $240F0575, $DE02CD
+                dc.l $E438F, $B00, $FFFFFF00, $700024, $BC0DDE, $650074
+                dc.l $D4000AF, $400D02, $BD0000, $D5800FC, $E2D00DC, $800D06
+                dc.l $C700F4, $D47008C, $C300C0, $8B000114, $80023E, $18020A
+                dc.l $E21655, $73CF83, $C00FFFF, $FF000041, $360099, $DEE0043
+                dc.l $7B1D95, $C600C0, $D1D0009, $ED90067, $E00D9C, $1D00DB
+                dc.l $D0100B1, $5B0090, $8B000114, $802252, $DA02DF, $82003
+                dc.l $13F000B, $FF2909, $EC2601, $1011613, $8000FF, $FF00EC
+                dc.l $C01902, $E00080, $106006C, $108, $F00000, 8, $F00604
+                dc.l $E70383, $C007920, $67001DFF, $E0000000, $1C00, $4E00BC
+                dc.l $290D66, $F002B, $D0D00CC, $B00D37, $3200C0, $D490099
+                dc.l $E950089, $F00202, $A00378, $4C0303, $38000F, $8B0D45
+                dc.l $E000D4, $908B00, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $1140080, $35FF00FD, $3E06F7, $3F13E7
+                dc.l $4F60FF, $FF00EF, $800FF, $FF00C5, $EFA0065, $1109
+                dc.l $8A0020, $10C00CB, $A00A83, $C00FFFF, $FF0000B2, $4300CD
+                dc.l $76E00F4, $4340060, $D7076E, $F41431, $3D00C0, $D9600FD
+                dc.l $E64001D, $600D36, $200B7, $D82006B, $9600D0, $8B000114
+                dc.l $802100, $F8001D, $8001E9, $F10000, $25030075, $C01C00
+                dc.l $2F004E, $ACF00C0, $24A5056D, $5602DF, $FE04FF, $390100EF
+                dc.l $3830C00, $FFFF25C5, $1C02B7, $60D400, $B5009F, $530D38
+                dc.l $BE0089, $D4C00E6, $900D33, $9A0040, $D9A0023, $E6600DE
+                dc.l $A00D38, $6800A9, $D850068, $DB0030, $8B00090E, $E41678
+                dc.l $3FCF8F, $C00FFFF, $FF000016, $AF00A8, $DB600F6, $781D77
+                dc.l $DE0000, $DF50028, $EB60083, $D7D, $BD0078, $DDB00D4
+                dc.l $4A0080, $4D040904, $9040B00, $31B00F3, $2000100
+                dc.l $130025C0, $2C0, $2008, $1080000, $2900, $2600, $1FF1610
+                dc.l 0
+                dc.l $20000, $18FF, $F7008A, $3B50205, $70080, $1090008
+                dc.l $7F5038F, $C007900, $67800090, $C41BFF, $E1090008
+                dc.l $1C00000A, $2800FB, $D0C00E3, $10D01, $BE0010, $D0600F8
+                dc.l $400D09, $4B0E08, $2100A0, $20000E0, $3750040, $3000007
+                dc.l $140021, $D0800D2, $C500B0, $8B00FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $FF003800, $E0008, $6D30094
+                dc.l $13E2008B, $61FE0053, $E00000, $4C, $400DF9, $CC0080
+                dc.l $1103001D, $800106, $3F0000, $A8F0C00, $FFFFFF00
+                dc.l $8700BC, $DC0DFD, $1300D4, $1D130055, $D6F, $1C0E41
+                dc.l $380080, $D1700A2, $540D5C, $8E0085, $C08B00, $254C00D8
+                dc.l $27300C9, $80453E, $980900, $1925FF, $49030065, $38F0C00
+                dc.l $FFFF253A, $3E028F, $10D400, $8B0018, $620D01, $710086
+                dc.l $D45006C, $600D15, $B10080, $D720042, $E4300F9, $C00D1A
+                dc.l $80046, $D5F008B, $CA0020, $8B00090C, $AAE78A, $80B00
+                dc.l $FFFFFF00, $900085, $E80D55, $650038, $1DCD008E, $E670068
+                dc.l $E1A007B, $ED400C4, $380D48, $4E002E, $6F0F0031, $1B000100
+                dc.l $8704, $18033400, $10000, $101, $208, $F00000, $10800F0
+                dc.l $4000100
+                dcb.l 2,0
+                dc.l $800, $1000100, $E10000FF, $FF1BFF, $E1000000, $1C000000
+                dc.l $400000, $D000000, $D00, 0
+                dc.l $D000000, $D00, $E00, 0
+                dc.l $7650500, 0
+                dc.l $D000000, 0
+                dc.l $6CFF00FF, $3010078, $C01700, $1140080, $229F00B7
+                dc.l $2EE00DE, $800D01, $400612, $EF1300, $300164F, $FC3005
+                dc.l $3D0700F1, $4000FF, $FC00A5, $A00302, $4650021, $8A0008
+                dc.l $7030309, $25010080, $102, $800000, $E800000, $50100AB
+                dc.l $5C2C04, $46F40, $38000A7, $17FF, $25C003C0, $F010040
+                dc.l $62F00C0, $2E080040, $6F8801FF, $FF004C, $18000012
+                dc.l $E000F8, $D180039, $680D01, $420010, $2010080, $806000D
+                dc.l $1A0E11, $780E0F, $490E0D, $4E0068, $D100095, $FF0080
+                dc.l $4D000900, $9000480, $3800100, $20100, $11B00F3, $F80102
+                dc.l $10F1300, $FF00FFFF, $FF00FF00, $38FF00DE, $EE0500
+                dc.l $D00E4, $13E300DD, $24D00D3, $5E2101FF, $FE00D3, $700EF6
+                dc.l $C01102, $55020A, $9B0080, $A8A0008, $B00FFFF, $FF000001
+                dc.l $93001C, $D9B0082, $941D69, $50EE1, $5C0EA5, $300E6E
+                dc.l $A90014, $DC90008, $698C00, $255C0008, $29B00D4, $2010010F
+                dc.l $3301FF, $FF00F6, $291, $8F0288, $7F14FF, $FB0050
+                dc.l $5FF00D6, $40028A, $F82405, $5BA0090, $2BA0042, $5FF00FF
+                dc.l $FE0001, $8FF00FF, $FF001E, $2E8A0008, $B007920, $2010004
+                dc.l $81FFFF00, $400EE, $A20D9F, $E00046, $D4A0041, $3020906
+                dc.l $6B0061, $EE40082, $EA700F1, $E71000F, $60DCC, $500AE
+                dc.l $8C000110, $240, $FA0338, $E79E0013, $B00FFFF, $FF000080
+                dc.l $FE0058, $D410033, $881DC2, $A20E58, $D80E0D, $BD0EC9
+                dc.l $AC0088, $D3A007A, $956F0C, $A41B00, $FF00FFFF, $FF00FF00
+                dc.l $1100000, $22910020, $2D50096, $D00, $620, $402DFF
+                dc.l $820098, $E0400A1, $20A53CFF, $FD000F, $8001FA, $CE0000
+                dc.l $A9E0013, $B094180, $800000, $2C000040, $E080004
+                dc.l $5B00C0, $5D000300, $FF00FF, $17FF3900, $63B, $D02E00
+                dc.l $6F00, $1000000, $1800, $1000B9, $A30D15, $6C0079
+                dc.l $E4100C0, $2020030, $90B0096, $400D0F, $730E0D, $8400A0
+                dc.l $D0B00C4, $990D0E, $AB0020, $308B00, $FF00FFFF, $FF00FF00
+                dc.l $1100000, $35000019, $F8061B, $9813D5, $2962FD, $D00000
+                dc.l $AB, $C00DF8, $200040, $110500C5, $400110, $A400C0
+                dc.l $A9E0013, $B00FFFF, $FF0000F2, $B008C, $D870050, $E41D5E
+                dc.l $190ED2, $CC0E98, $720E63, $910064, $DBB0034, $D08C00
+                dc.l $1100000, $2227007F, $2E8005D, $46E90078, $5000078
+                dc.l $BC02A8, $6024A5, $1C000000, $FA, $2E9E0013, $B00C180
+                dc.l $800000, $3BFFC0FF, $FF00FF, $1E3B00, $F50067, $120D8B
+                dc.l $AE0096, $1D600075, $ED500F2, $E9B0033, $E6500F7
+                dc.l $560DBE, $320015, $8C000114, $800101, $3E0018, $101000D
+                dc.l $820EEF, $2802C4, $EC033F, $FF5D00, $650040, $B016065
+                dc.l $21009B, $8040101, $1001A80, $214, $FCDFFF, $19EF0028
+                dc.l $2C000D8, $E00000E4, $77000F, $DC2008C, $FD0D65, $6800D0
+                dc.l $2010040, $8060008, $970040, $DB6001F, $E5F005B, $200D10
+                dc.l $B9009D, $D93000A, $CE00F0, $8B000114, $802271, $E80101
+                dc.l $5800E8, $AE100BF, $FFB303, $107001D, $FF0065, $21009B
+                dc.l $80C0105, $1002580, $D9FF2571, $E8D800, $5B0063, $E70D76
+                dc.l $840005, $D100006, $500D40, $190040, $D550077, $E4A00C8
+                dc.l $200D41, $1900A5, $D510025, $4C0070, $B08651B, $C300F0
+                dc.l $1700FF00, $FFFFFF00, $E0FF00FF, $1DE0101, $7800C0
+                dc.l $1700FF00, $FFFFFF00, $E51B00C3, $F01700, $1140080
+                dc.l $35FF00E9, $F605FF, $BB00EF, $11FF00FF, $F20016, $258007F
+                dc.l $279000B, $27F0023, $2DE008F, $19001314, $8B21FF
+                dc.l $FE0076, $B800FF, $FF003E, $D00CFF, $F000A3, $601103
+                dc.l $A800E0, $1010038, $9650021, $9B080D, $1060100, $39010702
+                dc.l $12010004, $10800000, $2C010004, $23400301, $E010004
+                dc.l $13400380, $19FF38FF, $FD009C, $5FF00F9, $801313
+                dc.l $9B0E6A, $D22D36, $1021FF, $FF00CE, $8000FF, $FF00DC
+                dc.l $DFF00F4, $D41209, $80209, $81800, $550084, $430619
+                dc.l $6F000C, $3050008, $AA0059, $619006F, $C0305, $D00C1
+                dc.l $900202, $600806, $A4000E, $400D30, $130EEA, $1000A0
+                dc.l $DAA009E, $790D13, $C5000A, $30711B, $C300F0, $17000114
+                dc.l $80226D, $9B028F, $100901, $3400BF, $FF1310, $10F0033
+                dc.l $FF00FF, $FF00F6, $39B003F, $288007F, $153E0016, $1FF00FF
+                dc.l $E401FF, $8D00E0, $1FF00B9, $602201, $777007D, $8001CC
+                dc.l $460080, $218009A, $FF00FF, $FF00E3, $8FF00FF, $FF0087
+                dc.l $27030103, $6500FF, $650021, $9B080C, $1050100, $254000C8
+                dc.l $370180, $47100082, $800520, $3202B01, $3020310, $3800B40
+                dc.l $3DFF2565, $D6028F, $1045FF, $FE0060, $A2B0080, $2ABA0090
+                dc.l $2BA0030, $30800FB, $FF00FF, $FF00E3, $8FF00FF, $FF001E
+                dc.l $3B000058, $DF00C9, $D0D0008, $B0D4A, $410060, $2020906
+                dc.l $A6006A, $C00D33, $390EEC, $D100E0, $DAD0004, $6B0D16
+                dc.l $C2004E, $900B08, $651B00C3, $F01700, $1100000, $60F004A
+                dc.l $28400FF, $FF0184, $FF00FF, $9C00090, $D39A0003, $B00FFFF
+                dc.l $FF00005D, $7400D4, $D5F00E2, $3C1D5D, $AF0000, $D270094
+                dc.l $EC200A1, $800D67, $2500BC, $DFE00C3, $F50040, $8B000110
+                dc.l $22C7, $980100, $C7008C, $9020050, $9F39FF, $C50B6B
+                dc.l $7C2405, $4E9A0003, $B002500, $4B100B20, $81FF2500
+                dc.l $5640, $810000D4, $6100AC, $D1300D9, $440D25, $4C0040
+                dc.l $D950031, $DC6, $EC0EAE, $E0080, $D970085, $C40DBC
+                dc.l $DE0072, $C00B00, $7F00FF00, $FFFFFF00, $FF00FF00
+                dc.l $FFFFFF00, $FF000110, $36F4, $980500, $250006, $13E40019
+                dc.l $21A004B, $281000F, $27A009A, $2AB0043, $2D06008E
+                dc.l $21000000, $4D0090, $29300E0, $DEE00E3, $C0110B, $40040
+                dc.l $109004E, $C00A9A, $30B00, $FFFFFF00, $6D00F9, $A8020C
+                dc.l $61021E, $750040, $300001C, $1F0008, $20C0043, $21E0075
+                dc.l $400300, $10F90026, $DA1, $880E4D, $570000, $D01000A
+                dc.l $980D7F, $7E0030, $808B00, $1100000, $2101000A, $550266
+                dc.l $DF0080, $8000000, 0
+                dc.l $13080108
+                dcb.l 2,0
+                dc.l $300, $200, $14FF, $BE00DC, $1000000, $40100, 0
+                dc.l $1000046, $6C0207, $5C1E00, $10505C0, 0
+                dc.l $1C00000, $208
+                dcb.l 2,0
+                dc.l $800, 0
+                dc.l $1122, $900308, $3080205, $200210, $6B0060, $3020100
+                dc.l $9F0000, $29A0003, $7030100, $1092510, $FF00FF, $12000F1
+                dc.l $704540, $8B0094, $5000210, $40080, 1, $40027, $AF2500
+                dc.l $3000300, $3000B00, $12080004, $5600F0, $9010080
+                dc.l $102, $6040004, $D0068, $FFF25C0, $2C0, $4500, 0
+                dc.l $A400000, $2A000000, $2000000, $3000000
+                dcb.l 2,0
+                dc.l $8000000, 0
+                dc.l $10FF00E8, $B090008, $2090008, $18000048, $C60022
+                dc.l $D5E004E, $C60D01, $3F00E0, $2010090, $9330001, $800DD9
+                dc.l $240090, $2040030, $95800BC, $F00207, $933, $CD0086
+                dc.l $D400092, $260020, $B0066D3, $18000114, $80060C, $BCE792
+                dc.l $B00, $FFFFFF00, $4B0088, $150D48, $93002F, $1D510013
+                dc.l $C00D16, $C50EB3, $EC0060, $D5A0058, $F0DEE, $CE006B
+                dc.l $508B00, $1140080, $6D000052, $FC0AA6, $3C24FF, $4E920000
+                dc.l $B00FFFF, $FF0000C2, $7400ED, $DFC008A, $370D22, $250070
+                dc.l $D880095, $C00DB6, $1D0E9F, $590060, $D8A00B8, $170DAC
+                dc.l $E800E8, $D08B00, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $1140080, $36D900F1, $60000C7, $13D60093
+                dc.l $3CFF00F9, $82201, $C60070, $1FE00BE, $A80DED, $330000
+                dc.l $111000E7, $C00107, $5800E0, $A920000, $B00FFFF, $FF00009D
+                dc.l $E70039, $D4E0004, $DB1DEC, $8A00C0, $D9000B9, $E3E00A1
+                dc.l $E00DF4, $3C00EB, $D6F0088, $A60090, $8B000114, $802100
+                dc.l $610080, $2E900A3, $2A56, $A719FF, $D40A43, $400225
+                dc.l $D620FF, $30FF00FA, $F00310, $31003D6, $200108, $FF0020
+                dc.l $501004B, $FF0292, $B09, $800201FF, $FF6800, $FF
+                dc.l $FF0FFF, $FF000036, $D90063, $D4600FF, $B91D26, $660040
+                dc.l $D9200C1, $C00DE3, $130E26, $FF00D9, $D30009C, $9C0030
+                dc.l $8B000110, $25A, $200211, $285, 0
+                dc.l $1850000, $A6C, $27D00CF, $CF8C0C00, $FFFFFF00, $900EF
+                dc.l $610D40, $2B0053, $1DD600FC, $EC90051, $E500026, $E00DE2
+                dc.l $1B30D98, $540078, $106E01, $8E011B, $D300F0, $17000110
+                dc.l $1ABE, $F21500, $7902FF, $CC0009, $6240039, $818010A
+                dc.l $3700FF, $20FF0095, $5FF, $830044, $1FF0078, $400703
+                dc.l $FE1901, $1A5059B, $B202E5, $AA030F, $E100FF, $FF00FF
+                dc.l $FC08FF, $FF00FA, $542900, $30000, $28C0C00, $39010702
+                dc.l $37402F01, $800000, $1020080, $680, $A80, $2801, $40018
+                dc.l $E00FFF, $38FF00FC, $5005FF, $F400E0, $39FF00B3, $E02ABF
+                dc.l $E802C2, $2805FF, $FF00FF, $FF4700, $8000DC, $390DF4
+                dc.l $22005B, $D21003D, $202, $900806, $E007E, $E6800A9
+                dc.l $E3B0093, $E00D12, $1BB0D56, $6E00F5, $908B00, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF00FF00, $1100000, $36C0002A
+                dc.l $6570080, $11000000, $D700CF, $2C700BB, $38000036
+                dc.l $5A21FF, $FF00DF, $5001FF, $EC0008, $DF400E1, $40110F
+                dc.l $2300E0, $FF00EF, $AD0001, $A8C0C00, $38020708, $13000000
+                dc.l $62020310, $282019FF, $39BF00FC, $5000055, $B41314
+                dc.l $DF62DD, $3EB0FD8, $1208006A, $1FF00F0, 1, $17000040
+                dc.l $1E0045, $DDB004F, $7F0D0E, $420490, $9720073, $E430045
+                dc.l $EEC00FD, $F00203, $B00931, $56005F, $2050043, $919000E
+                dc.l $B30050, $8B000100, $22C0, $2C0, $2B80, $280, $15000000
+                dc.l $A40, $214, $2003, $30000008, $300, $3000208, $F00000
+                dc.l $2F00000, $3000100
+                dcb.l 2,0
+                dc.l $800, $3002500, $30000FF, $FF4500, $FF00FF, $8000000
+                dc.l $FF00FF, 0
+                dc.l $52000000, $FF00FF, $90000FF, $FF0100, $19FF2500
+                dc.l $3005300, $56000000, $B000000, $2000000, $18000000
+                dc.l $400000, $D000000, $D00, 0
+                dc.l $2000030, $8000000, 0
+                dc.l $D000000, $201, $900, 0
+                dc.l $20000E0, $9000000, $D00, 0
+                dc.l $72C3, $18000546, $1016C8, $9A0274, $C3CF94, $A0B00
+                dc.l $FFFFFF00, $EF0027, $740D1D, $58001C, $1DC40027, $DB0
+                dc.l $340E3A, $2D0080, $DCF0037, $9C0D80, $7C005F, $406E00
+                dc.l $11C, $40000, $17002541, $500080, $10079, $D00A92
+                dc.l $FF0100, 0
+                dc.l $6000000, $80A00FF, $F600C0, $21DB, $6000000, $2F3
+                dc.l $8FF, $1B0305B8, $450080, $1DF00D4, $30A000D, $3FD0800
+                dc.l 0
+                dc.l $2A9B, $394000A, $B002580, $800000, $2800000, $D000700
+                dc.l $B100080, $2900, $2E040004, $F10070, $10000FF, $FF0280
+                dc.l $3A38, $A80FFF, $255A00A8, $1010079, $D60D00, 0
+                dc.l $5000000, $3900, $400000, $2AAA00FA, $2000000, $30A000E
+                dc.l $4B000066, $14004C, $DD1004F, $241DFB, $A90000, $D4F008C
+                dc.l $E25009A, $800DFF, $9700A4, $D3E0096, $DC00C0, $8B00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF0039C4, $6C0659
+                dc.l $3173E, $1F393B, $8C23FF, $4002FA, $780DF5, $870080
+                dc.l $12E60040, $1F5001F, $C10A94, $A0B00, $FFFFFF00, $9003E
+                dc.l $480DA7, $6000E8, $1D5F009E, $D2A, $280E90, $630000
+                dc.l $DAD0032, $C80D01, $36009A, $808B00, $FF00FFFF, $FF00FF00
+                dc.l $55A0020, $16C0006C, $27D00CF, $CF9C0000, $B00FFFF
+                dc.l $FF0000E8, $9500BB, $D1400CD, $411DBF, $880040, $DAA000B
+                dc.l $E3400C9, $A00DCA, $860061, $D7A00A3, $1100B0, $6E01008E
+                dc.l $11B00D3, $F01700, $25C70098, 0
+                dc.l $C7008C, $A79009F, $1FF00F8, $7305FF, $B60004, $900000D
+                dc.l $300FF, $20000051, $FC0900, $BA00FC, $8FE1BFF, $5BE00BF
+                dc.l $60F, $E203FE, $3501000C, $39C0000, $B002500, $FF00FF
+                dc.l $2FF00FF, $D010702, $B0000FF, $FF62FF, $FF3A18, $E00FFF
+                dc.l $25000000, $1000000, $DFF, $FC0050, $5FF00F4, $E06F00
+                dc.l $4B00, $5F0082, $930DC8, $C40049, $1DF7000A, $400D49
+                dc.l $630E20, $3600A0, $DFA00E6, $690D38, $BD008F, $308B00
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00, $39BE00EB
+                dc.l $6500047, $17C700BB, $394B00AA, $23660020, $2E80030
+                dc.l $DF7008B, $401100, $BA0000, $1E90006, $10A9C, $B00
+                dc.l $FFFFFF00, $BC00FC, $BF0D5B, $D8002D, $1D5A00FF, $400D23
+                dc.l $FF0E79, $AB00D0, $D8C00C9, $D0DFB, $5D004C, $F08B00
+                dc.l $FF00FFFF, $FF00FF00, $1140080, $1AB70096, $27900AF
+                dc.l $CF950C00, $FFFFFF00, $430055, $640D8A, $CE00EC, $1DFF005B
+                dc.l $DFF, $240E7F, $3F0080, $D0B0058, $6C0DCB, $6F001E
+                dc.l $400D7E, $765B7E, $760200, $11C, $40000, $17000114
+                dc.l $8017A8, $3E006B3, $C80080, $1002F, $180A48, $FF0100
+                dc.l $3B004E, $7600821, $11B00C3, $220B06FF, $83008C, $1FF0043
+                dc.l $6008FD, $20300FF, $1703058C, $16026B, $4C04E1, $3FC08FF
+                dc.l $FF00FA, $542902, $990080, $2950C00, $25805340, $2E000001
+                dc.l 0
+                dc.l $1020000, $3E22, $C00FFF, $25B400F0, $55FF00B3, $E02A8C
+                dc.l $16026B, $4C5000, $BA0042, $3C0D3E, $C500F4, $1D3600DD
+                dc.l $D9E, $7C0E6A, $AC0080, $D3B00B8, $740D89, $89009B
+                dc.l $C00B08, $7F00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00
+                dc.l $FF000114, $8036CE, $67065C, $C8525C, $6123A3, $C80000
+                dc.l $A, $D00DF9, $A20020, $1106002D, $8001F1, $7F00C1
+                dc.l $A950C00, $FFFFFF00, $DA0067, $380D6F, $4900B8, $1D9A00D2
+                dc.l $D79, $180EB3, $780000, $D4C008B, $980D4C, $290059
+                dc.l $808B00, $FF00FFFF, $FF00FF00, $1100000, $2590018
+                dc.l $68400FF, $FF0184, $FF00FF, $9C00000, $27C0077, $CF8B0010
+                dc.l $B00FFFF, $FF0000AB, $58007D, $D12000F, $E71D48, $8100C0
+                dc.l $D6000AD, $ED40097, $600D55, $A300C7, $D28000A, $4100D0
+                dc.l $D800000, $5B800000, $1F000110, $16B4, $7E02B4, $5406C7
+                dc.l $980000, $C7, $800903, $890077, $32406FF, $450802
+                dc.l $15600DB, $788007F, $18FF0085, $400314, $100000B
+                dc.l $6A02A8, $8008FE, $2040000, $150001A5, $5BA00C6, $2BD0078
+                dc.l $30A00A5, $4FF00FF, $EA0020, $FF00FF, $D200C0, $2D0100AC
+                dc.l $28B, $100B00, $25000F08, $800000, $3E800000, $761800E0
+                dc.l $FFF2500, $D03, $7200FF, $FF3E0C, $32BA00C6, $2BD0078
+                dc.l $50000022, $450055, $DC60006, $EF1D80, $300C0, $D0C00CA
+                dc.l $400200, $9009CD, $FB00E0, $3200986, $300CF, $DE60024
+                dc.l $BF0050, $B007F00, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $1100000, $36C20021, $6550000, $13E6002F
+                dc.l $2270087, $394B00DA, $21000000, $650038, $FF00FF
+                dc.l $EE0068, $DF70091, $40110D, $660020, $1F500C5, $B8B0010
+                dc.l $B00FFFF, $E2821C00, $9100C8, $210619, $6E00F4, $305001B
+                dc.l $3C0093, $619006E, $F40305, $F004F, $719006E, $F40305
+                dc.l $E300F8, $C00DDA, $A10E1B, $210030, $DCF001B, $230201
+                dc.l $330985, $7C00CD, $100293, $8800FF00, $FFFFFF00, $E6D31800
+                dc.l $6240685, 0
+                dc.l $1850000, $D75, $97CF9F, $B00, $FFFFFF00, $6F0007
+                dc.l $FE0DC3, $A1009A, $1D1E0016, $800D28, $1E0EA3, $1A0040
+                dc.l $D2A008E, $DA0DF2, $5600FB, $E06E01, $8E011B, $D300F0
+                dc.l $170019C0, $2BE, $F20B8C, $ADB003F, $1FF00EB, $9106D0
+                dc.l $BE0800, $A800000, $1800001D, $FC0304, $1FF00CD, $A6029D
+                dc.l $202201, $1FF059F, $BA0299, $420900, $10, 0
+                dc.l $20000, $2E1E, $39F0000, $B003500, $FF00FF, $3EFF00FF
+                dc.l $87FF3400, 0
+                dc.l $3E00, $329F00BA, $2990042, $500000E5, $F400D6, $D770098
+                dc.l $A21D55, $980080, $DC70076, $201, $98E, $870040, $3E0095A
+                dc.l $EE00E2, $DB00071, $790060, $8B00FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $FF0039AD, $B4065A, $42171C
+                dc.l $433930, $B723A7, $7002DB, $200DF4, $2C00E0, $11100047
+                dc.l $6001EC, $A60001, $A9F0000, $B00FFFF, $FF0000D5, $A500F2
+                dc.l $D6500BB, $260D7E, $610020, $DB9008D, $800DA2, $120E4A
+                dc.l $9100E0, $D8B0047, $A60D64, $FF0027, $208B00, $11023BE
+                dc.l $E6039C, $2B14006B, $2002642, $EC20FF, $30FF00A1
+                dc.l $300308, $3080209, $F90080, $101003F, $E00302, $4650021
+                dc.l $9F0803, $309D408, $400ED, $9F0940, $38019FF, $D4FF00E6
+                dc.l $B090008, $2090008, $18000001, $44004A, $C06001B
+                dc.l $E00A9, $D0300A8, $900D0E, $A20040, $D130083, $E110012
+                dc.l $A00D28, $50009, $2030033, $92E00B8, $810030, $10300B3
+                dc.l $88000114, $800101, $4E00B0, $1010024, $8602D5, $FF00FF
+                dc.l $1C8008F, $FF011D, $80A70, $6F00FF, $5D1A00C0, $706C65
+                dc.l $21009C, $40704, $1010100, $15400080, $280, $6ED
+                dc.l $9FDBFF, $14FF00F9, $4002C0, $730009F, $FFDB00, $2B0023
+                dc.l $B80D37, $C500A8, $D020048, $200201, $600806, $1E002A
+                dc.l $E280038, $E230031, $E1E00A2, $A80C08, $26002F, $AB0080
+                dc.l $DC70095, $3E000900, $9000480, $3C70095, $102031C
+                dc.l $300F8, $102010F, $1300FF00, $FFFFFF00, $E51B00D3
+                dc.l $F01700, $FF00FFFF, $FF00E0FF, $FF01DE, $1010078
+                dc.l $C01700, $FF00FFFF, $FF00E51B, $C300F0, $17000114
+                dc.l $803627, $7E060B, $A211FF, $FF00E4, $690258, $7F0279
+                dc.l $B027F, $2302DE, $8F1900, $130600DE, $21FF00FE, $40020
+                dc.l $101002B, $100CFF, $EE00ED, $C01101, $DE0080, $10C0085
+                dc.l $9650021, $9C0004, $70D0106, $1003901, $7021201, $41080
+                dc.l $2C01, $42340, $3010E01, $41340, $38019FF, $38FF00FD
+                dc.l $9C05FF, $F90080, $1313009B, $E6A00D2, $2D360010
+                dc.l $21FF00FF, $CE0080, $FF00FF, $DC0DFF, $F400D4, $12090008
+                dc.l $2090008, $1800007A, $3100F8, $619006F, $C0305, $38005C
+                dc.l $680619, $6F000C, $305000D, $C10090, $2020060, $80600BD
+                dc.l $DA0E52, $780E08, $290EC4, $D10068, $D34006D, $F0080
+                dc.l $711B00C3, $F01700, $1140080, $229600BE, $8001BE
+                dc.l $900080, $80400E5, $7F00FF, $17F00FF, $63600D8, $810010F
+                dcb.l 2,$FF00FF
+                dc.l $F6039B, $3F0288, $7F14FF, $D3000C, $1FF00FF, $E401FF
+                dc.l $C000C0, $1FF00EC, $402201, $1A505A3, $9802D1, $46031A
+                dc.l $4C00FF, $FF00FF, $FF0B08, $27030103, $5F00FF, $650021
+                dc.l $9C0004, $70C0105, $1002540, $3800C80, $3910, $820080
+                dc.l $5200320, $2A080004, $2020004, $51FF253A, $3E028F
+                dc.l $100904, $E500BF, $FF38FF, $FE0060, $A2B0080, $2A930060
+                dc.l $2BE0038, $30800FA, $FF00FF, $FF00E2, $8FF00FF, $FF001E
+                dc.l $3B00007D, $8D007E, $D3C00BA, $1A0D4A, $410060, $2020906
+                dc.l $C00036, $800D55, $9E0E0A, $EA0040, $DC70037, $5A0D37
+                dc.l $6A0053, $E0711B, $C300F0, $17000110, $223, $D80215
+                dc.l $500102, $7C007F, $102005B, $1F01FF, $F4006C, $A77008F
+                dc.l $CF9D0009, $B00FFFF, $FF000036, $39006D, $D46002F
+                dc.l $B71D25, $F500C0, $D32009D, $E2C0049, $600D26, $8D0097
+                dc.l $D30000E, $3000D0, $D760059, $5B760059, $1F00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00
+                dc.l $FF000110, $3610, $DC05FF, $C300EA, $13DE00EA, $23D00DF
+                dc.l $3901005F, $22FD00D6, $800100, $760000, $E3D00E0
+                dc.l $12280000, $110009E, $800A9D, $90B00, $FFFFFF00, $850047
+                dc.l $AD076E, $F40446, $C60077, $76E00F4, $14C500A5, $C00D5C
+                dc.l $DD0E11, $410060, $DCC00BC, $570D3E, $4B0094, $D08B00
+                dc.l $1100000, $22810028, $2EB006B, $805, $2E001F, $14032400
+                dc.l $200F4, $5000007, $DC0100, $33005C, $24FF06D8, $8001FC
+                dc.l $45439D, $90B00, $FFFFFF00, $8800A3, $330D4B, $240029
+                dc.l $1DC80002, $400D60, $30E14, $200A0, $DCF0022, $490D41
+                dc.l $4800D9, $308B00, $545000C, $800134, $B00080, $DC
+                dc.l $3E1003F, $2E00024, $A6E00EF, $CF9E0010, $B00FFFF
+                dc.l $FF00004E, $6500C8, $D65009E, $D81D36, $F60000, $D490048
+                dc.l $E40001F, $D37, $D100D8, $D450093, $EC0080, $D4D00C8
+                dc.l $3E040904, $9040400, $34D00C8, $1000001, $8E011B
+                dc.l $D300F0, $1000100, $1300FF00, $FFFFFF00, $FF00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF003904, $206ED
+                dc.l $5813E7, $AB0288, $3A0A0020, $22FF0020, $A0020F, $300DEF
+                dc.l $560000, $11060068, $80010B, $F800C0, $A9E0010, $B00FFFF
+                dc.l $E2200320, $1800009D, $740008, $D660035, $981DD6
+                dc.l $A60000, $D730088, $E250017, $D4A, $8E0028, $20600F3
+                dc.l $9E20070, $D00080, $1090023, $8800257C, $1E02A3, $360080
+                dc.l $8030042, $7F39FF, $C300C0, $5FF0097, $8001FF, $C30000
+                dc.l $220007AB, $B70000, $27B01FF, $FF00ED, $D73908, $99039E
+                dc.l $100B00, $24010004, $2100004, $C483009C, $FFF2638
+                dc.l $C603005F, $FF0F00, $A000CF, $8E0D6A, $93004A, $1DD90180
+                dc.l $D7600AE, $E2700D8, $400DE0, $66008A, $D5600CE, $9400E0
+                dc.l $8B000114, $800308, $2A0, 1, $E3000F, $10100E2, $7F0100
+                dc.l $2100A8, $A7500F3, $CF850000, $B00FFFF, $FF000078
+                dc.l $C10000, $D9C00B3, $1D54, $C00E71, $E62, $E00E56
+                dc.l $130000, $D6B004A, $100000, $DD000D6, $1A820046, $3B820046
+                dc.l $2D000D6, $1F000114, $8023AE, $2A4009A, $2B000300
+                dc.l $26160020, $20FF314C, $700A06, $4B0040, $1050018
+                dc.l $4020465, $210085, $8030309, $D4010004, $170064, $9010080
+                dc.l $102, $800000, $17FFD4FF, $F40B09, $80209, $81800
+                dc.l $2B00E0, $790D38, $BB001B, $E4300B0, $C06001E, $AE00C0
+                dc.l $D2800E9, $E2300CB, $E00D1F, $29007B, $D2600D7, $B90090
+                dc.l $D007D00, $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00
+                dc.l $1140080, $229900F0, $2AE00DE, $E000000, $5000000
+                dc.l $1100
+                dc.l 0
+                dc.l $200
+                dcb.l 3,$280
+                dc.l $1914, $13000000, $CFF1400, $10, $102, 0
+                dc.l $C000002, $150055, $52600F0, $3080308, $2040014, $FF
+                dc.l $FF007A, $302, $6850000, $7030100, $1093900, $7001200
+                dc.l $10FF, $FF2C00, $2300, $3000E00, $604, $4002F, $900
+                dc.l $30019FF, $38000000, $500, 0
+                dc.l $13000000, $E000000, $2D000000, $21000000
+                dcb.l 2,0
+                dc.l $D00, 0
+                dc.l $5FF00F4, $B000000, $2000000, $18000022, $E7006F
+                dc.l $61E0075, $400300, $2D0010, $1D061E, $750040, $3000000
+                dc.l $3F0070, $20100B0, $918005F, $400D20, $7F0E1C, $6F0020
+                dc.l $D1800C0, $BD0200, $C3091E, $DA0094, $F00100, $F30A00
+                dc.l $64D31800, $1140080, $22C700F8, $190, $760900, 0
+                dc.l $100, $600, $808, $1080000
+                dcb.l 2,0
+                dc.l $3000000, $2000000, $14000000, $100, 4, $1000000
+                dc.l $100, $40030A, $EB26C0, $2C0, $100, 8
+                dcb.l 2,0
+                dc.l $FF, $FD006B, $C00256, $600300, $113300E0, $9FF00F9
+                dc.l $3C0080, $10E0079, $4020100, 0
+                dc.l $2850000, $7030100, $1092400, $10080, 0
+                dc.l $20080, $AFF, $FF3900, $FF00FF, $5000300, $2100004
+                dc.l $26000000, $2000000, $26080004, $6500A0, $16FF00FF
+                dc.l $FFF25C0, $7802BF, $A000000, 0
+                dc.l $38000000, $A00, $2A00, $200, $300
+                dcb.l 2,0
+                dc.l $800, 0
+                dc.l $10FF, $F61700, 0
+                dc.l $F00001E, $600AC, $D2600B8, $440D01, $4200F0, $2000A14
+                dc.l $F10000, $D1B00EC, $E18006E, $800D15, $4400C4, $D1A0082
+                dc.l $C200C0, $D0064D3, $18000110, $380, $21F0046, $2850000
+                dc.l $185, 0
+                dc.l $1000000, $A79009F, $6C016290, $C001500, $FF00FF
+                dc.l $2FF00FF, $6FF00FF, $DBFF1400, 0
+                dc.l $2000700, 0
+                dc.l $DB000031, $950073, $D400026, $E90D08, $AC0090, $2000030
+                dc.l $8000022, $B20040, $D2E0043, $E28007A, $A00D23, $3D0009
+                dc.l $C00002B, $EC007D, $300D8C, $9E5B8C, $9E0200, $11C
+                dc.l $40000, $17000110, $6DFF, $C10080, $628C0090, $A070070
+                dc.l $10C, $4700E0, $A900C09, $71200080, $622B, $8427FF
+                dc.l $E2380338, $18000095, $930000, $20400E1, $9E8005B
+                dc.l $800209, $131941, $C40000, $D5700B0, $E4C00BA, $D42
+                dc.l $CB0010, $D530041, $8B0000, $8B00FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $FF000110, $6E2A, $26102, $850000
+                dc.l $A010063, $A00000, $600DF, $800A90, $C097140, $800000
+                dc.l $62D50024, $90100C1, $680102, $19FFE104, $3C01FF
+                dc.l $FF0092, $1800009C, $940016, $2070031, $9C90050, $120209
+                dc.l $1A3B0074, $800D4F, $460E45, $5D0040, $D3C0062, $520D4B
+                dc.l $440066, $608B00, $1100000, $22C40033, $800194, $830000
+                dc.l $550600C5, $52480040, $B9300A0, $10B000A, $400A90
+                dc.l $C09E101, $800000, $1020080, $17FF, $E0FF00F9, $44020E
+                dc.l $961800, $800003, $530207, $41098B, $D20089, $2060033
+                dc.l $19380006, $400D4A, $B30E41, $5C00A0, $D3800E6, $590D46
+                dc.l $EC0094, $308B00, $1140080, $24800B0, $20F0050, $165500D3
+                dc.l $5FD00C00, $6F00FFFF, $FF000048, $D200EE, $D5E005F
+                dc.l $6A0D0C, $C200A0, $D33000A, $800D44, $E0E3B, $8C0040
+                dc.l $D3300D6, $AA0D40, $9D008A, $E08B00, $1140080, $53140003
+                dc.l $18000006, $8E0E4D, $E85296, $600A0C, $DD0040, $1060069
+                dc.l $501, $D900FF, $F09FFFF, $E2200320, $18000091, $4D0055
+                dc.l $2010011, $9BC009E, $EF0201, $631966, $300C0, $D880005
+                dc.l $E770004, $600D67, $9B00CF, $D810025, $3F0050, $8B00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF000114, $805348
+                dc.l $D70241, $67153C, $60EBC, $38522F, $C00A09, $620000
+                dc.l $FF00FD, $430020, $50100EB, $FF0F09, $FFFFE228, $3861800
+                dc.l $880054, $4B0201, $1109B0, $F300F1, $2011A5F, $B40040
+                dc.l $D7F009B, $E6F00A7, $A00D61, $330011, $D790028, $1A00B0
+                dc.l $8B000114, $8022D8, $C00000, $1960034, $802A31, $87293E
+                dc.l $FE524F, $500308, $308033C, $80010E, $790000, $501005D
+                dc.l $FF0F09, $26DD00AC, $2AD00B8, $54005549, $9C0900
+                dc.l $FF00FF, $10000FF, $FF17FF, $E0000000, $200, $1800
+                dc.l $830073, $880201, $1109AA, $9C0018, $2010063, $195C0046
+                dc.l $D7B, $80E6B, $A70000, $D5D00B7, $180D74, $D00048
+                dc.l $808B00, $56700C4, $2000038, $102000E, $4F00FF, $20019
+                dc.l $CF00FF, $D68005B, $CF8B0006, $B00FFFF, $FF000054
+                dc.l $C00E5, $D6C00F8, $9F0D0E, $BB00F0, $D3A00EF, $C00D4E
+                dc.l $950E44, $C20060, $D3B00DB, $7F0D4A, $9C0058, $508B00
+                dc.l $4B020119, $5B00FF, $213E00BE, $2E010103, $5AE0015
+                dc.l $2FB0038, $802598, $A00A08, $6800E0, $10D0001, $6000000
+                dc.l $28B, $60B09, $A9010302, $9F0080, $4FFFA9BF, $4002C1
+                dc.l $385000, $9C0087, $4C0DCB, $380024, $1D6D00E9, $D92
+                dc.l $8C0E80, $3A0080, $D6F00A0, $A40D8B, $24000C, $C08B00
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00, $2401001B
+                dc.l $390080, $1000D, $EB2002, $12F00C7, $FF06EC, $BB193D
+                dc.l $F005FF, $EE0066, $67F00EC, $1E010103, $5F000A8, $2B500CE
+                dc.l $26E10070, $A020016, $E001FC, $FE00E0, $5000000, $28B
+                dc.l $60B09, $25400380, $4F020080, $83FF, $25BE0050, $2C000C0
+                dc.l $4E0200A0, $84000093, $8E0042, $DBF008D, $261D67
+                dc.l $990080, $D8A0022, $E7800DD, $C00D69, $3700E6, $D830026
+                dc.l $E80020, $8B002576, $7102FD, $4D0000, $1F020124, $8F00FF
+                dc.l $51010103, $31560030, $16000000, $28B, $60B09, $FFFFFF00
+                dc.l $8E00AD, $7F0DB9, $35004D, $1D64002B, $400D85, $8F0E74
+                dc.l $DD0020, $D6500BB, $ED0D7E, $CF0015, $F08B00, $55A0080
+                dc.l $2090068, $22500EF, $22A003F, $2010042, $A6900BF
+                dc.l $CF850000, $B001520, $800000, $E7FFFF00, $70030, $A20D09
+                dc.l $60046, $D010038, $600D04, $E10080, $D060082, $E0500B1
+                dc.l $C00C08, $400F5, $60D06, $2D00CE, $200D82, $881A99
+                dc.l $FA3B99, $FA0282, $880201, $8E011B, $E300F0, $17004B08
+                dc.l $24FF00F2, $F00E95, $A81E00, $1FF05C1, $420080, $1BB0008
+                dc.l $2596, $600A09, $4D0060, $10800CE, $200A85, $B09
+                dc.l $FFFFE238, $3381800, $55007E, $C50206, $8109D1, $84004F
+                dc.l $2090053, $198C002B, $C00DBA, $E50EA3, $880060, $D1B00CE
+                dc.l $8F0206, $30963, $55000D, $500107, $938800, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF00FF00, $240000A2, $9D0100
+                dc.l $D70073, $200524FF, $ED0088, $500002A, $AC06C8, $B81E00
+                dc.l $1FF3001, $5600D0, $A05003F, $1000004, $9300A0, $A850000
+                dc.l $B09FFFF, $E23C0392, $180000C8, $7002B, $20B00B1
+                dc.l $95F0063, $F10205, $931985, $DC0040, $DB2007B, $E9C002B
+                dc.l $A00D87, $F300B1, $DA90075, $1B08B00, $257100A0, $2F5003A
+                dc.l $20085500, $1FF3124, $F00310, $3101385, $B09, $FFFFFF00
+                dc.l $B900B4, $680DF1, $2800B8, $1D82006E, $DAD, $E80E98
+                dc.l $2B0000, $D840077, $B80DA5, $1E0016, $808B00, $4000000
+                dc.l $100, $F60030, $21F00BF, $22602FF, $FF00F6, $2BF00E2
+                dc.l $3480259, $57CF86, $C000D40, 0
+                dc.l $1400000, $EBFF, $C02001F, $BF00FF, $20026, $3F00FF
+                dc.l $10D00E0, $E800009B, $480071, $DC90099, $830D1B, $420030
+                dc.l $D6D0008, $C00D91, $610E7F, $3400E0, $D6E00BC, $E30D8A
+                dc.l $80029, $100D64, $2C5B64, $2C0217, $D81B00, $25BD00D8
+                dc.l $2BB002C, $DFF00FB, $F30602, $902EC7, $8036B4, $180000
+                dc.l $1ED00B1, $269D00F0, $A0800C1, $10C, $310060, $A860C09
+                dc.l $FFFFFF00, $10084, $B80DC8, $220098, $1DA00002, $DD5
+                dc.l $580EBA, $AD0000, $DBA00CF, $E80D2B, $AB00BD, $808B00
+                dc.l $1140080, $22E80039, $800194, $4D0E0E, $AC067F, $FF1300
+                dc.l $30015FF, $F200E4, $E07006C, $20FF3502, $B00387, $800B02
+                dc.l $4650021, $860803, $3092501, $800000, $1020085, $144520
+                dc.l $240030, $C100004, $7DFF25C0, $3C0D500, $1D0056, $B70D25
+                dc.l $D30075, $D040042, $700202, $200806, $140075, $400D1B
+                dc.l $470E17, $DE0020, $D1400C7, $150D19, $E60019, $700D64
+                dc.l $2C1A99, $FA3B99, $FA0264, $2C0000, $20100, $11B00E3
+                dc.l $F01700, $FF00FFFF, $FF00FF00, $25F5007C, $196, $A24500
+                dc.l $2400C8, $5FF00CA, $1C5902, $80090, $A0A002E, $1FF00F8
+                dc.l $810B86, $C09FFFF, $FF0000FD, $4100AE, $DF200D2, $FA1D99
+                dc.l $B20080, $DCC00EE, $EB30050, $400D9C, $19004A, $DC20092
+                dc.l $B800E0, $8B002595, $A0288, $4AAA38, $A01B86, $C09FFFF
+                dc.l $FF0000D5, $E9000B, $D1500D6, $311D96, $440040, $DC8005B
+                dc.l $EAF004F, $A00D98, $9D0051, $DBE003A, $E600B0, $8B000110
+                dc.l $7F60030, $102001F, $BF00FF, $20026, $3F00FF, $FF00F0
+                dc.l $6A02BF, $E20348, $2590057, $FF5D1A, $D00070, $6C650021
+                dc.l $810804, $1010100, $D400000, $140, 0
+                dc.l $1200080, $E7FF, $C02001F, $BF00FF, $20026, $3F00FF
+                dc.l $10D00E0, $E80000EE, $7E00F9, $D3500CE, $9B0D29, $E300B0
+                dc.l $DA7008E, $C00DDF, $690EC3, $7B00E0, $C0800AA, $2C00FB
+                dc.l $DD4001E, $A10090, $D450015, $1A8A00CA, $3B8A00CA
+                dc.l $2450015, $23700AA, $11B00E3, $F01700, $11033A9, $F04A9B
+                dc.l $69030465, $210081, $8020300, $3504C9FF, $FF000054
+                dc.l $3C00E2, $D6D0037, $60D0B, $AA0080, $3E00378, $4C0303
+                dc.l $3B0011, $800D4E, $C20E44, $E900C0, $D3B00FD, $C60D4A
+                dc.l $C70012, $200D64, $2C1A99, $FA3B99, $FA0264, $2C039C
+                dc.l $11B00E3, $F01700, $1102393, $CF02C7, $38167F, $FF131B
+                dc.l $F60200, $15FF0092, $F0056FF, $FC00F8, $30801FF, $FE0052
+                dc.l $A000FF, $FF0008, $200302, $4650021, $810803, $3092501
+                dc.l $30200E4, $A44510, $E400004, $9900D4, $5D010080, $102
+                dc.l $800000, $17FF25C0, $3C0B82A, $1FF00FE, $B21800, $450036
+                dc.l $5B0C08, $5900AD, $210C07, $60043, $E00204, $900806
+                dc.l $300080, $400D40, $AB0E38, $9500A0, $D310042, $410D3D
+                dc.l $66005B, $B00D64, $2C1A99, $FA3B99, $FA0264, $2C0202
+                dc.l $19011B, $E300F0, $1700FF00, $FFFFFF00, $E51B00C3
+                dc.l $F01700, $FF00FFFF, $FF008164, $2C1A99, $FA3B99, $FA0264
+                dc.l $2C0202, $19011B, $E300F0, $1700FF00, $FFFFFF00, $8164002C
+                dc.l $1A9900FA, $3B9900FA, $264002C, $2020019, $11B00E3
+                dc.l $F01700, $14000000, $E4DB80, $20B00, $FFFFFF00, $FF0041
+                dc.l $200D4B, $990060, $D2C00D6, $DB3, $580000, $DEF0020
+                dc.l $ED1003C, $DB6, $250060, $DE3000A, $520000, $D660009
+                dc.l $1A4700A3, $3B4700A3, $2660009, $20800E5, $1B0034FF
+                dc.l $AA0080, $6CA54E80, $20B00, $FFFFFF00, $6400FF, $90D83
+                dc.l $100CB, $D19006A, $A00D46, $DA00C0, $D5E0079, $E5200A9
+                dc.l $E00D47, $F6002B, $D5900B2, $C20090, $8B0025AC, $86029A
+                dc.l $3E4500, $5400FC, $30A53DFF, $5A0040, $1FC00EF, $A80
+                dc.l $20B09, $FFFFFF00, $5500F8, $820D6F, $7700E6, $1D3C0049
+                dc.l $800D50, $620E46, $5500C0, $D3D003A, $A60D4C, $52000C
+                dc.l $208B00, $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00
+                dc.l $FF00FFFF, $FF00FF00, $1140080, $12270034, $DB92001E
+                dc.l $B00FFFF, $FF000012, $480078, $D640057, $E80D30, $2E0080
+                dc.l $DC000BA, $E0000F8, $EE000D9, $EC300BC, $E80DF3, $FB0077
+                dc.l $800DB2, $AD1A46, $123B46, $1202B2, $AD0225, $641B00
+                dc.l $1140080, $31FE001E, $4B6A0028, $20FF4E92, $1E0B00
+                dc.l $FFFFFF00, $780006, $610D9B, $C00053, $D290007, $E54003C
+                dc.l $E700051, $E620046, $E55008D, $B30D6A, $A300E8, $108B00
+                dc.l $1140080, $22E500FF, $800199, $310080, $210700FF
+                dc.l $FF0208, $30500BF, $197C31FF, $35FF0076, $1FF00FE
+                dc.l $6C0100, $2005D, $2FD006E, $800A92, $1E0B09, $82770048
+                dc.l $7BFFE2C8, $2FF003E, $18000068, $FF00DA, $D880036
+                dc.l $6E1D49, $AB0E62, $3A0E55, $F20E4A, $D2002E, $D5D0043
+                dc.l $3100A0, $8B00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $FF0014FF, $D80038, $DB86000C
+                dc.l $B00FFFF, $FF000026, $5001A, $D7E0002, $2E0D33, $A600E0
+                dc.l $DCE009B, $800D13, $7A0EF1, $A00C0, $DD100D5, $EE0D05
+                dc.l $8E0005, $A00D14, $B01A83, $953B83, $950214, $B00202
+                dc.l $B61B00, $35E54B9B, $2003, $4E86000C, $B00FFFF, $FF00008B
+                dc.l $C30003, $DB5006A, $990D39, $390060, $D62001E, $400D82
+                dc.l $D30E72, $7800A0, $D6300A6, $B90D7C, $360076, $308B00
+                dc.l $256F0084, $1C2, $650E08, $90067A, $FC0805, $2CB0300
+                dc.l $31B00F6, $18FF00EA, $302E01, $1030E0C, $8225FE, $3FB008C
+                dc.l $1FF00FC, $CF0080, $1FE00CE, $B86000C, $B09722C, $500E20
+                dc.l $1C5280, $27FF, $D5080C2A, $2FE00B2, $1800007C, $BC007C
+                dc.l $DA100E0, $B41D57, $8D0000, $D7400BC, $E660024, $800D58
+                dc.l $EB0034, $D6E00D5, $BF00C0, $8B00FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00, $FF000401
+                dc.l $460040, $101000C, $980101, $850000, 1, $850000
+                dcb.l 2,0
+                dc.l $2C00000, $3000275, $36C01, $62840000, $B000D00, $FF00FF
+                dc.l $10000FF, $FF0100, $FF00FF, $E7FF0C00
+                dcb.l 3,0
+                dc.l $100, $E800, $1400C6, $2F0D1A, $B0005D, $D03009B
+                dc.l $D00D0E, $6F0040, $E3F0E10, $D70020, $C00000E, $A800FD
+                dc.l $D120046, $F0, $DD70030, $1AAE00CC, $3BAE00CC, $2D70030
+                dc.l $20E0009, $1B000100, $3100, 0
+                dc.l $4A146900, $4000000, 0
+                dc.l $7000300, $3500C9FF, $FF000000, $400000, $D000000
+                dc.l $D00, 0
+                dc.l $3300355, $380300, 0
+                dc.l $D00, $E00, 0
+                dc.l $D000000, $D00, 0
+                dc.l $D51, $3C1A85, $2B3B85, $2B0251, $3C0204, $711B00
+                dc.l $24010001, $6102DF, $560000, $45F3005C, $30A53C00
+                dc.l $200E3, $600000, $28, $400A84, $B09, $FFFFFF00, $95001E
+                dc.l $290DC1, $95002B, $1D6800B2, $C00D8B, $990E7A, $2500E0
+                dc.l $D6A0055, $8B0D84, $8A00F4, $908B00, $FF00FFFF, $FF00FF00
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00, $1100000
+                dc.l $2430058, $20D0058, $28400FF, $FF0184, $FF00FF, $DE8C0C00
+                dc.l $FFFFFF00, $1A00BA, $140D22, $6D00FC, $D0400A7, $C00D12
+                dc.l $9F0000, $D1800D4, $E1500B9, $800D12, $E9007C, $D170092
+                dc.l $C90040, $6E0D00A3, $1B00FF00, $FFFFFF00, $FF000110
+                dc.l $2100, $600001, $80016A, $420080, $44000013, $BA0E01
+                dc.l $7720FF, $3CFF00FC, $2A0000, $FF00FA, $B20000, $A8C0C09
+                dc.l $FFFFFF00, $9B0012, $E0DC9, $5200CA, $1D6C00E2, $800D91
+                dc.l $2E0E7F, $80040, $D6E0096, $A0D89, $D700BC, $E08B00
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00, $FF00FFFF
+                dc.l $FF00FF00, $1140080, $1000000, $100, $DF00F8, $E78F0002
+                dc.l $B00FFFF, $FF000055, $15005D, $D6E0050, $870D0E, $EA0070
+                dc.l $D3B00A9, $C00D4F, $8D0E45, $9B0060, $D3C0098, $670D4B
+                dc.l $8700CF, $D00D64, $261A72, $4E3B72, $4E0264, $260202
+                dc.l $F61B00, $1140080, $32E6009F, $FF0101, $FC060A, $9831FF
+                dc.l $E900AD, $200910, $80B00EB, $11015FF, $29010000, $C01105
+                dc.l $D80209, $80403, $4650021, $8F0002, $7050302, $750100ED
+                dc.l $B45502, $7A0084, $11100080, $1BFF, $74FF00F0, $105602
+                dc.l $101209, $81C00, $1C00AB, $60D24, $F40032, $D0400FF
+                dc.l $200775, $400413, $FC0080, $D1A00A6, $E170051, $400D14
+                dc.l $4C0072, $D19004D, $3C0060, $D9600A9, $1A640048, $3B640048
+                dc.l $29600A9, $227005E, $1B000114, $803DFF, $800000, $10ABF
+                dc.l $7000000, $18FF00F3, $8A0E29, $3C1E00, $12FF00FF
+                dc.l $FF00FE, $8FF00FF, $FA0059, $11280010, $3820394, $33203B8
+                dc.l $B8F0002, $B098000, $5240, $40030, $1827FF, $D4FF00FB
+                dc.l $C3203B8, $180000D5, $6D0057, $D150035, $551D95, $ED0040
+                dc.l $DC700E7, $EAE00EA, $200D98, $4400F5, $DBD00CC, $C30070
+                dc.l $8B00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00, $FF00FF00
+                dc.l $FFFFFF00, $FF00F28D, $B00, $FFFFFF00, $8900F6, $530DB3
+                dc.l $130089, $D180036, $900D60, $DA0040, $D810023, $E7000FE
+                dc.l $A00D62, $5D00A9, $D7A009C, $4B0030, $D77005D, $1A000042
+                dc.l $3B000042, $277005D, $2010012, $1B0025A6, $E10080
+                dc.l $1920079, $A000000, $100, $600, $3100, 4, $97A, $6C0704
+                dc.l $100, $15032902, $150055, $110800F0, $20800F0, $B8D0000
+                dc.l $7020300, $25400380, $FD0004, $490000FF, $FF5500
+                dc.l $FF00FF, $110000FF, $FF1BFF, $25C003C0, $4A000000
+                dc.l $5600, $1200, $1C00, $B0063, $920D0E, $7C0016, $D0100F5
+                dc.l $600D07, $D50E0A, $720E09, $2300C0, $D0700F4, $D60D09
+                dc.l $EA00DD, $200D2A, $6A1A15, $183B15, $18022A, $6A0207
+                dc.l $BF1B00, $256F0075, $2303, $24000001, $620E0B, $F41E01
+                dc.l $103317C, $C00388, $39803DE, $E002BE, $B8D0000, $B09FFFF
+                dc.l $E23A03BE, $1800000A, $4E004D, $D5900F8, $571DBB
+                dc.l $1D00C0, $DF9007D, $EDA004D, $600DBE, $A0037, $DEC00E1
+                dc.l $3E00D0, $8B00FF00, $FFFFFF00, $FF00FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $FF000110, $101, $4500B0, $101000D
+                dc.l $58E78C, $A0B00, $FFFFFF00, $B6001D, $2A0DEC, $7D005E
+                dc.l $D1F00F9, $E00D7F, $E70080, $DAA008A, $E950038, $C00D81
+                dc.l $E7001E, $DA100EB, $A600A0, $D0D00B4, $1A2000BB, $3B2000BB
+                dc.l $20D00B4, $21B0024, $1B000110, $22AA, $FD0000, $1FC0021
+                dc.l $563D002C, $20C34E8C, $A0B00, $2AFF00FF, $D3FFFF00
+                dc.l $190065, $E50D20, $B3009F, $D04006B, $F00D11, $AF00C0
+                dc.l $D170095, $E1400A2, $600D11, $F6007F, $D160063, $E80050
+                dc.l $D000000, $1A3C00D2, $3B3C00D2, $2000000, $30F1B00
+                dc.l $1100000, $2101001F, $FD49FF, $F20052, $30C330FF
+                dc.l $FB0000, $9000004, $390F8C, $A0B09, $FFFFFF00, $360075
+                dc.l $240D93, $62002C, $1DDA002B, $D22, $E40EFE, $870080
+                dc.l $DDD0093, $AC0D14, $30009A, $408B00, $FF00FFFF, $FF00FF00
+                dc.l $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00, $1100201
+                dc.l $4E0092, $101000E, $C00FFC, $378026D, $7700FF, $5D000065
+                dc.l $400B01, $60650021, $8E0001, $7040101, $1001A80, $280
+                dc.l $DFFF, $19EF0028, $2B900DF, $E0000037, $CE00A8, $D950023
+                dc.l $780D36, $C70080, $DDB001E, $E240028, $EFF00A3, $EDE008A
+                dc.l $780D15, $64003A, $800D8F, $641A70, $A92200, $9000900
+                dc.l $47000A9, $28F0064, $1020004, $49011C, $40202, $10F1300
+                dc.l $11023A8, $820080, $1860058, $A620077, $FF1E88, $7F0288
+                dc.l $7F155B, $3201FF, $FA0003, $8004FF, $FF0020, $24FF4703
+                dc.l $4650021, $8E0001, $70C0105, $1002540, $5200A0, $18000AB
+                dc.l $5C0940, $4000FC, $391000D0, $7C0140, $89FF25C0, $3C00BC4
+                dc.l $FF00FF, $3E148800, $5C0024, $EC0D77, $7F0004, $D100028
+                dc.l $400D40, $A10E56, $2C0E4B, $660080, $D4100A3, $840D51
+                dc.l $D10026, $C06E50, $F1B00, $1102201, $110025, $800191
+                dc.l $ED0080, $15480048, $2DFF0027, $BE0001, $D0700E8
+                dc.l $20FF4702, $4650021, $8E0001, $7030309, $254000D2
+                dc.l $470180, $DF007F, $45200080, $EAC, $707BFF, $24010007
+                dc.l $AC029B, $FA45FF, $2018B00, $510046, $120331, $95F0042
+                dc.l $D60D03, $3900B0, $2020010, $8060033, $850080, $D4400B2
+                dc.l $E3C001B, $C00D34, $530096, $C080041, $390041, $200B07
+                dc.l $6259002C, $1B00FF00, $FFFFFF00, $E259002C, $1B000110
+                dc.l $231A00A0, $25F0040, $2BCD0017, $89000093, $8000FF
+                dc.l $F00000, $10865, $21008E, $1070B, $1040103, $552000D2
+                dc.l $14A7FF, $569B003F, $A700002B, $2700FC, $D3700CB
+                dc.l $340D07, $8B0040, $D1E002D, $E28003C, $E230034, $800D1E
+                dc.l $A500B4, $D260033, $7700C0, $D8F0064, $1A7000A9, $3B7000A9
+                dc.l $28F0064, $2030035, $28300E8, $1700FF00, $FFFFFF00
+                dc.l $E0FF00FF, $1DE0101, $7800C0, $17000548, $38020A
+                dc.l $161649, $5BCF98, $B00, $FFFFFF00, $2E0093, $800D89
+                dc.l $220080, $D350028, $DD4, $A00E1B, $800EF8, $100ED7
+                dc.l $F20080, $D0D002C, $380000, $6E000000, $1B0025BD
+                dc.l $B40000, $1C0000C, $A15001F, $39FF00F6, $3A0100, $2003E
+                dc.l $2105, $4F00FF, $7014902, $F500FF, $2980000, $B002500
+                dc.l $3000B00, $C9FFFF00, $5200E9, $C40D6B, $7E000C, $D0E0088
+                dc.l $C00D3A, $230E4D, $840E43, $D30E3B, $B008C, $D490099
+                dc.l $240040, $8B000100, $220000C0, 0
+                dc.l $1C00000, $1500, $2D00, 0
+                dc.l $D14, $2003, $47000400, 0
+                dc.l $700, $3002500, $FF00FF, $10000FF, $FF4500, $FF00FF
+                dc.l $EFF00FF, $7BFF2400, 0
+                dc.l $2000000, $45000200, $8B000000, $400000, $3110900
+                dc.l 0
+                dc.l $D000000, $200, $300800, 0
+                dc.l $D00, $E00, 0
+                dc.l $D000000, $C00
+                dcb.l 2,0
+                dc.l $B00018F, $641A70, $A93B70, $A9028F, $640201, $4D0283
+                dc.l $E81700, $FF00FFFF, $FF00FF00, $568A009B, $8AEE0000
+                dc.l $E980000, $B03FFFF, $5691008F, $A7000021, $EC00D4
+                dc.l $D2B00CA, $3C0D05, $EB00C0, $D1700AF, $E1F0094, $E310085
+                dc.l $500202, $400918, $D00BC, $D1D00FB, $750040, $8B00FF00
+                dc.l $FFFFFF00, $FF00054A, $18021A, $3602E4, $BF00FF, $1E9002F
+                dc.l $FF0600, $300027C, $B75E1A, $700068, $B006292, $100B00
+                dc.l $1AFF00FF, $2FF00FF, $DFFF1900, $200, $E000, $1200C3
+                dc.l $1C0D18, $120094, $D030041, $400D0D, $50E11, $5C0E0F
+                dc.l $300080, $D0D0039, $140D10, $7B0069, $C08B00, $25C00000
+                dc.l $3000A00, 0
+                dc.l $1E800000, $2800000, $14000000, $200, $40500, $400000
+                dc.l $71F00FF, $2200E00, 0
+                dc.l $70314FF, $FE00E4, $1FF00FF, $B80080, $18FF00F7, $9C0040
+                dc.l $106009D, $8002FC, $3FC0400, $1000000, $292, $10070A
+                dc.l $1040102, $26FF00FF, $2FF00FF, $AFF00FF, $390000FF
+                dc.l $FF0100, $43100320, $1B400380, $21FF2500, $3000B00
+                dc.l 0
+                dc.l $3E0041FF, $FF00D4, $1FF00FF, $CA0080, $18FF00FF
+                dc.l $6801FF, $FF00DE, $2000001A, $7500D4, $D220015, $3C0D04
+                dc.l $9B0E12, $6F0E18, $940E15, $810E12, $B800BC, $D170056
+                dc.l $50E8F, $641A70, $A93B70, $A9028F, $640200, $283
+                dc.l $E81700, $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00
+                dc.l $56AC00A9, $9A920010, $B03FFFF, $FF00002D, $B800E4
+                dc.l $D3B0021, $6C0D07, $FE0E1F, $FB0E2A, $A40E4A, $690E20
+                dc.l $7A00EC, $D28007C, $568C00, $FF00FFFF, $FF00FF00
+                dc.l $1140080, $10000AE, $2000092, $402C4, $7F02FA, $FF065A
+                dc.l $5A025C, $9A0278, 0
+                dc.l $95B005C, $25C0052, $66015896, $20B00, $FFFFFF00
+                dc.l $2600BF, $BA0D32, $10000E, $D0600C4, $E00D1B, $130080
+                dc.l $D24001A, $E1F0096, $C00D1B, $7F00CE, $D220046, $EF00A0
+                dc.l $8B000114, $802259, $88025F, $E85B16, $B2027A, $472E18
+                dc.l $1000000, $180070, $1AA80000, $10700BD, $C01296, $20B02
+                dc.l $FFFFFF00, $360074, $140D46, $7B00FC, $D090087, $E26001F
+                dc.l $E3200D4, $E2C0079, $E2600B7, $7C0D30, $420069, $8C00FF00
+                dc.l $FFFFFF00, $FF00FF00, $FFFFFF00, $FF000114, $805399
+                dc.l $C99A96, $20B03, $FFFFFF00, $4900B7, $240D5F, $88002C
+                dc.l $D0C00EA, $E3300AB, $E4400E4, $E850079, $E340079
+                dc.l $AC0D41, $6800BA, $8C00FF00, $FFFFFF00, $FF000110
+                dc.l $68E, $5C02E9, $AF02D9, $848025D, $5A0279, $DF00FF
+                dc.l $A50025D, $84BF99, $B00, $FFFFFF00, $3400CC, $B70D44
+                dc.l $550075, $D09003D, $500D24, $F50040, $D310047, $E2B001E
+                dc.l $200D25, $890015, $D2E00C9, $790070, $8B000110, $83B2
+                dc.l $19020D, $522DFF, $DF00F0, $FF00FF, $D400F0, $1A8801FF
+                dc.l $F8000D, $201299, $B02, $FFFFFF00, $440081, $110D58
+                dc.l $C10063, $D0C0000, $300D30, $C0, $D400001, $E380000
+                dc.l $E00D30, $C000C3, $D3C00C4, $F30010, $8B00FF00, $FFFFFF00
+                dc.l $FF00FF00, $FFFFFF00, $FF000110, $53B4, $E49A99, $B03
+                dc.l $FFFFFF00, $5700C4, $210D71, $CD0093, $D0F0063, $300D3D
+                dc.l $8C00C0, $D520011, $EA3001E, $900D3E, $8200F3, $D4D00EB
+                dc.l $440010, $8B00FF00, $FFFFFF00, $FF000114, $800686
+                dc.l $4C02F6, $3F02F1, $7F07F0, $25C00E2, $D3850C00, $FFFFFF00
+                dc.l $6E0026, $FF0D8E, $E900CD, $D130052, $D00D4D, $4B0E67
+                dc.l $F0E5A, $2D0E4E, $80006D, $D6100D9, $AD00F0, $8B000100
+                dc.l $23C00000, $2C00000, $5B040000, $2040000, $2C000000
+                dc.l $100000, 2, 0
+                dc.l $18000001, $100, $10000, $2F0, $3F00900, 0
+                dc.l $8000100, $100B900, $3001B00, $30021FF, $B8000000
+                dc.l $100, 0
+                dc.l $1800, 0
+                dc.l $1000000, $2000, $40, $D00, 0
+                dcb.l 2,$D000100
+                dc.l $D000000, $E000100, $D000000, $D00, 0
+                dc.l $8B00, $FF00FFFF, $FF00FF00, $FF00FFFF, $FF00FF00
+                dc.l $1140080, $22510060, $26400F2, $2B800000, $628500B0
+                dc.l $1000020, $B81900, $9001FF, $FC00F9, $600110, $7C00C0
+                dc.l 1, $7C0020, $A850806, $3005500, $FF00FF, $611000DC
+                dc.l $830120, $800000, $19400080, $180, $8A00D8, $1010302
+                dc.l $19FF5600, $60FF, $FF005A, $1FF00FF, $DE19FF, $FC00F2
+                dc.l $1FF00FF, $100209, $140209, $141800, $3B004E, $710D4C
+                dc.l $CB0083, $D0A0062, $E290088, $E370061, $E300074, $E00200
+                dc.l $E0092A, $2E00E3, $D340094, $896F00, $1B00, $1140080
+                dc.l $221A0016, $26100B0, $2BA300D1, $8900008E, $1FF00F0
+                dc.l 1, $8650021, $85080B, $1040103, $5580A9FF, $5691008F
+                dc.l $A7000032, $D80092, $D4100CB, $160D08, $E50060, $D230095
+                dc.l $800D2F, $720E29, $8300C0, $D240023, $D60D2D, $C002D
+                dc.l $200D8F, $641A70, $A93B70, $A9028F, $640000, $20100
+                dc.l $11B0083, $E81700, $1100000, $1010047, $5A0101, $B006C
+                dc.l $2850000, $185, 0
+                dc.l $5C00000, $2C00000, $26A007B, $AC00000, $2C00000
+                dc.l $5C010900, $58900002, $B00FFFF, $FF00001D, $540095
+                dc.l $D2500D0, $AF0D05, $1C00F0, $D140073, $C00D1B, $450E17
+                dc.l $DC0060, $D1400C5, $8F0D19, $E40033, $504D04, $9040904
+                dc.l $B000300, $200, $1001300, $11032FE, $3C1501, $13000BF
+                dc.l $FF28FF, $8F07F1, $B42001, $47030465, $210090, $20702
+                dc.l $3003508, $430885FF, $FF000019, $ED0054, $D210063
+                dc.l $BC0D04, $8300C0, $D12000F, $878004C, $3030018, $140E15
+                dc.l $110080, $D120057, $3C0D16, $DC007D, $408B00, $FF00FFFF
+                dc.l $FF00FF00, $FF00FFFF, $FF00818F, $641A70, $A93B70
+                dc.l $A9028F, $640200, $283, $E81700, $1100000, $22B10042
+                dc.l $2C300AE, $8DFF00FE, $A30060, $2C600F8, $18FF00FA
+                dc.l $A30100, $26, $E002C3, $3E30060, $A900002, $B00FFFF
+                dc.l $FF000052, $4900CE, $D6A00AE, $A0D0E, $6C00A0, $D3900B2
+                dc.l $800D4C, $EE0E43, $500040, $D3A0099, $4A0D49, $A00B8
+                dc.l $E08B00, $1100000, $22240048, $1010043, $AC2B8E, $58A87
+                dc.l $8001F5, $B20000, $A900002, $B03FFFF, $FF000049, $D300EF
+                dc.l $D5F00AD, $9D0D0C, $EF00D0, $D3300BF, $400D44, $FF0E3C
+                dc.l $5F0020, $D34008E, $3D0D41, $82005C, $F08B00, $54B00A4
+                dc.l $21000FA, $E7920004, $B00FFFF, $FF000040, $1E0024
+                dc.l $D53000D, $2C0D0B, $3A00C0, $D2C00EB, $D3B, $E40E34
+                dc.l $670080, $D2D009E, $AC0D38, $DD002A, $404D00, $9000900
+                dc.l $B02031C, $40202, $10F1300, $25BE006E, $2BC00EE, $901000F
+                dc.l $3F00FF, $1040058, $60600F0, $8080108, 0
+                dc.l $24FF00EA, $100, $715, $400717, $7A0112, $FC14FF
+                dc.l $28FF00FC, $140000, $8FF00FF, $FF01FF, $FE0093, $800100
+                dc.l $13020F, $FF00E0, $A920004, $7050302, $35003F10, $3005320
+                dc.l $31FF74FF, $F00010, $56020020, $3000002A, $4E0070
+                dc.l $D3600B0, $500D07, $650000, $D1D0094, $8750040, $3000027
+                dc.l $700876, $440301, $41008F, $200202, $B00376, $440301
+                dc.l $1E000A, $500D25, $7100C7, $8B00, $FF00FFFF, $FF00FF00
+                dc.l $FF00FFFF, $FF00FF00, $10023C0, $2C0, $8D00, $10
+                dc.l $102, 0
+                dc.l $18000001, $201, 0
+                dc.l $10800F0, $108, $F00000, $8000000, 0
+                dc.l $7000100, $100B900, $FF00FF, $10000FF, $FF1900, $FF00FF
+                dc.l $10000FF, $FF0100, $30019FF, $B8000000, $100, 0
+                dc.l $19000000, $100, 0
+                dcb.l 2,$2000000
+                dc.l $18000000, $400000, $D000000, $D00, 0
+                dc.l $D000000, $D00, $E00, 0
+                dc.l $D000000, $D00, 0
+                dc.l $8B00, $251A0094, $100005D, $902B98, $918A8E, $1F0
+                dc.l 1, $A920004, $B03FFFF, $FF00006C, $9D007E, $D8C00EA
+                dc.l $1A0D13, $D00A0, $D4C0036, $800D65, $9E0E58, $EA0040
+                dc.l $D4D0067, $5A0D60, $7B0053, $E08B00, $1140080, $23F0062
+                dc.l $21300BE, $E79C0C00, $FFFFFF00, $3300D3, $2D0D43
+                dc.l $1000F7, $D090011, $700D24, $4500C0, $D30005D, $E2A0051
+                dc.l $600D24, $D600D7, $D2D00EB, $4C00D0, $8B000114, $8022C0
+                dc.l $2C0, $A83, $F00000, $1000000, $6000000, $8010130
+                dc.l $BF00FF, $24000000, $40260, $FC06F1, $B40704, $100
+                dc.l $1401, $28000002, $150055, $8000001, $100, $10000
+                dc.l $108, $F00208, $F00000, $A9C0802, $3003508, $3F000308
+                dc.l $530031FF, $74000000, $5600, $3000, $30006B, $EC0D3E
+                dc.l $A40004, $D080078, $400D21, $E10878, $4C0303, $2D002C
+                dc.l $8750040, $3000027, $860080, $20000E0, $3750040, $3000022
+                dc.l $680084, $D2A00E3, $9600C0, $8B00FF00, $FFFFFF00
+                dc.l $FF000114, $8022C1, $FE02BB, $B6167F, $FF1300, $3001651
+                dc.l $4C0E08, $D020FF, $36080204, $910C02, $4650021, $9C0004
+                dc.l $7030309, $71208DFF, $FF00001B, $B3009E, $D2300B2
+                dc.l $7A0D04, $D300A0, $D13004E, $800D19, $BE0E20, $D10050
+                dc.l $2010000, $378004C, $3030013, $9B00BA, $D180070, $F500E0
+                dc.l $8B00FF00, $FFFFFF00, $FF000114, $802215, $B4025F
+                dc.l $DC2B8C, $8E9A9C, $C03FFFF, $569B003F, $A7000060
+                dc.l $520087, $D7C00ED, $E50D10, $E40050, $D430091, $400D5A
+                dc.l $170E4E, $D40020, $D44009F, $850D55, $890076, $708B00
+                dc.l $80, $40C002, $28240E0D, $783C240, $286428, $2003198C
+                dc.l $60A20854, $1C283389, $8D088408, $B8008921, $90904884
+                dc.l $18F45C23, $29950448, $8108F806, $4B2C9947, $C0001088
+                dc.l $50832997, $4D200000, $52, $160008, $2FFFF, $80, $40C000
+                dc.l $21041000, $228442E0
+                dcb.l 2,0
+word_1A6800:    dc.w 0                  ; DATA XREF: sub_192088:loc_192E46↑r
+                                        ; sub_192088+DEA↑w
+word_1A6802:    dc.w 0                  ; DATA XREF: sub_1934AA+62↑w
+                                        ; ROM:001936A8↑w ...
+dword_1A6804:   dc.l 0                  ; DATA XREF: sub_1934AA+28↑w
+                                        ; ROM:00193694↑w ...
+dword_1A6808:   dc.l 0                  ; DATA XREF: sub_1934AA+4E↑w
+                                        ; ROM:0019369E↑w ...
+dword_1A680C:   dc.l 0                  ; DATA XREF: sub_1934AA+5C↑w
+                                        ; ROM:0019389E↑w ...
+dword_1A6810:   dcb.l $A,0              ; DATA XREF: ROM:001938B0↑w
+                                        ; ROM:001938EC↑w ...
+; ---------------------------------------------------------------------------
+;vidinit.s
 
-byte_19B028:    dc.b $7F, $B,$7F, $B,$7F, $B,$7F, $B
-                dc.b $7F, $B,$7F, $B,  0,  0,  0,  0
-                dc.b   0,  0,  0, $B,  0, $B,  0, $B
-                dc.b   0, $B,  0, $B,  0, $B,  0, $B
-                dc.b   0, $B,  0, $B,  0,  0,  0,  0
-                dc.b   0,$80,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  4,  0,  0,  2,  0,  0
-                dc.b   0,$FF,$FF,  0,  0,  0,  0,  0
-                dc.b   0,  2,  0,  0,  0,$80,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  4,  0
-                dc.b   0,  2,  0,  0,  0,$FF,$FF,  0
-                dc.b   0,  0,  0,  0,  0,  2,  0,  0
-                dc.b   0,  6,  0,  0,  0,$19,$77,$AC
-                dc.b   0,$19,$7A,$CD,  0,$19,$62,$CC
-                dc.b   0,$19,$7A,$D1,  0,$19,$62,$CC
-                dc.b   0,$19,$7A,$DB,  0,$19,$62,$CC
-                dc.b   0,$19,$7A,$E5,  0,$19,$62,$CC
-                dc.b   0,$19,$7A,$EF,  0,$19,$62,$CC
-                dc.b   0,$19,$7A,$F9,  0,$19,$62,$CC
-                dc.b   0,$19,$7B,  3,  0,$19,$62,$CC
-                dc.b   0,  1,  0,  6,$70,  0,$10,  0
-                dc.b   0,  7,  0, $A,$60,  0,$10,  0
-                dc.b   0, $B,  0,$18,$50,  0,$10,  0
-                dc.b   0,$19,  0,$28,$40,  0,$10,  0
-                dc.b   0,$29,  0,$3F,$30,  0,$10,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0, $A,  0,$90,$B6,$9C
-                dc.b   0,$90,  0,$38,$F4,$35,$2A,$C6
-                dc.b   0,$90,  2,  0,  0,$90,$18,$56
-                dc.b   0,$90,$34,$A4,  0,$90,$44,$82
-                dc.b   0,$90,$57,$76,  0,$90,$61,$D8
-                dc.b   0,$90,$75,$A6,  0,$90,$88,  6
-                dc.b   0,$90,$9A,$72,  0,$90,$A6,$B4
-                dc.b $66,  4,$9E,$A9,$C8,$31,$65,$28
-                dc.b $8A,$ED,$DC,$28,  8,$74,$24,$27
-                dc.b $42,$2B,$CE,  6,$B3,  8,$5A,$2B
-                dc.b $27,$34,$55,$82,$D6,$8A,$42,$42
-                dc.b $DA,$A7,$48,$2F,$4E,$E8,$29,$2B
-                dc.b $F8,  8,$43,  6,$7F,$AF,$24,$98
-                dc.b $42,$20,$3E,$C5,$FE,$C9,  4,$D6
-                dc.b $3E,$E3,$CA,$D8,$C5,$3C,$A7,  9
-                dc.b $A5, $A,$C5,  0,$A3,$83,$DE,$52
-                dc.b $6F, $E,$FE,$86,$38,$4B,$8A,$FA
-                dc.b $7A,$E8,$8C,$4D,$83,$D5, $A,$2E
-                dc.b $81, $A,$65,$3A,$4D,$70,$AC,$A7
-                dc.b $42,$66,$2B,$EF,$78,$AF,$63,$F8
-                dc.b $6F,$10,$BA,$B8,$30,$BF,  2,$28
-                dc.b  $E,$24,$8D,$FA,$3C,$26,$F8,$8E
-                dc.b $CB,$56,$75,$C2,$36,$55,$64,$2A
-                dc.b $A6,$6E,$2A,$C0,$29,$2B, $E,$24
-                dc.b $F2,$DC,$30,$EA,$30,$D0,$EE,$F0
-                dc.b   5,$2C,$46,$B0,$F6,$54,$CF,$FC
-                dc.b $75,$87,  4,$CE,$CD,$83,$10,$70
-                dc.b $94,$9A,$2E,$22,$D2,$AB,$4B,$11
-                dc.b $4E,$2E,$6D,$47,  0,$A5,$A9,$2B
-                dc.b $14,$CE,$E1,$12,$69,$59,$12,$A4
-                dc.b $E9,$12,$E8,$45,$13,$27,$32,$55
-                dc.b   3,$26,$40,$A3,$18,$30,$71,$41
-                dc.b $14,$4D,$83,$14,$89,$1C,$6A,$E2
-                dc.b $41,$18,$E7,$23,$15,$62,$33,$15
-                dc.b $A4,$82,$25,  4,$10,$2A,$62,$BC
-                dc.b $99,$45,$60,$2D,$27,$B8,$38,$C5
-                dc.b $4A,$43,$4F,$BC,$EA, $A,$83,  1
-                dc.b $49,$88,$D6,$A2,$62,$6F,$C7,$52
-                dc.b $FA,$42,$54,$F2,$62,$1E,$3C,$C5
-                dc.b $DC,$2E,$87,$4A,$A5,$63,$EE,$6B
-                dc.b   6,$32,$51,$C8,$18,$88,$C2,$22
-                dc.b $6C,$26,$E0,$D8,$27,$62,$74,$50
-                dc.b $E0,$3A,$23,$16,$C9,$63, $E,$13
-                dc.b $C4,$F0,$7A,$86,$44,$B3,  7,$3A
-                dc.b $C0, $E,$3F,$1F,$22,$15,  8,$45
-                dc.b $60,$B0,$E2,$6C,$9E,$EC,$24,$3A
-                dc.b $45,$6C,$2E,$50,$B4,$25,$8E,$38
-                dc.b $21,$4A,$44,$74,$CA,$3A,$56,$11
-                dc.b $12,$31,$E6,$A6,$30,$E8,$A6,$71
-                dc.b $22,$2A,$A1,$E7,$F5,  7,$25,$D0
-                dc.b $46,$CC,$8A,$A3,$E8,$F8,$A4,$82
-                dc.b $82,$38,$E2,$9A,$BD,$A5,$A2,$8C
-                dc.b $F1,$63,$18,$44,$32,$ED,$46,$CA
-                dc.b $2C,$C6,$EE,$AF,$A7,$C8,$AE,$E2
-                dc.b $2E,$4A,$A8,$C8,$81, $D,$27,$25
-                dc.b $12,$F1,$23,$2D,$D7,$18,$CC,$BE
-                dc.b $55,$EA,$5C,$AB,$87,$22,$74,$CE
-                dc.b $1E,$51, $B,$D2,$D0,$12,$4F,$27
-                dc.b $4B,$7E,$AD,$AD,$B7,$31,$D2,$5E
-                dc.b $A7,$12,$62,$94,$A4,$CC,$DD,$52
-                dc.b $6C,$8E,$87,$77,$27,$24,$FA,$E2
-                dc.b $A7,$DF,$27,$C4,$AB,$28,$12,$7D
-                dc.b $28,$72,$F8,$45,$92,$8E,$E9,$92
-                dc.b $92,$49,$32,$96,$DF,$6A,$88,$4A
-                dc.b   1,$14,  0,$80,  1,  1,  0,$48
-                dc.b   0,$38,  1,  1,  0,$12,  0,$20
-                dc.b  $F,$FC,  3,$78,  2,$5E,  0,$EB
-                dc.b   0,$FF,$5D,  0,  0,$65,  0,$40
-                dc.b  $B,  1,$60,$65,  0,$21,  0,$93
-                dc.b   0,  2,  7,  4,  1,  1,  1,  0
-                dc.b $1A,$80,  0,  0,  2,$80,  0,  0
-                dc.b $DF,$FF,$19,$EF,  0,$28,  2,$B9
-                dc.b   0,$DF,$E0,  0,  0,$32,  0,$FA
-                dc.b   0,$B1, $D,$8E,  0,$DC,  0,$43
-                dc.b  $D,$35,  0,$EE,  0,$30, $D,$D7
-                dc.b   0,$B8,  0,$C0, $D,$1F,  0,$A1
-                dc.b  $E,$FB,  0,$AC,  0,$E0, $D,$DB
-                dc.b   0,$17,  0,$A3, $D,$11,  0,$17
-                dc.b   0,$CD,  0,$10,$6F,$90,  1,$1B
-                dc.b   0,$F3,  0,$F0,$17,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$E0,$FF,  0,$FF
-                dc.b   3,  1,  0,$78,  0,$C0,$17,  0
-                dc.b   1,$14,  0,$80,$16,$BF,  0,$70
-                dc.b  $A,$E3,  0,$D4,  0,$80,  1,$DF
-                dc.b   0,$1E,  0,$80, $D,  9,  0, $C
-                dc.b   5,$FF,  0,$B4,  0,$10,$2E,$5A
-                dc.b   0,$EA, $E,  6,  0,$4D,$20,$FF
-                dc.b $30,  1,  0,  6,  0,$80,  3,  8
-                dc.b   3,  8,  2, $D,  0,$E5,  0,$80
-                dc.b   0,$FF,  0,$F6,  0,$A2,  0,$80
-                dc.b   3,  2,  4,$65,  0,$21,  0,$93
-                dc.b   0,  2,  7,  3,  3,  9,$25,$10
-                dc.b   0,$80,  0,  0,  1,$20,  0,$80
-                dc.b   0,  0,$44,  4,  0,  4, $E,  4
-                dc.b   0,  4,  0,$23,  0,$80,$50,$10
-                dc.b   0,  4,  0,$13,  0,$24,$27,$FF
-                dc.b $25,$BE,  0,$56,  2,$BE,  0,  8
-                dc.b $AA,$F5,$29,  0,  0,$C2,  0,$7D
-                dc.b   0,$75, $D,$FC,  0,$95,  0,$4F
-                dc.b  $D,  1,  0,$41,  0,$10,  2,  1
-                dc.b   0,$80,  8,  6,  0,$88,  0,$9B
-                dc.b   0,$C0, $D,$B6,  0,$25, $E,$9F
-                dc.b   0,$60,  0,$60, $D,$8A,  0,$BE
-                dc.b   0,$2F, $D,$AC,  0,$F0,  0,$81
-                dc.b   0,$50,$6E, $D,  0,$DE,  2,$73
-                dc.b $18,  0,  1,$14,  0,$80,$21,  1
-                dc.b   0,  0,  0,$38,  1,  1,  0,  5
-                dc.b   0,$8E,  0,$80, $C,$FF,  0,$ED
-                dc.b   0,$AC,  5,$FF,  0,$A2,  0,$8C
-                dc.b $3E,  7,  0,$90,$20,$FF,$31,$50
-                dc.b   3,  0,  0,$EE,  1,$FF,  0,$FF
-                dc.b   0,$C0,  2,  5,  0,$3F,  0,$E0
-                dc.b   1, $B,  0,$EA,  0,$C0,  3,  2
-                dc.b   1,  1,  0,$A3,  0,$FF,  0,$65
-                dc.b   0,$21,  0,$93,  0,  2,  7,  3
-                dc.b   3,  9,$25,$10,  0,$80,  0,  0
-                dc.b   1,$20,  0,$80,  0,  0,$45,$10
-                dc.b $10,$80,  0,  0,$50,  1,  0,  4
-                dc.b   0,$20,  0,$80,  8,  1,  0,  4
-                dc.b   3,$20,$19,$FF,$24,  1,  1,$38
-                dc.b   2,$F3,  0,$90,$56,  7,  0,$90
-                dc.b $51,$FF,  0,$FD,  3,  1,  0,$28
-                dc.b   7,$24,  2,  8,  0,$EB,$18,  0
-                dc.b   0, $C,  0,$73,  0,$80, $D,$5C
-                dc.b   0,$C2,  0,$80, $D,  1,  0,$41
-                dc.b   0,$70, $C,  6,  0,$BC,  0,$A0
-                dc.b  $E,$FB,  0,$80, $E,$DC,  0,$10
-                dc.b  $E,$BF,  0,$92,  0,$80, $D,$EE
-                dc.b   0,$CA,  0,$38,$6D,$FF,  0,$FF
-                dc.b   4,$63,$18,  0,  1,$14,  0,$80
-                dc.b $53,  0,  3,  0,$16,$67,  0,$8C
-                dc.b  $A,$49,  0,$44,  2,$2C,  0,$F0
-                dc.b $20,$FF,$31,$48,  0,$D0, $A,  5
-                dc.b   0,$9A,  2, $F,  0,$FF,  0,$E0
-                dc.b   3,  2,  1,  1,  0,$A3,  0,$FF
-                dc.b   0,$65,  0,$21,  0,$93,  0,  2
-                dc.b   7,  3,  3,  9,$71,$40, $B,  1
-                dc.b $56,$10,  0,  4,  0,$54,  0,$37
-                dc.b $27,$FF,$7D,$17,  0,$80,$55,$FF
-                dc.b   0,$FC,$29,  0,  0,$4C,  0,$10
-                dc.b   0,$98, $D,$62,  0,$96,  0,$48
-                dc.b  $E,$3A,  0,$80,  2,  1,  0,$60
-                dc.b   8,  6,  0,$35,  0,$52, $E,$47
-                dc.b   0,$18, $E,$3E,  0,$35, $E,$36
-                dc.b   0,$27,  0,$48, $D,$43,  0,$80
-                dc.b   0,$39,  0,$80,$6E,$12,  0,$EF
-                dc.b   3,$F8,$17,  0,  1,$14,  0,$80
-                dc.b $22,$51,  0,$96,  2,$82,  0,$A4
-                dc.b $5F,  0,$18,$FF,$34,$FF,  0,$FD
-                dc.b   0,$3D,  0,$80,  1,  4,  0,  5
-                dc.b   1,$FF,  0,$FD,  0,$73,  0,$60
-                dc.b   0,$FF,  0,$F6,  0,$89,  4,  3
-                dc.b   1,  4,  0,$E3,  0,$FF,  0,$65
-                dc.b   0,$21,  0,$93,  0,  2,  7, $E
-                dc.b   1,  9,  1,  0,$FF,$FF,$FF,  0
-                dc.b   0,$20,  0,$37,  0,$9A, $D,$29
-                dc.b   0,$91,  0,$AE, $D,  5,  0,$9E
-                dc.b   0,$E0, $D,$16,  0,$7B,  0,$80
-                dc.b  $D,$1D,  0,$FA, $E,$1A,  0,$3A
-                dc.b   0,$C0, $D,$16,  0,$D5,  0,$6E
-                dc.b  $D,$1C,  0,$76,  0,$2D,  0,$A0
-                dc.b $6E,  2,  0,$36,$1B,  0,  9, $F
-                dc.b   0, $E,  2,$84,  0,$FF,  0,$FF
-                dc.b   1,$84,  0,$FF,  0,$FF,$DE,$91
-                dc.b   0,  0, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$CF,  0,$AC,  0,$A2, $D, $D
-                dc.b   0,$BA,  0,$46, $D,$24,  0,$78
-                dc.b   0,$60, $D,$91,  0,$E1,  0,$80
-                dc.b  $D,$C2,  0,$82, $E,$AA,  0,$31
-                dc.b   0,$C0, $D,$94,  0,$29,  0,  6
-                dc.b  $D,$B8,  0,$AD,  0,$8E,  0,$20
-                dc.b $6F,  0,$1B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,  0,  0,  0
-                dc.b $16,$C0,  0,  0, $A,$C0,  0,  0
-                dc.b   0,  0,  1,$C0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  5,  0,  0,  0
-                dc.b   0,  0,$2E,  0,  0,  0, $E,$14
-                dc.b   0,  0,$20,  3,$30,  0,  0,  8
-                dc.b   0,  0,  3,  0,  3,  0,  2,  8
-                dc.b   0,$F0,  0,  0,  0,  0,  0,  8
-                dc.b   0,$F0,  0,  0,  3,  0,  4,  0
-                dc.b   0,  0,  0,  0,  0,  0,  7,  0
-                dc.b   3,  0,$25,  0,  0,$FF,  0,$FF
-                dc.b   1,  0,  0,$FF,  0,$FF,$44,  0
-                dc.b   0,  0, $E,  0,  0,  0,  0,$FF
-                dc.b   0,$FF,$50,  0,  0,  0,  0,$FF
-                dc.b   0,$FF,$27,$FF,$25,  0,  0,  0
-                dc.b   2,  0,  0,  0,$AA,  0,$29,  0
-                dc.b   0,  0,  0,$40,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0,  2,  0,  0,$30,  8,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0, $E,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  0,  0,$6C,$FF
-                dc.b   0,$FF,  0,  0,  2,  1,  0,$78
-                dc.b   0,$C0,$17,  0,$24,  0,  0,$C0
-                dc.b   0,$60,  1,  0,  0,$BF,  0,$CA
-                dc.b   0,  0,$45,$56,  0,$FC, $E,$10
-                dc.b   0,$78,$20,  3,$30,  1,  0,$3D
-                dc.b   0,$80,  1,$FF,  0,$FF,  0,$C4
-                dc.b   2,$F5,  0,$C6,  0,$80,  1, $A
-                dc.b   0,$A2,  0,$C0,  1,  9,  0,$76
-                dc.b   0,$20, $A,$91,  0,  0, $B,  9
-                dc.b $25,  0,  3,  0,$AC,$54,  0,$B8
-                dc.b   8,  4,  3,  8,  0,  4,$19,$FF
-                dc.b $24,  0,  0,$BF,  0,$B8,  2,$BD
-                dc.b   0,$F0,$56, $A,  0,$20,$5E,  9
-                dc.b   0,  8,  2,  9,  0,  8,$18,  0
-                dc.b   0,$A9,  0,$25,  0,$71, $D,$DB
-                dc.b   0,$A0,  0,$83,$1D,$76,  0,$C8
-                dc.b   0,$C0, $D,$9E,  0,$61, $E,$8A
-                dc.b   0,$94,  0,$E0, $D,$78,  0,$A3
-                dc.b   0,$E3, $D,$96,  0,$5F,  0,$F9
-                dc.b   0,$10,$8B,  0,$25,$BE,  0,$F8
-                dc.b   2,$B8,  0,$38,$20,  1,  1,$19
-                dc.b   0,$5F,  0,$FF,  6,$80,  3,$80
-                dc.b $16,  0,  0,  0, $A,$40,  0,  0
-                dc.b   2,$14,  0,  0,  7,  0,$16,  1
-                dc.b $10, $F,  0,$33,$21,  8,  0,  0
-                dc.b   2,  3,  0,$96,  0,$80,  1,  0
-                dc.b   0,$20,  0,$80,  0,$FF,  0,$FF
-                dc.b   0,$E7,  1,$FF,  0,$FF,  0,$26
-                dc.b   0,$80,  3,  3,  1,  3,  0,$17
-                dc.b   3,$91,  0,  0,  7, $E,  1,  9
-                dc.b   1,  0,$71,  0, $B,  0,$56,  0
-                dc.b   0,  0,  0,$FF,  0,$FF,$27,$FF
-                dc.b $7D,  0,  0,  0,$55,  0,  0,  0
-                dc.b $29,  0,  0,$52,  0,$14,  0,$7C
-                dc.b  $D,$6A,  0,$68,  0,$B4, $D, $E
-                dc.b   0,$63,  0,$40,  2,  0,  0,$30
-                dc.b   8,  0,  0,$39,  0,$8D, $E,$4C
-                dc.b   0,$BC, $E,$43,  0,$24,  0,$80
-                dc.b  $D,$3A,  0,$73,  0,$34, $D,$48
-                dc.b   0,$DB,  0,$3F,  0,$C0,$6C,$FF
-                dc.b   0,$FF,  0,  0,  0,  0,  2,$63
-                dc.b   0,  0,$17,  0,  1,  0,  0,  0
-                dc.b $22,$C0,  0,  0,  2,$C0,  0,  0
-                dc.b $5F,  4,$18,  3,$34,  0,  0,  1
-                dc.b   0,  0,  0,  0,  1,  1,  0,  0
-                dc.b   1,  0,  0,  8,  0,$F0,  0,  0
-                dc.b   0,  0,  0,  8,  0,$F0,  4,  0
-                dc.b   1,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  7,  0
-                dc.b   1,  0,  1,  0,$FF,$FF,$FF,  0
-                dc.b   0,  0,  0,$40,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0, $E,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  0,  0
-                dc.b $6C,$FF,  0,$FF,  0,$FA,  0,$DE
-                dc.b   1,  1,  0,$78,  0,$C0,$17,  0
-                dc.b   9, $A,  0,$40,  2,$85,  0,  0
-                dc.b   0,  0,  1,$85,  0,  0,  0,  0
-                dc.b $DE,$82,  0,$18, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$4C,  0,$5A,  0,$2C
-                dc.b  $D,$AF,  0,$DA,  0,$C4, $D,$3A
-                dc.b   0,$64,  0,$40, $D,$E9,  0,$91
-                dc.b   0,  0, $D,$37,  0,$6C, $E,$10
-                dc.b   0,$7E,  0,$80, $D,$ED,  0,$37
-                dc.b   0,$44, $D,$27,  0,$AE,  0,$FA
-                dc.b   0,$C0,$6E,  1,  0,$7E,$1B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,$22,$7C,  0,$E7
-                dc.b   0,$80,  1,$D9,  0,$4B,  0,$80
-                dc.b $15,$7F,  0,$FF,$2E,$2A,  0,$5C
-                dc.b  $E,  2,  0,$34,$20,$FF,$35,  2
-                dc.b   0,$13,  0,$80,  1,  2,  0,$3C
-                dc.b   1,$FF,  0,$FA,  0,$B9,  1,$FF
-                dc.b   0,$F0,  0,$66,  4,  2,  1,  1
-                dc.b   0,$99,  0,$FF,  0,$65,  0,$21
-                dc.b   0,$82,  0,$18,  7,  3,  3,  9
-                dc.b $25,$10,  0,$B3,  0,$E4,  0,  1
-                dc.b   0,  4,  0,$80,  0,  0,$45,$20
-                dc.b  $E,  4,  0,  4,  0,$20,  0,$64
-                dc.b $7B,$FF,$25,$BE,  0,$C8,  2,$B5
-                dc.b   0,$20,$D4,  0,  0,$9F,  0,$F9
-                dc.b   0,$37, $D,$CF,  0,$B2,  0,$F5
-                dc.b  $D,  3,  0,$42,  0,$40,  2,  2
-                dc.b   0,$10,  8,  6,  0,$70,  0,$55
-                dc.b   0,$40, $D,$95,  0,$C7, $E,$83
-                dc.b   0, $E,  0,$20, $D,$72,  0,$16
-                dc.b   0,$95, $D,$8E,  0,$35,  0,$41
-                dc.b   0,$70,$6C,  0,  0,  1,  1, $D
-                dc.b   1,$1B,  0,$63,  0,$E8,$17,  0
-                dc.b $25,$41,  0,$92,  0,$80,  1,$B4
-                dc.b   0,$5A,$46,$79, $F, $A,  0, $C
-                dc.b $20,$FF,$30,  0,  0,$49,  0,$A0
-                dc.b   1,  0,  0,  1,  0,$31,  0,$80
-                dc.b   0,  0,  0,  2,  0,$A2,  0,  0
-                dc.b   1,  9,  0,$21,  1,$FF,  0,$F4
-                dc.b   0,$84,  0,$A0, $A,$82,  0,$18
-                dc.b  $B,  9,$25,$40,  3,$80,$58,$FF
-                dc.b   0,$FF,$52,$20,  0,$14,$27,$FF
-                dc.b $25,$6E,  0,$40,  2,$94,  0,  8
-                dc.b $56,  0,  0,  0,$52,$E9, $B,  6
-                dc.b   0,$F4,  1,$FF,  0,$F3,  0,$F9
-                dc.b $18,  0,  0,$25,  0,$D2,  0,$FB
-                dc.b  $D,$7D,  0,$C1,  0,  1,$1D,$CE
-                dc.b   0,$78,  0,$40, $D,$13,  0,$4B
-                dc.b  $E,$F0,  0,$E1,  0,$A0, $D,$D1
-                dc.b   0,$B2,  0,$21, $D,  5,  0,$61
-                dc.b   0,$65,  0,$B0,$8B,  0,$25,$C0
-                dc.b   0,  0,  2,$C0,  0,  0,$20,  0
-                dc.b   1,  8,  0,  0,  0,  0,$29,  2
-                dc.b   0,$3E,$37,$12,  0,$4A,$24,$FF
-                dc.b   0,$F8,  0,$ED,  0,  0,  1, $C
-                dc.b   0,$45,  0,  0,  0,  0,  0, $F
-                dc.b   0,$FF,  0,$E0,  0,  0,  0, $F
-                dc.b   0,$FF,  0,$E0,  5,  2,  0,$69
-                dc.b   3,$82,  0,$18, $B,  0,$79,$20
-                dc.b   0,$80,  0,  0,$83,$FF,$FF,  0
-                dc.b   0,$5A,  0,$71,  0,$D4, $D,$75
-                dc.b   0,$49,  0,$3C, $D, $F,  0,$DB
-                dc.b   0,$C0, $D,$3F,  0,$6F, $E,$54
-                dc.b   0,$94, $E,$4A,  0,  1, $E,$40
-                dc.b   0,$6C,  0,$BC, $D,$50,  0,$4D
-                dc.b   0,$C5,  0,$40,$6C,  0,  0,  2
-                dc.b   0,$56,  0,$F5,  2,$73,$18,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   9, $D,  0,$10,$E7,$90,  0,  0
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$2F
-                dc.b   0,$81,  0,$4E, $D,$D7,  0,$3C
-                dc.b   0,$8A, $D,$62,  0,$54,  0,$A0
-                dc.b  $D,$89,  0,$52,  0,$80, $D, $C
-                dc.b   0,$6E, $E,$CA,  0,$E0,  0,$40
-                dc.b  $D,$8F,  0,$77,  0,$CA, $D,$F1
-                dc.b   0,$ED,  0,$30,  0,$E0,$6F,$B7
-                dc.b $1B,  0,  1,$14,  0,$80,$22,$7F
-                dc.b   0,$E0,  2,$BF,  0,$A0,$5F,  1
-                dc.b   0,$F7,$17,$FF,$35,  8,  0,$97
-                dc.b   2,  4,  0,$37,  0,$80,  1,  3
-                dc.b   0,$19,  0,$80,  1,  3,  0,$65
-                dc.b   4,  3,  1,  3,  0,$C5,  0,$FF
-                dc.b   0,$65,  0,$21,  0,$90,  8, $E
-                dc.b   1,  9,  1,  0,$FF,$FF,$FF,  0
-                dc.b   0,$E4,  0,$1F,  0,$9F, $D,$28
-                dc.b   0,$51,  0,$AD, $D,$28,  0,$10
-                dc.b   0,$D0, $D,$A0,  0,$43,  0,$40
-                dc.b  $D,$D5,  0,$AF, $E,$BA,  0,$F9
-                dc.b   0,$20, $D,$A2,  0,$C4,  0,$4D
-                dc.b  $D,$CA,  0,$E2,  0,$77,  0,$F0
-                dc.b $6C,  0,  0,  2,  0,$58,  0,$5B
-                dc.b   1,$1B,  0,$73,  0,$E8,$17,  0
-                dc.b $25,$8F,  0,$B5,  0,  0,  1,$D3
-                dc.b   0,$8A, $F,$50,  5,$FF,  0,$9A
-                dc.b   0,$B1,  0,  1,  7,  0, $A, $A
-                dc.b   0,$87,  2,  0,$16,$6B,  0, $C
-                dc.b   6,$6B,  0, $C,  3,$2A,  2,  0
-                dc.b   0,  2,$1E,  1,$10, $C,  0,$77
-                dc.b   6,$21,  0,$58,  2,$18,$16,$C1
-                dc.b   3,  0,  0,$7D,  1,$FF,  0,$FF
-                dc.b   0,$6E,  1,  0,  0,  2,  0,$A1
-                dc.b   1,  0,  0,  2,  0,$C9,  0,$80
-                dc.b   5,  0,  0,  1,  0,  0,  2,$90
-                dc.b   0,  0, $B,  9,$26,$86,  0,$CC
-                dc.b   0,  0,  0,$80,  0,$DF,  0,$64
-                dc.b $15,$40,  0,$80,  0,  0,$35,$20
-                dc.b   2,  1,  0,  4,  0,$80,  0,  0
-                dc.b   2,$30,$35,  1,  0,  4,$1C,$80
-                dc.b   0,  0,$14,  1,  0,  4,  0,$12
-                dc.b   0,$90, $F,$FF,$25,$C0,  0,$48
-                dc.b   2,$BA,  0,$F0,$15,$FF,  0,$80
-                dc.b   1,  1,$39,$40,$3C,$20,$1A,$C1
-                dc.b $29,  0,  0,$2F,  0,$85,  0,$E9
-                dc.b   2,  0,  0,$C1,  9,$F7,  0,$14
-                dc.b   0,$BB,$1D,$10,  0,$16,  0,$C0
-                dc.b  $D,$6A,  0,$C9, $E,  0,  0,$EB
-                dc.b   0,$10,  2,  7,  0,$90,  3,$78
-                dc.b   0,$4C,  3,  3,  0,$14,  0,$57
-                dc.b   0,$1B, $D,$58,  0,$73,  0,$77
-                dc.b   0,$90,$8B,  0,$25,$C0,  0,  0
-                dc.b   0,  0,  1,$C0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  5,  0,  0,$64
-                dc.b   0,$D0,$13,  0,  3,  0,$16,$76
-                dc.b   0,$5C, $E, $E,  0,$5C,$20,  3
-                dc.b $30,$FF,  0,$FF,  0,$C0,  3,  8
-                dc.b   0,  0,  1,  1,  0,  8,  2,  8
-                dc.b   0,$FB,  0,$80,  0,  0,  0,  3
-                dc.b   0,$79,  0,$80,  5,  0,  0,  0
-                dc.b   0,  0,  2,$90,  0,  0, $B,  9
-                dc.b $25,  0,  0,$FF,  0,$FF,  1,  0
-                dc.b   0,$FF,  0,$FF,$45,$20,$64,$4C
-                dc.b   0,$43,  8,  0,  0,  0,  2,  0
-                dc.b   0,  0,  8,$80,  0,  0, $F,$FF
-                dc.b $25,  0,  0,  0,  2,  0,  0,  0
-                dc.b $AA,$FF,  3,  0,  0,  0,  6,  0
-                dc.b   0,  0,  1,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,$C7,  0,$47,  0,$D3
-                dc.b  $D,  2,  0,$D0,  0,  9, $E,$4C
-                dc.b   0,$40, $D,$8B,  0,$FA, $E,$BA
-                dc.b   0,$A3, $E,$A3,  0,$4E, $E,$8E
-                dc.b   0,$2A,  0,$29, $D,$B1,  0,$34
-                dc.b   0,$63,  0,$30,$6C,  0,  0,  2
-                dc.b   0,$67,  0,$4F,  2,$73,$18,  0
-                dc.b   1,  0,  0,  0,$48,  8,$2D,  0
-                dc.b   0,  0, $F,  4,$16,  0,  1,  3
-                dc.b  $E,  8,  0,  0,$24,  0,  0,  1
-                dc.b   0,  0,  2,  1,  0,  0,  2,  8
-                dc.b   0,$F0,  0,  0,  1,  8,  0,$F0
-                dc.b   0,  0,  3,  0,  1,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  7,  0,  1,  0,  1,  0
-                dc.b $79,  0,  0,$FF,  0,$FF,$83,$FF
-                dc.b $FF,  0,  0,  0,  0,$40,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b  $E,  0,  0,  0, $E,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  0,  0
-                dc.b $6E,  7,  0,$AC,  2,$63,$18,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   9,$15,  0,$1A,$E7,$94, $C,  0
-                dc.b $FF,$FF,$FF,  0,  0, $B,  0,$80
-                dc.b   0,$5B, $D,$A8,  0,$6B,  0,$21
-                dc.b  $D,$5C,  0,  0,  0,$10, $D,$70
-                dc.b   0,  0,  0,$40, $D,$EA,  0,$AB
-                dc.b  $E,$AD,  0,$55,  0,$A0, $D,$75
-                dc.b   0,$C0,  0,$41, $D,$D1,  0,$DE
-                dc.b   0,$FB,  0,$B0,$6F,$1E,$1B,  0
-                dc.b   1,  0,  0,  0,$22,$C0,  0,  0
-                dc.b   2,$C0,  0,  0,$5F,  4,  0,  0
-                dc.b $17,  3,$35,  1,  0,  0,  2,  1
-                dc.b   0,  0,  0,  0,  1,  8,  0,$F0
-                dc.b   0,  0,  1,  8,  0,$F0,  4,  0
-                dc.b   1,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  8,  0,  1,  0
-                dc.b   1,  0,$FF,$FF,$FF,  0,  0,  0
-                dc.b   0,$40,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0, $E,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  0,  0,$6E,$6D
-                dc.b   0,$9A,$1B,  0,$25,$C7,  0,$62
-                dc.b   2,$EC,  0,$FB,$16,$75,  0,$AA
-                dc.b   0,  0,$12,$12,  0,$5F,$19,$18
-                dc.b   0,$5C,  6,$18,  0,$5C,  2,$67
-                dc.b   0,$8E,  2,  5,  0,$40,$1E,  0
-                dc.b $17,  1,  0,$5C,  0,$70,$19,$34
-                dc.b   0,$20,  2,  2,  0,$13,  1,  0
-                dc.b   0,  2,  0,$3C,  2,  3,  0,  3
-                dc.b   0,$80,  1, $F,  0,$DA,  0,  0
-                dc.b   5,  1,  0,$24,  3,$94, $C,  9
-                dc.b $80,  0,  0,  0,  0,$80,  0,  0
-                dc.b $50,  1,  0,  4,  0,$1B,  0,$2C
-                dc.b $16, $E,  0,$C8, $F,$FF,$41,$8B
-                dc.b   0,$D8,  0,  0,$3D,  5,  0,$40
-                dc.b $51,$FF,  0,$F1,$29,  0,  0,$16
-                dc.b   0,$11,  0,$E6, $D,$C8,  0,$43
-                dc.b   0,$52,$1D,$F6,  0,$C4,  0,$80
-                dc.b  $D,$49,  0,  6, $E,  1,  0,$98
-                dc.b   0,$60, $D,$FA,  0,$9F,  0,$92
-                dc.b  $D,$38,  0,$65,  0,$42,  0,$60
-                dc.b $8B,  0,$25,$71,  0,$40,  2,$DC
-                dc.b   0,$9B,$16,$7A,  0,$64,$13, $F
-                dc.b   0,$77,$18,$FF,  0,$90,  0,$10
-                dc.b  $A,$25,  0,$5C,  2, $B,  0,$E8
-                dc.b $20,$FF,$30,  0,  0,$1B,  0,$40
-                dc.b   1,$FF,  0,$F5,  0,$98,  0,$A0
-                dc.b   1,  3,  0,$93,  0,$80,  1,  0
-                dc.b   0,$1A,  0,  0,  0,$FF,  0,$FF
-                dc.b   0,$A5,  0,  0, $A,$94, $C,  9
-                dc.b $25,$10,  3,$20,  0,$AB,  0,$5C
-                dc.b $45,$40, $B,$80,  0,$80,  0,  0
-                dc.b   2,$8C,  0,$D0,$52, $D,  0,$10
-                dc.b   1,  1,  0,$11,  0,  4,  1,  2
-                dc.b   0,  8,  0,$20, $E,$FF,  0,$FF
-                dc.b  $F,$FF,$25,$C0,  3,$C0,$53,$40
-                dc.b   3, $A,  0,$C0,$52,$FB,  2,$FF
-                dc.b   0,$F5,  0,$E1,  0,$80,  1,  3
-                dc.b   0,$B3,  0,$80,$1F,  0,  0,$6B
-                dc.b   0,$97,  0,$28, $D,$8B,  0,$94
-                dc.b   0,$F8, $E,$41,  0,$90,  2,  1
-                dc.b   0,$40,  9,$4B,  0,$7E,  0,  0
-                dc.b  $D,$64,  0,$A8, $E,$58,  0,$13
-                dc.b   0,  0, $D,$4C,  0,$AB,  0,$F8
-                dc.b  $D,$5F,  0,$91,  0,$C2,  0,$80
-                dc.b $6E,$81,  0,$13,$1B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$10
-                dc.b   0,  0,  6,$13,  0,$DC,$E7,$9A
-                dc.b   0,  8, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$F8,  0,$7C,  0,$36, $D,$8F
-                dc.b   0,$B0,  0,$C2, $D,$58,  0,$A8
-                dc.b   0,$20, $D,$62,  0,$A0,  0,$80
-                dc.b  $D,$D8,  0,$D6, $E,$9D,  0,$BB
-                dc.b   0,$40, $D,$68,  0,$2B,  0,  2
-                dc.b  $D,$C0,  0,$F0,  0,$AF,  0,$60
-                dc.b $6E,  2,  0, $C,$1B,  0,  1,$10
-                dc.b $32,$FF,  0,$1A,$4B,$5C,  0,$C0
-                dc.b $68,  3,  4,$65,  0,$21,  0,$9A
-                dc.b   0,  8,  7,  2,  3,  0,$35,  8
-                dc.b $C9,$FF,$FF,  0,  0,$3C,  0,$36
-                dc.b   0,$EB, $D,$4D,  0,$F9,  0,$D1
-                dc.b  $D, $A,  0,$8B,  0,$10, $D,$AA
-                dc.b   0,$46,  0,$80,  2,  3,  0,$30
-                dc.b   3,$78,  0,$4C,  3,  3,  0,$38
-                dc.b   0,$3B, $E,$31,  0,$33,  0,$A0
-                dc.b  $D,$2A,  0,$D4,  0,$F1, $D,$35
-                dc.b   0,$63,  0,$84,  0,$B0,$6E,$C2
-                dc.b   0,$B3,$1B,  0,  1,$10,  0,  0
-                dc.b $22,$BF,  0,$46,  2,$C0,  0,$18
-                dc.b   0,  0, $C,$FF,  0,$D7,  0,$B4
-                dc.b   5,  0,  0,$87,  0,$BC,$13,$80
-                dc.b   0,  0,  2,$80,$16,$3D,  0,$8C
-                dc.b   6,$3D,  0,$8C,  2,$A4,  0,$68
-                dc.b   3,$48,$37,$6D,  0,$A0,$19,$6E
-                dc.b  $B,  2,  0,$23,  0,$60,  0,$FF
-                dc.b   0,$F7,  0,$35,  0,$A0,  5,  2
-                dc.b   0,$72,  0,$80,  2,$9A,  0,  8
-                dc.b  $B,  9,$25,  0,  3,  0,$52,  4
-                dc.b   1,$E1,  0,$20,  2,$70,  0,$88
-                dc.b $52,$3E,  0,  4,  9,$40,  3,$80
-                dc.b   8,$1E,  0,$10, $F,$FF,$40,  0
-                dc.b   0,$7F,  0,$FF,$3E,  0,  0,  0
-                dc.b $52,$CC,  0,$80, $B,$34,  1,$FF
-                dc.b   0,$F5,  0,$84,$18,  0,  0,  8
-                dc.b   0,$A0,  0,$51, $D,$AF,  0,$88
-                dc.b   0,$F3,$1D,$E9,  0,$64,  0,$C0
-                dc.b  $D,$37,  0,$31, $E,$7A,  0,$BD
-                dc.b   0,$90, $D,$ED,  0, $A,  0,$53
-                dc.b  $D,$27,  0,$76,  0,$F6,  0,$10
-                dc.b $8B,  0,  1,$10,  0,  0,$22,$C0
-                dc.b   0,  0,  2,$C0,  0,  0,$16,$7D
-                dc.b   0,$DF,$13,$80,  0,  0,  2,$80
-                dc.b $15,  0,  0, $D,  0,$DC, $A,$40
-                dc.b   0,  0,  2,  3,  0,$C4,$52, $C
-                dc.b   0,$20,  1,  0,  0,  1,  0,  8
-                dc.b   0,  0,  1,  1,  0,  8,  0,  0
-                dc.b   0,$FF,  0,$F2,  0, $F,  0,$80
-                dc.b   1,$FE,  0,$A9, $B,$9A,  0,  8
-                dc.b  $B,  9,$25,  1,  0,$80,  0,  0
-                dc.b   1,  2,  0,$80,  0,  0,$45,$20
-                dc.b  $B,  0,  0,$FF,  0,$FF,  2,$FF
-                dc.b   0,$FF,$52,  7,  0,$5C,  1,  0
-                dc.b   0,$FF,  0,$FF,  1,  0,  0,$FF
-                dc.b   0,$FF,$1F,$FF,$7D,  0,  3,  0
-                dc.b   0,  0,$52,$F9,  2,  0,  0,  0
-                dc.b   0,  0,  0,  0,  1,  0,  0,  0
-                dc.b   0,  0,$1F,  0,  0,$34,  0,  6
-                dc.b   0,$5D, $C,  8,  0,$43,  0,$53
-                dc.b   0,$87, $C,  7,  0,  2,  0,$3E
-                dc.b   0,$50,  2,  0,  0,$30,  9,$24
-                dc.b   0,$69,  0,$C0, $D,$30,  0,$8D
-                dc.b  $E,$2A,  0,$7B,  0,$60, $D,$24
-                dc.b   0,$FB,  0,$67, $D,$2E,  0,$18
-                dc.b   0,$DF,  0,$D0,$6E,$CA,  0,$61
-                dc.b $1B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$14,  0,$80,  6,  9
-                dc.b   0,$EC,$E7,$96,  0,  1, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,  8,  0,$EB
-                dc.b   0,$2E, $D,$F1,  0,$F4,  0,$2A
-                dc.b  $D,$88,  0,$8E,  0,$A0, $D,$22
-                dc.b   0,$3A, $F,$4E, $E,$7D,  0,$44
-                dc.b  $E,$2A,  0,$C3,  0,$6A, $D,$B3
-                dc.b   0,$7F,  0,$8E,  0,$E0, $D,$8B
-                dc.b   0,$C6,$1A,$70,  0,$3C,$3B,$70
-                dc.b   0,$3C,  2,$8B,  0,$C6,  3,$54
-                dc.b $1B,  0,  1,$14,  0,$80,$31,  0
-                dc.b   0,$53,  0,$F0,$6C,  1,$4E,$96
-                dc.b   0,  1, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$4C,  0,$A5,  0,$E3, $D,$B0
-                dc.b   0,$3D,  0,$39, $D,$3A,  0,$71
-                dc.b   0,$90, $D,$D8,  0,$95,  0,  0
-                dc.b  $D,$37,  0,$B3, $E,$10,  0,$BC
-                dc.b  $E,$ED,  0,$6D,  0,$59, $D,$27
-                dc.b   0,$F2,  0,$64,  0,$30,$8B,  0
-                dc.b   1,$14,  0,$80,$22,$C8,  0,$E5
-                dc.b   2,$B1,  0,$8D, $E,$CE,  0,$D0
-                dc.b   6,$82,  0,$EF,  8,  6,  1,$20
-                dc.b   0,$7F,  0,$FF,  6,$13,  0,$5F
-                dc.b   2,  0,$16,$50,  0,$9E,  7,$7C
-                dc.b   2,$72,  0,$F0,  2,$13,  0,  0
-                dc.b $20,$A5,$16,$62,  0,$78,$19,$51
-                dc.b   0,$F0,  1,$FF,  0,$FF,  0,$6D
-                dc.b   1,$FF,  0,$FF,  0,$8C,  2,  0
-                dc.b   0,$F0,  0,$20,  1,$F4,  0,$87
-                dc.b   0,$C0,  6,$2A,  0,  0,  2,$96
-                dc.b   0,  1, $B,  9,$25,$40,  0,$CB
-                dc.b   2,$80,  0,$FF,  0,$FF,$28,  2
-                dc.b   0,  4,  0,$80,  0,  0,$18,  1
-                dc.b   0,  4,$10,$89,  0,$D8,$50,  2
-                dc.b   1,$27,  0,$3B,$16,$1B,  0,$84
-                dc.b  $F,$FF,$25,$C1,  0,$E0,  2,$BD
-                dc.b   0,$60,$4E,  4,  0,$70,  6,  5
-                dc.b   0,$40,$52,$F3,  0,  0,$28,  0
-                dc.b   0,$C9,  0,$39,  0,$C9, $D,$11
-                dc.b   0,$CC,  0,$5B,$1D,$A8,  0,$FE
-                dc.b  $E,$36,  0,$A9, $E,  6,  0,$B9
-                dc.b   0,$10, $D,$AF,  0,$A2,  0,$BB
-                dc.b  $C,  8,  0,$1A,  0,  5,  0,$D5
-                dc.b   0,$90, $B,  7,$7F,  0,  1,$14
-                dc.b   0,$80,$26,$96,  0,$46,  0,$80
-                dc.b $45,$1A,  0,$6A, $E, $A,  0,$A4
-                dc.b $20,$A5,$31,$2B,  0,$90,  1,$FF
-                dc.b   0,$FF,  0,$F2,  1,$FF,  0,$FD
-                dc.b   0,$52,  1,  0,  0, $C,  0,$2A
-                dc.b   0,  0,  1,$FA,  0,$3A,  6,  1
-                dc.b   0,$F3,  0,$FF,  2,$96,  0,  1
-                dc.b  $B,  9,$25,  0,$4A,$10,  0,  4
-                dc.b $10,$84,  0,$B0,$50,$10,  1,$3D
-                dc.b   0,$50,$27,$FF,$29,$9C,  0,$30
-                dc.b $56,  3,  0,$C0,$7C,  0,  0,$44
-                dc.b   0,$75,  0,$55, $D,$A5,  0,$96
-                dc.b   0,$EF,$1D,$E4,  0,  3, $F,  5
-                dc.b  $E,$7A,  0,$51,  3,  1,  0,$90
-                dc.b   3,$78,  0,$4C,  3,  3,  0,$E7
-                dc.b   0,$93,  0,$CF, $D,$20,  0,$A7
-                dc.b   0,$BF,  0,$50,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$10
-                dc.b   0,  0,  6, $A,  0,$82,$E7,$8E
-                dc.b   0,  0, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$2B,  0,$7A,  0,$16, $D,$1E
-                dc.b   0,$E4,  0,$62, $D,$8E,  0,$A2
-                dc.b   0,$20, $D,$3A,  0,$88, $E,$F8
-                dc.b   0,$B6, $E,$99,  0,$9F, $E,$43
-                dc.b   0,$72,  0,$A2, $D,$D2,  0,$44
-                dc.b   0,$4D,  0,$60, $D,$FF,  0,$FF
-                dc.b $1A,$FF,  0,$FF,$3B,$FF,  0,$FF
-                dc.b   2,$FF,  0,$FF,  2,  1,  0,$28
-                dc.b $1B,  0,  1,$10,  0,  0,$31,  1
-                dc.b   0,$81,$BC,$8E,  0,  0, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$6F,  0,$34
-                dc.b   0,$CB, $D,$DD,  0,$2D,  0,$71
-                dc.b  $D,$40,  0,$85,  0,$10, $D,$3F
-                dc.b   0,$E0,  0,$80, $D,$58,  0,$1B
-                dc.b  $E,$2D,  0,$17, $E,  6,  0,$1C
-                dc.b   0,$91, $D,$46,  0,$B7,  0,$22
-                dc.b   0,$B0,$8B,  0,  1,$10,  0,  0
-                dc.b $22,$C0,  0,  0,  2,$C0,  0,  0
-                dc.b  $D,  0,  0,$12,  0,$30,  6,$5B
-                dc.b   0,$85,  8,  8,  1,  8,  0,  0
-                dc.b   0,  0,  6,  0,  0,  0,$19,  4
-                dc.b   0,$D6,  6,  0,  0,  0,  2,$A0
-                dc.b   0,$FC,  2, $B,  0,$B4,$20,$FF
-                dc.b  $E,  8,  0,  0,  5,  0,  0,$10
-                dc.b   0,  0,  2,  0,$16,$7E,  0,$E0
-                dc.b   1,  0,  0,  1,  0,  8,  0,  0
-                dc.b   0,  0,  0,  1,  0,  8,  2,  7
-                dc.b   0,$46,  0,  0,  1,$FB,  0,$A6
-                dc.b   0,  0,  5,  0,  0,  0,  3,$8E
-                dc.b   0,  0, $B,  9,$25,  0,  0,$FF
-                dc.b   0,$FF,  1,  0,$17,$80,$12,  0
-                dc.b   0,  0,  0,$FF,  0,$FF,$18,$10
-                dc.b   8,  0,  2,  0,  0,$10,  0,$FF
-                dc.b   0,$FF,  2,$FF,  0,$FF,$34,  0
-                dc.b   0,  0,$1A,  4,  1,$8E,  0,$60
-                dc.b   9,  0,  3,  0,  6,  0,  0,  0
-                dc.b   0,$FF,  0,$FF, $F,$FF,$25,  0
-                dc.b   0,  0,  2,  0,  0,  0,$16,$62
-                dc.b   0,$8C,$36,  0,  0,  0,  6,  0
-                dc.b   0,  0,$37,  0,$1A,$F0, $C,  0
-                dc.b   1,  0,  0,  0,  0,  0,$18,  0
-                dc.b   0,$9C,  0,$54,  0,$1C,  2,  1
-                dc.b   0,$11,  9,$CA,  0,$F5,  0,$94
-                dc.b  $D,  1,  0,$43,  0,$20,  3,  0
-                dc.b   9,$6D,  0,$C5,  0,  0, $D,$92
-                dc.b   0,$5C, $E,$80,  0,$10,  0,$80
-                dc.b   2,  0,  0,$E0,  3,$75,  0,$40
-                dc.b   3,  0,  0,$6F,  0,$7C,  0,$14
-                dc.b  $C,  0,  0,$8A,  0,$F6,  0,$79
-                dc.b   0,$C0, $B,  0,  1,$81,  0,$66
-                dc.b $1A,$8B,  0,$D6,$3B,$8B,  0,$D6
-                dc.b   2,$81,  0,$66,  1,  2,  0,$D7
-                dc.b   0,$74,  2,$73,$18,  0,  1,$10
-                dc.b   0,  0,$22,$EF,  0,$FE,  0,$80
-                dc.b   1,$EF,  0,$FE,$15,$FF,  0,$B7
-                dc.b   0,$17,$13,  0,  3,  0,$16,  1
-                dc.b   0,$56, $E,  4,  0,  4,$20,$FF
-                dc.b $31,  9,  0,$A0,  1,  0,  0,  1
-                dc.b   0,$10,  1,  0,  0,  1,  0,$10
-                dc.b   1,$FF,  0,$F2,  0,$10,  2,$FE
-                dc.b   0,$B0,  6,  0,  0,  0,  0,  0
-                dc.b   2,$8E,  0,  0, $B,  9,$25,  1
-                dc.b $4A,  8,$65,$6D,  0,$F4,$27,$FF
-                dc.b $29,$C0,  0,  0,$D4,  0,  0,$67
-                dc.b   0,  4,  0,$3D, $D,$D2,  0,$87
-                dc.b   0,$27,$1D,$FC,  0,$51, $E,$50
-                dc.b   0,$6D, $E,$AC,  0,$F3,  0,$E0
-                dc.b  $D,  0,  0,$43,  0,  7, $D,$3F
-                dc.b   0,$6C,  0,$7D,  0,$D0,$8B,  0
-                dc.b   1,$10,$22,  1,  0,$22,  0,$85
-                dc.b   1,  1,  0,$1F,  0, $D,$46,$7F
-                dc.b   0,$FC, $A,$28,  3,$47,  0,$E4
-                dc.b $20,$FF,$30,$FF,  0,$F5,  4,$10
-                dc.b   3,$10,  2,  2,  0,$A0,  0,$20
-                dc.b   1,$11,  0,$38,  0,$C0,  3,  2
-                dc.b   1,  1,  0,$A7,  0,$FF,  0,$65
-                dc.b   0,$21,  0,$8E,  8,  3,  3,  9
-                dc.b $25,$40,  3,$80,$47,$40,$62,$40
-                dc.b   0,  4,  0,$5E,  0,  4,  8,  2
-                dc.b   0,  4,  2,  1,  0,  4,$19,$FF
-                dc.b $25,$C2,  0,$88,  2,$BF,  0,$10
-                dc.b $A9,$FF,  0,$F5, $B,  2,  0,$38
-                dc.b   2, $D,  0,$40,$18,  0,  0,$84
-                dc.b   0,$BB,  0,$FC, $D,$AC,  0,$47
-                dc.b   0,$34, $D,  1,  0,$3E,  0,$40
-                dc.b   2,  1,  0,$D0,  8,  6,  0,$5D
-                dc.b   0,$2D, $E,$7C,  0,$3C, $E,$6C
-                dc.b   0,$B4,  0,$80, $D,$5E,  0,$A1
-                dc.b   0,$B4, $C,  8,  0,$75,  0,$F4
-                dc.b   0,$B7,  0,$C0, $B,  7,  1,$81
-                dc.b   0,$66,$1A,$8B,  0,$D6,$3B,$8B
-                dc.b   0,$D6,  2,$81,  0,$66,  2,$ED
-                dc.b   0,$94,  2,$73,$18,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$14
-                dc.b   0,$80,  6,$17,  0,$1E,$E7,$95
-                dc.b  $C,  0,$FF,$FF,$FF,  0,  0,$27
-                dc.b   0,$77,  0,$23, $D,$19,  0,$AC
-                dc.b   0,$F9, $D,$8D,  0,$ED,  0,$90
-                dc.b  $D,$37,  0,$B6,  0,$40, $D,$F4
-                dc.b   0,$F3, $E,$96,  0,$54,  0,$A0
-                dc.b  $D,$40,  0,$95,  0,$19, $D,$CE
-                dc.b   0,$B1,  0,$F8,  0,$30,$29,$80
-                dc.b   0,$C1,$3B,$80,  0,$C1,  7,$11
-                dc.b $1B,  0,  1,$14,  0,$80,$32,$8B
-                dc.b   0,$B0,$BB,$95, $C,  0,$FF,$FF
-                dc.b $FF,  0,  0,$6B,  0,$31,  0,$D8
-                dc.b  $D,$D7,  0,$F6,  0,  8, $D,$3F
-                dc.b   0,$D0,  0,$80, $D,$33,  0,$E2
-                dc.b   0,$F0, $D,$54,  0,$58, $E,$29
-                dc.b   0,$CD,  0,  0, $D,  3,  0,$3F
-                dc.b   0,  8, $D,$43,  0,$24,  0,$CD
-                dc.b   0,$80,$8B,  0,  1,$14,  0,$80
-                dc.b $22,$C2,  0,$28,  2,$BB,  0,$80
-                dc.b $15,$FF,  0,$A8,  0, $F,  8,  0
-                dc.b   1,$26,  0,$CF,  0,$FF, $A,$12
-                dc.b   0,$5F,$14,$FF,  0,$B7,  0,  0
-                dc.b   6,$4F,  0,$90,  2,$34,  0,$C0
-                dc.b   3,$5C,$1E,  1,  1,$33,  5,$8C
-                dc.b   0,$4C,  2,$BB,  0,$14,  3, $E
-                dc.b   0,$43,$21, $D,  0,$70,  3,  0
-                dc.b   3,  0,  3,$3A,  0,$80,  2,$A2
-                dc.b  $B,$95, $C,  9,$26,$80,  0,  0
-                dc.b   2,$80,  0,  0,$44,  0,  0,$10
-                dc.b   7,$80,  3,  0,  4,$80,  0,  0
-                dc.b $52,$82,  0,$63,$27,$FF,$25,$C2
-                dc.b   0,$34,  2,$BB,  0,$8C,$15,$FF
-                dc.b   0,$94,  0,$2B,$3E,$14,$7D,  0
-                dc.b   0,$98,  0,$51,  0,$29, $D,$C5
-                dc.b   0,$BE,  0,$2B,$1D,$6A,  0,$F2
-                dc.b   0,$C0, $D,$8E,  0,$99, $E,$7C
-                dc.b   0,$C5,  0,$E0, $D,$6C,  0,$9E
-                dc.b   0,$8B, $D,$87,  0,$64,  0,$24
-                dc.b   0,$90,$8B,  0,  1,$14,  0,$80
-                dc.b $26,$C0,  0,$46,$15,  0,  0,$7D
-                dc.b   0,$DF,  8,  3,  1,$34,  0,$97
-                dc.b   0,$FF, $A,$80,$15,$FF,  0,$93
-                dc.b   0,$30, $F,  0,$1E,  1,  1,  3
-                dc.b $31, $D,  0,$30,$1B,$95, $C,  9
-                dc.b $70,  0,  0,$20,$10,$80,  0,  0
-                dc.b $52,$83,  0,$14,$27,$FF,$81,  4
-                dc.b   0,  0,$7C,  0,  0,$63,  0,  1
-                dc.b   0,$4A, $D,$CD,  0,$4F,  0,$BE
-                dc.b $1D,$F9,  0,$7F,  0,$80, $D,$4C
-                dc.b   0,$AA, $E,$A7,  0,$13,  0,$30
-                dc.b  $D,$FD,  0,$65,  0,$7E, $D,$3B
-                dc.b   0,$DA,  0,$28,  0,$A0,$8B,  0
-                dc.b   1,$14,  0,$80,$25,  0,  0,$BF
-                dc.b   0,$9E,  0,$80,$1F,  6,  1,$11
-                dc.b   0,$4B,  0,$FF,  6,  0,  3,  0
-                dc.b $26,$2E,  0,$A8,$1E,  1,  1,  3
-                dc.b  $E, $E,  0,$74,$26,  0,  3,  0
-                dc.b   2,  8,  0,  9,  0,$80,  1,  7
-                dc.b   0,$D5,  0,$A0,  6,$AB,  3,$95
-                dc.b  $C,  9,$82,$80,  0,  0,$52,$30
-                dc.b   0,$18,$27,$FF,$81,$14,$5F,  7
-                dc.b   0,$1C,  0,$80,  1,  2,  0,$E8
-                dc.b $18,  0,  0,$80,  0,$B9,  0,  9
-                dc.b  $D,$A7,  0, $F,  0,$CB,$1D,$5A
-                dc.b   0,$5A,  0,$C0, $D,$78,  0,$79
-                dc.b  $E,$69,  0,$69,  0,$E0, $D,$5B
-                dc.b   0,$C4,  0,$2B, $D,$72,  0,$62
-                dc.b   0,$62,  0,$90,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$14
-                dc.b   0,$80,  1,  1,  0,$48,  0,$38
-                dc.b   1,  1,  0,$11,  0,$D2, $F,$FC
-                dc.b   3,$78,  2,$6D,  0,$77,  0,$FF
-                dc.b $5D,  0,  0,$65,  0,$40, $B,  1
-                dc.b $60,$65,  0,$21,  0,$90,  8,  4
-                dc.b   1,  1,  1,  0,$1A,$80,  0,  0
-                dc.b   2,$80,  0,  0,$DF,$FF,$19,$EF
-                dc.b   0,$28,  2,$B9,  0,$DF,$E0,  0
-                dc.b   0,$B7,  0,$DD,  0, $D, $D,$3B
-                dc.b   0,$A8,  0,$97, $D,$4D,  0,$4B
-                dc.b   0,$70, $D,$35,  0,$2D,  0,$C0
-                dc.b  $D,$9C,  0,$3D, $E,$68,  0,$B5
-                dc.b   0,$60, $D,$3A,  0,  2,  0,$77
-                dc.b  $D,$87,  0,$67,  0,$AA,  0,$D0
-                dc.b  $D,$F1,  0,$E3,$1A,$FF,  0,$FF
-                dc.b $3B,$FF,  0,$FF,  2,$F1,  0,$E3
-                dc.b   2,  2,  0,$14,  1,$1B,  0,$F3
-                dc.b   0,$F0,$17,  0,  1,$14,  0,$80
-                dc.b $22,$D3,  0,$20,  2,$88,  0,$92
-                dc.b   9,  1,  0,$15,  0,$37,  0,$FF
-                dc.b $1E,$88,  0,$7F,  2,$88,  0,$7F
-                dc.b $15,$66,  0,$9A,  2,  5,  1,$20
-                dc.b   4,$FF,  0,$FF,  0,$20,$24,$FF
-                dc.b $14,$FF,  0,$FF,  0,$FC,  1,$FF
-                dc.b   0,$FF,  0,$FB,  0,$60,$21,  7
-                dc.b   0,  2,  0,$C0,  1,  1,  0,$17
-                dc.b   0,$40,  3,  3,  1,  2,  0,$2F
-                dc.b   0,$FF,  0,$65,  0,$21,  0,$90
-                dc.b   8, $C,  1,  5,  1,  0,$25,$40
-                dc.b   0,$52,  0,$A0,  1,$80,  0,$AB
-                dc.b   0,$5C,  9,$40,  0,$40,  0,$FC
-                dc.b $39,$10,  0,$D0,  0,$7C,  1,$40
-                dc.b $6B,$10,  3,$20,$19,$FF,$25,$C0
-                dc.b   3,$C0, $B,$C4,  0,$FF,  0,$FF
-                dc.b $3E,$14,$69,$FF,  0,$FF,  0,$23
-                dc.b   1,$FF,  0,$FF,  0,$C1,  0,$80
-                dc.b $17,  0,  0,$DC,  0,$33,  0,$51
-                dc.b  $D,$1E,  0,  4,  0,$23, $D,$26
-                dc.b   0,$AC,  0,$30, $D,$9A,  0,$B0
-                dc.b   0,$C0, $D,$CE,  0,$41, $E,$B4
-                dc.b   0,$78,  0,$E0, $D,$9D,  0,$1B
-                dc.b   0,$83, $D,$C3,  0,$D4,  0,$97
-                dc.b   0,$10,$6E,$50,  0, $F,$1B,  0
-                dc.b   1,$14,  0,$80,$21,  1,  0,$15
-                dc.b   0,$68,  1,  1,  0,$1F,  0,$FD
-                dc.b $16,$48,  0,$48,$2D,$FF,  0,$39
-                dc.b   0,$1E,  0,  1, $D,  0,$21,$FF
-                dc.b $31,$21,  0,$C0,  3,  8,  3,  8
-                dc.b  $C,  2,  4,$65,  0,$21,  0,$90
-                dc.b   8,  3,  3,  9,$25,$40,  3,$80
-                dc.b $47,$20,  0,$80,  0,  0, $C,$40
-                dc.b   0,  4,  0,$59,  0,$EF,$7B,$FF
-                dc.b $25,$C0,  3,$C0,$46,$FF,  2,  1
-                dc.b $8B,  0,  0,$E0,  0,$57,  0,$17
-                dc.b   3,$31,  9,  5,  0,$C7,  0,$F5
-                dc.b  $D,  3,  0,$39,  0,$B0,  2,  2
-                dc.b   0,$10,  8,  6,  0,$8D,  0,$95
-                dc.b   0,$40, $D,$BC,  0,$C7, $E,$A5
-                dc.b   0,$2E,  0,$20, $D,$8F,  0,$CB
-                dc.b   0,$95, $C,  8,  0,$B3,  0,$3C
-                dc.b   0,$B1,  0,$70, $B,  7,$62,$59
-                dc.b   0,$2C,$1B,  0,  1,$14,  0,$80
-                dc.b $22,$B6,  0,$70,  2,$BD,  0,$C0
-                dc.b  $E,  6,  0,$60,  5,$FF,  0,$FD
-                dc.b   0,$83,$13,  0,  3,$13,  0,$DB
-                dc.b $16,$24, $A, $F,  0,$F0,  2, $C
-                dc.b   0,$A0,$20,$FF,$30,$FF,  0,$F9
-                dc.b   0,$E0,  2,  4,  0,$68,  2,  3
-                dc.b   0,$AE,  1,$FF,  0,$FF,  0,$62
-                dc.b   0,$80,  0,$FF,  0,$FF,  0,$E8
-                dc.b   0,$80,  3,  2,  4,$65,  0,$21
-                dc.b   0,$90,  8,  3,  3,  9,$25,$10
-                dc.b   0,  0,  0,  0,  1,$20,  0,  0
-                dc.b   0,  0, $E,$80,  0,  0,  4,  4
-                dc.b   0,  4,  0,$80,  0,  0,$2C,$10
-                dc.b   0,  4,  0,$80,  0,  0,  9,$10
-                dc.b   0,$80,  0,  0,$54,  2,  0,  4
-                dc.b   0,$5C,  0,$44,$27,$FF,$25,$B6
-                dc.b   0,$70,  2,$BD,  0,$C0, $E,  6
-                dc.b   0,$60,  5,$FF,  0,$FD,  0,$20
-                dc.b $3A,$4E,  0,$80,$55,$FF,  0,$F5
-                dc.b $29,  0,  0,$93,  0,$54,  0,$AC
-                dc.b  $D,$BF,  0,$42,  0,$44, $E,$42
-                dc.b   0,$A0,  2,  1,  0,$D0,  8,  6
-                dc.b   0,$67,  0,$71, $E,$AC,  0,$BA
-                dc.b   0,$20,  2,  3,  0,$60,  9,$C1
-                dc.b   0,$32,  0,$40,  2,  3,  0,$90
-                dc.b   9,$69,  0, $E,  0,$C4, $D,$82
-                dc.b   0,$F3,  0,$A2,  0,$C0, $D,$6C
-                dc.b   0,$98,$1A,$D7,  0,$A1,$3B,$D7
-                dc.b   0,$A1,  2,$6C,  0,$98,  2,$18
-                dc.b   0,$C0,  2,$A3,$18,  0,  1,$14
-                dc.b   0,$80,$26,$77,  0,$9A,$20,  3
-                dc.b   1,$40,  0,$3F,  0,$FF,  2,  8
-                dc.b   3,$6C,  0,$87,  2,$42,  0,$36
-                dc.b   2,$54,  0,$FE,  2,$70,  0,$A7
-                dc.b   2,$6C,  0,$87,  2,$42,  0,$36
-                dc.b  $D,$1F,  0,$20, $B,$47,  0,$73
-                dc.b   2,$46,  0,$4B, $D,  4,  0,$FF
-                dc.b   0,$FF,  5,  1,$10,$10,  0,$1F
-                dc.b $3C,$65,  0,$21,  0,$90,  4,  1
-                dc.b   3,  1,  1,  2,  1,  0,$55,$40
-                dc.b   3,$80,  3,  1,  3,  2,  3,$40
-                dc.b   3,$80,$95,$FF,$56,$80,  3,$80
-                dc.b   3,$80,  3,$80,  3,$80,  3,$80
-                dc.b $94,  0,  0,$A0,  0,$9E,  0,$82
-                dc.b  $D,$D0,  0,$89,  0,$E6, $D,$1C
-                dc.b   0,$32,  0,$60, $D,$70,  0,$C9
-                dc.b   0,$80, $D,$96,  0,$62, $E,$83
-                dc.b   0,$95,  0,$C0, $D,$72,  0,$8C
-                dc.b   0,$A6, $D,$8E,  0,$C8,  0,$6C
-                dc.b   0,$20, $D,$81,  0,$9D,$1B,$37
-                dc.b $3C,$37,  2,$81,  0,$9D,  2, $C
-                dc.b   0,$4A,  2,$A3,$18,  0,  1,$14
-                dc.b   0,$80,$36,$1D,  0,$54,  6,$14
-                dc.b   0,$C2,$13,$12,  0,$8B,  2,$25
-                dc.b   0,$9F,  2,$36,  0,$6B,  6,$83
-                dc.b   0,$DB,$19,  0,$38,  0,  0,$20
-                dc.b   0,$FF,  0,$FF,  0,$E9,  0,$A0
-                dc.b $20,$FF,  0,$FA,  0,$6A,  0,$C0
-                dc.b   0,$FF,  0,$FB,  0,$FA,  0,$C0
-                dc.b   8,$65,  0,$21,  0,$90,  8, $D
-                dc.b   1,  6,  1,  0,$39,  1,  7,  2
-                dc.b $12,  1,  0,  4,$8B,$10,  3,$20
-                dc.b $19,$FF,$56,$14,  0,$B7,$88,$FF
-                dc.b   0,$F8,  0,$82,  1,$FF,  0,$F4
-                dc.b   0,$94,$18,  0,  0,$63,  0,$B7
-                dc.b   0,$A6,  6,$19,  0,$6F,  0, $C
-                dc.b   3,  5,  0,$81,  0,$58,  0,$12
-                dc.b   6,$19,  0,$6F,  0, $C,  3,  5
-                dc.b   0,  4,  0,$BE,  0,$60,  2,  2
-                dc.b   0,$70,  8,  6,  0,$45,  0,$F4
-                dc.b   0,$80, $D,$B6,  0,$75,  0,$D0
-                dc.b   2,  4,  0,$D0,  9,$B3,  0,$4E
-                dc.b   0,$90,  2,  5,  0,$20,  9,$47
-                dc.b   0, $C,  0,$52, $D,$58,  0,$8F
-                dc.b   0,$46,  0,$60, $D,$6D,  0,$28
-                dc.b $1A,$90,  0, $C,$3B,$90,  0, $C
-                dc.b   2,$6D,  0,$28,  3,$55,$1B,  0
-                dc.b   1,$10,  0,  0,  6, $E,  0,$E4
-                dc.b   2,$84,  0,$FF,  0,$FF,  1,$84
-                dc.b   0,$FF,  0,$FF,$DE,$80, $C,  0
-                dc.b $FF,$FF,$FF,  0,  0,$C9,  0,$E0
-                dc.b   0,$31, $D,$53,  0,$14,  0,$C3
-                dc.b  $D,$50,  0,$76,  0,$30, $D,$41
-                dc.b   0,$D8, $E,$AD,  0,$21, $E,$77
-                dc.b   0,$7C,  0,$E0, $D,$46,  0,$E0
-                dc.b   0,$23, $D,$97,  0,$71,  0,$25
-                dc.b   0,$10, $D,$18,  0,$A7,$1A,$55
-                dc.b   0,$73,$3B,$55,  0,$73,  2,$18
-                dc.b   0,$A7,  2,  1,  0,$7F,$1B,  0
-                dc.b   1,$10,  0,  0,$22,$BB,  0,$4A
-                dc.b   2,$91,  0,$60,  0,$80,  8,  0
-                dc.b   0,$B1,  0,$3F,$3A,$51,  0,$6E
-                dc.b   1,$FF,  0,$FE,  0,$DC,  0,$C0
-                dc.b $2B,$A5,$3D,  5,  0,$62,  2,  7
-                dc.b   0,$A1, $B,$80, $C,  0,$FF,$FF
-                dc.b $FF,  0,  0,$EE,  0,$36,  0,$75
-                dc.b  $D,$35,  0,$70,  0,$4F, $D,$29
-                dc.b   0,$D6,  0,$F0, $D,$A7,  0,$5B
-                dc.b  $E,$DF,  0,$25, $E,$C3,  0,$40
-                dc.b   0,$60, $D,$A9,  0,$F9,  0,$2F
-                dc.b  $D,$D3,  0,$DE,  0,$11,  0,$50
-                dc.b $8B,  0,  1,$10,  0,  0,$21,  0
-                dc.b   0,$72,  0,$7C,  0,$80,  0,  0
-                dc.b   0,$A0,  0,$15,  0,$80,$14,$FF
-                dc.b   0,$A1,  0,$EC,$13,  0,  3,  0
-                dc.b $15,$FE,  0,$F0,  0,$70,$30,$A5
-                dc.b $31,  8,  0,  0,  3,$20,  3,$20
-                dc.b   1,$FF,  0,$FD,  0,$46,  0,$80
-                dc.b   0,$FF,  0,$F7,  0,$DA, $B,$80
-                dc.b  $C,  9,$D4,$40,  0,  4,  0,$37
-                dc.b   0,$40,$27,$FF,$D5,  8,$29,  0
-                dc.b   0,$F4,  0,$76,  0,$BB, $D,$1D
-                dc.b   0,$34,  0,$21,$1D,$9A,  0,$40
-                dc.b  $E,$CD,  0,$AB, $E,$B3,  0,$F5
-                dc.b   0,$A0, $D,$9C,  0,$A9,  0,$41
-                dc.b  $D,$C3,  0,$46,  0,$2B,  0,$B0
-                dc.b $8B,  0,  1,$10,  0,  0,$3E,$FF
-                dc.b   0,  4,$2E,  4,  0,$48, $B,$80
-                dc.b $24,$A5,$30,  0,  0,$14,  0,$C0
-                dc.b $1B,$80, $C,  9,$FF,$FF,$FF,  0
-                dc.b   0,$A5,  0,$57,  0,$D0, $D,$D6
-                dc.b   0,$AE,  0,$70,$1D,$74,  0,$1C
-                dc.b  $E,$E5,  0,$BB,  0,$A0, $D,$FD
-                dc.b   0,$5E,  0,$80, $D,$75,  0,$EC
-                dc.b   0,$70, $D,$92,  0,$FD,  0,$1D
-                dc.b   0,  0,$8B,  0,  1,  0,  0,  0
-                dc.b $26,$C0,  0,  0,$20,  8,  1,  8
-                dc.b   0,  0,  0,  0,  2,  0,  3,$80
-                dc.b   0,  0,  2,$80,  0,  0,  2,$80
-                dc.b   0,  0,  2,$80,  0,  0,  2,$80
-                dc.b   0,  0,  2,$80,  0,  0, $D,  0
-                dc.b   0,  0, $B,  4,  0,  0,  2,  4
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   5,  0,$10,  8,  0,  0,$3C,  0
-                dc.b   0,  0,  0,  0,  4,  0,  3,  0
-                dc.b   1,  0,  1,  0,$55,  0,  3,  0
-                dc.b   3,  0,  3,  0,  3,  0,  3,  0
-                dc.b $95,$FF,$56,  0,  3,  0,  3,  0
-                dc.b   3,  0,  3,  0,  3,  0,$94,  0
-                dc.b   0,  0,  0,$40,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0, $E,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  0,  0
-                dc.b  $D,$F1,  0,$E3,$1A,$FF,  0,$FF
-                dc.b $3B,$FF,  0,$FF,  2,$F1,  0,$E3
-                dc.b   2,  5,  0,$AF,  2,$B3,$18,  0
-                dc.b   1,$10,  0,  0,$36,$33,  0,$CA
-                dc.b   6,$29,  0,$FB,$11,$FF,  0,$FF
-                dc.b   0,$E1,  0,$31,$89,$F0,  0,$A2
-                dc.b   0,  0,  1,$EE,  0,$E6,  0,  0
-                dc.b  $A,$80, $C,  0,$FF,$FF,$FF,  0
-                dc.b   0,$75,  0,$BA,  0,$CA,  7,$6E
-                dc.b   0,$F4,  4,$98,  0,$C4,  0,$3E
-                dc.b   7,$6E,  0,$F4,$14,$52,  0,$9F
-                dc.b  $E,  7,  0,$BF,  0,$10, $D,  9
-                dc.b   0,$DF,  0,$10, $D,$53,  0,$E9
-                dc.b   0,$FE, $D,$68,  0,$98,  0,$C0
-                dc.b   0,$A0,$8B,  0, $A,$12, $F,$F0
-                dc.b $D8,  2, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0, $E,  0,$BC,  0,$F4, $D,$AC
-                dc.b   0,$A0,  0,$9C, $D,$5C,  0,$91
-                dc.b   0,$C0, $D,$72,  0,$47,  0,  0
-                dc.b  $D,$ED,  0,$B4, $E,$AF,  0,$FD
-                dc.b   0,$80, $D,$78,  0,$10,  0,$1C
-                dc.b  $D,$D4,  0,$C0,  0,$B7,  0,$40
-                dc.b  $D,$80,  0,$7E,$1A,  0,  0,  0
-                dc.b $3B,  0,  0,  0,  2,$80,  0,$7E
-                dc.b   2,  2,  0,$3B,$1B,  0,$25,$D9
-                dc.b   0,$F8,  2,$F9,  0, $A,  9,  1
-                dc.b   0,$95,  0, $F,$39,$FF,  0,$9B
-                dc.b   0,  4,  1,  0,  0,  6,  0,$C8
-                dc.b $2C,$FF,$3C,$FF,  0,$F7,  0,$63
-                dc.b   0,  0,  0,$FF,  0,$F7,  0,$E1
-                dc.b   0,$80, $B,  2, $B,  0,$FF,$FF
-                dc.b $34,  1,  0,$28,  0,$1F,$C8,  0
-                dc.b   0,$33,  0,$13,  0,$38, $D,$8E
-                dc.b   0,$FC,  0,$28, $D,$35,  0,$F2
-                dc.b   0,$80, $D,$D7,  0,$CA,  0,  0
-                dc.b  $D,$1F,  0,$B8, $E,$FB,  0,$C1
-                dc.b   0,  0, $D,$DB,  0,$29,  0,$28
-                dc.b  $D,$11,  0,$2D,  0,$A3,  0,$80
-                dc.b $8B,  0,$25,$C0,  0,$5B,  2,$60
-                dc.b   0,  1,$45,$FF,  0, $E,  0,$9E
-                dc.b $30,$FF,$4F,  2, $B,  9,$FF,$FF
-                dc.b $FF,  0,  0,$41,  0,$65,  0,$DE
-                dc.b  $D,$76,  0,$BF,  0,$FA,$1D,$CA
-                dc.b   0,$AE,  0,$80, $D, $E,  0,$3E
-                dc.b  $E,$EC,  0,$76,  0,$40, $D,$CD
-                dc.b   0,$D9,  0,$3A, $D,  0,  0,$95
-                dc.b   0,$BD,  0,$E0,$8B,  0,  1,  0
-                dc.b $23,$C0,  0,  0,  2,$C0,  0,  0
-                dc.b  $E,  0,  0,  0,  5,  0,  0,  0
-                dc.b   0,  0,$13,$80,  3,$80,  0,  0
-                dc.b $15,  0,  0,  0, $A,$40,  0,  0
-                dc.b   2,$14,  0,  0,$20,  3,$31,  8
-                dc.b   0,  0,  2,  1,  0,  0,  2,  1
-                dc.b   0,  0,  1,  0,  0,  8,  0,$F0
-                dc.b   0,  0,  0,  0,  0,  8,  0,$F0
-                dc.b   0,  0,  3,  0,  4,  0,  0,  0
-                dc.b   0,  0,  8,  0,  3,  0,$25,  0
-                dc.b   0,$FF,  0,$FF,  1,  0,  0,$FF
-                dc.b   0,$FF, $E,$FF,  0,$FF,  4,  0
-                dc.b   0,  0,  0,$FF,  0,$FF,$2C,  0
-                dc.b   0,  0,  0,$FF,  0,$FF,  9,  0
-                dc.b   0,$FF,  0,$FF,$54,  0,  0,  0
-                dc.b   0,$FF,  0,$FF,$27,$FF,$25,  0
-                dc.b   0,  0,  2,  0,  0,  0, $E,  0
-                dc.b   0,  0,  5,  0,  0,  0,  0,  0
-                dc.b $3A,  0,  0,  0,$55,  0,  0,  0
-                dc.b $29,  0,  0,  0,  0,$40,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $E,  0
-                dc.b   0,  0,  2,  0,  0,$30,  8,  0
-                dc.b   0,  0,  0,  0, $E,  0,  0,  0
-                dc.b   0,  0,  2,  1,  0,  0,  9,  0
-                dc.b   0,  0,  0,  0,  2,  0,  0,$E0
-                dc.b   9,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $E,$18,  0,$A7
-                dc.b $1A,$55,  0,$73,$3B,$55,  0,$73
-                dc.b   2,$18,  0,$A7,  2,  1,  0,  5
-                dc.b   2,$B3,$18,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$38,$FF,  0,$DD
-                dc.b   0,$D0,  6,$26,  0,$80,$13,$DD
-                dc.b   0,$4F,  2,$20,  0,$3F, $A,$90
-                dc.b   0,$4A,$79,$F8,  0, $A,  2,$ED
-                dc.b   0,$52, $C,  2, $B,  0,$64,  4
-                dc.b   0,  4,$99,$FF,$66,$95,  0,$EF
-                dc.b $97,  0,  0,$BA,  0,$97,  0,$8D
-                dc.b  $D,$F2,  0,$50,  0,$17,$1D,$83
-                dc.b   0, $D,  0,$C0, $D,$3E,  0,$82
-                dc.b   0,$80, $D,$54,  0,$D0,  0,$70
-                dc.b  $D,$85,  0,$19,  0,$F7, $D,$A5
-                dc.b   0,$E8,  0,$52,  0,$D0,$8B,  0
-                dc.b   9, $B,  0,  0, $F,$FC,$D7,$9C
-                dc.b   0,$16, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$32,  0,$F1,  0,$17, $D,$DB
-                dc.b   0,$B4,  0,$95, $D,$62,  0,$EF
-                dc.b   0,$50, $D,$8B,  0,$BD,  0,$40
-                dc.b  $D, $F,  0,$A7, $E,$CD,  0,$B2
-                dc.b   0,$20, $D,$91,  0,$EC,  0,$35
-                dc.b  $D,$F4,  0,$FC,  0,$7F,  0,$70
-                dc.b  $D,$A1,  0,$18,$1A,$53,  0,$A7
-                dc.b $3B,$53,  0,$A7,  2,$A1,  0,$18
-                dc.b   2,  0,  0,$EA,$1B,  0,$25,$C3
-                dc.b   0,$CF,  2,$E1,  0,  0,  0,  0
-                dc.b   9,$38,  0,$17,$16,$1C,  0,$F3
-                dc.b   0,$FF,$21,$A6,  0,$6A,  2,  1
-                dc.b   0,$10,  0,  0,$29,  1,  1,  3
-                dc.b $3D,$F8,  0,$43,  1,  0,  0,  1
-                dc.b   0,$B3,  0,$40, $A,$9C,  0,$16
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$57
-                dc.b   0,$47,  0,$5B, $D,$BE,  0,$10
-                dc.b   0,$21, $D,$3C,  0,$50,  0,$10
-                dc.b  $D,$F1,  0,$40,  0,$40, $D,$41
-                dc.b   0,$AB, $E,$19,  0,$75,  0,$A0
-                dc.b  $D,$F5,  0,  5,  0,$41, $D,$31
-                dc.b   0,$69,  0,$6B,  0,$B0,$8B,  0
-                dc.b $25,$D8,  0,$CF,  0,  0,  1,$9E
-                dc.b   0,$BC,$15,  0,  0,$7F,  0,$FF
-                dc.b   8,  2,  1,$3A,  0,$83,  0,$FF
-                dc.b $21,$36,  0,$EE, $E,  1,  0,$9A
-                dc.b $1E,  1,  1,  3, $E, $E,  0,$3F
-                dc.b $21,$28,  0,$A0,  3,$28,  3,$28
-                dc.b  $E,  1,  0,$31,  0,$FF,  2,$9C
-                dc.b   0,$16, $B,  9,$80,  4,  1,$37
-                dc.b $51,  4,  1,$47,  0,$28,$27,$FF
-                dc.b $FF,  0,  0,$69,  0,$D8,  0,$61
-                dc.b  $D,$A5,  0,$D3,  0,$F3,$1D,$E4
-                dc.b   0,$24,  0,$C0, $D,$30,  0,$31
-                dc.b  $E, $A,  0,$2A,  0,$E0, $D,$E7
-                dc.b   0,$B5,  0,$53, $D,$20,  0,$D1
-                dc.b   0,$86,  0,$10,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$38,  0
-                dc.b   0,  7,  0,$1E,  5,$FF,  0,$FB
-                dc.b   0,$B8,$13,$D9,  0,$29,  2,$27
-                dc.b   0,$C7, $A,$8E,  0,$87,$79,$F3
-                dc.b   0,$8F,  3,$21, $B,$9C,  0,$16
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$DE
-                dc.b   0,$CB,  0,$B0, $D,$21,  0,$64
-                dc.b   0,$10,$1D,$9C,  0,$84,  0,  0
-                dc.b  $D,$E1,  0,$E3,  0,$F0, $D,  2
-                dc.b   0,$CD,  0,$D0, $D,$9E,  0,$F6
-                dc.b   0,$10, $D,$C6,  0,$24,  0,$1B
-                dc.b   0,  0,$8B,  0,  9, $C,  0,$B6
-                dc.b   2,$85,  0,  0,  0,  0,  1,$85
-                dc.b   0,  0,  0,  0,$DE,$8D,  0,$1E
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$68
-                dc.b   0, $C,  0,$B4, $D,$20,  0,$C3
-                dc.b   0,$DC, $D,$6C,  0,$45,  0,$C0
-                dc.b  $D,$B1,  0,$17,  0,  0, $D,$41
-                dc.b   0,$74, $E,$F9,  0,$45,  0,$80
-                dc.b  $D,$B7,  0,$DB,  0,$5C, $D,$24
-                dc.b   0,$45,  0,$33,  0,$40, $D,$75
-                dc.b   0,$8D,$1A,$77,  0,$80,$3B,$77
-                dc.b   0,$80,  2,$75,  0,$8D,  2,  1
-                dc.b   0,$8D,$1B,  0,$25,$CF,  0,$8B
-                dc.b   0,$80,  1,$C0, $A,  0,  0,  0
-                dc.b   0,  0,  0,  0,$13,  5,  1,$31
-                dc.b   0,$37,  7,$80,  0,  0,  2,$80
-                dc.b   0,  0,$14,  0,  0,  0,  0,  0
-                dc.b   2,  0,  0,  4,  1,$FF,  0,$A2
-                dc.b   0,$40,  1,  0,  0,$40,  0,  0
-                dc.b  $B,  2,  0,$8B,$2C,  0,  0,  0
-                dc.b   0,$10,  1,  0,  0,  2,  0,  0
-                dc.b   0,  0,$19,  9,  0,$D0,  2,  3
-                dc.b   0,$A0,  1,  0,  0,  8,  0,$18
-                dc.b   2,  0,  0,$8A,  0,  0,  5,  6
-                dc.b   0,$7F,  3,$8D,  0,$1E,  7, $E
-                dc.b   1,  9,  1,  0,$24,  1,  0,  4
-                dc.b   0,$3E,  0,$20,  1,  0,  0,$FF
-                dc.b   0,$FF,  9,  0,  0,$FF,  0,$FF
-                dc.b $39,  0,  0,$FF,  0,$FF,  1,  0
-                dc.b   3,$20,$10,  0,  0,  0,$55,  0
-                dc.b   3,  0,$19,$FF,$29,  0, $A,  0
-                dc.b   0,  0,  0,  0,  0,  0,$3E,  0
-                dc.b $69,  0,  0,  0,  0,  0,  1,  0
-                dc.b   0,  0,  0,  0,  0,  0,$17,  0
-                dc.b   0,$45,  0,$45,  0,$49, $D,$59
-                dc.b   0,$C0,  0,$8B, $D,  3,  1,$B0
-                dc.b   2,  2,  0,$10,  8,  6,  0,$30
-                dc.b   0,$8A,  0,$C0, $D,$40,  0,$B9
-                dc.b  $E,$38,  0,$A1,  0,$E0, $D,$31
-                dc.b   0,$4C,  0,$EB, $D,$3D,  0,$73
-                dc.b   0,$A6,  0,$90, $D,$7C,  0,$69
-                dc.b $1A,$A3,  0,$FD,$3B,$A3,  0,$FD
-                dc.b   2,$7C,  0,$69,  2,  2,  0,$B3
-                dc.b   2,$A3,$18,  0,$25,$B8,  0,$29
-                dc.b   2,$B9,  0,$A0,  0,  0, $D,$18
-                dc.b   0,$E8,  6,$43,  0,$40,  8,  4
-                dc.b   1,$23,  0,$1B,  7,$80,  3,$80
-                dc.b $15,$FE,  0,$C1,  0,  0, $E,  0
-                dc.b   0,  0,$2F,$10,  0,$E5,$21,  8
-                dc.b   0,  0,  3,  8,  3,  8,  1,  0
-                dc.b   0,  8,  0,$60,  0,$C0,  0,  0
-                dc.b   0,  8,  0,$80,  6,  0,  0,  0
-                dc.b   0,  0,  2,$8D,  0,$1E, $B,  9
-                dc.b $80,$40,  1,$35,  0,$B7,$50,  0
-                dc.b   0,  0,  0,$FF,  0,$FF,  9,$40
-                dc.b   3,$80,$19,$FF,$D5,  0, $B,  9
-                dc.b   0,  8,  2,  9,  0,  8,$18,  0
-                dc.b   0,$A5,  0,$2D,  0,$9E, $D,$EA
-                dc.b   0,$E3,  0,$3A,$1D,  9,  0,$7E
-                dc.b   0,$80, $D,$61,  0,$FE, $E,$35
-                dc.b   0,$BE,  0,$40, $D, $D,  0,$A4
-                dc.b   0,$7A, $D,$50,  0,$1A,  0,$39
-                dc.b   0,$E0,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$81,$7C,  0,$69,$1A,$A3
-                dc.b   0,$FD,$3B,$A3,  0,$FD,  2,$7C
-                dc.b   0,$69,  2,  2,  0,  8,  2,$A3
-                dc.b $18,  0,  1,$10,$27,$51,  0,$EB
-                dc.b   0,$80,$1F,  6,  1,$24,  0,$47
-                dc.b   0,$FF,  2,  8,  3,$A5,  0,$F3
-                dc.b   2,$4D,  0, $C,  2,$44,  0,$94
-                dc.b   2,$4D,  0,$D5,  2,$A5,  0,$F3
-                dc.b   2,$4D,  0, $C,  6,$98,  6,$14
-                dc.b   0,$30, $B,$65,  0,$EA,  2,$46
-                dc.b   0,$4B, $D,  4,  0,$FF,  0,$FF
-                dc.b   5,  1,$10,$10,  0,$1F,$3C,$65
-                dc.b   0,$21,  0,$8D,  0,$1E,  3,  1
-                dc.b   3,  1,  1,  2,  1,  0,$28,  1
-                dc.b   0,  4,$2B,$40,  3,$80,  3,  1
-                dc.b   3,  2,  3,$40,  3,$80,$95,$FF
-                dc.b $29,$77,  0,$88,$2B,$80,  3,$80
-                dc.b   3,$80,  3,$80,  3,$80,  3,$80
-                dc.b  $E,$1F,  0,$20,$84,  0,  0,$50
-                dc.b   0,$CE,  0,$29, $D,$B5,  0,$A5
-                dc.b   0,$2B, $D,$33,  0,$E8,  0,$90
-                dc.b   2,  1,  0,$E0,  8,  6,  0,$EC
-                dc.b   0,$B2,  0,$C0, $D,$3B,  0,$99
-                dc.b  $E,$1B,  0,$B4,  0,$70,  2,  5
-                dc.b   0,$D0,  3,$78,  0,$4C,  3,  3
-                dc.b   0,$F0,  0,$65,  0,$8B, $D,$2B
-                dc.b   0,$A5,  0,$F4,  0,$90, $D,$81
-                dc.b   0,$9D,$1A,$80,  0,$37,$3B,  0
-                dc.b   0,$37,  2,$81,  0,$9D,  2, $C
-                dc.b   0,$4A,  2,$A3,$18,  0,$34,$FF
-                dc.b   0,$53,  3,  0,  0,  0,  5,  0
-                dc.b   0,  0,  0,  0,$11,  0,  0,  0
-                dc.b   0,$80,  0,  0,  2,$80,  0,  0
-                dc.b   2,$80,  0,  0,  6,$80,  0,  0
-                dc.b $19,$41,  0,$B8,$37,$10,  0,  0
-                dc.b   0,  0,  0,  2,  0,  0,  0,  0
-                dc.b $20,  0,  0,  8,  0,$F0,  1,  0
-                dc.b   0,  8,  0,$F0,  4,  3,  6,$8D
-                dc.b   0,$1E,  7,  2,  1,  0,  1,  0
-                dc.b $35,$20,  3,  0,  7,  0,$12,  0
-                dc.b   0,  0, $E,  0,  0,  0,$7B,  0
-                dc.b   3,  0,$19,$FF,$56,  0,  0,  0
-                dc.b  $E,  0,  0,  0,$78,  0,  0,  0
-                dc.b   0,  0,  1,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,$75,  0,$2E,  0,  6
-                dc.b   6,$1E,  0,$75,  0,$40,  3,  0
-                dc.b   0,$98,  0, $D,  0,$32,  6,$1E
-                dc.b   0,$75,  0,$40,  3,  0,  0,$14
-                dc.b   0,$8F,  0,$20,  2,  0,  0,$30
-                dc.b   8,  0,  0,$52,  0,$3C,  0,$80
-                dc.b  $D,$6D,  0,$A6,  0,  0,  2,  1
-                dc.b   0,  0,  9,$5F,  0,$F1,  0,$40
-                dc.b   2,  0,  0,$E0,  9,$53,  0,$85
-                dc.b   0,$72, $D,$68,  0,$1B,  0,$6C
-                dc.b   0,$60, $D,$BF,  0,$68,$1A,$8E
-                dc.b   0,  2,$3B,$8E,  0,  2,  2,$BF
-                dc.b   0,$68,  2,$20,  0,$6E,  2,$A3
-                dc.b $18,  0,  1,$14,  0,$80,  6, $B
-                dc.b   0,$F0,$E7,$84,  0,  0, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$EB,  0,$73
-                dc.b   0,$6C, $D,$CB,  0,$A2,  0,$84
-                dc.b  $D,$83,  0,$60,  0,$40, $D, $D
-                dc.b   0,$81, $E,$BC,  0,$AC, $E,$65
-                dc.b   0,$16, $E,$15,  0,$B7,  0,  4
-                dc.b  $D,$99,  0,$43,  0, $E,  0,$C0
-                dc.b  $D,$69,  0,$6F,$1A,$69,  0,$ED
-                dc.b $23,$18,  0,$80,  0,  3,  0,$80
-                dc.b   0,$CE,  0,$80,  0,$13,$11,$69
-                dc.b   0,$ED,  2,$69,  0,$6F,  3,$BC
-                dc.b $1B,  0,  1,$14,  0,$80,$22,$A7
-                dc.b   0,$28,  0,  0,  1,$C6,  0,$18
-                dc.b   9,  1,  0,$AC,  0,$7F,  0,$FF
-                dc.b   1,  2,  0,$3C,  6, $F,  0,$64
-                dc.b   8,  8,  1,  8,  0,  0,  0,  0
-                dc.b $25,  5,  0,$6B,  0,$C0,  0,  0
-                dc.b   0,  0,  0,  0,  6,$18,  0,$C4
-                dc.b   6,  1,  0,$16,  0,  2,  1,$18
-                dc.b   0,$40,$12,  0,$2B,  9,  0,  1
-                dc.b   0,$20,  9,  1,  0,  0,  2,  1
-                dc.b   0,  0,  2, $E,  0,$77,  0,$C0
-                dc.b   1,$10,  0,$F7,  0,$C0,  5,  3
-                dc.b   0,$2F,  3,$84,  0,  0,  7,  5
-                dc.b   1,  0,  1,  2,$24,  0,  0,  0
-                dc.b   0,$FF,  0,$FF,$12,$80,  0,  0
-                dc.b   6,$80,  0,  0,$31,$10,  3,  0
-                dc.b  $E,  4,  0,  4,$43,$20,  0,$DF
-                dc.b   0,$EC,$11,$10,  3,$20,$19,$FF
-                dc.b $25,  0,$13,  2,  0,$10,  6, $C
-                dc.b   0,$C0,$31,$FF,  0,$FF,  0,$FC
-                dc.b $13,$96,  0,  3,$41,  2,  0,$10
-                dc.b $12,  9,  0,  8,  2,  9,  0,  8
-                dc.b $18,  0,  0,$8E,  0,$2A,  0,$54
-                dc.b  $D,$B8,  0,$8A,  0,$BC, $D, $E
-                dc.b   0,$2C,  0,  0,  2,  1,  0,$E0
-                dc.b   9,$63,  0,$CF,  0,  0, $D,$85
-                dc.b   0,$14,  8,$76,  0,$44,  3,  1
-                dc.b   0,$69,  0,$FF,  0,$80,  2,  3
-                dc.b   0,  0,  3,$76,  0,$44,  3,  1
-                dc.b   0,$65,  0,$5E,  0,$3C, $D,$7E
-                dc.b   0,$5A,  0,$4D,  0,$40, $D,$75
-                dc.b   0,$8D,$1A,$77,  0,$80,$3B,$77
-                dc.b   0,$80,  2,$75,  0,$8D,  2,  3
-                dc.b   0,$6A,  2,$B3,$18,  0,  1,$14
-                dc.b   0,$80,$22,$AF,  0,$12,  0,$80
-                dc.b   1,$AF,  0,$71, $F,$F0,  5,$FF
-                dc.b   0,$B4,  0,$24,$13,  0,  3,  0
-                dc.b $16,$E8,  0,$A0,$2E,  0,  1,$C3
-                dc.b $31,$9C,  0,$C0, $A, $B,  0,  5
-                dc.b   0,$E0,  1,  2,  0,$44,  0,$C0
-                dc.b  $A,$84,  0,  0, $B,  9,$D6,$80
-                dc.b   0,  0,$27,$FF,$D5,  8, $B, $C
-                dc.b   0,$6F,  2,  3,  0,$A6,$18,  0
-                dc.b   0,$37,  0,$FB,  0,$56, $D,$95
-                dc.b   0,$C1,  0,$E2,$1D,$65,  0,$E8
-                dc.b  $E,$DD,  0,$36, $E,$A1,  0,$8F
-                dc.b  $E,$6B,  0,$80,  0,$22, $D,$C5
-                dc.b   0,$18,  0,$15,  0,$60,$8B,  0
-                dc.b   1,$14,  0,$80,$22,$C6,  0,$3D
-                dc.b   0,$80,  1,$C1,  0,  5,$16,$38
-                dc.b   0,$C1,$13,$55,  0,$DF,$19,$45
-                dc.b   0,$9C, $E, $D,  0,$A0,$52,$1C
-                dc.b   0,$B0, $A,  6,  0,$B7,  0,$C0
-                dc.b   0,$FF,  0,$FC,  0,$8B,  0,$E0
-                dc.b   3,  2,  4,$65,  0,$21,  0,$84
-                dc.b   8,  3,  3,  9,$25,  1,  3,  2
-                dc.b   0,$D8,  0,$9C, $E,$80,  0,  0
-                dc.b   4,  1,  0,  4,  0,$DB,  0,$F8
-                dc.b $2D,$20,$10,$80,  0,  0,$50,  1
-                dc.b   0,  4,  0,$11,  0,$58,  9,  8
-                dc.b   3,$10,  0,$80,  0,  0,$17,$FF
-                dc.b $25,$BE,  0,$50,  2,$9A,  0,$98
-                dc.b $16, $D,  0,$60,$3E, $D,  0,$A8
-                dc.b $51,$FF,  0,$E6, $C,$50,  1,$FF
-                dc.b   0,$FB,  0,$B4,$18,  0,  0,$F2
-                dc.b   0,  3,  0,$87,  2,  2,  0,$B1
-                dc.b   9,$18,  0,$14,  0,$85,  2,  3
-                dc.b   0,$13, $A,$44,  0,$F0,  2,  1
-                dc.b   0,$A0,  8,  6,  0,$4E,  0,$59
-                dc.b   0,$40, $D,$68,  0,$77, $E,$5B
-                dc.b   0,$68,  0,$20, $D,$4F,  0,$92
-                dc.b   0,$A5, $D,$63,  0,$2F,  0,$7C
-                dc.b   0,$70, $D,$95,  0,$30,$1A,$71
-                dc.b   0,$F8,$3B,$71,  0,$F8,  2,$95
-                dc.b   0,$30,  2,$20,  0,  7,  2,$B3
-                dc.b $18,  0,  1,  0,$27,$C0,  0,  0
-                dc.b   0,  0,$1F,  8,  1,  8,  0,  0
-                dc.b   0,  0,  2,  0,  3,$80,  0,  0
-                dc.b   2,$80,  0,  0,  2,$80,  0,  0
-                dc.b   2,$80,  0,  0,  2,$80,  0,  0
-                dc.b   2,$80,  0,  0,  6,  0,  6,  0
-                dc.b   0,  0, $B,  4,  0,  0,  2,  4
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   5,  0,$10,  8,  0,  0,$3C,  0
-                dc.b   0,  0,  0,  0,  0,  0,  3,  0
-                dc.b   3,  0,  1,  0,  1,  0,$28,  0
-                dc.b   0,  0,$2B,  0,  3,  0,  3,  0
-                dc.b   3,  0,  3,  0,  3,  0,$95,$FF
-                dc.b $29,  0,  0,  0,$2B,  0,  3,  0
-                dc.b   3,  0,  3,  0,  3,  0,  3,  0
-                dc.b  $E,  0,  0,  0,$84,  0,  0,  0
-                dc.b   0,$40,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   2,  0,  0,$30,  8,  0,  0,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b  $E,  0,  0,  0,  0,  0,  2,  0
-                dc.b   0,$E0,  3,$25,  0,$38,  3,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,$75
-                dc.b   0,$8D,$1A,$77,  0,$80,$3B,$77
-                dc.b   0,$80,  2,$75,  0,$8D,  2,  1
-                dc.b   0,$77,  2,$B3,$18,  0,  1,$14
-                dc.b   0,$80,$31,$FE,  0,  8,$BC,$84
-                dc.b   0,  0, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$F8,  0,$94,  0,$BE, $D,$42
-                dc.b   0,$EB,  0,$DA, $D,$2B,  0,$A9
-                dc.b   0,$A0, $D,$AE,  0,$A6, $E,$E8
-                dc.b   0,$DE, $E,$CB,  0,$C2, $E,$B1
-                dc.b   0,$61,  0,$1A, $D,$DD,  0,$19
-                dc.b   0,$47,  0,$E0,$8B,  0, $A,$4E
-                dc.b $E7,$92,  0,$1E, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$4C,  0,$5F,  0,$7F
-                dc.b  $D,$49,  0,$AB,  0,$4D, $D,$94
-                dc.b   0,$6A,  0,$D0, $D,$51,  0,$AB
-                dc.b   0,$40, $D,$17,  0,$8F, $E,$B4
-                dc.b   0,$9D,  0,$20, $D,$5A,  0,$F1
-                dc.b   0,$ED, $D,$EF,  0,$8E,  0,$35
-                dc.b   0,$F0, $D,$D3,  0,$26,$1A,$CF
-                dc.b   0,$56,$3B,$CF,  0,$56,  2,$D3
-                dc.b   0,$26,  2,  2,  0,$57,$1B,  0
-                dc.b $34,  0,  0,$E9,  0,$9F,  2,  4
-                dc.b   0,$70,  6,$14,  0,$9E,$32,  6
-                dc.b   0,$EB, $A, $C,  0,$18,  7,$13
-                dc.b   0,$55,  1,$10,  0,$7C,$14,$FF
-                dc.b $28,$FF,  0,$FF,  0,$8C,$12, $F
-                dc.b   0,$F7,  2,  6,  0,$28,  0,  0
-                dc.b   5,  2,  0,$1F,  3,$92,  0,$1E
-                dc.b  $B,  2,$38,  8,  0,  4,  6,  2
-                dc.b   0,  4,$BD,$FF,$3A,$60,$4F,$93
-                dc.b   0,$56,$73,  0,  0,$EF,  0,$16
-                dc.b   0,$67, $D,$36,  0,$93,  0,$85
-                dc.b $1D,$A7,  0,$F9,  0,$40, $D,$DF
-                dc.b   0,$F7, $E,$7A,  0,$A8, $E,$AA
-                dc.b   0,$99,  0,$25, $D,$D4,  0,$A5
-                dc.b   0,$74,  0,$70,$8B,  0,$25,$F5
-                dc.b   0,$62,  2,$E8,  0,  9,  0,$80
-                dc.b  $C,$FF,  0,$FA,  0,$80,  5,  0
-                dc.b   0,$4F,  0,$20,$2D,$FF,  0,$40
-                dc.b   0,$9C, $E,  5,  0,$54,$20,$FF
-                dc.b $30,$FF,  0,$E9,  0,  0,  3,$40
-                dc.b   3,$40,  2,  5,  0,$8F,  0,$A0
-                dc.b   1,  1,  0,$47,  0,$20,  5,  1
-                dc.b   0,$63,  0,$FF,  2,$92,  0,$1E
-                dc.b  $B,  9,$26,$DB,  0,$2F,  2,$AC
-                dc.b   0,$4F,$46,$FF,  0,$FF, $C,  0
-                dc.b   0,  0,  0,$24,  0,$DF,$50,$40
-                dc.b   0,  4,  0,$67,  0,$F0,$27,$FF
-                dc.b $D4,$FF,  0,$E9, $B,  0,  0,$5D
-                dc.b   0,$80,  0,$FF,  0,$FC,  0,$52
-                dc.b $18,  0,  0,$A4,  0,$43,  0,$C9
-                dc.b  $D,$13,  0,$CA,  0,$AB,$1D,$AA
-                dc.b   0,$12,  0,$C0, $D,$38,  0,$19
-                dc.b  $E,$F1,  0,$15,  0,$E0, $D,$B0
-                dc.b   0,$BB,  0, $B, $D,$1B,  0,$63
-                dc.b   0,$3C,  0,$90,$8B,  0,$25,$7A
-                dc.b   0,$19,  0,  0,  1,$A1,  0,$44
-                dc.b   0,$80,$14,$FF,  0,$AE,  0,$F0
-                dc.b   0,  1,$12,  0,  0,  0,  2,  0
-                dc.b $15,$FF,  0,$CD,  0,$40, $E,  7
-                dc.b   0,$70,$20,$FF,$31,$F1,  0,$30
-                dc.b   3,  8,  3,  8,  1,$FF,  0,$F9
-                dc.b   0,$48,  0,  0,  1,$F3,  0,$35
-                dc.b   6,  1,  0,$5D,  0,$FF,  2,$92
-                dc.b   0,$1E, $B,  9,$D6,$49,  0,  0
-                dc.b $27,$FF,$40,$FF,  0,$80,  0,  0
-                dc.b   0,  1,$91,$F8, $A,$FF,  0,$F9
-                dc.b   0,$F0,  2,$F0,  0, $E,$18,  0
-                dc.b   0,$E6,  0,$A0,  0,$7A, $D,$2F
-                dc.b   0,$7C,  0,$5E,$1D,$92,  0,$83
-                dc.b   0,$80, $D,$C3,  0,$5A, $E,$AA
-                dc.b   0,$EE,  0,$C0, $D,$94,  0,$CD
-                dc.b   0,$8E, $D,$B9,  0,$7A,  0,$A3
-                dc.b   0,$A0,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$34,  1,  0,$EC
-                dc.b   0,$70,$BB,$92,  0,$1E, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$59,  0,$80
-                dc.b   0,$D1, $D,$C0,  0,$F4,  0,$A3
-                dc.b  $D,$3C,  0,$B4,  0,$30, $D,$F2
-                dc.b   0,$D0,  0,$C0, $D,$43,  0,$C1
-                dc.b  $E,$1B,  0,$48,  0,$E0, $D,$F6
-                dc.b   0,$9C,  0,  3, $D,$33,  0,$64
-                dc.b   0,$6F,  0,$10,$8B,  0,  9, $F
-                dc.b   0,$32,$E7,$87,  0,$18, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$A5,  0,$C0
-                dc.b   0,$4F, $D,$BD,  0,$E4,  0,$BD
-                dc.b  $D,$A4,  0,$21, $E,$90,  0,$87
-                dc.b  $E,$6B,  0,$5F, $E,$FD,  0,$F3
-                dc.b  $E,$9A,  0,$C9,  0,$5D, $D,$3F
-                dc.b   0,$21,  0,$E2, $E,  0,  0,  0
-                dc.b $1A,$34,  0,$BC,$3B,$34,  0,$BC
-                dc.b   2,  0,  0,  0,  2,  0,  0,  0
-                dc.b $1B,  0,$36,$7F,  2,  6,  0,$1B
-                dc.b   6,$15,  0, $F,  8,  5,  1,$29
-                dc.b   0,$67,  0,$FF,$25,  0,$2B,  1
-                dc.b   1,  3,$14,$FF,  0,$FF,  0,$EA
-                dc.b   0,$A0,  1,  0,  0, $E, $D,  0
-                dc.b   0,  6,  0,$53,  0,$60,$11,  9
-                dc.b   3, $D,  0,$E7,  0,$C0, $A,$87
-                dc.b   0,$18, $B,  2,$FF,$FF,$39,  4
-                dc.b   0,$24,$C4,  0,  0,$48,  0,$77
-                dc.b   0,$37, $D,$AA,  0,$CC,  0,$F5
-                dc.b $1D,$E6,  0,$D5, $E,$33,  0,$C7
-                dc.b  $E,$76,  0,$18, $E,$EA,  0,$70
-                dc.b   0,$95, $D,$24,  0,$39,  0,$21
-                dc.b $8C,  0,  1,  0,  0,  0,$22,$C0
-                dc.b   0,  0,  0,  0,  1,$C0,  0,  0
-                dc.b   0,  0, $C,  0,  0,  0,  0,  0
-                dc.b   6,  0,  0,  0,  8,  8,  1,  8
-                dc.b   0,  0,  0,  0,  6,$80,  3,$80
-                dc.b $15,  0,  0,  0,  0,  0,  0,  0
-                dc.b  $D,$14,  0,  0,$20,  3, $E,  8
-                dc.b   0,  0,$20,  0,  0,  8,  4,  0
-                dc.b   3,  0,  2,  8,  0,$F0,  0,  0
-                dc.b   1,  8,  0,$F0,  0,  0,  3,  0
-                dc.b   1,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  7,  0
-                dc.b   3,  0,$25,  0,  0,$FF,  0,$FF
-                dc.b   1,  0,  0,$FF,  0,$FF,$45,  0
-                dc.b $10,$FF,  0,$FF,$50,  0,  0,  0
-                dc.b   0,$FF,  0,$FF,  9,  0,  3,  0
-                dc.b $19,$FF,$25,  0,  3,  0,$46,  0
-                dc.b   2,  0,$60,  0,  0,  0, $C,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,  0,  0,$40,  0,  0
-                dc.b   3,$11,  9,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  2,  0
-                dc.b   0,$30,  8,  0,  0,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0, $E,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $C,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0, $B,  0,  1,  0
-                dc.b $1B,$34,  0,$BC,$23,$18,  0,$80
-                dc.b   0,  3,  0,$80,  0,$CE,  0,$80
-                dc.b   0,$13,$11,$34,  0,$BC,  6,  0
-                dc.b   0,$53,  1,$1B,  0,$C3,  0,$F0
-                dc.b $17,  0,  1,  0,  0,  0,$22,$C0
-                dc.b   0,  0,  2,$C0,  0,  0,  0,  0
-                dc.b $14,  0,  0,  0,  0,  0,  0,  0
-                dc.b $12,$80,  3,$80,$15,  0,  0,  0
-                dc.b   0,  0, $E,$14,  0,  0,$20,  3
-                dc.b $31,  8,  0,  0,  3,  0,  3,  0
-                dc.b   1,  0,  0,  8,  0,$F0,  1,  0
-                dc.b   0,  8,  0,$F0,  0,  0,  3,  0
-                dc.b   1,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  7,  0
-                dc.b   3,  0,$25,  0,  3,  0,  0,$FF
-                dc.b   0,$FF, $E,$FF,  0,$FF,  4,  0
-                dc.b   0,  0,  0,$FF,  0,$FF,$2D,  0
-                dc.b $10,$FF,  0,$FF,$50,  0,  0,  0
-                dc.b   0,$FF,  0,$FF,  9,  0,  3,  0
-                dc.b   0,$FF,  0,$FF,$17,$FF,$25,  0
-                dc.b   0,  0,  2,  0,  0,  0,$15,  0
-                dc.b   0,  0,  1,  0,$3D,  0,  0,  0
-                dc.b $51,  0,  0,  0, $A,  0,  0,  0
-                dc.b   0,  0,  1,  0,  0,  0,  0,  0
-                dc.b $18,  0,  0,  0,  0,$40,  0,  0
-                dc.b   2,  1,  0,$11,  9,  0,  0,  0
-                dc.b   0,  0,  2,  1,  0,$63, $A,  0
-                dc.b   0,  0,  2,  0,  0,$30,  8,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0, $E,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,$1A,$34,  0,$BC,$23,$18
-                dc.b   0,$80,  0,  3,  0,$80,  0,$CE
-                dc.b   0,$80,  0,$13,$11,$34,  0,$BC
-                dc.b   2,  0,  0,  0,  2,  0,  0,$53
-                dc.b   1,$1B,  0,$C3,  0,$F0,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $34,$FE,  0,$A5,  0,  0,$BB,$87
-                dc.b   0,$18, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$B2,  0,$E1,  0,$A1, $D,$35
-                dc.b   0,$2E,  0,$13, $D,$4C,  0,$6B
-                dc.b  $E,$31,  0,$AC, $E,$97,  0,$91
-                dc.b  $E,$64,  0,$9E, $E,$36,  0,$73
-                dc.b   0,$73, $D,$82,  0,$F8,  0,$1C
-                dc.b $8C,  0,  1,$10,  0,  0,  6, $E
-                dc.b   0,$D2,$E7,$94,  0,  2, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$63,  0,$CE
-                dc.b   0,  8, $D,$68,  0,$23,  0,$98
-                dc.b  $D,$98,  0,$89,  0,$80, $D,$62
-                dc.b   0,$26,  0,  0, $D,$2D,  0,$88
-                dc.b  $E,$C7,  0,$D7,  0,  0, $D,$6B
-                dc.b   0,$AE,  0,$98, $D,  4,  0,$6A
-                dc.b   0,$F0,  0,$80, $D,$83,  0,$55
-                dc.b $1A,$5F,  0,$52,$23,$1F,  0,  0
-                dc.b   0,$10,  1,$C0,  0,  0,  0, $F
-                dc.b   0,$80,$10,$5F,  0,$52,  2,$83
-                dc.b   0,$55,  2,  2,  0,$D0,$1B,  0
-                dc.b   1,  0,  0,  0,$22,$C0,  0,  0
-                dc.b   2,$C0,  0,  0, $A,  0,  0,  0
-                dc.b   0,  0,  1,  0,  0,  0,  6,  0
-                dc.b   0,  0,  8,  8,  1,  8,  0,  0
-                dc.b   0,  0,$26,  4,  0,  0,  9,$14
-                dc.b   0,  0,  6,  0,  0,  4,  0,  0
-                dc.b   1,  0,  0,  0,$12,  0,$16,  0
-                dc.b   0,  0,  0,$10,  0,  0,  1,  2
-                dc.b   0,  0, $E,  2,  0,$15,  0,$55
-                dc.b $11,  8,  0,$F0,  0,  0,  1,  8
-                dc.b   0,$F0,  0,  0,  3,  0,  1,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  7,  0,  3,  0
-                dc.b $38,  0,  0,  0,  0,$FF,  0,$FF
-                dc.b   4,  0,  0,  0,  0,$FF,  0,$FF
-                dc.b $31,  0,$12,  0,  0,  0,  0,$FF
-                dc.b   0,$FF,$41,  0,  0,$FF,  0,$FF
-                dc.b $11,  0,  3,  0,$19,$FF,$39,  0
-                dc.b   0,  0,  6,  0,  0,  0,$31,  0
-                dc.b   0,  0,  0,  0,$13,  0,  0,  0
-                dc.b $41,  0,  0,  0,$12,  0,  0,  0
-                dc.b   2,  0,  0,  0,$18,  0,  0,  0
-                dc.b   0,$40,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  3,  0
-                dc.b   0,$30,  8,  0,  0,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  8,$25
-                dc.b   0,$38,  3,  0,  0,  0,  0,  0
-                dc.b   0,  0,  2,  0,  0,$E0,  3,$25
-                dc.b   0,$38,  3,  0,  0,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,$1A,$83
-                dc.b   0,$4A,$3B,$83,  0,$4A,  2,  0
-                dc.b   0,  0,  2,  0,  0,$6C,$1B,  0
-                dc.b   1,$10,$23,$C2,  0,$7D,  0,$80
-                dc.b   1,$A7,  0,$7D,  0,$80, $C,$FF
-                dc.b   0,$F7,  0,$84,  6,$75,  0,$E0
-                dc.b   8,  4,  1,$23,  0,$1B,  0,$FF
-                dc.b   6,  0,  3,  0,$15,$FF,  0,$10
-                dc.b   0,$9C,  0,  1,  9,$51,  0,$4E
-                dc.b   2,  0,$1F,  1,$10,$10,  0,$E5
-                dc.b $26,$10,  3,$10,  2,  9,  0,$49
-                dc.b   0,$20,  1,  7,  0,  9,  0,$20
-                dc.b   3,  2,  1,  1,  0,$87,  0,$FF
-                dc.b   0,$65,  0,$21,  0,$94,  0,  2
-                dc.b   7,  3,  3,  9,$25,$40,  3,$80
-                dc.b $46,  2,  0,  4, $A,  4,  0,  4
-                dc.b   2,$40,  0,  4,  0,$14,  0,$33
-                dc.b $5D,$40,  3,$80,$19,$FF,$25,$C0
-                dc.b   3,$C0,$46,$FF,  2,  1,  9,$40
-                dc.b $63,  9,  0,$14,  2,  9,  0,$14
-                dc.b $18,  0,  0,$BE,  0,$71,  0,$72
-                dc.b   3,$31,  9,$32,  0,$42,  0,$F6
-                dc.b  $D,  3,  0,$39,  0,$B0,  2,  2
-                dc.b   0,$10,  8,  6,  0,$BA,  0,$8D
-                dc.b   0,$80, $D,$4E,  0,$12, $E,  4
-                dc.b   0,$4F,  0,$C0, $D,$C1,  0,$77
-                dc.b   0,$B6, $C,  8,  0,$30,  0,$3F
-                dc.b   0,$F7,  0,$20, $B,  7,  1,$80
-                dc.b $1B,$80,  0,  0,$23, $B,  0,  0
-                dc.b   0,  1,  0,  0,  0,$C0,  0,  0
-                dc.b   0,  5,$11,  0,  0,  0,  6,$59
-                dc.b   0,$2C,  1,  0,  0,  0,  0,  0
-                dc.b $17,  0,  1,$10,$22,  1,  0, $B
-                dc.b   0, $D,  0,$80,  1,$CC,  0,$9D
-                dc.b   0,$80, $C,$FF,  0,$BC,  0,$2C
-                dc.b   6,$4F,  0,$27,$2E,$10,  0,$BE
-                dc.b  $A,$51,  0,$72,  2,  5,  0,$EC
-                dc.b $20,$FF,$31,$91,  0,$E0,  3,$9D
-                dc.b   0,$60,  2,$99,  0,$60,  1,  0
-                dc.b   0, $C,  1,$FF,  0,$FF,  0,$3B
-                dc.b   0,$E0,  3,  2,  1,  2,  0,$21
-                dc.b   0,$FF,  0,$65,  0,$21,  0,$94
-                dc.b   0,  2,  7,  3,  3,  9,$24,  1
-                dc.b   0,  4,  2,  4,  0,  4,$10,$80
-                dc.b   0,  0,  4,  1,  0,  4,  0,$DB
-                dc.b   0,$F8,$2C,  2,  0,  4, $A,  4
-                dc.b   0,  4,  4,$80,  0,  0,$50,  1
-                dc.b   0,  4,  0,$38,  0,$3C,  0,  8
-                dc.b   0,  4,  2,$10,  0,  4,  3,  8
-                dc.b   3,$10,  0,$80,  0,  0,$17,$FF
-                dc.b $25,$C1,  0,$B0,  2,$BF,  0,$88
-                dc.b $16,$25,  0,$20,$3A,$40,  3, $D
-                dc.b   0,$A8,$51,$FF,  0,$E6,  3,  1
-                dc.b   0,$10,  2,  1,  0,$10,  3,$50
-                dc.b   1,$FF,  0,$FB,  0,$B4,$18,  0
-                dc.b   0,$21,  0,$C3,  0,$A3,  2,  2
-                dc.b   0,$B1,  9,$73,  0,  8,  0,$D9
-                dc.b   2,  3,  0,$13, $A,$44,  0,$F0
-                dc.b   2,  1,  0,$A0,  8,  6,  0,$A2
-                dc.b   0,$FE,  0,$40, $D,$D9,  0,$53
-                dc.b  $E,$BE,  0,$28,  0,$A0, $D,$A5
-                dc.b   0,$8A,  0,$39, $D,$CE,  0,$57
-                dc.b   0,$5E,  0,$30, $D,$95,  0,$30
-                dc.b $1A,$71,  0,$F8,$23, $B,  0,  0
-                dc.b   0,  1,  0,  0,  0,$C0,  0,  0
-                dc.b   0,  5,$11,$71,  0,$F8,  2,$95
-                dc.b   0,$30,  2,$20,  0,  7,  1,  0
-                dc.b   0,$B3,  0,  0,$17,  0,  1,$10
-                dc.b $23,$3E,  0,$A4,  0,$80,  1,$79
-                dc.b   0,  3,  0,$80,$44,$FF,  0,$DE
-                dc.b   0,$40, $A,$48,  0,$D6,$24,$FF
-                dc.b $31,$35,  0,$10, $B,$F1,  0,$C0
-                dc.b   1, $D,  0,$DC,  0,$40,  3,  2
-                dc.b   1,  1,  0,$25,  0,$FF,  0,$65
-                dc.b   0,$21,  0,$94,  0,  2,  7,  3
-                dc.b   3,  9,$25,  1,  0,$80,  0,  0
-                dc.b   1,  2,  0,$80,  0,  0,$45,$20
-                dc.b  $A,  8,  0,  4,$56,$10,  0,  4
-                dc.b   0,$EB,  0,$20,  9,$40,  3,$80
-                dc.b $19,$FF,$25,$5E,  0,$E0,  2,$85
-                dc.b   0,$B0,$52,$40,$56,$FF,  0,$F6
-                dc.b  $B,  9,  0,  8,  2,  9,  0,  8
-                dc.b $18,  0,  0,  2,  0,$9E,  0,$7A
-                dc.b   2,  9, $A,$48,  0,$8A,  0,$EE
-                dc.b   2,  6,  0,$C3,  9,  1,  0,$3F
-                dc.b   3,  2,  0,$10,  8,  6,  0,$4C
-                dc.b   0,$3F,  0,$80, $D,$65,  0,$AA
-                dc.b  $E,$58,  0,$F4,  0,$C0,  7,$75
-                dc.b   0,$40,  4,  2,  0,$FF,  0,$4E
-                dc.b   2,  8,  0,$A3,  9, $A,  0,$64
-                dc.b   0,$E8,  0,$A0,  1, $B,  0,$A3
-                dc.b  $A,$21,  0,$2C,$1A,$76,$3C,$76
-                dc.b   3,$21,  0,$2C,  2,  3,  0, $D
-                dc.b   3,$F8,$17,  0,  1,  0,  0,  0
-                dc.b $31,  0,  0,  0,$4B,$14,  0,  0
-                dc.b $68,  0,  4,  0,  0,  0,  0,  0
-                dc.b   0,  0,  7,  0,  3,  0,$35,  0
-                dc.b $C9,$FF,$FF,  0,  0,  0,  0,$40
-                dc.b   0,  0,  7,$25,  0,$38,  4,  0
-                dc.b   0,  0,  0,  0,  7,$25,  0,$38
-                dc.b   4,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b  $E,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0,  0,  0, $D,$75,  0,$8D
-                dc.b $1A,$77,  0,$80,$3B,$77,  0,$80
-                dc.b   2,$75,  0,$8D,  2, $C,  0,$58
-                dc.b   2,$B3,$18,  0,  1,$10,  2,  1
-                dc.b   0,$31,  0,$D0,  1,  1,  0, $A
-                dc.b   0,  4,$16,$4F,  0,$FB,  0,$C4
-                dc.b $5D,  0,  0,$62,  0,$C0, $B,  1
-                dc.b $60,$65,  0,$21,  0,$91,  8,  4
-                dc.b   1,  1,  1,  0,$FF,$FF,$FF,  0
-                dc.b   0,$E1,  0,$D4,  0,  4, $D,$58
-                dc.b   0,$E8,  0,$CC, $D,$DB,  0,$B4
-                dc.b   0,$C0, $D,$6E,  0,$D3, $E,$93
-                dc.b   0,$C4, $E,  1,  0,$4B,  0,$80
-                dc.b  $D,$7C,  0,$8E,  0,$4C, $D,$58
-                dc.b   0,$8C,  0,$48,  0,$40,$6E,  3
-                dc.b   0,  1,  1,$1B,  0,$F3,  0,$F0
-                dc.b $17,  0,  1,$10,$32,$FF,  0,$95
-                dc.b   0,$38,$14,  0,$2D,$70,  0,$BC
-                dc.b   6,$71,  0,$AC,  0,$1C,$1D,  1
-                dc.b   1,  1,$47,  3,  1,  2,  0,$87
-                dc.b   0,$FC,  0,$65,  0,$21,  0,$91
-                dc.b   8,  2,  3,  0,$35,  1,$43,$20
-                dc.b $85,$FF,$FF,  0,  0,$EF,  0,$65
-                dc.b   0,$4F,  7,$78,  0,$4C,  3,  3
-                dc.b   0,$D0,  0,$C3,  0,$BD, $D,$84
-                dc.b   0,$11,  0,$D0, $D,$10,  0,$47
-                dc.b   0,$40, $D,$C0,  0,$5F, $E,$68
-                dc.b   0,$53,  0,$20, $D,$18,  0,$88
-                dc.b   0,$5D, $D,$9C,  0,$C6,  0,$32
-                dc.b   0,$F0, $D,  7,  0,$EC,$5B,  7
-                dc.b   0,$EC,  2,$41,  0,$73,  1,  1
-                dc.b   0,$76,  0,$40,  3,$1B,$13,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$E2,  3
-                dc.b   0,  1,  1,$1B,  0,$F3,  0,$F0
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $81,  7,  0,$EC,$5B,  7,  0,$EC
-                dc.b   3,$5A,  1,  1,  0,$78,  0,$98
-                dc.b $17,  0,  1,$10,$23,$B9,  0,$D6
-                dc.b   0,$49,  1,$B1,  0,$1E,  0,$46
-                dc.b $1F, $C,  1,$14,  0,  3,  0,$FF
-                dc.b   6,$63,  0,$E7,  2,$61,  0,$4D
-                dc.b   2,$5E,  0,$E7,  2,$7F,  0,$BF
-                dc.b   2,$5B,  0,$9F,  2,$61,  0,$4D
-                dc.b   5,$7C,  0,$5C,$13,$72,  0,$CF
-                dc.b   2,$73,  0,$75, $D,  5,  0,$2F
-                dc.b   0,$FD,  5,  1,  1,$FC, $E,$1A
-                dc.b   0,$99,  0,$FF,  0,$FF,  0,$FF
-                dc.b   0,$FF,$38,$65,  0,$21,  0,$91
-                dc.b   4,  8,  3,  1,  1,  2,  1,  0
-                dc.b $55,$40,  3,$80,  3,  1,  3,  2
-                dc.b   3,$40,  3,$80,  7,  8,$8D,$FF
-                dc.b $56,$88,  0,$48,  2,$80,  3,$80
-                dc.b   3,$80,  3,$80,  3,$80,$94,  0
-                dc.b   0,$7C,  0,$E9,  0,$45, $D,$EE
-                dc.b   0,$FF,  0,$BF, $D,$42,  0,$ED
-                dc.b   0,$F0, $D,$EA,  0,$FC,  0,$60
-                dc.b   2,  2,  0,$30,  3,$78,  0,$4C
-                dc.b   3,  3,  0,$64,  0,$F5, $E,$38
-                dc.b   0,$56,  0,$60, $D, $F,  0,$E6
-                dc.b   0,$9F, $D,$52,  0,$EA,  0,$DE
-                dc.b   0,$50,$6C,$FF,  0,$FF,  1,$F9
-                dc.b   1,  1,  0,$78,  0,$98,$17,  0
-                dc.b   1,$10,$25,$4C,  1,$6C,  0,$54
-                dc.b   0,$2A,$21,$1B,  0,$CF,  0,$F4
-                dc.b   2,  7,  0,$FF,  2,$48,  0,$C8
-                dc.b   2,$5F,  0,$82,  2,$A9,  0,$22
-                dc.b   2,$9D,  0,$2A,  2,$48,  0,$C8
-                dc.b   2,$5F,  0,$82,  5,$81,  0,$FF
-                dc.b   0,$E5,  4,$FF,  0,$CE, $C,$61
-                dc.b   0,$10,  2,$58,  0,$64, $D,  4
-                dc.b   0,$AB,  0,$FE,  5,  1,$10, $D
-                dc.b   0,$86,$3C,$65,  0,$21,  0,$91
-                dc.b   4,  2,  3,  1,  1,  2,  1,  0
-                dc.b $55,$40,  3,$80,  3,  1,  3,  2
-                dc.b   3,$40,  3,$80, $F,  8,$85,$FF
-                dc.b $56,$80,  3,$80,  3,$80,  3,$80
-                dc.b   3,$80,  3,$80,$94,  0,  0,$8D
-                dc.b   0,$62,  0,$E8, $D,  4,  0,$6C
-                dc.b   0,$38, $D,$45,  0,$D3,  0,$80
-                dc.b  $D,$17,  0,$4E,  8,$78,  0,$4C
-                dc.b   3,  3,  0,$74,  0,$68, $E,$45
-                dc.b   0,$DB, $E,$1B,  0,$AB,  0,$38
-                dc.b  $D,$61,  0,$95,  0,$FE,  0,$80
-                dc.b $6C,$FF,  0,$FF,  1,$F9,  1,  1
-                dc.b   0,$78,  0,$98,$17,  0,  1,$14
-                dc.b   0,$80,  2,$45,  0,$80,  2, $F
-                dc.b   0,$38,  1,  0,  0,$7E,  0,$73
-                dc.b   0,$FF,  1,$9E,  0,$A3,  0,$FF
-                dc.b   0,$FF,  2,$20,  3,$60,  3,$60
-                dc.b   1,$72,  0,  3,  0,$FF,$5E,$65
-                dc.b   0,$40, $B,  0,$62,$92, $C,  0
-                dc.b  $D,$40,  0,$AC,  0,$88,  1,$80
-                dc.b   0,$80,  0,  0, $C,  1,  0,  4
-                dc.b   0,$AC,  0,$88,$DB,$FF, $C,  1
-                dc.b   0,$26,  0,$EF,  0,$FF,  0,  1
-                dc.b   0,$2D,  0,$FF,  0,$FF, $D,$4D
-                dc.b   0,$87,  0,$FF,$DB,  0,  0,$3D
-                dc.b   0,$F4,  0,$AD, $D,$50,  0,$3D
-                dc.b   0,$77, $D,  6,  0,$3F,  0,$E0
-                dc.b   2,  1,  0,$70,  8,  6,  0,$2B
-                dc.b   0,$65,  0,$C0, $D,$39,  0,$DD
-                dc.b  $E,$32,  0,$A1,  0,$60, $D,$6C
-                dc.b   0,$C5,  0,$17,  2,  3,  0,$E3
-                dc.b   9,$5C,  0,$33,  0,$54,  0,$D0
-                dc.b   1,  2,  0,$C3,  3,$79,  0,$50
-                dc.b   3,  4,  1,$D6,  0,$8B,$1A,$C0
-                dc.b   0,$CF,$3B,$C0,  0,$CF,  2,$D6
-                dc.b   0,$8B,  2,  0,  0,  0,  1,  0
-                dc.b   0,  0,  0,  0,$17,  0,  1,$14
-                dc.b   0,$80,$31,  0,  0,  0,  0,  0
-                dc.b $14,  8,$2D,  0,  0,  0,  6,$14
-                dc.b   0,  0,  0,  0,  2,$1F,  0,$F8
-                dc.b   2,$20,$16,  0,  1,  3,$14,$FF
-                dc.b   0,$FE,  0,$DD,  0,$C7,  0,$FF
-                dc.b   0,$FD,  0,$9C,  0,$23,$18,$FF
-                dc.b   0,$F6,  0,$9C,  0,  3,  0,$FF
-                dc.b   0,$FE,  0,$54,  0,$E2,  1,  4
-                dc.b   0,$9A,  0,$80,  1,  2,  0,$C8
-                dc.b   0,$C0,  3,  0,  1,  0,  0,  0
-                dc.b   0,  0,  2,$92,  4,$94,  3, $A
-                dc.b   1,  4,  1,  2,$35,  0,$43,  0
-                dc.b $3F,$10,  0,$FD,  0,  4,  1,$20
-                dc.b $1B,$40,  3,$80,  3,  1,  3,  2
-                dc.b $19,$FF,$B8,$FF,  0,$FF,  0,$93
-                dc.b   0,$A7,  0,$FF,  0,$FF,  0,$94
-                dc.b   0,$23,$18,$FF,  0,$FE,  0,$7C
-                dc.b   0,  3,  0,$FF,  0,$FE,  0,$9E
-                dc.b   0,  2,  0,$FF,  0,$FF,  0,$32
-                dc.b   1,$FF,  0,$FE,  0,$BC,$18,  0
-                dc.b   0,$4B,  0,$7E,  0,$7F,  7,$75
-                dc.b   0,$40,  3,  8,  0,$61,  0,$D8
-                dc.b   0,$4D, $C,  7,  0, $D,  0,$3A
-                dc.b  $E,$34,  0,$EB, $E,$46,  0,$8F
-                dc.b  $E,$3D,  0,$BD, $E,$35,  0,$BE
-                dc.b   0,$ED, $D,$42,  0,$FE,  0,$25
-                dc.b  $E,$39,  0,$10,$57,$A1,  3,$39
-                dc.b   0,$10,  0,$FF,  0,$FF,  0,  0
-                dc.b   0,$DE,  2,$78,  0,$C0,  3, $F
-                dc.b $13,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $E0,$FF,  0,$FF,  0,  0,  0,$DE
-                dc.b   1,  1,  0,$78,  0,$C0,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,  0,$23,$C0,  0,  0,  0,  0
-                dc.b   1,$C0,  0,  0,  0,  0,$1F,  8
-                dc.b   1,  8,  0,  0,  0,  0,  6,$80
-                dc.b   0,  0,  2,$80,  0,  0,  2,$80
-                dc.b   0,  0,  2,$80,  0,  0,  2,$80
-                dc.b   0,  0,  2,$80,  0,  0,  5,  0
-                dc.b   0,  0,$13,  4,  0,  0,  2,  4
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   5,  0,  1,  3, $E,  8,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b $38,  0,  0,  0,  0,  0,  4,  0
-                dc.b   3,  0,  1,  0,  1,  0,$55,  0
-                dc.b   3,  0,  3,  0,  3,  0,  3,  0
-                dc.b   3,  0,  7,  0,$8D,$FF,$56,  0
-                dc.b   0,  0,  2,  0,  3,  0,  3,  0
-                dc.b   3,  0,  3,  0,$94,  0,  0,  0
-                dc.b   0,$40,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  2,  0
-                dc.b   0,$C0,  3,$EA,  0,  8,  3,  0
-                dc.b   0,  0,  0,  0, $E,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  0,  0
-                dc.b $6F,$DE,  3,$C0,$17,  0,  1,  0
-                dc.b $25,  0,  1,$C0,  0,  0,  0,  0
-                dc.b $21,  8,  0,  0,  0,  0,  2,  0
-                dc.b   0,  0,  2,$80,  0,  0,  2,$80
-                dc.b   0,  0,  2,$80,  0,  0,  2,$80
-                dc.b   0,  0,  2,$80,  0,  0,  2,$80
-                dc.b   0,  0,  5,  0,  0,  0,  0,  0
-                dc.b   4,  0,  0,  0, $C,  4,  0,  0
-                dc.b   2,  4,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0,  5,  0,$10,  8,  0,  0
-                dc.b $3C,  0,  0,  0,  0,  0,  4,  0
-                dc.b   3,  0,  1,  0,  1,  0,$55,  0
-                dc.b   3,  0,  3,  0,  3,  0,  3,  0
-                dc.b   3,  0, $F,  0,$85,$FF,$56,  0
-                dc.b   3,  0,  3,  0,  3,  0,  3,  0
-                dc.b   3,  0,$94,  0,  0,  0,  0,$40
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  8,$EA,  0,  8,  3,  0
-                dc.b   0,  0,  0,  0, $E,  0,  0,  0
-                dc.b  $E,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  0,  0,$6F,$DE
-                dc.b   3,$C0,$17,  0,  1,$10,  0,  0
-                dc.b   6,$24,  0,$8C,  1,  1,  0,$7F
-                dc.b   0,$1F,  2,$9F,  0,$AF,  1,  0
-                dc.b   0,$76,  0,$7A,  0,  0,  1,$BF
-                dc.b   0,$B2,  0,$5F,  1,$BF,  0,$70
-                dc.b   0,  1,  1,$84,  0,$C7,$CF,$93
-                dc.b  $C,  0, $D,  0,  0,$FF,  0,$FF
-                dc.b   1,  0,  0,$FF,  0,$FF,  1,$80
-                dc.b   0,$A9,  0,$4C, $A,$FF,  0,$FF
-                dc.b $DB,$FF, $C,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,$CB,  0,$20, $A,$5E
-                dc.b   0,$AB,$DC,  0,  0,$4E,  0,$DC
-                dc.b   0,$27, $D,$66,  0,$38,  0,$C5
-                dc.b  $D,  7,  0,$39,  0,$50,  2,  2
-                dc.b   0,$90,  9,$37,  0,$49,  0,$40
-                dc.b  $D,$49,  0,$B7, $E,$40,  0,$80
-                dc.b   0,$20, $D,$38,  0,$26,  0,$65
-                dc.b   2,  0,  0,$C3,  9,$45,  0,$FD
-                dc.b   0,$50,  0,$70,  1,  0,  0,$F3
-                dc.b   3,$75,  0,$40,  3,  8,  1,  0
-                dc.b   0,  0,$1A,$FF,  0,$FF,$3B,$FF
-                dc.b   0,$FF,  2,  0,  0,  0,$1F,  0
-                dc.b   1,$10,  0,  0,$22,$C3,  0,$78
-                dc.b   2,$B8,  0,$15,  0,$80,$5A,  8
-                dc.b   0,$5C,  2, $F,  0,$D0,$2C,  0
-                dc.b   0,  0,  0,$A0,  0,$30,  1,$FE
-                dc.b   0,$45,  0,  0,$18,  0,  0,  6
-                dc.b   0,$DE,  0,$DF,  0,  0,  0,  1
-                dc.b   0,$30,  0,$C0,  1,$11,  0,$13
-                dc.b   0,$C0,  2,$C2,  0,$E0, $A,$93
-                dc.b   4,  1,  7,  4,$25,$10,  0,$1C
-                dc.b   0,  8,  1,$20,  0,$19,  0,$58
-                dc.b $8E,$FF,  0,$FF,$43,$FF,$25,$C0
-                dc.b   0,$90,  2,$C0,  0,$D8,$8D,  0
-                dc.b   0,  0,  0,$12,  0,$80,  0,  0
-                dc.b   0,  0,  0,$1D,  0,  0,$18,  0
-                dc.b   0,  0,  0,$25,  0,$FF,  1,$FF
-                dc.b   1,  0,  0,  0,  0,  9,  0,$14
-                dc.b   1,  0,  0,  9,  0,$14,$18,  0
-                dc.b   0,$4C,  0,$1C,  0,$53, $C,  7
-                dc.b   0,$62,  0,$A5,  0,$89, $C,  0
-                dc.b   1,$56,  0,$90, $D,$35,  0,$5A
-                dc.b  $F,$74,  0,$30,  2,  8,  0,$50
-                dc.b   9,$D3,  0,$B1,  0,  0,  2, $B
-                dc.b  $A,$37,  0,$29,  0,$49,  2,  4
-                dc.b   0,$F3,  9,$25,  0,$77,  0,$9B
-                dc.b   0,$30,  1,  4,  0,$A3,$88,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,  1,  0,  0,$54
-                dc.b   0,  0,  1,  0,  0,$5C,  0,$AC
-                dc.b   2,$8B,  0,$FF,  2,$A2,  0,$FF
-                dc.b   1,$FF,  0,  0,  0,  0,  0,  1
-                dc.b   1,$2A,  0,$F0,  0,$15,  1,$2E
-                dc.b   0,$F2,  0, $E,  1,$A4,  0,$BD
-                dc.b   0,$E0,  9,$2B,  0,$38,  0,$15
-                dc.b   1,$2F,  0,$40,  0,$17,$65,  2
-                dc.b $47, $D,  0,$20,  0, $D,  1, $C
-                dc.b   0,$37,  0,$7A, $A,$9C, $C,  0
-                dc.b $15,  0,  0,$15,  0,$BC,$C9,$10
-                dc.b   0,$87,  0,$44,  1,$20,$19,$FF
-                dc.b $14,$FF,  0,  0,  0,  0,  0,$20
-                dc.b   9,$7C,  0,$2F,  0,$E0,$BD,  9
-                dc.b   0,  7,  0,$ED,  1,  9,  0,  7
-                dc.b   0,$BA,$17,  0,  0,$AC,  0,$2C
-                dc.b   0,$B8, $D,$DF,  0,$90,  0,$A8
-                dc.b  $D,  8,  0,$1F,  0,$E0,  3,$D0
-                dc.b   9,$78,  0,$EA,  0,  0, $D,$A1
-                dc.b   0,$38, $E,$8D,  0,$11,  0,  0
-                dc.b  $D,$7A,  0,$CD,  0,$A8, $D,$99
-                dc.b   0,$12,  0,$3B,  0,$80, $B,  0
-                dc.b   1,$91,  0,$71,$1A,$9C,  0,$67
-                dc.b $3B,$9C,  0,$67,  2,$91,  0,$71
-                dc.b $1F,  0,  1,$14,  0,$80,$22,$2E
-                dc.b   0,$F8,  2,$2F,  0,$B8,  0,  0
-                dc.b $5A,$18,  0,$A3,  2,$24,  0,$44
-                dc.b $2C,$FF,  0,$FF,  0,$1D,  0,$FF
-                dc.b   2,$30,  0,$3C,$18,$FF,  0,$FD
-                dc.b   0,$E7,  0,$FF,  0,$FF,  0,$F8
-                dc.b   0,$D8,  0,$80,  1, $A,  0,$36
-                dc.b   0,$E0,  1, $A,  0,$E6,  0,$40
-                dc.b  $A,$9C, $C,  4,$25,  0,  0,$FF
-                dc.b   0,$FF,  1,  0,  0,$FF,  0,$FF
-                dc.b $D3,$FF,$25,  0,  0,  0,  2,  0
-                dc.b   0,  0,$90,$7F,  2,$1C,  0,$FC
-                dc.b $1A,$2D,  3,$A4,  3,$20,  3,$20
-                dc.b $18,  0,  0,$B2,  0,$9B,  0,$40
-                dc.b  $C,  8,  0,$E7,  0,$ED,  0,$C0
-                dc.b  $C,  7,  0,$61,  0,$B6,  0,  0
-                dc.b   2,  6,  0,$20,  9,$B0,  0,$86
-                dc.b   0,$30,  2,  5,  0,$B0,  9,$C1
-                dc.b   0,$94,  0,$60,  2,  7,  0,$10
-                dc.b   9,$8D,  0,$B6,  0,$30,  2,  3
-                dc.b   0,  0,  9,$57,  0,$F3,  0,$E0
-                dc.b   2,  2, $A,$9C,  0,$D5,  0,$A4
-                dc.b   0,  0,  1,  2,  0,$F3,$88,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   5,$9F,  3,$91,  0,$B0,  2,$BD
-                dc.b   0,$DF,  2,$3B,  0,$BF,  6,$5D
-                dc.b   0,$D8,  0,  0,  1,$5F,  0,$7C
-                dc.b   0,  0,  1,$75,  0,$6D,  0,$FF
-                dc.b   9,$5E,  0,$F2,  0,  0,  1,$60
-                dc.b   0,$1E,  0,  0,$4D,$1A,  0,$A0
-                dc.b   0,$78,$15,  1,$47,  8,  0,$F0
-                dc.b   0,  0,  1,  8,  0,$F0,  0,  0
-                dc.b  $A,$85, $C,  0, $E,$80,  0,  0
-                dc.b   1,$20,  0,$80,  0,  0,  2,$FF
-                dc.b   0,$FF,$C9,  0,  0,$FF,  0,$FF
-                dc.b   1,  0,$19,$FF, $C,  1,  0,$5F
-                dc.b   0,$7F,  0,$FF,  0,  1,  0,$5F
-                dc.b   0,$3F,  0,$FF,  0,  0,  2,  0
-                dc.b   9,$56,  0,$F3,  0,$FF,$BD,  0
-                dc.b   0,  0,  0,  0,  1,  0,  0,  0
-                dc.b   0,  0,$17,  0,  0,$82,  0,$1A
-                dc.b   0,  4, $D,$A8,  0,$DA,  0,$CC
-                dc.b  $D,  6,  0,$3C,  0,$B0,  2,  0
-                dc.b   0,$30,  9,$5B,  0,$53, $E,$79
-                dc.b   0,$C4, $E,$6A,  0,$8B,  0,$80
-                dc.b  $D,$5C,  0,$C0,  0,$4C, $D,$73
-                dc.b   0,$9C,  0,$A8,  0,$40, $D,$80
-                dc.b   0,  0,$1A,$80,  0,  0,$22,  0
-                dc.b   9,  0,  9,  0,  4,$80,  0,  0
-                dc.b   2,$80,  0,  0,  5,$1B,  0,$F3
-                dc.b   0,$F0,  1,  2,  1, $F,$13,  0
-                dc.b $25,$5D,  0,$F0,  2,$60,  0,$F0
-                dc.b $5B, $C,  0,$5C,  2,$87,  0,$FF
-                dc.b $2E,  8,  0,$38,  0,  0,  0,  1
-                dc.b   0,$90,  0,$F0,$19,$FA,  0,$40
-                dc.b   0,$83,  1,$FB,  0,$38,  0,$42
-                dc.b   0,$FF,  0,$FF,  0,$32,  0,  0
-                dc.b   0,$FF,  0,$FE,  0,$BC,  0,  0
-                dc.b  $A,$85, $C,  2,$BA,$FD,  0,  4
-                dc.b $43,$FF,$B8,$FF,  0,$FF,  0,$9A
-                dc.b   0,$80,  0,$FF,  0,$FF,  0,$9B
-                dc.b   0,  0,$18,$FF,  0,$FE,  0,$7C
-                dc.b   0,  3,  1,$FE,  0,$9E,  0,  2
-                dc.b   0,$FF,  0,$FF,  0,$32,  1,$FF
-                dc.b   0,$FE,  0,$BC,$18,  0,  0,$B6
-                dc.b   0,$1F,  0,$4C, $D,$EC,  0,$80
-                dc.b   0,$24, $D,$1F,  0,$FA,  0,$40
-                dc.b   2,  0,  0,$30,  9,$7F,  0,$E9
-                dc.b   0,  0,  2,  0,  0,$C0,  9,$AA
-                dc.b   0,$8C,  0,  0,  2,  1,  0,  0
-                dc.b   9,$95,  0,$3A,  0,$80,  2,  0
-                dc.b   0,$E0,  9,$81,  0,$E8,  0,$A4
-                dc.b   2,  0,  0,$C3,  9,$A1,  0,$ED
-                dc.b   0,$8C,  0,$C0,  1,  0,$89,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$10,  0,  0,  3, $C,  5,  0
-                dc.b   0,$E5,  0,$C3,  2,$BE,  0,$FF
-                dc.b   1,  0,  2,  0,  6,$B8,  2,$78
-                dc.b   0,$DB,$CF,$8F,  0,  2, $B,  0
-                dc.b  $D,$20,  0,$9C,  0,$9C,  1,  0
-                dc.b   0,$FF,  0,$FF,$EB,$FF, $D,$6C
-                dc.b   2,  0,  0,  0,  0,  0,  0,  0
-                dc.b  $D,$41,  0,$1F,$DC,  0,  0,$56
-                dc.b   0,$9A,  0,$9A, $D,$70,  0,$4A
-                dc.b   0,$AE, $D,  9,  0,$36,  0,$10
-                dc.b  $D,$3C,  0,$BB,  0,$80, $D,$50
-                dc.b   0,$FA, $E,$5E,  0,$D4,  0,$E0
-                dc.b   2,  2,  0,$20,  9,$3D,  0,$AE
-                dc.b   0,$6E, $D,$4C,  0,$E2,  0,$5D
-                dc.b   0,$A0,$4D,  4,  9,  4,  9,  4
-                dc.b  $F,  0,  0,  0,  0,  0,  1,  0
-                dc.b   1,  0,$13,  0,  1,$10,  0,  0
-                dc.b $83,$AA,  0,$4D,  2,  9,  0,$4C
-                dc.b $2D,$FD,  0,$A8,  0,$60,  0,$FF
-                dc.b   0,$FF,  0,$22,  0,  0,$19,$F7
-                dc.b   0,$D4,  0,$C3,  0,  0,  0,  6
-                dc.b   0,$21,  0,$E2,  2,$26,  0,  1
-                dc.b   2,$B0,  0,  2, $A,$8F,  0,  2
-                dc.b   3,  0,  7,  2,$FF,$FF,$E2,$26
-                dc.b   0,  1,  2,$B0,  0,  2,$17,  0
-                dc.b   0,$8A,  0,$9F,  0,$E2, $D,$B3
-                dc.b   0,$F0,  0,  6, $D,$18,  0,$54
-                dc.b   0,$60, $D,$61,  0,$51,  0,$80
-                dc.b  $D,$81,  0,$C2, $E,$71,  0,$89
-                dc.b   0,$C0, $D,$62,  0,$D6,  0,$C6
-                dc.b  $D,$7B,  0,$33,  0,$42,  0,$20
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$14,  0,$80,  2,$B6
-                dc.b   0,$E8,  2,$B7,  0,$18,  1,  2
-                dc.b   0,  6,  0,$FF,  2,$FD,  0,$7B
-                dc.b   2,$24,  0,$B6,  2,$58,  0,$50
-                dc.b   2,$60,  0,$D8,  2,$86,  0,$1B
-                dc.b   0,$DE,  9,$59,  0,$C4,  0,$2C
-                dc.b   1,$61,  0,  8,  0,$30,$4D,  0
-                dc.b   0,$65,  0,$40,$6E,$9A,  0,  0
-                dc.b  $B,  0, $D,$40,  0,$8A,  0,$90
-                dc.b   1,$40,  0,$70,  0,$C4,  1,  4
-                dc.b   0,$80,  0,  0,  8,  0,  0,  0
-                dc.b $DD,$FF, $D,$7E,  0,$9F,  1,  1
-                dc.b   0,$8E,  0,$7F,  0,$FF,  1,$21
-                dc.b   0,$C0, $A,  0,  0,  0,  0,  0
-                dc.b $DB,  0,  0,$CF,  0,$E4,  0,$16
-                dc.b  $D, $E,  0,  2,  0,$62, $D,$24
-                dc.b   0,$82,  0,$20, $C,  8,  0,$92
-                dc.b   0,  8, $E,$C2,  0,$B6, $E,$AA
-                dc.b   0,$5F,  0,$40,  2,  0,  0,$E0
-                dc.b   9,$78,  0,$3C,  0,$42,  2,  3
-                dc.b   0,$43,  9,$B8,  0,$DE,  0,$ED
-                dc.b   0,$60, $D,$85,  0,$F0,$1A,$DB
-                dc.b   0,$E7,$3B,$DB,  0,$E7,  2,$85
-                dc.b   0,$F0,$1F,  0,  1,$14,  0,$80
-                dc.b $22,$57,  0,$A8,  2,$5E,  0,$FE
-                dc.b $5B,  9,  0,$45,  2,  7,  0,$F3
-                dc.b $2C,  0,  0,  0,  0,$31,  0,$70
-                dc.b   0,  0,  0,  1,  0,$8B,  0,$F0
-                dc.b $18,  0,  0,  0,  0,$9E,  0,$80
-                dc.b   2,$86,  0,  0,  2,$90,  0,$C0
-                dc.b   0,  0,  0,  4,  0,$7A,  0,$40
-                dc.b  $A,$9A,  0,  0,  3,  1,  7,  2
-                dc.b $BA,$FF,  0,$FF,$43,$FF,$BA,$A1
-                dc.b   3,$A2,$1B,$88,  0,  0,  2,$AA
-                dc.b   0,  0,  2,$32,  0,  0,  2,$BC
-                dc.b   0,  0,$17,  0,  0,$E4,  0,$82
-                dc.b   0,$CC, $D,$28,  0,$D2,  0,$A4
-                dc.b  $D,$28,  0,$22,  0,$40, $D,$A0
-                dc.b   0,$89,  0,  0, $D,$D6,  0, $C
-                dc.b  $E,$BB,  0,$4A,  0,$80, $D,$A3
-                dc.b   0, $B,  0,$24, $D,$CB,  0,$3A
-                dc.b   0,$C4,  0,$C0,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$10
-                dc.b   0,  0,  2,$A1,  0,$D0,  0,$50
-                dc.b   1,$99,  0,$12,  0,$4C,  0,  1
-                dc.b   0,$33,  0,$3B,  2,$A9,  0,$FF
-                dc.b   2,$29,  0,$DC, $A,$9B,  0,$1F
-                dc.b   0,$FF,$BD, $A,  0,$94,  0,$60
-                dc.b   1, $F,  0,$FF,  0,$E0, $A,$95
-                dc.b   0,  8, $B,  0, $D,$10,  0,$DD
-                dc.b   0,$AC,  1,  0,  0,$FF,  0,$FF
-                dc.b   1,  8,  0,$FF,  0,$FF,$E7,$FF
-                dc.b  $D,$C1,  0,$3F,  1,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$FF,  0,$FF
-                dc.b   0,$A0,$E8,  0,  0,$78,  0,$A2
-                dc.b   0,$13, $D,$9C,  0,$8A,  0,$C9
-                dc.b  $D,$15,  0,$2A,  0,$90, $C,  0
-                dc.b   0,$54,  0,$AA,  0,$40,  7,$78
-                dc.b   0,$4C,  3,  3,  0,$70,  0,$E3
-                dc.b  $E,$62,  0,$C6,  0,$A0, $D,$55
-                dc.b   0,$FC,  0,$E9,  2,  0,  0,$C3
-                dc.b   9,$6B,  0,$2E,  0,$87,  0,$30
-                dc.b  $D,$80,  0,  0,$1A,$80,  0,  0
-                dc.b $3B,$80,  0,  0,  2,$80,  0,  0
-                dc.b $1F,  0,  1,$10,  0,  0,$22,$58
-                dc.b   0,$5C,  0,$2C,  1,$61,  0,$A4
-                dc.b   0,$30,$5A,$14,  0,$16,  2, $D
-                dc.b   0,$44,$2D,  1,  0,$81,  0,$BF
-                dc.b   0,$FF,  0,$FD,  0,$B8,  0,$A3
-                dc.b $18,$FF,  0,$F6,  0,$BC,  0,  3
-                dc.b   0,$FF,  0,$FC,  0,$9C,  0,$62
-                dc.b   2,$32,  0,  0,  0,$FF,  0,$FE
-                dc.b   0,$BC,  0,  0, $A,$95,  0,  8
-                dc.b  $B,  2,$BA,$FD,  0,  4,$43,$FF
-                dc.b $BA,$93,  0,$A7,  2,$94,  0,$23
-                dc.b $1A,$7C,  0,  3,  2,$9E,  0,  2
-                dc.b $1F,  0,  0,$8D,  0,$40,  0,$C9
-                dc.b  $D,$B7,  0,$5B,  0, $B, $D,$18
-                dc.b   0,$CA,  0,$B0, $D,$63,  0,$2A
-                dc.b   0,$C0, $D,$84,  0,$39, $E,$73
-                dc.b   0,$B1,  0,$E0, $D,$64,  0,$B7
-                dc.b   0,$6B, $D,$7D,  0,$8A,  0,$5E
-                dc.b   0,$90,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,$14,  0,$80
-                dc.b   2,$A9,  0, $E,  0,  0,  1,$B2
-                dc.b   0,$C2,  0,  0,  1,$9E,  0,$13
-                dc.b   2,$C3,  0,  3,  1,$FF,  0,$8C
-                dc.b   0,$7E,  3,$38,  6,$B8,  0,$F8
-                dc.b $BE,  8,  0,$F0,  0,  0,  1,  8
-                dc.b   0,$F0,  0,  0, $B,  0, $B,  0
-                dc.b  $C,  1,  0,  4,  0,$FF,  0,$FF
-                dc.b   0,  1,  0,  4,  3,$40,  3,$10
-                dc.b   0,  0,  0,  0,  1,$20,  0,  0
-                dc.b   0,  0,  0,  1,  0,  4,$DD,$FF
-                dc.b  $C,  0,  0,$D2,  0,$AF,  2,$F7
-                dc.b   0,$9F,  0,$FF,  1,$EA,  0,$C0
-                dc.b   2,$58,  0,$38,  2,$60,  0,$D8
-                dc.b   2,$86,  0,$1F,  0,$FF,$DB,  0
-                dc.b   0,$CF,  0,$49,  0,$75,  7,$79
-                dc.b   0,$50,  3,  4,  0, $D,  0,$39
-                dc.b   0,$4F,  7,$79,  0,$50,  3,  4
-                dc.b   0,$18,  0,$36,  0,$B0,  2,$1A
-                dc.b   0,$20,  8,  6,  0,$98,  0,$C5
-                dc.b   0,$A0,  2,  6,  0,$70,  9,$C2
-                dc.b   0,$25, $E,$A9,  0,$E0,  0,$60
-                dc.b  $D,$93,  0,$E2,  0,$2F, $C,  8
-                dc.b   0,$B8,  0,$55,  0,$41,  0,$50
-                dc.b  $D,$21,  0,$BE,$1A,$87,  0,$96
-                dc.b $3B,$87,  0,$96,  2,$21,  0,$BE
-                dc.b $1F,  0,  1,$14,  0,$80,$B5,$FF
-                dc.b   0,$FF,  0,$CE,  0,$E7,  2,$AE
-                dc.b $1A,$F9,  0,$5A,  0,$C3,  1,$F7
-                dc.b   0,$3C,  0,$82,  1,$F9,  0,$41
-                dc.b   0,$E1,  1,$FF,  0,$29,  0,$22
-                dc.b  $B,  0, $B,  2,$FF,$FF,$E2,$26
-                dc.b   0,  1,  2,$B0,  0,  2,$17,  0
-                dc.b   0,$E3,  0,$E8,  0,$2B, $D,$28
-                dc.b   0,  9,  0,$91, $D,$28,  0,  7
-                dc.b   0,$10, $D,$A0,  0,$1C,  0,$40
-                dc.b  $D,$D5,  0,$7B, $E,$BA,  0,$CB
-                dc.b   0,$A0, $D,$A2,  0,$9C,  0,$B1
-                dc.b  $D,$CA,  0,$B1,  0,$18,  0,$B0
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$14,  0,$80,  2,$A1
-                dc.b   0,$D0,  2,$86,  0,$28,  1,  2
-                dc.b   0,$54,  0,$9F,  0,$B5,  0,  2
-                dc.b   0,$3F,  0,$2F,  0,$DC,  1,$20
-                dc.b   0,$6C,  2,$58,  0,$50,  2,$60
-                dc.b   0,$D8,  2,$59,  0,$ED,  0,$FF
-                dc.b   9,$59,  0,$B8,  2,$61,  0,  8
-                dc.b $4E,  0,  0,$65,  0,$40,$15,  1
-                dc.b $46,$FF,  0,$F6,  0,$E0,  0,  2
-                dc.b   0,$FF,  0,$F9,  0,$CF,  0,$FF
-                dc.b   8,$65,  0,$21,  0,$90,  8,  4
-                dc.b   1,  1,  1,  0,$15,$C1,  0,$80
-                dc.b   0,  0,  8,  1,  0,  4,$BF,$10
-                dc.b   3,$20,$19,$FF,$21,$56,  0,$4B
-                dc.b   0,$FF,$BC,$FF,  0,$FE,  0,$C0
-                dc.b   0,  2,  2,$1B,  0,$FF,$17,  0
-                dc.b   0,$92,  0,$11,  0,$8D, $D,$BD
-                dc.b   0,$9E,  0,$17, $D, $A,  0,$41
-                dc.b   0,$80, $C,  6,  0,$66,  0,$8D
-                dc.b   0,$C0, $D,$88,  0,$BD, $E,$77
-                dc.b   0,$A5,  0,$60, $D,$68,  0,$27
-                dc.b   0,$F7, $D,$81,  0,$D3,  0,$F2
-                dc.b   0,$D0,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$E0,$FF,  0,$FF,  3,  1
-                dc.b   0,$78,  0,$C0,$17,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$E0,$FF,  0,$FF
-                dc.b   1,$DE,  1,  1,  0,$78,  0,$C0
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $81,  7,  0,$EC,$5B,  7,  0,$EC
-                dc.b   3,$5A,  1,  1,  0,$78,  0,$98
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $E0,$FF,  0,$FF,  1,$DE,  1,  1
-                dc.b   0,$78,  0,$C0,$17,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$E0,$FF,  0,$FF
-                dc.b   1,$DE,  1,  1,  0,$78,  0,$C0
-                dc.b $17,  0,  1,$10,  0,  0,  2,$CC
-                dc.b   0,$B4,  2,$AB,  0,$12,  1,  1
-                dc.b   0,$26,  0,$77,  0,$FF,  0,  1
-                dc.b   0,$7F,  0,$D3,  0,$FF,  0,$FF
-                dc.b   0,$FF,  0,$D8,  2,$6D,  0,$83
-                dc.b   2,$5A,  0,$A6,  0,$80,  1,$6D
-                dc.b   0,$C2,$BD,  0,  0,$10,  0,  4
-                dc.b   0,$C0,  0,  0,  0, $A,  0,$A1
-                dc.b   0,$C0, $A,$9C,  0,$15, $B,  0
-                dc.b  $D,$40,  3,$40,  0,$AE,  0,$EC
-                dc.b   1,  2,  0,$FF,  0,$FF,  1,$10
-                dc.b   0,$13,  0,$24,  1,$20,  0,$11
-                dc.b   0,$20, $D,$40,  0,  0,  0,  0
-                dc.b   1,$80,  0,  0,  0,  0,$B0,  4
-                dc.b   0,  4,$19,$FF, $C,  2,  0,$18
-                dc.b   0,$2F,  0,$FF,  0,  2,  0,$24
-                dc.b   0,$FF,  0,$FF,  0,$FF,  0,$F1
-                dc.b   0,$60,  2,$66,  0,$C0,  2,$60
-                dc.b   0,$D8,  2,$30,  0,$47, $A,$59
-                dc.b   0,$B8,  2,$61,  0,  8,$AD,  0
-                dc.b   0,  8,  0,$7A,  0,  0,  1,  9
-                dc.b   0, $E,  0,  0,$17,  0,  0,$CD
-                dc.b   0,$F7,  0,$67, $D,$20,  0,  1
-                dc.b   0,$29,  2,  6,  0,$23,  8,  8
-                dc.b   0,  9,  0,$40,  3,  4, $A,$44
-                dc.b   0,$B9,  0,$40, $D,$9B,  0,$4C
-                dc.b   0,$50,  2,  2,  0,$70,  9,$D1
-                dc.b   0,$C8,  0,$80,  2,  1,  0,$20
-                dc.b   9,$49,  0,$CC,  0,$25, $D,$9B
-                dc.b   0,$15,  0,$84,  0,$70, $D,$8E
-                dc.b   0,$7C,$5B,$8E,  0,$7C,  5,$1B
-                dc.b   0,$F3,  0,$F0,$17,  0,  1,$10
-                dc.b $23,$52,  0,$9E,  2,$4A,  0,$79
-                dc.b $20,  3,  1,$51,  0,$B7,  0,$FF
-                dc.b   2,  8,  3,$26,  0,$6F,  2,$1B
-                dc.b   0,$13,$14,$FF,  0,$B0,  0,$66
-                dc.b   6,$1F,  0,$FC,  2,$5F,  0,$FC
-                dc.b   2,$5B,  0,$70,$1E,  1,  1,  1
-                dc.b   5,$66,  0,$CC,  2,$5D,  0,$18
-                dc.b   3, $D,  0,$AB,$21,$75, $B, $F
-                dc.b   0,  9,  0,$40,  1,  1,  0,$37
-                dc.b   0,$E0,  3,  2,  1,  1,  0,$4F
-                dc.b   0,$FF,  0,$65,  0,$21,  0,$9C
-                dc.b   0,$15,  7,  3,  3,  9,$25,$10
-                dc.b   0,$44,  0,$4B,  1,  2,  0,$3D
-                dc.b   0,$2B,$45,$10,  0,$D2,  0,$14
-                dc.b   5,$20,  3,$20,  2,  1,  0,  4
-                dc.b $52,  1,  0,  4,  0,$23,  0,$E7
-                dc.b   9,$40,  3,$80,$19,$FF,$25,$66
-                dc.b   0,  6,  2,$5A,  0,$FC,$52,$40
-                dc.b   3,$1D,  0,$78,$51,$FF,  0,$EA
-                dc.b  $B,  9,  0,  8,  2,  9,  0,  8
-                dc.b $18,  0,  0,$DE,  0,$FA,  0,$9C
-                dc.b  $D,$21,  0,$A1,  0,$14, $D,  1
-                dc.b   0,$FA,  0,$30,  2,  1,  0,$90
-                dc.b   3,$28,  0,$44,  3,  6,  0,$9C
-                dc.b   0,$A5, $E,$D0,  0,$DC, $E,$87
-                dc.b   0,$A0,  3,  2,  0,$70,  3,$78
-                dc.b   0,$4C,  3,  3,  0,$3F,  0,$5C
-                dc.b   0,$74,  2,$16,  0,$F3,  9,$76
-                dc.b   0,$BA,  0,  1,  0,$C0,  1,$15
-                dc.b   0,$33,$69,  0,  0,  2,  3,$1B
-                dc.b   0,$B3,  0,$F0,$17,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$81,$FF,  0,$FF
-                dc.b $5B,$FF,  0,$FF,  3,  0,  1,$1B
-                dc.b   0,$B3,  0,$F0,$17,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$E0,  0,  0,  2
-                dc.b   1,  0,  1,$1B,  0,$B3,  0,$F8
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$14,  0,$80,  2,$A9
-                dc.b   0,$5C,  2,$8A,  0,$36,  1,  2
-                dc.b   0,$F9,  0,$73,  1,  2,  0,$F0
-                dc.b   0,$AB,  1,  0,  0,$13,  0,$F2
-                dc.b   2,$50,  0,$1D,  0,$80,  1,$65
-                dc.b   0,$4C,  0,  0,  1,$8B,  0,$7D
-                dc.b $BE,  8,  0,$81,  0,$40,  0,$FF
-                dc.b   0,$F5,  0,$6E,  0,  0, $A,$93
-                dc.b   0,  0, $B,  0, $E,$B5,  0,$2C
-                dc.b   1,$80,  0,$E6,  0,$6C,  2,$80
-                dc.b   0,  0,  2,$32,  0,$2C,  2,  8
-                dc.b   0,$D8, $D,  0,  0,$FF,  0,$FF
-                dc.b   1,  0,  0,$FF,  0,$FF,$AC,  1
-                dc.b   0,  4,  2,  0,  0,$10,$19,$FF
-                dc.b  $D,$F0,  2,  3,  0,  3,  2,  0
-                dc.b   0,  0,  0,  0,  2,$5A,  0,$D8
-                dc.b   2,$62,  0,$10,  2,$62,  0,$C3
-                dc.b  $A,  0,  0,  0,  2,  0,  0,  0
-                dc.b $AE,  3,  0,$6A,  1,$FF,  0,$F9
-                dc.b   0,$FE,$18,  0,  0,$58,  0,$45
-                dc.b   0,$29, $D,$BF,  0,$5A,  0,$2B
-                dc.b   2,  1,  0,$63,  9, $A,  4,  0
-                dc.b  $A,$F1,  0,$F2,  0,$C0, $D,$42
-                dc.b   0,$99,  0,  0,  2,  1,  0,  0
-                dc.b   9,$1A,  0,$45,  0,$E0,  2,  0
-                dc.b   0,$E0,  9,$50,  0,$7D,  0,$7B
-                dc.b   2,  6,  0,$23,  9,$BC,  0,$83
-                dc.b   0,$94,  0,$90,  1,  9,  0,$13
-                dc.b  $A,$A7,  0,$E8,$1A,$DA,  0,$C4
-                dc.b $3B,$DA,  0,$C4,  2,$A7,  0,$E8
-                dc.b   5,  0,  0,  0,  0,  0,$17,  0
-                dc.b   1,  0,$23,$C0,  0,  0,  2,$C0
-                dc.b   0,  0,$20,  8,  1,  8,  0,  0
-                dc.b   0,  0,  2,  0,  3,$80,  0,  0
-                dc.b   2,$80,  0,  0,$14,  0,  0,  0
-                dc.b   0,  0,  6,  0,  0,  0,  2,$40
-                dc.b   0,  0,  2,$14,  0,  0,$1E,  0
-                dc.b   1,  3,  5,$C0,  0,  0,  2,$C0
-                dc.b   0,  0,  3,  8,  0,  0,$21,  8
-                dc.b  $B,  8,  0,$F0,  0,  0,  1,  8
-                dc.b   0,$F0,  0,  0,  3,  0,  1,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  7,  0,  3,  0
-                dc.b $25,  0,  0,$FF,  0,$FF,  1,  0
-                dc.b   0,$FF,  0,$FF,$45,  0,  0,$FF
-                dc.b   0,$FF,  5,  0,  3,  0,  2,  0
-                dc.b   0,  0,$52,  0,  0,  0,  0,$FF
-                dc.b   0,$FF,  9,  0,  3,  0,$19,$FF
-                dc.b $25,  0,  0,  0,  2,  0,  0,  0
-                dc.b $52,  0,  3,  0,  0,  0,$51,  0
-                dc.b   0,  0, $B,  0,  0,  0,  2,  0
-                dc.b   0,  0,$18,  0,  0,  0,  0,$40
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  2,  0
-                dc.b   0,$30,  3,$25,  0,$38,  3,  0
-                dc.b   0,  0,  0,  0, $E,  0,  0,  0
-                dc.b  $E,  0,  0,  0,  3,  0,  0,$E0
-                dc.b   3,$25,  0,$38,  3,  0,  0,  0
-                dc.b   0,  0,  0,  0,  2,  0,  0,$C3
-                dc.b   9,  0,  0,  0,  0,  0,  0,  0
-                dc.b   1,  0,  0,$F3,$69,$FF,  0,$FF
-                dc.b   3,  1,  0,$78,  0,$C0,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$81,  7
-                dc.b   0,$EC,$5B,  7,  0,$EC,  3,$5A
-                dc.b   1,  1,  0,$78,  0,$98,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$E0,$FF
-                dc.b   0,$FF,  1,$DE,  1,  1,  0,$78
-                dc.b   0,$C0,$17,  0,  1,$14,  0,$80
-                dc.b $22,$81,  0,$9C,  2,$4C,  0,$AA
-                dc.b $5B,$34,  0,$33,  2,$36,  0,$79
-                dc.b $2C,$FF,  0,$FE,  0,$69,  0,  8
-                dc.b   1,  0,  0,$4B,  0,$10,$19,  8
-                dc.b   0,$57,  0,$C0,  0,$FF,  0,$FF
-                dc.b   0,$52,  2,  1,  0,$64,  0,$C0
-                dc.b   1,$10,  0,$C0,  0,$E0,  8,$65
-                dc.b   0,$21,  0,$93,  4,  1,  3, $A
-                dc.b   1,  4,  1,  2,$25,  4,  0,$D3
-                dc.b   0,$10,  1,  8,  0,$88,  0,$40
-                dc.b $8D,  1,  3,  2,$1B,$10,  3,$20
-                dc.b   3,$40,  3,$80,$19,$FF,$25,$58
-                dc.b   0,$80,  2,$5F,  0,$A0,$8D,$FF
-                dc.b   0,$FF,  0,$22,  0,$80,  0,$FF
-                dc.b   0,$FF,  0,$E9,$1A,  1,  0,$18
-                dc.b   2,  1,  0,$18,  2,  9,  0,  8
-                dc.b   2,  9,  0,  8,$18,  0,  0,$52
-                dc.b   0,$8F,  0,$1F, $D,$6B,  0,  8
-                dc.b   0,$2D, $D,$28,  0,$16,  0,$80
-                dc.b   2,  5,  0,$20,  9,$98,  0,$8F
-                dc.b   0,$80,  2,  6,  0,$F0,  9,$4D
-                dc.b   0,$2F, $E,$43,  0,$89,  0,$20
-                dc.b  $D,$3A,  0,$CA,  0,$CD, $D,$49
-                dc.b   0,$48,  0,$6F,  0,$F0, $D,$A7
-                dc.b   0,$E8,$1A,$DA,  0,$C4,$3B,$DA
-                dc.b   0,$C4,  2,$A7,  0,$E8,  0,  0
-                dc.b   0,  2,  1,  0,  1,$1B,  0,$B3
-                dc.b   0,$F0,$17,  0,  1,$10,  0,  0
-                dc.b   2,$B7,  0,$90,  2,$AB,  0,$18
-                dc.b   2,$8D,  0,  7,  2,$66,  0,$47
-                dc.b   2,  2,  0,$50,  2,$58,  0,$50
-                dc.b   0,  0,  1,$60,  0,$D8,  2,$7A
-                dc.b   0,$FC, $B,$C4,  0,$2C,  3,$30
-                dc.b $AD, $F,  0,$FF,  0,$E0,  0,  0
-                dc.b   0, $B,  0,$49,  0,$E0, $A,$87
-                dc.b  $C,  0, $E,$80,  0,  0,  2,$80
-                dc.b   0,  0,  5,  0,  0,$FF,  0,$FF
-                dc.b   1,  0,  0,$FF,  0,$FF,$C0,  0
-                dc.b   0,  0,  3,  0,$19,$FF, $D,$35
-                dc.b   0,$3F,  1,  2,  0,$31,  2,$FF
-                dc.b   0,$F8,  0,$E0,  2,  0,  0,  0
-                dc.b   2,  0,  0,  0,  2,$49,  0, $F
-                dc.b $BD,$FF,  0,$FE,  0,$DE,  1,  0
-                dc.b   0,  0,  0,$44,$18,  0,  0,  3
-                dc.b   0,$C7,  0,$3E, $D,$51,  0,$7B
-                dc.b   0,$5A, $E,$41, $E,$B6,  0,$86
-                dc.b   0,$80, $D,$E3,  0,$EC,  3,  7
-                dc.b   0,$D0,  9,$39,  0,$84,  0,$90
-                dc.b   2,  9,  0,$50,  3,$79,  0,$50
-                dc.b   3,  4,  0,$B9,  0,$60,  0,$9A
-                dc.b   2,  0,  0,$C3,  9,$E7,  0,$11
-                dc.b   0,$6F,  0,$E0,  1,  0,  0,$F3
-                dc.b  $A,$92,  0,$E5,$1A,$80,  0,  0
-                dc.b $3B,$80,  0,  0,  2,$92,  0,$E5
-                dc.b $1F,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$10,$23,$5B,  0,$68
-                dc.b   2,$5D,  0,$F0,$15,$FF,  0,$AA
-                dc.b   0,$20,$13,  0,  3,  0,$15,$FF
-                dc.b   0,$C6,  0,$D2,  9,$FF,  0,$CD
-                dc.b   0,$C0,  2,$15,  0,$74,$20,  1
-                dc.b $31,$6A,  0,$40,  2,  3,  0,$EE
-                dc.b   0,$80,  1,  2,  0,$24,  2,  1
-                dc.b   0,$D7,  0,$E0,  1,  5,  0,$E2
-                dc.b   0,$20,  3,  2,  1,  1,  0,$77
-                dc.b   0,$FF,  0,$65,  0,$21,  0,$87
-                dc.b   8,  3,  3,  9,$71,$20,  0,$80
-                dc.b   0,$20,  9,$20,$56,  1,  0,  2
-                dc.b   0,$28,  0,$70,  9,$40,  3,$80
-                dc.b $19,$FF,$7D,$40,$56,$FF,  0,$ED
-                dc.b  $B,  9,  0,  8,  2,  9,  0,  8
-                dc.b $18,  0,  0,$71,  0,$33,  0,$9B
-                dc.b  $D,  3,  0,$3A,  0,$13,  2,  0
-                dc.b   0,$B3,  8,  6,  0,$13,  0,$DC
-                dc.b   0,$10, $D,$4F,  0,$70,  0,$40
-                dc.b  $D,$69,  0,$EB, $E,$5C,  0,$AD
-                dc.b   0,$A0, $D,$50,  0,$AE,  0,  1
-                dc.b  $D,$64,  0,$90,  0,$AF,  0,$B0
-                dc.b  $D,$80,  0,  0,$5B,$80,  0,  0
-                dc.b   3,  0,  1,$1B,  0,$B3,  0,$F0
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,  0,  0,  0,$22,$C0
-                dc.b   0,  0,  2,$C0,  0,  0,$5B,  4
-                dc.b   0,  0,  2,  4,  0,  0,$2C,  0
-                dc.b   0,  0,  0,$10,  0,  0,  1,  2
-                dc.b   0,  0,  0,  0,$19,  1,  0,  0
-                dc.b   0,  0,  0,  0,  0,  1,  0,  0
-                dc.b   2,  8,  0,$F0,  0,  0,  1,  8
-                dc.b   0,$F0,  0,  0,  8,  0,  0,  0
-                dc.b   0,  0,  4,  0,  3,  0,  1,  0
-                dc.b   1,  0,$25,  0,  0,$FF,  0,$FF
-                dc.b   1,  0,  0,$FF,  0,$FF,$8D,  0
-                dc.b   3,  0,$1B,  0,  3,  0,  3,  0
-                dc.b   3,  0,$19,$FF,$25,  0,  0,  0
-                dc.b   2,  0,  0,  0,$8D,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,$1A,  0,  0,  0,  2,  0
-                dc.b   0,  0,  2,  0,  0,  0,  2,  0
-                dc.b   0,  0,$18,  0,  0,  0,  0,$40
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  2,  0
-                dc.b   0,$30,  9,  0,  0,  0,  0,  0
-                dc.b   2,  0,  0,$C0,  9,  0,  0,  0
-                dc.b  $E,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0,  0,  0, $D,$FF,  0,$FF
-                dc.b $1A,$80,  0,  0,$3B,$80,  0,  0
-                dc.b   2,$FF,  0,$FF,  0,$FF,  0,$FF
-                dc.b   1,$DE,  1,  1,  0,$78,  0,$C0
-                dc.b $17,  0,  1,$14,  0,$80,  9,  1
-                dc.b   0,$DF,  0,$83,  1,  0,  0,$65
-                dc.b   0,$D3,  2,$26,  0,$8A, $A,$73
-                dc.b   0,$DB,$BD,$FF,  0,$F8,  0,$44
-                dc.b   0,  0,  1,  2,  0,$F2,  0,$C0
-                dc.b  $A,$82, $C,  0, $E,$C5,  0,$6C
-                dc.b   2,$BB,  0,$B0, $C,  0,  0,  0
-                dc.b $BF,$10,  3,$20,$19,$FF, $C,  1
-                dc.b   0,$23,  0,$1F,  1,  1,  0,$11
-                dc.b   0,$5F, $E,$35,  0,$8F,$BF,$CC
-                dc.b   3,$2C,$18,  0,  0, $D,  0,$75
-                dc.b   0,$92, $D,$5E,  0,$12,  0,$16
-                dc.b $1D,$BD,  0,$55, $E,$2A,  0,$D8
-                dc.b   0,$40, $D,$8E,  0, $E,  0,$D0
-                dc.b   7,$75,  0,$40,  3,  0,  0,$C0
-                dc.b   0,$4A,  0,$D6, $D,$EF,  0,$AF
-                dc.b   0,$FD,  0,$20, $D,$DB,  0,$59
-                dc.b $5B,$DB,  0,$59,$1F,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$14
-                dc.b   0,$80,$22,$60,  0,$60,  2,$5C
-                dc.b   0,$B8, $E,  9,  0,$4C,  6,$80
-                dc.b   0,  0,  0,  1,  9,$20,  0,$FB
-                dc.b   0,$FF,$21,$A8,  0,$A0,  9,  0
-                dc.b   0,$40,  0,  0,  2,  8,  0,$30
-                dc.b $1E,  1,  7,$5C,  0,$94,  2,$5C
-                dc.b   0,$D6,  3,$14,  0,$A7,$21,$52
-                dc.b   0,$20,  1,$FF,  0,$FE,  0,$AA
-                dc.b   0,  0,  1,  0,  0,$ED,  0,$80
-                dc.b   1,  0,  0,$3E,  0,  0,  0,$FF
-                dc.b   0,$FA,  0,$48,  0,  0,  5,  0
-                dc.b   0,$29,  3,$82, $C,  9,$72,$FF
-                dc.b   0,$FF,  9,  0,$63,$10,  3,$20
-                dc.b $19,$FF,$7D,  0,$63,  0,  0,$5E
-                dc.b   1,$FF,  0,$FF,  0,$BE,$18,  0
-                dc.b   0,$7A,  0,$E1,  0,$EF,$1D,$11
-                dc.b   0,$71, $D,  6,  0,$56,  0,$3F
-                dc.b  $E,$72,  0,$FF, $E,$64,  0,$9F
-                dc.b   0,$20, $D,$57,  0,$98,  0,$3D
-                dc.b  $D,$6D,  0,$2F,  0,$3C,  0,$F0
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0, $D,$4F,  0,$3F,  1,  1
-                dc.b   0,$77,  0,$AB,  1,$FF,  0,$DD
-                dc.b   0,$66,  2,$5A,  0,$EA,  2,$5D
-                dc.b   0,  6,  2,$4D,  0,$F2,$BD,  0
-                dc.b   0,  5,  0,$A6,  0,$C0,  0,$FF
-                dc.b   0,$FD,  0,$88,  0,  0, $A,$8D
-                dc.b  $C,  0, $D,$80,  0,$98,  0,$30
-                dc.b   6,$FF,  0,$FF,  2,$80,  0,  0
-                dc.b   4,  1,  0,  4,  0,$63,  0,$B4
-                dc.b $DB,$FF, $D,$32,  0,$AF,  2,$54
-                dc.b   0,$6F,  6,$5E,  0,$8D,  0,$80
-                dc.b   5,$3E,  0,$FF,$DC,  0,  0,$86
-                dc.b   0,$71,  0,$35, $D,$FB,  0,$64
-                dc.b   0,$8F,$1D,$12,  0,$6B,  0,$C0
-                dc.b  $D,$A1,  0,$2A,  0,$B0, $D,$AE
-                dc.b   0,$8D,  0,$C0, $D,$B1,  0,$A2
-                dc.b   0,$AF,  2,  2,  0,$73,  9,$28
-                dc.b   0,$77,  1,$50,  1,  3,  0,  3
-                dc.b  $A,$64,  0,$87,$5B,$64,  0,$87
-                dc.b $1F,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,  0,  0,  0,$22,$C0
-                dc.b   0,  0,  2,$C0,  0,  0, $E,  0
-                dc.b   0,  0,  5,  0,  0,  0,  1,  0
-                dc.b   9,  8,  0,  0,  0,  0,  6,$80
-                dc.b   3,$80,$15,  0,  0,  0,  0,  0
-                dc.b  $E,$14,  0,  0,$1E,  0,  1,  3
-                dc.b   5,$C0,  0,  0,  2,$C0,  0,  0
-                dc.b   3,  8,  0,  0,$21,  8,  0,  0
-                dc.b   1,  0,  0,  1,  0,  0,  2,  1
-                dc.b   0,  0,  0,  0,  1,  8,  0,$F0
-                dc.b   1,  0,  0,  8,  0,$F0,  4,  0
-                dc.b   2,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  8,  0,  3,  0,$71,  0
-                dc.b $62,  0,  0,  0,  0,$FF,  0,$FF
-                dc.b   9,  0,  3,  0,$19,$FF,$D4,  0
-                dc.b   0,  0, $C,  0,  1,  0,  0,  0
-                dc.b   0,  0,$18,  0,  0,  0,  0,$40
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   2,  1,  0,$63,  8,  0,  0,  0
-                dc.b   0,  0,  0,  0, $C,  0,  0,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b  $E,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0,  0,  0, $D,$DB,  0,$59
-                dc.b $5B,$DB,  0,$59,$1F,  0,  1,$14
-                dc.b   0,$80,$22,$32,  0,$B8,  2,$5D
-                dc.b   0,$F0,$22,$1D,  0, $F,  0,$FF
-                dc.b $28,$FF,  0,$BC,  0,$2A, $F,  0
-                dc.b $16,  1,  1,  1,  5,$5C,  0,$2E
-                dc.b   2,$5E,  0,$7A,  9,$FF,  0,$FF
-                dc.b   0,$C3,  2,  0,$1A,$FF,  0,$F4
-                dc.b   0,$EA,  0,$80,  0,$FF,  0,$FE
-                dc.b   0,$EF,  2,  1,  0,$E4,  2, $A
-                dc.b   0,$87,  0,$C0,  3,  3,  1,  3
-                dc.b   0,$23,  0,$FF,  0,$65,  0,$21
-                dc.b   0,$8D,  8, $E,  1,  9,  1,  0
-                dc.b $25,$10,  0,$80,  0,  0,  2,$80
-                dc.b   0,  0,$4D,  2,$67,$10,  3,$20
-                dc.b $19,$FF,$25,$5D,  0,$D8,  2,$5E
-                dc.b   0,$20,$B6,  9,  0,$14,  2,  9
-                dc.b   0,$14,$18,  0,  0,$79,  0,$7A
-                dc.b   0,$8E, $D,$BC,  0,$3C,  0,$2A
-                dc.b   3,  3,  3,$78,  0,$4C,  3,  3
-                dc.b   0,$15,  0,$50,  0,$A0, $D,$55
-                dc.b   0,$42,  0,$80, $D,$71,  0,$AE
-                dc.b  $E,$63,  0,$78,  0,$40, $D,$56
-                dc.b   0,$97,  0,$8A, $D,$6B,  0,$EF
-                dc.b   0,$44,  0,$E0, $D,$DB,  0,$59
-                dc.b $5B,$DB,  0,$59,  0,  0,  0,  2
-                dc.b   1,  0,  1,$1B,  0,$B3,  0,$F0
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  5,$A7,  0,$BE,  2,$8B
-                dc.b   0,$CE,  1,  2,  0,$51,  0,$6F
-                dc.b   1,  3,  0,$E6,  0,$CB,  1,  0
-                dc.b   0,$13,  0,$F2,  2,$60,  0,$21
-                dc.b   2,$5E,  0,$D2,  0,$80,  1,$9F
-                dc.b   0,$4B, $B,$B8,  0,  0,  3,  0
-                dc.b $AD, $A,  0,$FB,  0,  0,  1,$FC
-                dc.b   0,$3D,  0,$C0, $A,$99, $C,  0
-                dc.b  $D,$40,  0,$B5,  0,$2C,  2,$E6
-                dc.b   0,$6C,  2,$80,  0,  0,  1,$10
-                dc.b   0,$32,  0,$2C,  1,$20,  0,  8
-                dc.b   0,$D8,  2,$FF,  0,$FF,$BC,  1
-                dc.b   0,  4,  3,$10,$19,$FF, $C,  2
-                dc.b   0,$F0,  0,$2F,  1,  3,  0,  3
-                dc.b   0,$FF,  1,  0,  0,  0,  0,  0
-                dc.b   2,$5A,  0,$D8,  0,  0,  1,$62
-                dc.b   0,$10,  2,$62,  0,$C3,$BD,  0
-                dc.b   0,  3,  0,$6A,  1,$FF,  0,$F9
-                dc.b   0,$FE,$18,  0,  0,$4A,  0,$40
-                dc.b   0,$B4, $D,$AD,  0,$1F,  0,$DC
-                dc.b  $E,$40, $E,$E8,  0,$17,  0,  0
-                dc.b  $D,$35,  0,$74,  0,  0,  2,  1
-                dc.b   0,  0,  9, $E,  0,$C5,  0,$80
-                dc.b   2,  0,  0,$E0,  9,$FF,  0,$D3
-                dc.b   0,$6C,  2,  6,  0,$23,  9,$45
-                dc.b   0,$3C,  0,  3,  0,$40,  1,  9
-                dc.b   0,$13, $A,$A7,  0,$E8,$1A,$DA
-                dc.b   0,$C4,$3B,$DA,  0,$C4,  2,$A7
-                dc.b   0,$E8,$1F,  0,  1,$14,  0,$80
-                dc.b $22,$97,  0,$FE,  2,$78,  0,$F0
-                dc.b $22,$1C,  0,$3B,  0,$FF,  6,$A7
-                dc.b   0,$1A,  2,$B8,  0,$F6,  3, $A
-                dc.b   2,$A5,  0,$16,  2,$A7,  0,$1A
-                dc.b   2,$B8,  0,$F6, $D,$25,  0,$FC
-                dc.b  $B,$4C,  0,$84,  2,$23,  0,$BD
-                dc.b  $D,  4,  0,$DB,  0,$FF,  5,  1
-                dc.b   7,$5D,  0,$A2,  2,$5F,  0,$E8
-                dc.b   3, $A,  0,$31,$3C,$65,  0,$21
-                dc.b   0,$99,  4,  1,  3,  1,  1,  2
-                dc.b   1,  0,$55,$40,  3,$80,  3,  1
-                dc.b   3,  2,  3,$40,  3,$80, $F,  8
-                dc.b $85,$FF,$56,$80,  3,$80,  3,$80
-                dc.b   3,$80,  3,$80,  3,$80,$94,  0
-                dc.b   0,$44,  0,  0,  0,  8, $D,$58
-                dc.b   0,$19,  0,$98, $D, $B,  0,$E9
-                dc.b   0,$80,  7,$75,  0,$40,  4,$2F
-                dc.b   0,$A6,  8,$78,  0,$4C,  3,  3
-                dc.b   0,$3F,  0,$88, $E,$37,  0,$97
-                dc.b   8,$75,  0,$40,  4,$30,  0,$64
-                dc.b   0,$98, $D,$3C,  0,$52,  0,$10
-                dc.b   0,$80, $D,$A7,  0,$E8,$1A,$DA
-                dc.b   0,$C4,$3B,$DA,  0,$C4,  2,$A7
-                dc.b   0,$E8,  0,  0,  0,  2,  3,$1B
-                dc.b   0,$B3,  0,$F0,$17,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$81,  7,  0,$EC
-                dc.b $5B,  7,  0,$EC,  3,$5A,  1,  1
-                dc.b   0,$78,  0,$98,$17,  0,  1,  0
-                dc.b   0,  0,$22,$C0,  0,  0,  2,$C0
-                dc.b   0,  0,$22,  8,  0,  0,  0,  0
-                dc.b $28,  0,  0,  0,  0,  0, $F,  4
-                dc.b $16,  0,  1,  3,  5,$C0,  0,  0
-                dc.b   2,$C0,  0,  0,  9,  0,  0,  0
-                dc.b   0,$10,  2,  2,$1A,  0,  0,  1
-                dc.b   0,  0,  0,  0,  0,  0,  0,  1
-                dc.b   0,  0,  2,  8,  0,$F0,  2,  8
-                dc.b   0,$F0,  0,  0,  3,  0,  1,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  8,  0,  1,  0,  1,  0
-                dc.b $25,  0,  0,$FF,  0,$FF,  2,$FF
-                dc.b   0,$FF,$4D,  0,$67,  0,  3,  0
-                dc.b $19,$FF,$25,  0,  0,  0,  2,  0
-                dc.b   0,  0,$B6,  0,  0,  0,  2,  0
-                dc.b   0,  0,$18,  0,  0,  0,  0,$40
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   3,$63,  3,$25,  0,$38,  3,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b  $E,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0,  0,  0, $D,$FF,  0,$FF
-                dc.b $5B,$FF,  0,$FF,  0,$FF,  0,$FF
-                dc.b   1,$DE,  1,  1,  0,$78,  0,$C0
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  5,$B3,  0,$58,  2,$AE
-                dc.b   0,$D8,  1,  1,  0,$DF,  0,$DF
-                dc.b   1,  1,  0,$E0,  0,$1F,  2,  0
-                dc.b   0,  0,  2,$59,  0,$EF,  0,$80
-                dc.b   1,$60,  0,$6A,  2,$6F,  0,$EF
-                dc.b  $A,$56,  0,$88,  2,$60,  0,$D8
-                dc.b $AE,  8,  0,$F0,  1,  0,  0,  8
-                dc.b   0,$F0,  0,  0, $A,$8C, $C,  0
-                dc.b  $D,  0,  0,$FF,  0,$FF,  1,  0
-                dc.b   0,$FF,  0,$FF,  1,  0,  0,$FF
-                dc.b   0,$FF,  1,$40,  0, $A,  0,$FC
-                dc.b   1,$80,  0, $F,  0,$80,  0,  0
-                dc.b   0,  0,$BE,  0,  0,  0,  3,  0
-                dc.b $19,$FF, $C,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  5,$59,  0,$A0,  2,$60
-                dc.b   0,  0,  2,  0,  0,  0,  0,  0
-                dc.b $BD,  0,  0,  0,  1,  0,  0,  0
-                dc.b   0,  0,$18,  0,  0,$52,  0,$F2
-                dc.b   0,$4C, $D,$6B,  0,$89,  0,$24
-                dc.b  $C,  0,  0, $E,  0,$8A,  0,$40
-                dc.b  $C,  0,  0,$3A,  0,$29, $E,$4D
-                dc.b   0,$8C, $E,$43,  0,$DA, $E,$3B
-                dc.b   0,$11,  0,$A4,  2,  0,  0,$C3
-                dc.b   8,  8,  0,$49,  0,$A0,  0,$BC
-                dc.b   0,$C0,  1,  0,  0,$F3,  8,  7
-                dc.b   1,$89,  0,$C5,$1A,$89,  0,$33
-                dc.b $3B,$89,  0,$33,  2,$89,  0,$C5
-                dc.b $1F,  0,  1,  0,  0,  0,$22,$C0
-                dc.b   0,  0,  2,$C0,  0,  0,$22,  8
-                dc.b   0,  0,  0,  0,  6,$80,  0,  0
-                dc.b   2,$80,  0,  0,  3,  0,  2,$80
-                dc.b   0,  0,  2,$80,  0,  0,  2,$80
-                dc.b   0,  0, $D,  0,  0,  0, $B,  4
-                dc.b   0,  0,  2,  4,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  5,  0,  7,$C0
-                dc.b   0,  0,  2,$C0,  0,  0,  3,  8
-                dc.b   0,  0,$3C,  0,  0,  0,  0,  0
-                dc.b   4,  0,  3,  0,  1,  0,  1,  0
-                dc.b $55,  0,  3,  0,  3,  0,  3,  0
-                dc.b   3,  0,  3,  0, $F,  0,$85,$FF
-                dc.b $56,  0,  3,  0,  3,  0,  3,  0
-                dc.b   3,  0,  3,  0,$94,  0,  0,  0
-                dc.b   0,$40,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   7,$25,  0,$38,  4,  0,  0,  0
-                dc.b   8,$25,  0,$38,  3,  0,  0,  0
-                dc.b   0,  0, $E,  0,  0,  0,  8,$25
-                dc.b   0,$38,  4,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  0,  0
-                dc.b  $D,$FF,  0,$FF,$1A,$80,  0,  0
-                dc.b $3B,$80,  0,  0,  2,$FF,  0,$FF
-                dc.b   0,$FF,  0,$FF,  3,  1,  0,$78
-                dc.b   0,$C0,$17,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$81,$80,  0,  0,$5B,  0
-                dc.b   0,  0,$1F,  0,  1,$14,  0,$80
-                dc.b $16,$5D,  0,$F0,  2,$61,  0,$C8
-                dc.b   6,$9F,  1,$5A,  1,$B5,  0,$98
-                dc.b   0,$5A,$1F,  0,  0,$FF,  0,$FB
-                dc.b   0,$80,$2A,$39,  0,$B8, $F,  1
-                dc.b   0,$B7,$15,  1,  1,$FF,  5,$B2
-                dc.b   0,$14,  0,$59,  1,$B5,  0,$EC
-                dc.b   0,$5A,  2,  4,  0,$C6,$24,$FF
-                dc.b   0,$FD,  0,$9C,  0,$84,  1,  0
-                dc.b   0,$57,  0,$FF,  0,$FF,  0,$FE
-                dc.b   0,$7B,  0,$C4,  1,  1,  0,$D9
-                dc.b   0,$BF,  3,  3,  1,  4,  0,$97
-                dc.b   0,$FD,  0,$65,  0,$21,  0,$8C
-                dc.b   8, $E,  1,  9,  1,  0,$4D,  8
-                dc.b $2B,$80,$67,$10,  3,$80,  0,$80
-                dc.b   0,  0,$17,$FF,$E0,$FF,  0,$FD
-                dc.b   0,$BC,  0,  4,  2, $B,  0,$FF
-                dc.b $17,  0,  0,$B5,  0,$8E,  0,$44
-                dc.b  $D,$EB,  0,$C3,  0,$8C, $D,$1F
-                dc.b   0,$E0,  0,$C0, $D,$7F,  0,$83
-                dc.b  $E,$AA,  0,  4, $E,$94,  0,$C3
-                dc.b   0,$80, $D,$81,  0,$81,  0, $C
-                dc.b  $D,$A1,  0,$6C,  0,$6C,  0,$40
-                dc.b $6F,  0,$1B,  0,  7,$59,  3,  4
-                dc.b   0,  2,  0,  3,  0,$67,  1,  2
-                dc.b   0,$4B,  0,$FB,  1,$FF,  0,$F0
-                dc.b   0,$BB,  0,$FF,  1,$5D,  0,$9A
-                dc.b   0,$AC,  1,$61,  0,$D5,  0,$B0
-                dc.b   1,$7D,  0,$B3, $C,$2B,  2,$DE
-                dc.b   0,$30,$BE,$9F, $C,  0, $D,$10
-                dc.b   0,$B2,  0,$A0,  1,$20,  0,$80
-                dc.b   0,  0,  1,  2,  0,$23,  0,$D8
-                dc.b   2,$29,  0,$EC,  2,$22,  0,$AC
-                dc.b $DF,$FF, $C,  1,  0,$80,  0,$3F
-                dc.b   0,$FF,  0,  1,  0,$F7,  0,$7F
-                dc.b   0,$FF,  2,$FF,  0,$FF,  1,$58
-                dc.b   0,$F8,  0,$2C,  3,$30,$DF,  0
-                dc.b   0,$88,  0,$E4,  0,$42, $D,$B1
-                dc.b   0,$AF,  0,$26, $D,$18,  0,  6
-                dc.b   0,$60, $D,$60,  0,$19,  0,$80
-                dc.b  $D,$80,  0,$22, $E,$70,  0,$1D
-                dc.b   0,$C0, $D,$61,  0,$99,  0,$E6
-                dc.b  $D,$79,  0,$A8,  0,$48,  0,$20
-                dc.b  $D,$A5,  0,$C3,$1A,$92,  0,$19
-                dc.b $3B,$92,  0,$19,  2,$A5,  0,$C3
-                dc.b $1F,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$19,$5F,  0,$AC,  2,$5F
-                dc.b   0,$CA,$2D,  0,  0,$12,  0,$BE
-                dc.b $2A,$12,  0,$16, $F,  0,  0,  0
-                dc.b $26,  1,  0,$C7,$25,$FF,  0,$56
-                dc.b   2,  1,  0,$39,  0,$3F,  0,  0
-                dc.b   0,  3,  0,$E6,  0,$80,  1,  5
-                dc.b   0,$55,  0,$A0,  5,  7,  0,$13
-                dc.b   0,$FF,  2,$9F, $C,  0,$D9,$40
-                dc.b   0,$B6,  0,$7C,  1,$80,  0,$B9
-                dc.b   0,$1C,$1F,$FF,$D8,$FF,  0,$FD
-                dc.b   0,$A8,  0,  4,  2,$67,  0,$FF
-                dc.b   0,  0,  0,  8,  0,$A6,  0,$80
-                dc.b   1,  4,  0,$C5,  0,  0,$17,  0
-                dc.b   0,$EB,  0,$80,  0,$3A, $D,$31
-                dc.b   0,$E9,  0,$8E, $D,$29,  0,$5C
-                dc.b   0,$E0, $D,$A5,  0,$73,  0,$80
-                dc.b  $D,$DC,  0,$9A, $E,$C1,  0,  6
-                dc.b   0,$C0, $D,$A8,  0,  9,  0,$4E
-                dc.b  $C,  8,  0,$D1,  0,$73,  0,$F7
-                dc.b   0,$A0, $B,  7,$7F,  0,  1,$14
-                dc.b   0,$80,  1,  1,  0,$48,  0,$38
-                dc.b   1,  1,  0, $F,  0,$38, $E,$EF
-                dc.b   0,$28,  2,$C3,  0,$C0,  2,$73
-                dc.b   0,$E3,  0,$FF,$5D,  0,  0,$65
-                dc.b   0,$40, $B,  1,$60,$65,  0,$21
-                dc.b   0,$90,  8,  4,  1,  1,  1,  0
-                dc.b $1A,$80,  0,  0,  2,$14,  0,$FC
-                dc.b $DF,$FF,$19,$EF,  0,$28,  2,$C0
-                dc.b   0,$D8,$E0,  0,  0,$94,  0,$23
-                dc.b   0,$8E, $D,$C0,  0,$4F,  0,$4A
-                dc.b  $D,$1A,  1,$A0, $D,$68,  0,  2
-                dc.b   0,$80, $D,$8A,  0,$AE, $E,$79
-                dc.b   0,$58,  0,$40, $D,$69,  0,$A2
-                dc.b   0,$8A, $D,$83,  0,$AB,  0,$D4
-                dc.b   0,$E0,$71,$1B,  0,$C3,  0,$F0
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $E0,$FF,  0,$FF,  3,  1,  0,$78
-                dc.b   0,$C0,$17,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$E0,$FF,  0,$FF,  1,$DE
-                dc.b   1,  1,  0,$78,  0,$C0,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$E5,$1B
-                dc.b   0,$C3,  0,$F0,$17,  0,  1,$14
-                dc.b   0,$80,$19,  1,  0,$25,  0,$1C
-                dc.b   6,$CD,  0,$6E,  2,$BF,  0,$B8
-                dc.b $20,  3,  1,$22,  0,$93,  0,$FF
-                dc.b $29,$77,  0,$A0, $F,  2,  0,$AB
-                dc.b $15,  1,$10,$12,  0,$C3,$2D,  2
-                dc.b   0,  3,  0,$ED,  1, $F,  0,$B7
-                dc.b   0,$AD,  3,  3,  1,  3,  0,$87
-                dc.b   0,$FE,  0,$65,  0,$21,  0,$90
-                dc.b   8, $E,  1,  9,  1,  0,$26,$8E
-                dc.b   0,$1C,  2,$A9,  0,$10,$B5,$10
-                dc.b   3,$20,$19,$FF,$25,$BD,  0,$F0
-                dc.b   2,$BD,  0,$A8,$B6,  9,  0,$13
-                dc.b   0,$ED,  1,  9,  0,$13,  0,$ED
-                dc.b $17,  0,  0,$9C,  0,$AA,  0,$7D
-                dc.b  $D,$CB,  0,$65,  0,$E7, $D,$1B
-                dc.b   0,$80,  0,$70, $D,$6E,  0,  1
-                dc.b   0,$C0, $D,$92,  0,$AD, $E,$80
-                dc.b   0,$57,  0,$60, $D,$6F,  0,$B9
-                dc.b   0,$C7, $D,$8B,  0,$43,  0,$61
-                dc.b   0,$D0,$6C,$FF,  0,$FF,  3,  1
-                dc.b   0,$78,  0,$C0,$17,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$E0,$FF,  0,$FF
-                dc.b   1,$DE,  1,  1,  0,$78,  0,$C0
-                dc.b $17,  0,  1,$10,  0,  0,  7,$14
-                dc.b $16,$79,  0,$47,$DC,  0,$FF,$FF
-                dc.b $FF,  0,  0,$B7,  0,  7,  0,$C6
-                dc.b  $D,$ED,  0,$AE,  0,$72, $D,$20
-                dc.b   0,$23,  0,$20, $D,$80,  0,$8C
-                dc.b  $E,$AB,  0,$66, $E,$95,  0,$F9
-                dc.b  $E,$82,  0,$8E,  0,$B2, $D,$A2
-                dc.b   0,$BC,  0,$88,  0,$60,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$10,  0,  0,$76,$9E,  0,$1E
-                dc.b $66, $D,  0,$E3,  0,$AD,  1,  7
-                dc.b   0,$B5,  0,$ED,$17,  0,$4A,$80
-                dc.b   0,  0,$2D,$10,  0,$80,  0,  0
-                dc.b $83,$FF,$4B,  3,$2D,$77,  0,$A0
-                dc.b $84,  0,  0,$BF,  0,$8E,  0,$B5
-                dc.b  $D,$F8,  0,$C5,  0, $F, $D,$21
-                dc.b   0,$A2,  0,$F0, $D,$86,  0,$8B
-                dc.b  $E,$B3,  0,$65, $E,$9C,  0,$F8
-                dc.b  $E,$88,  0,$A5,  0,$EF, $D,$AA
-                dc.b   0,$54,  0,$15,  0,$50,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,  6,  9,  0,$8C
-                dc.b   2,$84,  0,$FF,  0,$FF,  1,$84
-                dc.b   0,$FF,  0,$FF,  5,$C0,  0,$D8
-                dc.b   0,$60,  1,$C0,  0,$DE,  0,$60
-                dc.b   1,$71,  0,$8F,$8D,$FF,  0,$FF
-                dc.b   0,$FF,  0,$16,$3E,$9F,  0,$1F
-                dc.b  $B,  0,$16,$80,  0,  0,  6,  9
-                dc.b   0,$68,$DF,$FF,$1A,$3E,  0,$D8
-                dc.b   3,$60,$DF,  0,  0,$47,  0,$DE
-                dc.b   0,$B9, $D,$5D,  0,$21,  0,$DB
-                dc.b  $D, $C,  0,$97,  0,$B0, $D,$32
-                dc.b   0,$5E,  0,$C0, $D,$43,  0,$29
-                dc.b  $E,$3A,  0,$C3,  0,$E0, $D,$33
-                dc.b   0,$28,  0,$3B, $D,$3F,  0,$C4
-                dc.b   0,$1D,  0,$90,$72,$F3,$18,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$81,  7
-                dc.b   0,$EC,$5B,  7,  0,$EC,  3,$5A
-                dc.b   1,  1,  0,$78,  0,$98,$17,  0
-                dc.b   1,$14,  0,$80,$19,  0,  0,$C0
-                dc.b   0,  0,  6,$71,  0,$88,  0,$22
-                dc.b   1,$BE,  0, $E,  0,$5F,$1F,  4
-                dc.b   1,$34,  0,$2F,  0,$F2,$29,$7D
-                dc.b   0,$FC, $F,  0,  0,  0,$26, $B
-                dc.b   0,$63,$25, $F,  0,$C6,  0,$C0
-                dc.b   1,  9,  0,$B4,  0,$6C,  1, $F
-                dc.b   0,$A3,  2,  1,  0,$33, $B,$9F
-                dc.b   0,$1F, $B,  0,$4A,$FF,  0,$FF
-                dc.b $2D,$40,  0,$FF,  0,$FF,$83,$FF
-                dc.b $27,$5E,  3,$5E,$1F,  0,$2D,  0
-                dc.b   0,  0,$84,  0,  0,$50,  0,$65
-                dc.b   0,$A8, $D,$68,  0,$38,  0,$78
-                dc.b  $D, $E,  0,$17,  0,$80, $D,$38
-                dc.b   0,$5E,  0,  0, $D,$4B,  0,$28
-                dc.b  $E,$41,  0,$C3,  0,  0, $D,$39
-                dc.b   0,$3F,  0,$78, $D,$47,  0,$5B
-                dc.b   0,$AA,  0,$80,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  4,  0
-                dc.b   0,$A9,  2,  0,  0,$A3,  0,$F8
-                dc.b   1,  2,  0,$2F,  0,$5B,  1,  2
-                dc.b   0,$4C,  0,$A3,  1,$FE,  0,$FF
-                dc.b   0,$68,  0,  1,  1,$58,  0,$3E
-                dc.b   0,  0,  1,$64,  0,$AA,  0,  0
-                dc.b   1,$75,  0,$63, $A,$59,  0, $A
-                dc.b   0,$2C,  1,$65,  0,$82,  0,$32
-                dc.b $5B,  0,  9,  1,$16,  0,  0,  0
-                dc.b   0,  8,  0,  0,$3E,$9C,  0,  0
-                dc.b  $B,  0, $D,$10,  0,$2C,  0,$50
-                dc.b   1,$20,  0,$38,  0,$C0,  1,  4
-                dc.b   0,$A4,  0,$A8,  2,$FF,  0,$FF
-                dc.b   2,$FF,  0,$FF,$DF,$FF, $C,  2
-                dc.b   0,  3,  0,$BF,  0,$FF,  0,  2
-                dc.b   0,$2F,  0,$7F,  0,$FF,  0,$FF
-                dc.b   2,  1,  1,  0,  0,  0,  0,  0
-                dc.b   1,  0,  0,  0,  0,  0,$DF,  0
-                dc.b   0,$9B,  0,$23,  0,$1E, $D,$C9
-                dc.b   0,$68,  0,$FA, $D,$1B,  0,$3B
-                dc.b   0,$A0, $C,  8,  0,$6C,  0,$EE
-                dc.b   0,$80, $D,$91,  0,$3E, $E,$7F
-                dc.b   0,$16,  0,$40, $D,$6E,  0,$A2
-                dc.b   0,$3A, $D,$89,  0,$E6,  0,$ED
-                dc.b   0,$E0, $D,$7F,  0,$15,$5B,$7F
-                dc.b   0,$15,  6,$C3,$18,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$19,$60
-                dc.b   0,$AE,  2,$5F,  0,$52,  6,$65
-                dc.b   0,$64,  0,  0,  1,$74,  0,$52
-                dc.b   0,  0,$4D,$2D,  0,$78,$30,$60
-                dc.b   3,$60,  2,  4,  0,$F3,$25,  0
-                dc.b   0, $E,  0,$80,  1,  2,  0,$2E
-                dc.b   0,  0,  1,  7,  0,$59,  0,$80
-                dc.b   1,  4,  0,$E3,  0,$80, $A,$9C
-                dc.b   0,  0, $B,  0,$79,  0,$67,  0
-                dc.b   3,  0,$19,$FF,$E2,$2C,  0,  0
-                dc.b   2,$2C,  0,  0,$17,  0,  0,$D9
-                dc.b   0,$F5,  0,$97, $D,$1B,  0,$1A
-                dc.b   0,$15, $D,$26,  0,$47,  0,$50
-                dc.b  $D,$99,  0,$1D,  0,$40, $D,$CC
-                dc.b   0,$27, $E,$B2,  0,$A2,  0,$20
-                dc.b  $D,$9B,  0,$81,  0,$B5, $D,$C1
-                dc.b   0,$D5,  0,$C7,  0,$70,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$10,  0,  0,  1,  1,  0,$54
-                dc.b   0,$20,  2,$E8,  0,$A4,  2,$16
-                dc.b   0,$1F,  2,$24,  0,$BF,  1,  0
-                dc.b   0,  0,  0,  0,  0,  0,  1,$C0
-                dc.b   0,  0,  2,$C0,  0,  0,  2,$78
-                dc.b   0,  0,  0,  0,  9,$C0,  0,  0
-                dc.b   0,  0,  1,$C0,  0,  0,  0,  0
-                dc.b $4D,$1A,  0,$A0,  0,$78,$15,  0
-                dc.b $58,$86, $C,  0, $D,  0,  0,$FF
-                dc.b   0,$FF,  1,  0,  0,$FF,  0,$FF
-                dc.b   1,  0,  0,$FF,  0,$FF,$E7,$FF
-                dc.b  $C,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  2,  0,$E7,  0,  0,$18
-                dc.b   0,$24,  0,$E8, $D,$1F,  0,$12
-                dc.b   0,$38, $D,  4,  0,$33,  0,$80
-                dc.b  $C,  0,  0,$10,  0,$CE,  0,  0
-                dc.b  $D,$16,  0,$68, $E,$13,  0,$9B
-                dc.b   0,  0, $D,$11,  0,$11,  0,$38
-                dc.b  $D,$15,  0,$46,  0,$1E,  0,$80
-                dc.b  $D,$80,  0,  0,$5B,  0,  0,  0
-                dc.b   5,  0,  0,  0,  0,$F8,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$10,  0,  0,$16,$BA,  0,$78
-                dc.b   2,$BC,  0,$40,  5,  1,  0,  2
-                dc.b   0,$12,  1,  1,  0,$32,  0,$7E
-                dc.b $4D,$FF,  0,$CD,  0,$94,$26,  0
-                dc.b   1, $F, $E,  7,  0,$B3,$25, $F
-                dc.b   0,$C6,  0,$C0,  1,  9,  0,$B4
-                dc.b   0,$6C,  1,  6,  0,$DF,  0,$ED
-                dc.b   1,  7,  0,$27,  0,$ED,  6,$71
-                dc.b   0,$FF,  2,$86, $C,  0,$79,$40
-                dc.b $67,$10,  3,$20,$19,$FF,$E2,$1F
-                dc.b   0,$ED,  2,$1F,  0,$ED,$17,  0
-                dc.b   0,$B3,  0,$5B,  0,$34, $D,$E8
-                dc.b   0,$E7,  0,$5C, $D,$1F,  0,$7D
-                dc.b   0,$C0, $D,$7D,  0,$F7,  0,  0
-                dc.b  $D,$A7,  0,$F4, $E,$92,  0,$F5
-                dc.b   0,$80, $D,$7F,  0,$EE,  0,$DC
-                dc.b  $D,$9F,  0,$77,  0,$1B,  0,$40
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  5,$25,  0,$28,  1,  1
-                dc.b   0,  8,  0,$9C,  1,  1,  0,$E1
-                dc.b   0,$BF,  1,  1,  0,$E5,  0,$3F
-                dc.b   1,$FF,  0,$FF,  0,$E0,  3,  6
-                dc.b   2,$BF,  0,$68,  0,$80,  1,$73
-                dc.b   0,$6B,  0,$FF,$CE,$8E,  0,  6
-                dc.b  $B,  0, $E,$34,  0,$AC,  2,$1B
-                dc.b   0,$10,  2,$15,  0,$F8,  1,  4
-                dc.b   0,$1E,  0,$BB,  1,  8,  0,$38
-                dc.b   0,$98,$DF,$FF, $C,  2,  0,  6
-                dc.b   0,$BF,  0,$FF,  0,  2,  0,$12
-                dc.b   0,$3F,  0,$FF,  0,$FF,  0,$FF
-                dc.b   0,$E0,  2,$BF,  0,$58,  2,$BF
-                dc.b   0,$88,$E0,  0,  0,$88,  0,$42
-                dc.b   0,$2A, $D,$B0,  0,$DC,  0,$5E
-                dc.b  $D,$17,  0,$E9,  0,$E0, $C,  8
-                dc.b   0,$5F,  0,$A7,  0,$80, $C,  7
-                dc.b   0,$7F,  0,$8A, $E,$6F,  0,$98
-                dc.b   0,$C0, $D,$61,  0,$26,  0,$1E
-                dc.b  $D,$79,  0,$17,  0,$F6,  0,$A0
-                dc.b  $D,$87,  0,$92,$1A,$7F,  0,$46
-                dc.b $22,  0,  9,  0,  9,  0,  4,$7F
-                dc.b   0,$46,  2,$87,  0,$92,  1,  2
-                dc.b   3,$1B,  0,$C3,  0,$F0,  1,  2
-                dc.b   1, $F,$13,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$19,$BF,  0,$58
-                dc.b   2,$C1,  0,$26,  5,  0,  0,$BF
-                dc.b   0,$58,  1,  0,  0,$C1,  0,$50
-                dc.b $4D,  0,  0, $B,  0,$42, $F,  3
-                dc.b   0,$16,$17,$FF,$34,$FF,  0,$F8
-                dc.b   0,$F4,  0,  0,  0,$FF,  0,$FF
-                dc.b   0,$CC,  0,  0,  1, $D,  0,$47
-                dc.b   0,$C0,  1,  6,  0,$D4,  0,  0
-                dc.b   5,  2,  0,$37,  3,$8E,  0,  6
-                dc.b  $B,  0,$FF,$FF,$E2,$38,  0,  0
-                dc.b   2,$38,  0,  0,$17,  0,  0,$23
-                dc.b   0,$78,  0,$76, $D,$7A,  0,$B1
-                dc.b   0,$82, $D,$33,  0,$34,  0,$20
-                dc.b  $D,$CC,  0,$D0,  0,$80, $D,$11
-                dc.b   0,$16, $E,$EE,  0,$F3,  0,$40
-                dc.b  $D,$D0,  0,  3,  0,$C2, $D,  3
-                dc.b   0,$48,  0,$F3,  0,$60,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,  6,$1B,  0,$50
-                dc.b   2,$F9,  0,$7F,  2,$EA,  0,$EF
-                dc.b   6,$BF,  0,$83,  0,$80,  2,$58
-                dc.b   0,  0,  1,$79,  0,$1F,$CF,$9A
-                dc.b   0,  0, $B,  0,$1A,  6,  0,$AB
-                dc.b   1,  0,$E1,$FF,$FF,  0,  0,$9E
-                dc.b   0,$69,  0,$50, $D,$CD,  0,$AA
-                dc.b   0,$F0, $D,$1B,  0,$CF,  0,  0
-                dc.b  $D,$6F,  0,$3C,  0,  0, $D,$94
-                dc.b   0,$50, $E,$81,  0,$C6,  0,  0
-                dc.b  $D,$70,  0,$F8,  0,$F0, $D,$8C
-                dc.b   0,$D1,  0,$35,  0,  0, $D,$88
-                dc.b   0,$C5,$1A,$80,  0,$CE,$3B,$80
-                dc.b   0,$CE,  2,$88,  0,$C5,$1F,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,$75,$FF,  0,$95
-                dc.b   0,$28,$28, $F,$3D,  3,  0,$34
-                dc.b   0,  0,  1, $E,  0,$EB,  0,$C0
-                dc.b  $A,$9A,  0,  0, $B,  0,$FF,$FF
-                dc.b $E2,$44,  3,$44,$18,  0,  0,$39
-                dc.b   0,$9F,  0,$9C, $D,$97,  0,$80
-                dc.b   0,$14, $D,$37,  0,$19,  0,$40
-                dc.b  $D,$DC,  0,$65,  0,  0, $D,$25
-                dc.b   0,$DC, $E,  1,  0,$20,  0,$80
-                dc.b  $D,$DF,  0,$D6,  0,$94, $D,$17
-                dc.b   0,  2,  0,$31,  0,$C0,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   9,$14,  0,$B4,  1,  2,  0,$12
-                dc.b   0,$FF,  2,$D2,  0,$3F, $A,$C7
-                dc.b   0,$50,$D3,$81, $C,  0,$FF,$FF
-                dc.b $FF,  0,  0,$D0,  0,$D5,  0,$18
-                dc.b  $D, $F,  0,$3B,  0,$C8, $D,$24
-                dc.b   0,$AC,  0,$80, $D,$92,  0,$B2
-                dc.b  $E,$C3,  0,$98, $E,$AB,  0,$25
-                dc.b  $E,$94,  0,$FC,  0,$C8, $D,$B9
-                dc.b   0,$B5,  0,$81,  0,$80,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $28,  1,  0,$17,  0,$C0,$4E,$9B
-                dc.b   0,$D8, $F,  5,  0,$5D,$17,  1
-                dc.b $3D, $F,  0,$63,  0,$C0,  1,  9
-                dc.b   0,$53,  6,  5,  0,$39,  3,$81
-                dc.b  $C,  0,$FF,$FF,$FF,  0,  0,$6C
-                dc.b   0, $B,  0,$64, $D,$D9,  0,$10
-                dc.b   0,$EC, $D,$3F,  0,$F6,  0,$C0
-                dc.b  $D,$FF,  0,$DB, $E,$55,  0,$24
-                dc.b  $E,$2A,  0,$7F, $E,  3,  0,$DA
-                dc.b   0,$6C, $D,$43,  0,$E6,  0,$7E
-                dc.b   0,$40,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  5,$43,  0,$58
-                dc.b   2,  6,  0,$BC,  2, $D,  0,$3F
-                dc.b   2,$D7,  0,$7F,  7,$D7,  2,$B5
-                dc.b   0,$80,  2,$7F,  0, $D,$CF,$9B
-                dc.b  $C,  0,$20,  1,  0,  2,  0,$E0
-                dc.b   0,$33,$DB,$FF,$21,$48,  0,$BF
-                dc.b   0,$FF,$DB,  0,  0,$9D,  0,$49
-                dc.b   0,$61, $D,$8C,  0,$3E,  0,$40
-                dc.b  $C,  6,  0,$48,  0,$9F,  0,$30
-                dc.b  $D,$22,  0,$7C,  0,$C0, $D,$83
-                dc.b   0,$51, $E,$52,  0,$E6,  0,$E0
-                dc.b  $D,$27,  0,  6,  0,$B3, $D,$6F
-                dc.b   0,$BE,  0,$18,  0,$10, $D,$99
-                dc.b   0,$A4,$5B,$99,  0,$A4,$1F,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $24,  1,  0,$18,  0,$AA,  2,$2B
-                dc.b   0,$88,$4E,$B1,  0,$AE, $F,  4
-                dc.b   0,$CC,$17, $C,$34,  0,  0, $A
-                dc.b   0,$23,  0,$C0,  0,  0,  0,  1
-                dc.b   0,$96,  0,$60,  1, $C,  0,$A6
-                dc.b   0,$40,  1, $E,  0,$65,  0,$40
-                dc.b   5,  3,  0,$8B,  3,$9B, $C,  0
-                dc.b $D9,$20,  2,  4,  0,  4,  0,$80
-                dc.b   0,  0,  2,$90,  0,$6F,  2,$C9
-                dc.b   0,$87,$17,$FF,$D9,  2,  0,$44
-                dc.b   3,  2,  2, $F,  0,$FF,  0,$E0
-                dc.b   1,  8,  0,$32,  0,$80,$17,  0
-                dc.b   0,$38,  0,$7F,  0,$AD, $D,$E2
-                dc.b   0,$EE,  0,$77, $D,$59,  0,$42
-                dc.b   0,$70,  2,  2,  0,$A0,  8,  6
-                dc.b   0,$8F,  0,$A5,  0,$C0, $D,$14
-                dc.b   0,$DD, $E,$D2,  0,$41,  0,$60
-                dc.b  $D,$95,  0,$E4,  0,$57, $D,$F9
-                dc.b   0,$EF,  0,$14,  0,$D0,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$81,$84
-                dc.b   0,$D1,$1B,$CE,$3C,$CE,  2,$84
-                dc.b   0,$D1,  0,  0,  0,  2,  1,  0
-                dc.b   1,$1B,  0,$C3,  0,$F0,$17,  0
-                dc.b   1,$14,  0,$80,  6,$DF,  0,$F8
-                dc.b  $E,$EF,  0,$28,  3,$90,  2,$73
-                dc.b   0,$E3,  0,$FF,$5D,  0,  0,$65
-                dc.b   0,$40, $B,  1,$60,$65,  0,$21
-                dc.b   0,$95,  8,  4,  1,  1,  1,  0
-                dc.b $1A,$80,  0,  0,  2,$14,  0,$FC
-                dc.b $DF,$FF,$19,$EF,  0,$28,  2,$C0
-                dc.b   0,$D8,$E0,  0,  0,$C5,  0,  0
-                dc.b   0,$7F, $D,$4C,  0,$BE,  0,$4D
-                dc.b  $D,$4F,  0,$9A,  0,$D0, $D,$3E
-                dc.b   0,$6B,  0,$40, $D,$A8,  0,$8F
-                dc.b  $E,$73,  0,$7D,  0,$20, $D,$43
-                dc.b   0,$64,  0,$ED, $D,$93,  0,$1A
-                dc.b   0,$45,  0,$F0, $D,$8A,  0,$6B
-                dc.b $1A,$FF,  0,$FF,$3B,$FF,  0,$FF
-                dc.b   2,$8A,  0,$6B,  2,$11,  0,$E9
-                dc.b $1B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $E0,$FF,  0,$FF,  3,  1,  0,$78
-                dc.b   0,$C0,$17,  0,  1,$14,  0,$80
-                dc.b $21,  1,  0,$1B,  0,$12,  0,$80
-                dc.b   1,$FE,  0,$A4,  0,$80, $D, $C
-                dc.b   0,$48,  6,$2E,  0,$30,$13,$25
-                dc.b   0,$BB,  2,  0,$26,  3,  0,$D5
-                dc.b $20,$C3,$3C,$FF,  0,$FA,  0,$10
-                dc.b   2,  3,  0,$95,  0,$C0,  3,  2
-                dc.b   4,$65,  0,$21,  0,$95,  8,  3
-                dc.b   3,  9,$25,  1,  3,  2,$56,  2
-                dc.b   0,  4,  0,$FD,  0,$1C,$5D,$10
-                dc.b   3,$20,$19,$FF,$25,$C0,  3,$C0
-                dc.b $B6,$FF,  0,$FF,  0,$80,  1,$FF
-                dc.b   0,$FB,  0,$F8,$18,  0,  0,$47
-                dc.b   0,$4B,  0,$8F, $D,$5C,  0,$62
-                dc.b   0,$7D, $E,$44,  0,$D0,  2,  1
-                dc.b   0,$E0,  8,  6,  0,$31,  0,$F7
-                dc.b   0,$40, $D,$42,  0,$9F, $E,$3A
-                dc.b   0,$4B,  0,$20, $D,$32,  0,$BF
-                dc.b   0,$1D, $D,$3F,  0,$41,  0,$16
-                dc.b   0,$F0,$71,$1B,  0,$F3,  0,$F8
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $E5,$1B,  0,$C3,  0,$F0,$17,  0
-                dc.b   1,$14,  0,$80,$36,$39,  0,$59
-                dc.b   5,$FF,  0,$F2,  0, $D,$13,$1D
-                dc.b   0,$D3,  2,$2B,  0,$7F, $A,$CD
-                dc.b   0,$CF,$19,  0,$12,$FF,  0,$87
-                dc.b   0,$D8,$22,  1,  0,$BA,  0,$70
-                dc.b   1,  1,  0,$A6,  0,$C8, $D,  9
-                dc.b   0,$CB,  0,$C0,$11,$10,  0,$B7
-                dc.b   0,$C0,  1,  2,  0,$20,  9,$65
-                dc.b   0,$21,  0,$95,  8, $D,  1,  6
-                dc.b   1,  0,$39,  1,  7,  2,$12,  1
-                dc.b   0,  4,  0,$DA,  0,$48,$61,$40
-                dc.b   3,  1, $E,  1,  0,  4,$13,$40
-                dc.b   3,$80,$19,$FF,$40,$FF,  0,$F9
-                dc.b   0,$7C,$13,$20,  0,$DF,$60,$FF
-                dc.b   0,$FF,  0,$CE,  0,$80,  0,$FF
-                dc.b   0,$FF,  0,$DC, $E, $A,  0,$3E
-                dc.b $12,  9,  0,  8,  2,  9,  0,  8
-                dc.b $18,  0,  0,$36,  0, $D,  0,$B3
-                dc.b   6,$19,  0,$6F,  0, $C,  3,  5
-                dc.b   0,$92,  0,$DB,  0,$A9,  6,$19
-                dc.b   0,$6F,  0, $C,  3,  5,  0, $D
-                dc.b   0,$C7,  0,$90,  2,  2,  0,$60
-                dc.b   8,  6,  0,$D9,  0,$E2,  0,$40
-                dc.b  $D,$22,  0,$83, $E,$FE,  0,$32
-                dc.b   0,$A0, $D,$DD,  0,$49,  0,$C9
-                dc.b  $D,$13,  0,$D4,  0,$81,  0,$30
-                dc.b $71,$1B,  0,$C3,  0,$F0,$17,  0
-                dc.b   1,$14,  0,$80,$22,$C4,  0,$B6
-                dc.b   2,$F6,  0,$75,  9,  1,  0,$AD
-                dc.b   0,$7F,  0,$FF,$38,$FF,  0,$FE
-                dc.b   0,$68,  1,$FF,  0,$FF,  0,$DC
-                dc.b   0,$80,  5,$2B,  0,$78,$6C,  3
-                dc.b   1,  3,  0,$65,  0,$FF,  0,$65
-                dc.b   0,$21,  0,$95,  8, $C,  1,  5
-                dc.b   1,  0,$25,$40,  3,$80,$D5,$FF
-                dc.b $25,$BC,  0,$E8,  2,$96,  0,$78
-                dc.b $D4,  0,  0,$39,  0,$69,  0,$39
-                dc.b  $D,$97,  0,$39,  0,$5B, $D,$37
-                dc.b   0, $F,  0,$B0, $D,$DC,  0,$3E
-                dc.b   0,$C0, $D,$25,  0,$A9, $F,$F3
-                dc.b   0,$E0, $D,$DF,  0,$AF,  0,$BB
-                dc.b  $C,  8,  0,$16,  0,$D4,  0,$C5
-                dc.b   0,$90, $B,  7,$65,$1B,  0,$C3
-                dc.b   0,$F0,$17,  0,  1,$10,  0,  0
-                dc.b   1,  1,  0,$2C,  0,$A8,  1,  1
-                dc.b   0, $B,  0,  6,$E7,$93, $C,  0
-                dc.b $FF,$FF,$FF,  0,  0,$D3,  0,$DE
-                dc.b   0,$80, $D,$60,  0,$13,  0,$80
-                dc.b  $D,$52,  0,$38,  0,  0, $D,$48
-                dc.b   0,$E0,  0,  0, $D,$B6,  0,$80
-                dc.b  $E,$7F,  0,$B0,  0,  0, $D,$4E
-                dc.b   0,  3,  0,$80, $D,$A0,  0,$56
-                dc.b   0,$E8,  0,  0, $D,$80,  0,  0
-                dc.b $1A,$80,  0,  0,$3B,$80,  0,  0
-                dc.b   2,$80,  0,  0,  2,  0,  0,  0
-                dc.b $1B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,  0,  0,  0,$21,  0
-                dc.b   0,$C0,  0,  0,  0,  0,  1,$C0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   6,  0,  0,  0,$13,$80,  0,  0
-                dc.b   2,$80,$26,$14,  0,  0,$20,  3
-                dc.b $3C,  0,  0,  8,  0,$F0,  2,  8
-                dc.b   0,$F0,  0,  0,  3,  0,  4,  0
-                dc.b   0,  0,  0,  0,  8,  0,  3,  0
-                dc.b $25,  0,  3,  0,$56,  0,  0,  0
-                dc.b   0,$FF,  0,$FF,$5D,  0,  3,  0
-                dc.b $19,$FF,$25,  0,  3,  0,$B6,  0
-                dc.b   0,  0,  0,  0,  1,  0,  0,  0
-                dc.b   0,  0,$18,  0,  0,  0,  0,$40
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $E,  0,  0,  0,  2,  0,  0,$30
-                dc.b   8,  0,  0,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0, $E,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0,  0,  0
-                dc.b $6C,$FF,  0,$FF,  1,$DE,  1,  1
-                dc.b   0,$78,  0,$C0,$17,  0,  1,$10
-                dc.b $23,$E0,  0,$50,  0,$80,  1,$DF
-                dc.b   0, $C,  0,$80,$2A,$19,  0,$E7
-                dc.b   2,  0,$15,$FF,  0,$E8,  0,$80
-                dc.b  $E,$31,  0,$8C,$52,$43,  0,$D0
-                dc.b  $A,  3,  0,$E5,  0,$80,  0,$FF
-                dc.b   0,$FD,  0,$8A,  0,$80,  3,  2
-                dc.b   4,$65,  0,$21,  0,$93,  8,  3
-                dc.b   3,  9,$25,  2,  0,$80,  0,  0
-                dc.b   1,  1,  0,$80,  0,  0,$45,$10
-                dc.b   0,$80,  0,  0,$60,  4,  0,  4
-                dc.b   0,$36,  0,$B4,$27,$FF,$25,$CE
-                dc.b   0,$88,  2,$C0,$AA,$FF,  0,$F7
-                dc.b $29,  0,  0,$64,  0,$1C,  0,$F0
-                dc.b   2,  4,  0,$31,  9,$2F,  0, $F
-                dc.b   0,$D0, $E,$3E,  0,$F0,  2,  1
-                dc.b   0,$E0,  8,  6,  0,$19,  0,$74
-                dc.b  $E,$21,  0,$F0, $E,$1D,  0,$B2
-                dc.b  $E,$19,  0,$D9,  0,$D0, $D,$20
-                dc.b   0,$38,  0,$EF,$73,$F3,  0,$F8
-                dc.b $17,  0,  1,$10,  0,  0,$36,$24
-                dc.b   0,$4E,  6,$C3,  0,$7A,$11,$FF
-                dc.b   0,$FF,  0,$F6,  0,$3C,$60,$FF
-                dc.b   0,$FE,  0,$BD,  0,$60,  1,  0
-                dc.b   0,$FE,  0,$70, $D,  3,  0,$FD
-                dc.b   0,$E0,$11,  4,  0,$C3,  0,$80
-                dc.b   1, $C,  0,$3E,  0,$60, $A,$93
-                dc.b  $C,  0,$FF,$FF,$FF,  0,  0,$44
-                dc.b   0,$EB,  0,$B4,  7,$6E,  0,$F4
-                dc.b   4,$A6,  0,$30,  0,$DC,  7,$6E
-                dc.b   0,$F4,$14,$E4,  0,$57,  0,  0
-                dc.b  $D,$30,  0,$74, $E, $A,  0,$65
-                dc.b   0,$80, $D,$E7,  0,$E8,  0,$5C
-                dc.b  $D,$21,  0,$11,  0,$23,  0,$40
-                dc.b $8B,  0,  1,$10,  0,  0,$22,$7F
-                dc.b   0,$92,  2,$C9,  0,$F0,  9,  0
-                dc.b   0,$D0,  0,$3F,$1F,$91,  0,$8F
-                dc.b   2,$88,  0,$7F,$14,  0,  0,  0
-                dc.b   0,$18,  1,  0,  0,  5,  0,$FA
-                dc.b   0,  0,  5,$3D,  0,$A0,$6E,  4
-                dc.b   0,$E5,  3,$93, $C,  0,$25,  0
-                dc.b   3,  0,$4B,$80,$89,$FF,$25,  0
-                dc.b   0,  0,  2,  0,  0,  0,$4A,  5
-                dc.b   0,$FA,$88,  0,  0,$48,  0,$47
-                dc.b   0,$3A, $D,$AA,  0,$8E,  0,$8E
-                dc.b  $D,$39,  0,$AC,  0,$E0, $D,$E6
-                dc.b   0,$B3,  0,$80, $D,$33,  0,$9A
-                dc.b  $E, $D,  0,$26,  0,$C0, $D,$EA
-                dc.b   0,$4E,  0,$4E, $C,  0,  0,$24
-                dc.b   0, $E,  0,$67,  0,$A0, $B,  8
-                dc.b $7F,  0,  1,$14,  0,$80,  2,$3D
-                dc.b   0,$28,  2, $A,  0,$6A,$E7,$84
-                dc.b  $C,  0,$FF,$FF,$FF,  0,  0,$35
-                dc.b   0,$2F,  0,$E2, $D,$DE,  0,$A0
-                dc.b   0,  6, $D,$63,  0,$54,  0,$60
-                dc.b  $D,$8D,  0,$51,  0,$80, $D,$11
-                dc.b   0,$C2, $E,$CF,  0,$89,  0,$C0
-                dc.b  $D,$93,  0,$86,  0,$C6, $D,$F6
-                dc.b   0,$FC,  0,$42,  0,$20, $D,$81
-                dc.b   0,$CA,$1A,$85,  0,$16,$3B,$85
-                dc.b   0,$16,  2,$81,  0,$CA,  2,  8
-                dc.b   0,$8A,$1B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,$14,  0,$80
-                dc.b $22,$C1,  0,$54,  0,$80,  1,$C3
-                dc.b   0,$CD,  0,$80,$15,$7F,  0,$FF
-                dc.b $13,  0,  3,  0,$16,$2E,  0,$EE
-                dc.b  $E,$17,  0,$5C,$5E,  2,  0,$B8
-                dc.b   2,  3,  0,$AE,  4,  2,  4,$65
-                dc.b   0,$21,  0,$84,  8,  3,  3,  9
-                dc.b $25,$40,  3,$80,$46,  2,  0,  4
-                dc.b   0,$80,  0,  0,$8B,$FF,$25,$C0
-                dc.b   3,$C0,$D5,  0,  0,$20,  0,$AF
-                dc.b   0, $A, $D,$2A,  0,$2C,  0,$FE
-                dc.b  $D,  1,  0,$42,  0,$10,  2,  2
-                dc.b   0,$70,  8,  6,  0,$16,  0,$CF
-                dc.b   0,$80, $D,$1E,  0,$6A, $E,$1A
-                dc.b   0,$9C,  0,$C0, $D,$17,  0,$2A
-                dc.b   0,$BE, $C,  8,  0,$1C,  0,$E0
-                dc.b   0,$84,  0,$A0, $B,  7,$41,  0
-                dc.b   9,  0,  9,  0,  4,$80,  3,$80
-                dc.b   1,  0,  0,  2,  1,  0,  1,$1B
-                dc.b   0,$F3,  0,$F8,  1,  2,  1, $F
-                dc.b $13,  0,  1,  0,$23,$C0,  0,  0
-                dc.b   0,  0,  1,$C0,  0,  0,  0,  0
-                dc.b $2A,$80,  0,  0,  2,$80,$15,  0
-                dc.b   0,  0,  0,  0, $E,$14,  0,  0
-                dc.b $52,  8,  0,  0, $A,  8,  0,$F0
-                dc.b   0,  0,  0,  0,  0,  8,  0,$F0
-                dc.b   0,  0,  3,  0,  4,  0,  0,  0
-                dc.b   0,  0,  8,  0,  3,  0,$25,  0
-                dc.b   0,$FF,  0,$FF,  1,  0,  0,$FF
-                dc.b   0,$FF,$45,  0,  0,$FF,  0,$FF
-                dc.b $60,  0,  0,  0,  0,$FF,  0,$FF
-                dc.b $27,$FF,$25,  0,  0,  0,  2,  0
-                dc.b $AA,  0,  0,  0,$29,  0,  0,  0
-                dc.b   0,$40,  0,  0,  2,  1,  0,$11
-                dc.b   9,  0,  0,  0,  0,  0, $E,  0
-                dc.b   0,  0,  2,  0,  0,$30,  8,  0
-                dc.b   0,  0,  0,  0, $E,  0,  0,  0
-                dc.b  $E,  0,  0,  0, $E,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b $73,$C3,  0,$F0,$17,  0,  1,$14
-                dc.b   0,$80,$35,$FF,  0,$D7,  0,$B9
-                dc.b   5,  0,  0,$14,  0,$81,$13,$FA
-                dc.b   0,$64,  2,$5C,  0,$A7,$5C,  0
-                dc.b   0,  0,  0,$BE,  0,$D8,  0,$FF
-                dc.b   0,$FE,  0,$99,  0,$C8, $E,$CD
-                dc.b   0,$40,$11, $C,  0,$C9,  0,$60
-                dc.b   1,  1,  0,$50,  0,$20, $A,$84
-                dc.b  $C,  0,$FF,$FF,$56,$26,  0,$53
-                dc.b $A7,  0,  0,$A6,  0,$3D,  0,$16
-                dc.b  $D,$24,  0,$BD,  0,$62,$1D,$28
-                dc.b   0,$C8,  0,$80, $D,$8B,  0,$B6
-                dc.b  $E,$5A,  0,$3F,  0,$40, $D,$2D
-                dc.b   0,$6B,  0,$A2, $D,$77,  0,$B6
-                dc.b   0,$7D,  0,$60,$8B,  0,  1,$14
-                dc.b   0,$80,$32,$71,  0,$1F,$14,  4
-                dc.b   1,$19,  0,$13,  0,$FF,  6,$80
-                dc.b   0,  0,  2,$80,  0,  0,$15,$45
-                dc.b   0,$28,  1,$FF,  0,$FF,  0,$E6
-                dc.b   2,$29,  0,$B0,  2,$37,  0,$C8
-                dc.b $22,  1,$4B,  3,  0,$65,  3,$84
-                dc.b  $C,  0,$75,  0,$89,$FF,$75,  0
-                dc.b   0,  0,$88,  0,  0,$A9,  0,$98
-                dc.b   0,$9C, $D,$29,  0,$1B,  0,$14
-                dc.b  $D,$4A,  0,$C9,  0,$40, $D,$2B
-                dc.b   0,$25,  0,  0, $D,$8E,  0,$DC
-                dc.b  $E,$5D,  0,  0,  0,$80, $D,$2F
-                dc.b   0,$D1,  0,$94, $D,$7A,  0,$B3
-                dc.b   0,$C1,  0,$C0, $B,  0,$7F,  0
-                dc.b   5,$3E,  0,$18,  2, $E,  0,$1E
-                dc.b $16,$7C,  0,$37,$CF,$8B,  0, $A
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$E3
-                dc.b   0,$25,  0,  3, $D,$73,  0,$F0
-                dc.b   0,$99, $D,$65,  0,$68,  0,$D0
-                dc.b   2,  1,  0,$40,  8,  6,  0,$53
-                dc.b   0,$9E,  0,$40, $D,$C4,  0,$D3
-                dc.b  $E,$8C,  0,$38,  0,$A0, $D,$58
-                dc.b   0,$EC,  0,$B9, $D,$AD,  0,$F0
-                dc.b   0,$96,  0,$30, $D,$80,  0,  0
-                dc.b $1A,$80,  0,  0,$3B,$80,  0,  0
-                dc.b   2,$80,  0,  0,  2,$1A,  0,  6
-                dc.b   1,$1B,  0,$F3,  0,$F8,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $25,$AE,  0,$9D,  2,$A6,  0,$12
-                dc.b $16,$5F,  0,$80,  8,  0,  1,  7
-                dc.b   0,$FF,  0,$FF,  6,$13,  0,$7F
-                dc.b $18,$FF,  0,$E2,  0,$14,  6,$72
-                dc.b   0,$3C,  6,  4,  0,$91,$1E,  1
-                dc.b   1,$A5, $E, $D,  0,$10,$2C,$FF
-                dc.b   0,$FD,  0,$29,  1,$FF,  0,$F7
-                dc.b   0,$D5,  0,$80,  6,$D7,  0,$FF
-                dc.b   2,$8B,  0, $A, $B,  9,$25,  1
-                dc.b   0,$80,  0,  0,  1,  2,  0,$80
-                dc.b   0,  0,$1E,$80,  0,  0,$24,  0
-                dc.b   0,$40,  7,$20,  6,  8,  0,  4
-                dc.b   0,$89,  0,$78,$7B,$FF,$FF,  0
-                dc.b   0,$1E,  0,$F0,  0,$37, $D,$27
-                dc.b   0,$E7,  0,$F5, $D,  0,  0,$44
-                dc.b   0,$A0,  2,  0,  0,$30,  9,$15
-                dc.b   0,$95,  0,$40, $D,$1C,  0,$C7
-                dc.b  $E,$19,  0,$2E,  0,$20, $D,$15
-                dc.b   0,$EB,  0,$95, $C,  0,  0,$1B
-                dc.b   0,$52,  0,$B1,  0,$70, $B,  0
-                dc.b $7F,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$38,  0,  0,$2E,  0,$7F
-                dc.b   6,$31,  0,$B0,$13,$E6,  0,$53
-                dc.b   2,$69,  0,$67, $A,$7B,  0,$4F
-                dc.b $2D,$E0,  0,$A0,$21,$FF,  0,$FE
-                dc.b   0,  4,  0,$D0,  0,  0,  0,  1
-                dc.b   0,$4F,  0,$F8, $C,$FF,  0,$FA
-                dc.b   0,$45,  0,$80,$11,  1,  0,$E1
-                dc.b   0,$40,  1,  2,  0,$2A,  0,$E0
-                dc.b  $A,$8B,  0, $A, $B,  0,$56,$FF
-                dc.b   0,$FF,$A7,$FF,$42,$80,$13,$13
-                dc.b   0,$9B,$74,$FF,  0,$FF,  0,$EE
-                dc.b   0,$80,$2F,  0,  0,$54,  0,$32
-                dc.b   0,$37, $D,$BA,  0, $D,  0,$F5
-                dc.b  $E,$C1, $E,$EF,  0,$15,  0,$40
-                dc.b  $D,$3E,  0,$C7, $E,$16,  0,$EE
-                dc.b   0,$20, $D,$F2,  0,$D1,  0,$95
-                dc.b  $D,$2E,  0,$AA,  0,$D1,  0,$70
-                dc.b $8B,  0,$25,$96,  0,$E1,  2,$40
-                dc.b   0,$30,  0,$80,  9,$88,  0,$9F
-                dc.b $14,$10,  1, $F,  0,$2F,  7,$88
-                dc.b   0,$7F,$18,$FF,  0,$E1,  0,$D4
-                dc.b   3,$E4,  2,  0,  0,  0,  1,$FF
-                dc.b   0,$B7,  0,$20,$24,  1,$4E,$8B
-                dc.b   0, $A, $B,  0,$25,$40,  3,$80
-                dc.b $47,$10,  0,$82,  0,$80,  9,$20
-                dc.b $81,$FF,$25,$3A,  0,$3E,  2,$8F
-                dc.b   0,$10,$45,$FF,  0,$FE,  0,$60
-                dc.b  $A,$2B,  0,$80,$80,  0,  0,$57
-                dc.b   0,$8D,  0,$BD, $D,$BE,  0,$6B
-                dc.b   0,$A7, $D,$3C,  0,$5C,  0,$70
-                dc.b  $D,$F1,  0,$71,  0,$C0, $D,$41
-                dc.b   0,$ED, $E,$19,  0,$AF,  0,$60
-                dc.b  $D,$F5,  0,$37,  0,$87, $D,$31
-                dc.b   0,$A8,  0,$15,  0,$D0,$8B,  0
-                dc.b   1,$10,  0,  0,  2,$46,  0,$70
-                dc.b   2, $C,  0,$26,$16,$4C,  0,$FB
-                dc.b $CF,$8F,  0,  0, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$FB,  0,$BC,  0,  2
-                dc.b  $D,$93,  0,$EA,  0,$66,$1D,$64
-                dc.b   0,$E9,  0,$80, $D,$DB,  0,$E2
-                dc.b  $E,$A0,  0,$65,  0,$C0, $D,$6A
-                dc.b   0,$7D,  0,$26, $D,$C3,  0,$D5
-                dc.b   0,$44,  0,$20,$4D,  0,  9,  0
-                dc.b   9,  0, $B,  2,  0,  0,  0,  0
-                dc.b   1,$1C,  0,  3,  2,  2,  1, $F
-                dc.b $13,  0,  1,$10,$23,$81,  0,$54
-                dc.b   2,$BF,  0,$76,$5F,  0,$18, $F
-                dc.b $35,  3,  0,$9F,  2,  3,  0,$24
-                dc.b   0,$80,  1,  3,  0,$5A,  0,$40
-                dc.b   0,$FF,  0,$FF,  0,$DA,  4,  3
-                dc.b   1,  2,  0,$C9,  0,$FF,  0,$65
-                dc.b   0,$21,  0,$8F,  8, $E,  1,  9
-                dc.b   1,  0,$E1,  1,$1D,$FF,$E0,$FF
-                dc.b   0,$FF,  0,$CC,$1C,  0,  0,$26
-                dc.b   0,$12,  0,$F8, $D,$31,  0,$2F
-                dc.b   0,$68, $D,  6,  0,$A6,  0,$80
-                dc.b  $D,$1A,  0,$9A, $E,$23,  0,$78
-                dc.b  $E,$1F,  0,  9, $E,$1B,  0,  4
-                dc.b   0,$68, $D,$21,  0,$AD,  0,$1F
-                dc.b   0,$80,$6C,  0,  0,  2,  3,$1B
-                dc.b   0,$F3,  0,$F8,$17,  0,  1,  0
-                dc.b   0,  0,$22,$C0,  0,  0,  0,  0
-                dc.b   1,$C0,  0,  0,  0,  0,$15,  0
-                dc.b   0,  0,  8,  8,  1,  8,  0,  0
-                dc.b   0,  0,  6,$80,  0,  0,  2,$80
-                dc.b $15,  0,  0,  0,  0,  0,  6,  0
-                dc.b   0,  0,  6,$14,  0,  0,$1E,  0
-                dc.b   1,  3, $E,  8,  0,  0,$2C,  0
-                dc.b   0,  8,  0,$F0,  1,  0,  0,  8
-                dc.b   0,$F0,  0,  0,  3,  0,  2,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  7,  0,  3,  0,$25,  0
-                dc.b   0,$FF,  0,$FF,  1,  0,  0,$FF
-                dc.b   0,$FF,$1E,$FF,  0,$FF,$25,  0
-                dc.b   0,$FF,  0,$FF,  5,  0,  6,  0
-                dc.b   0,  0,  0,$FF,  0,$FF,$7B,$FF
-                dc.b $25,  0,  3,  0,$D5,  0,  0,  0
-                dc.b   0,$40,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $E,  0,  0,  0, $C,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0, $E,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  0,  0,$4D,  4
-                dc.b   9,  4,  9,  4,  4,  0,  3,  0
-                dc.b   1,$FF,  0,$FF,  1,$DE,  1,  1
-                dc.b   0,$78,  0,$C0,  1,  0,  1,  0
-                dc.b $13,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$10,  0,  0,$36,  4
-                dc.b   0,$9E,  5,$FF,  0,$D3,  0,$22
-                dc.b $13,$DC,  0,$7B,$60,  0,  0,  1
-                dc.b   0,$22,  0,$58,  1,  0,  0,  0
-                dc.b   0,$F0, $D,$F9,  0, $A,$12, $E
-                dc.b   0,$57,  0,$60,  1,  6,  0,$10
-                dc.b   0,$20, $A,$8F,  0,  0, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$6C,  0,$C9
-                dc.b   0,$36,  7,$6F,  0, $C,  4,$DA
-                dc.b   0,  7,  0,$C2,  7,$6F,  0, $C
-                dc.b $14,  0,  0,$60,  0,$80, $D,$55
-                dc.b   0,$D6, $E,$2B,  0,$1B,  0,$40
-                dc.b  $D,  4,  0,$62,  0,  2, $D,$44
-                dc.b   0,$8F,  0,$7F,  0,$60,$8B,  0
-                dc.b   1,$10,  0,  0,$21,$FF,  0,$DD
-                dc.b   0,$35,  2,$71,  0,$98,$20,  9
-                dc.b   1,  7,  0,$73,$22,$F8,  0,$C4
-                dc.b  $A,$CB,  0,$80,$24, $F,  5,$75
-                dc.b   0,$DE,  2,$CD,  0, $E,$43,$8F
-                dc.b   0,  0, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$70,  0,$24,  0,$BC, $D,$DE
-                dc.b   0,$65,  0,$74, $D,$40,  0,$AF
-                dc.b   0,$40, $D,  2,  0,$BD,  0,  0
-                dc.b  $D,$58,  0,$FC, $E,$2D,  0,$DC
-                dc.b   0,$80, $D,  6,  0,$C7,  0,$F4
-                dc.b  $D,$47,  0,$8C,  0,$C3,  0,$C0
-                dc.b $8B,  0,  1,$14,  0,$80,  2,$3E
-                dc.b   0,$18,  2, $A,  0,$E2,$16,$55
-                dc.b   0,$73,$CF,$83, $C,  0,$FF,$FF
-                dc.b $FF,  0,  0,$41,  0,$36,  0,$99
-                dc.b  $D,$EE,  0,$43,  0,$7B,$1D,$95
-                dc.b   0,$C6,  0,$C0, $D,$1D,  0,  9
-                dc.b  $E,$D9,  0,$67,  0,$E0, $D,$9C
-                dc.b   0,$1D,  0,$DB, $D,  1,  0,$B1
-                dc.b   0,$5B,  0,$90,$8B,  0,  1,$14
-                dc.b   0,$80,$22,$52,  0,$DA,  2,$DF
-                dc.b   0,  8,$20,  3,  1,$3F,  0, $B
-                dc.b   0,$FF,$29,  9,  0,$EC,$26,  1
-                dc.b   1,  1,$16,$13,  0,$80,  0,$FF
-                dc.b   0,$FF,  0,$EC,  0,$C0,$19,  2
-                dc.b   0,$E0,  0,$80,  1,  6,  0,$6C
-                dc.b   0,  0,  1,  8,  0,$F0,  0,  0
-                dc.b   0,  0,  0,  8,  0,$F0,  6,  4
-                dc.b   0,$E7,  3,$83, $C,  0,$79,$20
-                dc.b $67,  0,$1D,$FF,$E0,  0,  0,  0
-                dc.b   0,  0,$1C,  0,  0,$4E,  0,$BC
-                dc.b   0,$29, $D,$66,  0, $F,  0,$2B
-                dc.b  $D, $D,  0,$CC,  0,$B0, $D,$37
-                dc.b   0,$32,  0,$C0, $D,$49,  0,$99
-                dc.b  $E,$95,  0,$89,  0,$F0,  2,  2
-                dc.b   0,$A0,  3,$78,  0,$4C,  3,  3
-                dc.b   0,$38,  0, $F,  0,$8B, $D,$45
-                dc.b   0,$E0,  0,$D4,  0,$90,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,$35,$FF,  0,$FD
-                dc.b   0,$3E,  6,$F7,  0,$3F,$13,$E7
-                dc.b   0,$4F,$60,$FF,  0,$FF,  0,$EF
-                dc.b   0,  8,  0,$FF,  0,$FF,  0,$C5
-                dc.b  $E,$FA,  0,$65,  0,  0,$11,  9
-                dc.b   0,$8A,  0,$20,  1, $C,  0,$CB
-                dc.b   0,$A0, $A,$83, $C,  0,$FF,$FF
-                dc.b $FF,  0,  0,$B2,  0,$43,  0,$CD
-                dc.b   7,$6E,  0,$F4,  4,$34,  0,$60
-                dc.b   0,$D7,  7,$6E,  0,$F4,$14,$31
-                dc.b   0,$3D,  0,$C0, $D,$96,  0,$FD
-                dc.b  $E,$64,  0,$1D,  0,$60, $D,$36
-                dc.b   0,  2,  0,$B7, $D,$82,  0,$6B
-                dc.b   0,$96,  0,$D0,$8B,  0,  1,$14
-                dc.b   0,$80,$21,  0,  0,$F8,  0,$1D
-                dc.b   0,$80,  1,$E9,  0,$F1,  0,  0
-                dc.b $25,  3,  0,$75,  0,$C0,$1C,  0
-                dc.b   0,$2F,  0,$4E, $A,$CF,  0,$C0
-                dc.b $24,$A5,  5,$6D,  0,$56,  2,$DF
-                dc.b   0,$FE,  4,$FF,$39,  1,  0,$EF
-                dc.b   3,$83, $C,  0,$FF,$FF,$25,$C5
-                dc.b   0,$1C,  2,$B7,  0,$60,$D4,  0
-                dc.b   0,$B5,  0,$9F,  0,$53, $D,$38
-                dc.b   0,$BE,  0,$89, $D,$4C,  0,$E6
-                dc.b   0,$90, $D,$33,  0,$9A,  0,$40
-                dc.b  $D,$9A,  0,$23, $E,$66,  0,$DE
-                dc.b   0,$A0, $D,$38,  0,$68,  0,$A9
-                dc.b  $D,$85,  0,$68,  0,$DB,  0,$30
-                dc.b $8B,  0,  9, $E,  0,$E4,$16,$78
-                dc.b   0,$3F,$CF,$8F, $C,  0,$FF,$FF
-                dc.b $FF,  0,  0,$16,  0,$AF,  0,$A8
-                dc.b  $D,$B6,  0,$F6,  0,$78,$1D,$77
-                dc.b   0,$DE,  0,  0, $D,$F5,  0,$28
-                dc.b  $E,$B6,  0,$83,  0,  0, $D,$7D
-                dc.b   0,$BD,  0,$78, $D,$DB,  0,$D4
-                dc.b   0,$4A,  0,$80,$4D,  4,  9,  4
-                dc.b   9,  4, $B,  0,  3,$1B,  0,$F3
-                dc.b   2,  0,  1,  0,$13,  0,$25,$C0
-                dc.b   0,  0,  2,$C0,  0,  0,$20,  8
-                dc.b   1,  8,  0,  0,  0,  0,$29,  0
-                dc.b   0,  0,$26,  0,  1,$FF,$16,$10
-                dc.b   0,  0,  0,  0,  0,  2,  0,  0
-                dc.b   0,  0,$18,$FF,  0,$F7,  0,$8A
-                dc.b   3,$B5,  2,  5,  0,  7,  0,$80
-                dc.b   1,  9,  0,  8,  7,$F5,  3,$8F
-                dc.b  $C,  0,$79,  0,$67,$80,  0,$90
-                dc.b   0,$C4,$1B,$FF,$E1,  9,  0,  8
-                dc.b $1C,  0,  0, $A,  0,$28,  0,$FB
-                dc.b  $D, $C,  0,$E3,  0,  1, $D,  1
-                dc.b   0,$BE,  0,$10, $D,  6,  0,$F8
-                dc.b   0,$40, $D,  9,  0,$4B, $E,  8
-                dc.b   0,$21,  0,$A0,  2,  0,  0,$E0
-                dc.b   3,$75,  0,$40,  3,  0,  0,  7
-                dc.b   0,$14,  0,$21, $D,  8,  0,$D2
-                dc.b   0,$C5,  0,$B0,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$38,  0
-                dc.b   0, $E,  0,  8,  6,$D3,  0,$94
-                dc.b $13,$E2,  0,$8B,$61,$FE,  0,$53
-                dc.b   0,$E0,  0,  0,  0,  0,  0,$4C
-                dc.b   0,$40, $D,$F9,  0,$CC,  0,$80
-                dc.b $11,  3,  0,$1D,  0,$80,  1,  6
-                dc.b   0,$3F,  0,  0, $A,$8F, $C,  0
-                dc.b $FF,$FF,$FF,  0,  0,$87,  0,$BC
-                dc.b   0,$DC, $D,$FD,  0,$13,  0,$D4
-                dc.b $1D,$13,  0,$55,  0,  0, $D,$6F
-                dc.b   0,$1C, $E,$41,  0,$38,  0,$80
-                dc.b  $D,$17,  0,$A2,  0,$54, $D,$5C
-                dc.b   0,$8E,  0,$85,  0,$C0,$8B,  0
-                dc.b $25,$4C,  0,$D8,  2,$73,  0,$C9
-                dc.b   0,$80,$45,$3E,  0,$98,  9,  0
-                dc.b   0,$19,$25,$FF,$49,  3,  0,$65
-                dc.b   3,$8F, $C,  0,$FF,$FF,$25,$3A
-                dc.b   0,$3E,  2,$8F,  0,$10,$D4,  0
-                dc.b   0,$8B,  0,$18,  0,$62, $D,  1
-                dc.b   0,$71,  0,$86, $D,$45,  0,$6C
-                dc.b   0,$60, $D,$15,  0,$B1,  0,$80
-                dc.b  $D,$72,  0,$42, $E,$43,  0,$F9
-                dc.b   0,$C0, $D,$1A,  0,  8,  0,$46
-                dc.b  $D,$5F,  0,$8B,  0,$CA,  0,$20
-                dc.b $8B,  0,  9, $C,  0,$AA,$E7,$8A
-                dc.b   0,  8, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$90,  0,$85,  0,$E8, $D,$55
-                dc.b   0,$65,  0,$38,$1D,$CD,  0,$8E
-                dc.b  $E,$67,  0,$68, $E,$1A,  0,$7B
-                dc.b  $E,$D4,  0,$C4,  0,$38, $D,$48
-                dc.b   0,$4E,  0,$2E,$6F, $F,  0,$31
-                dc.b $1B,  0,  1,  0,  0,  0,$87,  4
-                dc.b $18,  3,$34,  0,  0,  1,  0,  0
-                dc.b   0,  0,  1,  1,  0,  0,  2,  8
-                dc.b   0,$F0,  0,  0,  1,  8,  0,$F0
-                dc.b   4,  0,  1,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  8,  0
-                dc.b   1,  0,  1,  0,$E1,  0,  0,$FF
-                dc.b   0,$FF,$1B,$FF,$E1,  0,  0,  0
-                dc.b $1C,  0,  0,  0,  0,$40,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0, $E,  0
-                dc.b   0,  0,  0,  0,  7,$65,  5,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0,  0,  0,$6C,$FF,  0,$FF
-                dc.b   3,  1,  0,$78,  0,$C0,$17,  0
-                dc.b   1,$14,  0,$80,$22,$9F,  0,$B7
-                dc.b   2,$EE,  0,$DE,  0,$80, $D,  1
-                dc.b   0,$40,  6,$12,  0,$EF,$13,  0
-                dc.b   3,  0,$16,$4F,  0,$FC,$30,  5
-                dc.b $3D,  7,  0,$F1,  0,$40,  0,$FF
-                dc.b   0,$FC,  0,$A5,  0,$A0,  3,  2
-                dc.b   4,$65,  0,$21,  0,$8A,  0,  8
-                dc.b   7,  3,  3,  9,$25,  1,  0,$80
-                dc.b   0,  0,  1,  2,  0,$80,  0,  0
-                dc.b  $E,$80,  0,  0,  5,  1,  0,$AB
-                dc.b   0,$5C,$2C,  4,  0,  4,$6F,$40
-                dc.b   3,$80,  0,$A7,  0,  0,$17,$FF
-                dc.b $25,$C0,  3,$C0, $F,  1,  0,$40
-                dc.b   6,$2F,  0,$C0,$2E,  8,  0,$40
-                dc.b $6F,$88,  1,$FF,  0,$FF,  0,$4C
-                dc.b $18,  0,  0,$12,  0,$E0,  0,$F8
-                dc.b  $D,$18,  0,$39,  0,$68, $D,  1
-                dc.b   0,$42,  0,$10,  2,  1,  0,$80
-                dc.b   8,  6,  0, $D,  0,$1A, $E,$11
-                dc.b   0,$78, $E, $F,  0,$49, $E, $D
-                dc.b   0,$4E,  0,$68, $D,$10,  0,$95
-                dc.b   0,$FF,  0,$80,$4D,  0,  9,  0
-                dc.b   9,  0,  4,$80,  3,$80,  1,  0
-                dc.b   0,  2,  1,  0,  1,$1B,  0,$F3
-                dc.b   0,$F8,  1,  2,  1, $F,$13,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $38,$FF,  0,$DE,  0,$EE,  5,  0
-                dc.b   0, $D,  0,$E4,$13,$E3,  0,$DD
-                dc.b   2,$4D,  0,$D3,$5E,$21,  1,$FF
-                dc.b   0,$FE,  0,$D3,  0,$70, $E,$F6
-                dc.b   0,$C0,$11,  2,  0,$55,  2, $A
-                dc.b   0,$9B,  0,$80, $A,$8A,  0,  8
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,  1
-                dc.b   0,$93,  0,$1C, $D,$9B,  0,$82
-                dc.b   0,$94,$1D,$69,  0,  5, $E,$E1
-                dc.b   0,$5C, $E,$A5,  0,$30, $E,$6E
-                dc.b   0,$A9,  0,$14, $D,$C9,  0,  8
-                dc.b   0,$69,$8C,  0,$25,$5C,  0,  8
-                dc.b   2,$9B,  0,$D4,$20,$10,  1, $F
-                dc.b   0,$33,  1,$FF,  0,$FF,  0,$F6
-                dc.b   0,  0,  2,$91,  0,$8F,  2,$88
-                dc.b   0,$7F,$14,$FF,  0,$FB,  0,$50
-                dc.b   5,$FF,  0,$D6,  0,$40,  2,$8A
-                dc.b   0,$F8,$24,  5,  5,$BA,  0,$90
-                dc.b   2,$BA,  0,$42,  5,$FF,  0,$FF
-                dc.b   0,$FE,  0,  1,  8,$FF,  0,$FF
-                dc.b   0,$FF,  0,$1E,$2E,$8A,  0,  8
-                dc.b  $B,  0,$79,$20,  2,  1,  0,  4
-                dc.b $81,$FF,$FF,  0,  0,  4,  0,$EE
-                dc.b   0,$A2, $D,$9F,  0,$E0,  0,$46
-                dc.b  $D,$4A,  0,$41,  3,  2,  9,  6
-                dc.b   0,$6B,  0,$61, $E,$E4,  0,$82
-                dc.b  $E,$A7,  0,$F1, $E,$71,  0, $F
-                dc.b   0,  6, $D,$CC,  0,  5,  0,$AE
-                dc.b $8C,  0,  1,$10,  0,  0,  2,$40
-                dc.b   0,$FA,  3,$38,$E7,$9E,  0,$13
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$80
-                dc.b   0,$FE,  0,$58, $D,$41,  0,$33
-                dc.b   0,$88,$1D,$C2,  0,$A2, $E,$58
-                dc.b   0,$D8, $E, $D,  0,$BD, $E,$C9
-                dc.b   0,$AC,  0,$88, $D,$3A,  0,$7A
-                dc.b   0,$95,$6F, $C,  0,$A4,$1B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$10,  0,  0,$22,$91,  0,$20
-                dc.b   2,$D5,  0,$96,  0,  0, $D,  0
-                dc.b   0,  0,  6,$20,  0,$40,$2D,$FF
-                dc.b   0,$82,  0,$98, $E,  4,  0,$A1
-                dc.b $20,$A5,$3C,$FF,  0,$FD,  0, $F
-                dc.b   0,$80,  1,$FA,  0,$CE,  0,  0
-                dc.b  $A,$9E,  0,$13, $B,  9,$41,$80
-                dc.b   0,$80,  0,  0,$2C,  0,  0,$40
-                dc.b  $E,  8,  0,  4,  0,$5B,  0,$C0
-                dc.b $5D,  0,  3,  0,  0,$FF,  0,$FF
-                dc.b $17,$FF,$39,  0,  0,  0,  6,$3B
-                dc.b   0,$D0,$2E,  0,  0,  0,$6F,  0
-                dc.b   1,  0,  0,  0,  0,  0,$18,  0
-                dc.b   0,$10,  0,$B9,  0,$A3, $D,$15
-                dc.b   0,$6C,  0,$79, $E,$41,  0,$C0
-                dc.b   2,  2,  0,$30,  9, $B,  0,$96
-                dc.b   0,$40, $D, $F,  0,$73, $E, $D
-                dc.b   0,$84,  0,$A0, $D, $B,  0,$C4
-                dc.b   0,$99, $D, $E,  0,$AB,  0,$20
-                dc.b   0,$30,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,$10,  0,  0
-                dc.b $35,  0,  0,$19,  0,$F8,  6,$1B
-                dc.b   0,$98,$13,$D5,  0,$29,$62,$FD
-                dc.b   0,$D0,  0,  0,  0,  0,  0,$AB
-                dc.b   0,$C0, $D,$F8,  0,$20,  0,$40
-                dc.b $11,  5,  0,$C5,  0,$40,  1,$10
-                dc.b   0,$A4,  0,$C0, $A,$9E,  0,$13
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$F2
-                dc.b   0, $B,  0,$8C, $D,$87,  0,$50
-                dc.b   0,$E4,$1D,$5E,  0,$19, $E,$D2
-                dc.b   0,$CC, $E,$98,  0,$72, $E,$63
-                dc.b   0,$91,  0,$64, $D,$BB,  0,$34
-                dc.b   0,$D0,$8C,  0,  1,$10,  0,  0
-                dc.b $22,$27,  0,$7F,  2,$E8,  0,$5D
-                dc.b $46,$E9,  0,$78,  5,  0,  0,$78
-                dc.b   0,$BC,  2,$A8,  0,$60,$24,$A5
-                dc.b $1C,  0,  0,  0,  0,  0,  0,$FA
-                dc.b $2E,$9E,  0,$13, $B,  0,$C1,$80
-                dc.b   0,$80,  0,  0,$3B,$FF,$C0,$FF
-                dc.b   0,$FF,  0,$FF,  0,$1E,$3B,  0
-                dc.b   0,$F5,  0,$67,  0,$12, $D,$8B
-                dc.b   0,$AE,  0,$96,$1D,$60,  0,$75
-                dc.b  $E,$D5,  0,$F2, $E,$9B,  0,$33
-                dc.b  $E,$65,  0,$F7,  0,$56, $D,$BE
-                dc.b   0,$32,  0,$15,$8C,  0,  1,$14
-                dc.b   0,$80,  1,  1,  0,$3E,  0,$18
-                dc.b   1,  1,  0, $D,  0,$82, $E,$EF
-                dc.b   0,$28,  2,$C4,  0,$EC,  3,$3F
-                dc.b   0,$FF,$5D,  0,  0,$65,  0,$40
-                dc.b  $B,  1,$60,$65,  0,$21,  0,$9B
-                dc.b   8,  4,  1,  1,  1,  0,$1A,$80
-                dc.b   0,  0,  2,$14,  0,$FC,$DF,$FF
-                dc.b $19,$EF,  0,$28,  2,$C0,  0,$D8
-                dc.b $E0,  0,  0,$E4,  0,$77,  0, $F
-                dc.b  $D,$C2,  0,$8C,  0,$FD, $D,$65
-                dc.b   0,$68,  0,$D0,  2,  1,  0,$40
-                dc.b   8,  6,  0,  8,  0,$97,  0,$40
-                dc.b  $D,$B6,  0,$1F, $E,$5F,  0,$5B
-                dc.b   0,$20, $D,$10,  0,$B9,  0,$9D
-                dc.b  $D,$93,  0, $A,  0,$CE,  0,$F0
-                dc.b $8B,  0,  1,$14,  0,$80,$22,$71
-                dc.b   0,$E8,  1,  1,  0,$58,  0,$E8
-                dc.b  $A,$E1,  0,$BF,  0,$FF,$B3,  3
-                dc.b   1,  7,  0,$1D,  0,$FF,  0,$65
-                dc.b   0,$21,  0,$9B,  8, $C,  1,  5
-                dc.b   1,  0,$25,$80,$D9,$FF,$25,$71
-                dc.b   0,$E8,$D8,  0,  0,$5B,  0,$63
-                dc.b   0,$E7, $D,$76,  0,$84,  0,  5
-                dc.b  $D,$10,  0,  6,  0,$50, $D,$40
-                dc.b   0,$19,  0,$40, $D,$55,  0,$77
-                dc.b  $E,$4A,  0,$C8,  0,$20, $D,$41
-                dc.b   0,$19,  0,$A5, $D,$51,  0,$25
-                dc.b   0,$4C,  0,$70, $B,  8,$65,$1B
-                dc.b   0,$C3,  0,$F0,$17,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$E0,$FF,  0,$FF
-                dc.b   1,$DE,  1,  1,  0,$78,  0,$C0
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $E5,$1B,  0,$C3,  0,$F0,$17,  0
-                dc.b   1,$14,  0,$80,$35,$FF,  0,$E9
-                dc.b   0,$F6,  5,$FF,  0,$BB,  0,$EF
-                dc.b $11,$FF,  0,$FF,  0,$F2,  0,$16
-                dc.b   2,$58,  0,$7F,  2,$79,  0, $B
-                dc.b   2,$7F,  0,$23,  2,$DE,  0,$8F
-                dc.b $19,  0,$13,$14,  0,$8B,$21,$FF
-                dc.b   0,$FE,  0,$76,  0,$B8,  0,$FF
-                dc.b   0,$FF,  0,$3E,  0,$D0, $C,$FF
-                dc.b   0,$F0,  0,$A3,  0,$60,$11,  3
-                dc.b   0,$A8,  0,$E0,  1,  1,  0,$38
-                dc.b   9,$65,  0,$21,  0,$9B,  8, $D
-                dc.b   1,  6,  1,  0,$39,  1,  7,  2
-                dc.b $12,  1,  0,  4,$10,$80,  0,  0
-                dc.b $2C,  1,  0,  4,$23,$40,  3,  1
-                dc.b  $E,  1,  0,  4,$13,$40,  3,$80
-                dc.b $19,$FF,$38,$FF,  0,$FD,  0,$9C
-                dc.b   5,$FF,  0,$F9,  0,$80,$13,$13
-                dc.b   0,$9B, $E,$6A,  0,$D2,$2D,$36
-                dc.b   0,$10,$21,$FF,  0,$FF,  0,$CE
-                dc.b   0,$80,  0,$FF,  0,$FF,  0,$DC
-                dc.b  $D,$FF,  0,$F4,  0,$D4,$12,  9
-                dc.b   0,  8,  2,  9,  0,  8,$18,  0
-                dc.b   0,$55,  0,$84,  0,$43,  6,$19
-                dc.b   0,$6F,  0, $C,  3,  5,  0,  8
-                dc.b   0,$AA,  0,$59,  6,$19,  0,$6F
-                dc.b   0, $C,  3,  5,  0, $D,  0,$C1
-                dc.b   0,$90,  2,  2,  0,$60,  8,  6
-                dc.b   0,$A4,  0, $E,  0,$40, $D,$30
-                dc.b   0,$13, $E,$EA,  0,$10,  0,$A0
-                dc.b  $D,$AA,  0,$9E,  0,$79, $D,$13
-                dc.b   0,$C5,  0, $A,  0,$30,$71,$1B
-                dc.b   0,$C3,  0,$F0,$17,  0,  1,$14
-                dc.b   0,$80,$22,$6D,  0,$9B,  2,$8F
-                dc.b   0,$10,  9,  1,  0,$34,  0,$BF
-                dc.b   0,$FF,$13,$10,  1, $F,  0,$33
-                dc.b   0,$FF,  0,$FF,  0,$FF,  0,$F6
-                dc.b   3,$9B,  0,$3F,  2,$88,  0,$7F
-                dc.b $15,$3E,  0,$16,  1,$FF,  0,$FF
-                dc.b   0,$E4,  1,$FF,  0,$8D,  0,$E0
-                dc.b   1,$FF,  0,$B9,  0,$60,$22,  1
-                dc.b   7,$77,  0,$7D,  0,$80,  1,$CC
-                dc.b   0,$46,  0,$80,  2,$18,  0,$9A
-                dc.b   0,$FF,  0,$FF,  0,$FF,  0,$E3
-                dc.b   8,$FF,  0,$FF,  0,$FF,  0,$87
-                dc.b $27,  3,  1,  3,  0,$65,  0,$FF
-                dc.b   0,$65,  0,$21,  0,$9B,  8, $C
-                dc.b   1,  5,  1,  0,$25,$40,  0,$C8
-                dc.b   0,$37,  1,$80,$47,$10,  0,$82
-                dc.b   0,$80,  5,$20,  3,$20,$2B,  1
-                dc.b   3,  2,  3,$10,  3,$80, $B,$40
-                dc.b $3D,$FF,$25,$65,  0,$D6,  2,$8F
-                dc.b   0,$10,$45,$FF,  0,$FE,  0,$60
-                dc.b  $A,$2B,  0,$80,$2A,$BA,  0,$90
-                dc.b   2,$BA,  0,$30,  3,  8,  0,$FB
-                dc.b   0,$FF,  0,$FF,  0,$FF,  0,$E3
-                dc.b   8,$FF,  0,$FF,  0,$FF,  0,$1E
-                dc.b $3B,  0,  0,$58,  0,$DF,  0,$C9
-                dc.b  $D, $D,  0,  8,  0, $B, $D,$4A
-                dc.b   0,$41,  0,$60,  2,  2,  9,  6
-                dc.b   0,$A6,  0,$6A,  0,$C0, $D,$33
-                dc.b   0,$39, $E,$EC,  0,$D1,  0,$E0
-                dc.b  $D,$AD,  0,  4,  0,$6B, $D,$16
-                dc.b   0,$C2,  0,$4E,  0,$90, $B,  8
-                dc.b $65,$1B,  0,$C3,  0,$F0,$17,  0
-                dc.b   1,$10,  0,  0,  6, $F,  0,$4A
-                dc.b   2,$84,  0,$FF,  0,$FF,  1,$84
-                dc.b   0,$FF,  0,$FF,  9,$C0,  0,$90
-                dc.b $D3,$9A,  0,  3, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$5D,  0,$74,  0,$D4
-                dc.b  $D,$5F,  0,$E2,  0,$3C,$1D,$5D
-                dc.b   0,$AF,  0,  0, $D,$27,  0,$94
-                dc.b  $E,$C2,  0,$A1,  0,$80, $D,$67
-                dc.b   0,$25,  0,$BC, $D,$FE,  0,$C3
-                dc.b   0,$F5,  0,$40,$8B,  0,  1,$10
-                dc.b   0,  0,$22,$C7,  0,$98,  1,  0
-                dc.b   0,$C7,  0,$8C,  9,  2,  0,$50
-                dc.b   0,$9F,$39,$FF,  0,$C5, $B,$6B
-                dc.b   0,$7C,$24,  5,$4E,$9A,  0,  3
-                dc.b  $B,  0,$25,  0,$4B,$10, $B,$20
-                dc.b $81,$FF,$25,  0,  0,  0,$56,$40
-                dc.b $81,  0,  0,$D4,  0,$61,  0,$AC
-                dc.b  $D,$13,  0,$D9,  0,$44, $D,$25
-                dc.b   0,$4C,  0,$40, $D,$95,  0,$31
-                dc.b   0,  0, $D,$C6,  0,$EC, $E,$AE
-                dc.b   0, $E,  0,$80, $D,$97,  0,$85
-                dc.b   0,$C4, $D,$BC,  0,$DE,  0,$72
-                dc.b   0,$C0, $B,  0,$7F,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$10
-                dc.b   0,  0,$36,$F4,  0,$98,  5,  0
-                dc.b   0,$25,  0,  6,$13,$E4,  0,$19
-                dc.b   2,$1A,  0,$4B,  2,$81,  0, $F
-                dc.b   2,$7A,  0,$9A,  2,$AB,  0,$43
-                dc.b $2D,  6,  0,$8E,$21,  0,  0,  0
-                dc.b   0,$4D,  0,$90,  2,$93,  0,$E0
-                dc.b  $D,$EE,  0,$E3,  0,$C0,$11, $B
-                dc.b   0,  4,  0,$40,  1,  9,  0,$4E
-                dc.b   0,$C0, $A,$9A,  0,  3, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$6D,  0,$F9
-                dc.b   0,$A8,  2, $C,  0,$61,  2,$1E
-                dc.b   0,$75,  0,$40,  3,  0,  0,$1C
-                dc.b   0,$1F,  0,  8,  2, $C,  0,$43
-                dc.b   2,$1E,  0,$75,  0,$40,  3,  0
-                dc.b $10,$F9,  0,$26,  0,  0, $D,$A1
-                dc.b   0,$88, $E,$4D,  0,$57,  0,  0
-                dc.b  $D,  1,  0, $A,  0,$98, $D,$7F
-                dc.b   0,$7E,  0,$30,  0,$80,$8B,  0
-                dc.b   1,$10,  0,  0,$21,  1,  0, $A
-                dc.b   0,$55,  2,$66,  0,$DF,  0,$80
-                dc.b   8,  0,  0,  0,  0,  0,  0,  0
-                dc.b $13,  8,  1,  8,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  3,  0
-                dc.b   0,  0,  2,  0,  0,  0,$14,$FF
-                dc.b   0,$BE,  0,$DC,  1,  0,  0,  0
-                dc.b   0,  4,  1,  0,  0,  0,  0,  0
-                dc.b   1,  0,  0,$46,  0,$6C,  2,  7
-                dc.b   0,$5C,$1E,  0,  1,  5,  5,$C0
-                dc.b   0,  0,  0,  0,  1,$C0,  0,  0
-                dc.b   0,  0,  2,  8,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  8,  0
-                dc.b   0,  0,  0,  0,  0,  0,$11,$22
-                dc.b   0,$90,  3,  8,  3,  8,  2,  5
-                dc.b   0,$20,  2,$10,  0,$6B,  0,$60
-                dc.b   3,  2,  1,  0,  0,$9F,  0,  0
-                dc.b   2,$9A,  0,  3,  7,  3,  1,  0
-                dc.b   1,  9,$25,$10,  0,$FF,  0,$FF
-                dc.b   1,$20,  0,$F1,  0,$70,$45,$40
-                dc.b   0,$8B,  0,$94,  5,  0,  2,$10
-                dc.b   0,  4,  0,$80,  0,  0,  0,  1
-                dc.b   0,  4,  0,$27,  0,$AF,$25,  0
-                dc.b   3,  0,  3,  0,  3,  0, $B,  0
-                dc.b $12,  8,  0,  4,  0,$56,  0,$F0
-                dc.b   9,  1,  0,$80,  0,  0,  1,  2
-                dc.b   6,  4,  0,  4,  0, $D,  0,$68
-                dc.b  $F,$FF,$25,$C0,  0,  0,  2,$C0
-                dc.b   0,  0,$45,  0,  0,  0,  0,  0
-                dc.b  $A,$40,  0,  0,$2A,  0,  0,  0
-                dc.b   2,  0,  0,  0,  3,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   8,  0,  0,  0,  0,  0,  0,  0
-                dc.b $10,$FF,  0,$E8, $B,  9,  0,  8
-                dc.b   2,  9,  0,  8,$18,  0,  0,$48
-                dc.b   0,$C6,  0,$22, $D,$5E,  0,$4E
-                dc.b   0,$C6, $D,  1,  0,$3F,  0,$E0
-                dc.b   2,  1,  0,$90,  9,$33,  0,  1
-                dc.b   0,$80, $D,$D9,  0,$24,  0,$90
-                dc.b   2,  4,  0,$30,  9,$58,  0,$BC
-                dc.b   0,$F0,  2,  7,  0,  0,  9,$33
-                dc.b   0,$CD,  0,$86, $D,$40,  0,$92
-                dc.b   0,$26,  0,$20, $B,  0,$66,$D3
-                dc.b $18,  0,  1,$14,  0,$80,  6, $C
-                dc.b   0,$BC,$E7,$92,  0,  0, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$4B,  0,$88
-                dc.b   0,$15, $D,$48,  0,$93,  0,$2F
-                dc.b $1D,$51,  0,$13,  0,$C0, $D,$16
-                dc.b   0,$C5, $E,$B3,  0,$EC,  0,$60
-                dc.b  $D,$5A,  0,$58,  0, $F, $D,$EE
-                dc.b   0,$CE,  0,$6B,  0,$50,$8B,  0
-                dc.b   1,$14,  0,$80,$6D,  0,  0,$52
-                dc.b   0,$FC, $A,$A6,  0,$3C,$24,$FF
-                dc.b $4E,$92,  0,  0, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$C2,  0,$74,  0,$ED
-                dc.b  $D,$FC,  0,$8A,  0,$37, $D,$22
-                dc.b   0,$25,  0,$70, $D,$88,  0,$95
-                dc.b   0,$C0, $D,$B6,  0,$1D, $E,$9F
-                dc.b   0,$59,  0,$60, $D,$8A,  0,$B8
-                dc.b   0,$17, $D,$AC,  0,$E8,  0,$E8
-                dc.b   0,$D0,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,$14,  0,$80
-                dc.b $36,$D9,  0,$F1,  6,  0,  0,$C7
-                dc.b $13,$D6,  0,$93,$3C,$FF,  0,$F9
-                dc.b   0,  8,$22,  1,  0,$C6,  0,$70
-                dc.b   1,$FE,  0,$BE,  0,$A8, $D,$ED
-                dc.b   0,$33,  0,  0,$11,$10,  0,$E7
-                dc.b   0,$C0,  1,  7,  0,$58,  0,$E0
-                dc.b  $A,$92,  0,  0, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$9D,  0,$E7,  0,$39
-                dc.b  $D,$4E,  0,  4,  0,$DB,$1D,$EC
-                dc.b   0,$8A,  0,$C0, $D,$90,  0,$B9
-                dc.b  $E,$3E,  0,$A1,  0,$E0, $D,$F4
-                dc.b   0,$3C,  0,$EB, $D,$6F,  0,$88
-                dc.b   0,$A6,  0,$90,$8B,  0,  1,$14
-                dc.b   0,$80,$21,  0,  0,$61,  0,$80
-                dc.b   2,$E9,  0,$A3,  0,  0,$2A,$56
-                dc.b   0,$A7,$19,$FF,  0,$D4, $A,$43
-                dc.b   0,$40,  2,$25,  0,$D6,$20,$FF
-                dc.b $30,$FF,  0,$FA,  0,$F0,  3,$10
-                dc.b   3,$10,  3,$D6,  0,$20,  1,  8
-                dc.b   0,$FF,  0,$20,  5,  1,  0,$4B
-                dc.b   0,$FF,  2,$92,  0,  0, $B,  9
-                dc.b $80,  2,  1,$FF,  0,$FF,$68,  0
-                dc.b   0,  0,  0,$FF,  0,$FF, $F,$FF
-                dc.b $FF,  0,  0,$36,  0,$D9,  0,$63
-                dc.b  $D,$46,  0,$FF,  0,$B9,$1D,$26
-                dc.b   0,$66,  0,$40, $D,$92,  0,$C1
-                dc.b   0,$C0, $D,$E3,  0,$13, $E,$26
-                dc.b   0,$FF,  0,$D9, $D,$30,  0,$9C
-                dc.b   0,$9C,  0,$30,$8B,  0,  1,$10
-                dc.b   0,  0,  2,$5A,  0,$20,  2,$11
-                dc.b   0,  0,  2,$85,  0,  0,  0,  0
-                dc.b   1,$85,  0,  0,  0,  0, $A,$6C
-                dc.b   2,$7D,  0,$CF,$CF,$8C, $C,  0
-                dc.b $FF,$FF,$FF,  0,  0,  9,  0,$EF
-                dc.b   0,$61, $D,$40,  0,$2B,  0,$53
-                dc.b $1D,$D6,  0,$FC, $E,$C9,  0,$51
-                dc.b  $E,$50,  0,$26,  0,$E0, $D,$E2
-                dc.b   1,$B3, $D,$98,  0,$54,  0,$78
-                dc.b   0,$10,$6E,  1,  0,$8E,  1,$1B
-                dc.b   0,$D3,  0,$F0,$17,  0,  1,$10
-                dc.b   0,  0,$1A,$BE,  0,$F2,$15,  0
-                dc.b   0,$79,  2,$FF,  0,$CC,  0,  9
-                dc.b   6,$24,  0,$39,  8,$18,  1, $A
-                dc.b   0,$37,  0,$FF,$20,$FF,  0,$95
-                dc.b   0,  0,  5,$FF,  0,$83,  0,$44
-                dc.b   1,$FF,  0,$78,  0,$40,  7,  3
-                dc.b   0,$FE,$19,  1,  1,$A5,  5,$9B
-                dc.b   0,$B2,  2,$E5,  0,$AA,  3, $F
-                dc.b   0,$E1,  0,$FF,  0,$FF,  0,$FF
-                dc.b   0,$FC,  8,$FF,  0,$FF,  0,$FA
-                dc.b   0,$54,$29,  0,  0,  3,  0,  0
-                dc.b   2,$8C, $C,  0,$39,  1,  7,  2
-                dc.b $37,$40,$2F,  1,  0,$80,  0,  0
-                dc.b   1,  2,  0,$80,  0,  0,  6,$80
-                dc.b   0,  0, $A,$80,  0,  0,$28,  1
-                dc.b   0,  4,  0,$18,  0,$E0, $F,$FF
-                dc.b $38,$FF,  0,$FC,  0,$50,  5,$FF
-                dc.b   0,$F4,  0,$E0,$39,$FF,  0,$B3
-                dc.b   0,$E0,$2A,$BF,  0,$E8,  2,$C2
-                dc.b   0,$28,  5,$FF,  0,$FF,  0,$FF
-                dc.b   0,$FF,$47,  0,  0,$80,  0,$DC
-                dc.b   0,$39, $D,$F4,  0,$22,  0,$5B
-                dc.b  $D,$21,  0,$3D,  0,  0,  2,  2
-                dc.b   0,$90,  8,  6,  0, $E,  0,$7E
-                dc.b  $E,$68,  0,$A9, $E,$3B,  0,$93
-                dc.b   0,$E0, $D,$12,  1,$BB, $D,$56
-                dc.b   0,$6E,  0,$F5,  0,$90,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$10,  0,  0,$36,$C0,  0,$2A
-                dc.b   6,$57,  0,$80,$11,  0,  0,  0
-                dc.b   0,$D7,  0,$CF,  2,$C7,  0,$BB
-                dc.b $38,  0,  0,$36,  0,$5A,$21,$FF
-                dc.b   0,$FF,  0,$DF,  0,$50,  1,$FF
-                dc.b   0,$EC,  0,  8, $D,$F4,  0,$E1
-                dc.b   0,$40,$11, $F,  0,$23,  0,$E0
-                dc.b   0,$FF,  0,$EF,  0,$AD,  0,  1
-                dc.b  $A,$8C, $C,  0,$38,  2,  7,  8
-                dc.b $13,  0,  0,  0,$62,  2,  3,$10
-                dc.b $28,$20,$19,$FF,$39,$BF,  0,$FC
-                dc.b   5,  0,  0,$55,  0,$B4,$13,$14
-                dc.b   0,$DF,$62,$DD,  3,$EB, $F,$D8
-                dc.b $12,  8,  0,$6A,  1,$FF,  0,$F0
-                dc.b   0,  0,  0,  1,$17,  0,  0,$40
-                dc.b   0,$1E,  0,$45, $D,$DB,  0,$4F
-                dc.b   0,$7F, $D, $E,  0,$42,  4,$90
-                dc.b   9,$72,  0,$73, $E,$43,  0,$45
-                dc.b  $E,$EC,  0,$FD,  0,$F0,  2,  3
-                dc.b   0,$B0,  9,$31,  0,$56,  0,$5F
-                dc.b   2,  5,  0,$43,  9,$19,  0, $E
-                dc.b   0,$B3,  0,$50,$8B,  0,  1,  0
-                dc.b   0,  0,$22,$C0,  0,  0,  2,$C0
-                dc.b   0,  0,$2B,$80,  0,  0,  2,$80
-                dc.b $15,  0,  0,  0,  0,  0, $A,$40
-                dc.b   0,  0,  2,$14,  0,  0,$20,  3
-                dc.b $30,  0,  0,  8,  0,  0,  3,  0
-                dc.b   3,  0,  2,  8,  0,$F0,  0,  0
-                dc.b   2,$F0,  0,  0,  3,  0,  1,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  8,  0,  3,  0,$25,  0
-                dc.b   3,  0,  0,$FF,  0,$FF,$45,  0
-                dc.b   0,$FF,  0,$FF,  8,  0,  0,  0
-                dc.b   0,$FF,  0,$FF,  0,  0,  0,  0
-                dc.b $52,  0,  0,  0,  0,$FF,  0,$FF
-                dc.b   9,  0,  0,$FF,  0,$FF,  1,  0
-                dc.b $19,$FF,$25,  0,  3,  0,$53,  0
-                dc.b $56,  0,  0,  0, $B,  0,  0,  0
-                dc.b   2,  0,  0,  0,$18,  0,  0,  0
-                dc.b   0,$40,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   2,  0,  0,$30,  8,  0,  0,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0,  2,  1,  0,  0,  9,  0
-                dc.b   0,  0,  0,  0,  2,  0,  0,$E0
-                dc.b   9,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  0,  0,$72,$C3
-                dc.b $18,  0,  5,$46,  0,$10,$16,$C8
-                dc.b   0,$9A,  2,$74,  0,$C3,$CF,$94
-                dc.b   0, $A, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$EF,  0,$27,  0,$74, $D,$1D
-                dc.b   0,$58,  0,$1C,$1D,$C4,  0,$27
-                dc.b   0,  0, $D,$B0,  0,$34, $E,$3A
-                dc.b   0,$2D,  0,$80, $D,$CF,  0,$37
-                dc.b   0,$9C, $D,$80,  0,$7C,  0,$5F
-                dc.b   0,$40,$6E,  0,  0,  0,  1,$1C
-                dc.b   0,  4,  0,  0,$17,  0,$25,$41
-                dc.b   0,$50,  0,$80,  0,  1,  0,$79
-                dc.b   0,$D0, $A,$92,  0,$FF,  1,  0
-                dc.b   0,  0,  0,  0,  6,  0,  0,  0
-                dc.b   8, $A,  0,$FF,  0,$F6,  0,$C0
-                dc.b   0,  0,$21,$DB,  6,  0,  0,  0
-                dc.b   0,  0,  2,$F3,  0,  0,  8,$FF
-                dc.b $1B,  3,  5,$B8,  0,$45,  0,$80
-                dc.b   1,$DF,  0,$D4,  3, $A,  0, $D
-                dc.b   3,$FD,  8,  0,  0,  0,  0,  0
-                dc.b   0,  0,$2A,$9B,  3,$94,  0, $A
-                dc.b  $B,  0,$25,$80,  0,$80,  0,  0
-                dc.b   2,$80,  0,  0, $D,  0,  7,  0
-                dc.b  $B,$10,  0,$80,  0,  0,$29,  0
-                dc.b $2E,  4,  0,  4,  0,$F1,  0,$70
-                dc.b   1,  0,  0,$FF,  0,$FF,  2,$80
-                dc.b   0,  0,$3A,$38,  0,$A8, $F,$FF
-                dc.b $25,$5A,  0,$A8,  1,  1,  0,$79
-                dc.b   0,$D6, $D,  0,  0,  0,  0,  0
-                dc.b   5,  0,  0,  0,  0,  0,$39,  0
-                dc.b   0,$40,  0,  0,$2A,$AA,  0,$FA
-                dc.b   2,  0,  0,  0,  3, $A,  0, $E
-                dc.b $4B,  0,  0,$66,  0,$14,  0,$4C
-                dc.b  $D,$D1,  0,$4F,  0,$24,$1D,$FB
-                dc.b   0,$A9,  0,  0, $D,$4F,  0,$8C
-                dc.b  $E,$25,  0,$9A,  0,$80, $D,$FF
-                dc.b   0,$97,  0,$A4, $D,$3E,  0,$96
-                dc.b   0,$DC,  0,$C0,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$39,$C4
-                dc.b   0,$6C,  6,$59,  0,  3,$17,$3E
-                dc.b   0,$1F,$39,$3B,  0,$8C,$23,$FF
-                dc.b   0,$40,  2,$FA,  0,$78, $D,$F5
-                dc.b   0,$87,  0,$80,$12,$E6,  0,$40
-                dc.b   1,$F5,  0,$1F,  0,$C1, $A,$94
-                dc.b   0, $A, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,  9,  0,$3E,  0,$48, $D,$A7
-                dc.b   0,$60,  0,$E8,$1D,$5F,  0,$9E
-                dc.b   0,  0, $D,$2A,  0,$28, $E,$90
-                dc.b   0,$63,  0,  0, $D,$AD,  0,$32
-                dc.b   0,$C8, $D,  1,  0,$36,  0,$9A
-                dc.b   0,$80,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  5,$5A,  0,$20
-                dc.b $16,$C0,  0,$6C,  2,$7D,  0,$CF
-                dc.b $CF,$9C,  0,  0, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$E8,  0,$95,  0,$BB
-                dc.b  $D,$14,  0,$CD,  0,$41,$1D,$BF
-                dc.b   0,$88,  0,$40, $D,$AA,  0, $B
-                dc.b  $E,$34,  0,$C9,  0,$A0, $D,$CA
-                dc.b   0,$86,  0,$61, $D,$7A,  0,$A3
-                dc.b   0,$11,  0,$B0,$6E,  1,  0,$8E
-                dc.b   1,$1B,  0,$D3,  0,$F0,$17,  0
-                dc.b $25,$C7,  0,$98,  0,  0,  0,  0
-                dc.b   0,$C7,  0,$8C, $A,$79,  0,$9F
-                dc.b   1,$FF,  0,$F8,  0,$73,  5,$FF
-                dc.b   0,$B6,  0,  4,  9,  0,  0, $D
-                dc.b   0,  3,  0,$FF,$20,  0,  0,$51
-                dc.b   0,$FC,  9,  0,  0,$BA,  0,$FC
-                dc.b   8,$FE,$1B,$FF,  5,$BE,  0,$BF
-                dc.b   0,  0,  6, $F,  0,$E2,  3,$FE
-                dc.b $35,  1,  0, $C,  3,$9C,  0,  0
-                dc.b  $B,  0,$25,  0,  0,$FF,  0,$FF
-                dc.b   2,$FF,  0,$FF, $D,  1,  7,  2
-                dc.b  $B,  0,  0,$FF,  0,$FF,$62,$FF
-                dc.b   0,$FF,$3A,$18,  0,$E0, $F,$FF
-                dc.b $25,  0,  0,  0,  1,  0,  0,  0
-                dc.b   0,  0, $D,$FF,  0,$FC,  0,$50
-                dc.b   5,$FF,  0,$F4,  0,$E0,$6F,  0
-                dc.b   0,  0,$4B,  0,  0,$5F,  0,$82
-                dc.b   0,$93, $D,$C8,  0,$C4,  0,$49
-                dc.b $1D,$F7,  0, $A,  0,$40, $D,$49
-                dc.b   0,$63, $E,$20,  0,$36,  0,$A0
-                dc.b  $D,$FA,  0,$E6,  0,$69, $D,$38
-                dc.b   0,$BD,  0,$8F,  0,$30,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $39,$BE,  0,$EB,  6,$50,  0,$47
-                dc.b $17,$C7,  0,$BB,$39,$4B,  0,$AA
-                dc.b $23,$66,  0,$20,  2,$E8,  0,$30
-                dc.b  $D,$F7,  0,$8B,  0,$40,$11,  0
-                dc.b   0,$BA,  0,  0,  1,$E9,  0,  6
-                dc.b   0,  1, $A,$9C,  0,  0, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$BC,  0,$FC
-                dc.b   0,$BF, $D,$5B,  0,$D8,  0,$2D
-                dc.b $1D,$5A,  0,$FF,  0,$40, $D,$23
-                dc.b   0,$FF, $E,$79,  0,$AB,  0,$D0
-                dc.b  $D,$8C,  0,$C9,  0, $D, $D,$FB
-                dc.b   0,$5D,  0,$4C,  0,$F0,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,$1A,$B7,  0,$96
-                dc.b   2,$79,  0,$AF,$CF,$95, $C,  0
-                dc.b $FF,$FF,$FF,  0,  0,$43,  0,$55
-                dc.b   0,$64, $D,$8A,  0,$CE,  0,$EC
-                dc.b $1D,$FF,  0,$5B,  0,  0, $D,$FF
-                dc.b   0,$24, $E,$7F,  0,$3F,  0,$80
-                dc.b  $D, $B,  0,$58,  0,$6C, $D,$CB
-                dc.b   0,$6F,  0,$1E,  0,$40, $D,$7E
-                dc.b   0,$76,$5B,$7E,  0,$76,  2,  0
-                dc.b   0,  0,  1,$1C,  0,  4,  0,  0
-                dc.b $17,  0,  1,$14,  0,$80,$17,$A8
-                dc.b   3,$E0,  6,$B3,  0,$C8,  0,$80
-                dc.b   0,  1,  0,$2F,  0,$18, $A,$48
-                dc.b   0,$FF,  1,  0,  0,$3B,  0,$4E
-                dc.b   7,$60,  8,$21,  1,$1B,  0,$C3
-                dc.b $22, $B,  6,$FF,  0,$83,  0,$8C
-                dc.b   1,$FF,  0,$43,  0,$60,  8,$FD
-                dc.b   2,  3,  0,$FF,$17,  3,  5,$8C
-                dc.b   0,$16,  2,$6B,  0,$4C,  4,$E1
-                dc.b   3,$FC,  8,$FF,  0,$FF,  0,$FA
-                dc.b   0,$54,$29,  2,  0,$99,  0,$80
-                dc.b   2,$95, $C,  0,$25,$80,$53,$40
-                dc.b $2E,  0,  0,  1,  0,  0,  0,  0
-                dc.b   1,  2,  0,  0,  0,  0,$3E,$22
-                dc.b   0,$C0, $F,$FF,$25,$B4,  0,$F0
-                dc.b $55,$FF,  0,$B3,  0,$E0,$2A,$8C
-                dc.b   0,$16,  2,$6B,  0,$4C,$50,  0
-                dc.b   0,$BA,  0,$42,  0,$3C, $D,$3E
-                dc.b   0,$C5,  0,$F4,$1D,$36,  0,$DD
-                dc.b   0,  0, $D,$9E,  0,$7C, $E,$6A
-                dc.b   0,$AC,  0,$80, $D,$3B,  0,$B8
-                dc.b   0,$74, $D,$89,  0,$89,  0,$9B
-                dc.b   0,$C0, $B,  8,$7F,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$14
-                dc.b   0,$80,$36,$CE,  0,$67,  6,$5C
-                dc.b   0,$C8,$52,$5C,  0,$61,$23,$A3
-                dc.b   0,$C8,  0,  0,  0,  0,  0, $A
-                dc.b   0,$D0, $D,$F9,  0,$A2,  0,$20
-                dc.b $11,  6,  0,$2D,  0,$80,  1,$F1
-                dc.b   0,$7F,  0,$C1, $A,$95, $C,  0
-                dc.b $FF,$FF,$FF,  0,  0,$DA,  0,$67
-                dc.b   0,$38, $D,$6F,  0,$49,  0,$B8
-                dc.b $1D,$9A,  0,$D2,  0,  0, $D,$79
-                dc.b   0,$18, $E,$B3,  0,$78,  0,  0
-                dc.b  $D,$4C,  0,$8B,  0,$98, $D,$4C
-                dc.b   0,$29,  0,$59,  0,$80,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$10,  0,  0,  2,$59,  0,$18
-                dc.b   6,$84,  0,$FF,  0,$FF,  1,$84
-                dc.b   0,$FF,  0,$FF,  9,$C0,  0,  0
-                dc.b   2,$7C,  0,$77,$CF,$8B,  0,$10
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$AB
-                dc.b   0,$58,  0,$7D, $D,$12,  0, $F
-                dc.b   0,$E7,$1D,$48,  0,$81,  0,$C0
-                dc.b  $D,$60,  0,$AD, $E,$D4,  0,$97
-                dc.b   0,$60, $D,$55,  0,$A3,  0,$C7
-                dc.b  $D,$28,  0, $A,  0,$41,  0,$D0
-                dc.b  $D,$80,  0,  0,$5B,$80,  0,  0
-                dc.b $1F,  0,  1,$10,  0,  0,$16,$B4
-                dc.b   0,$7E,  2,$B4,  0,$54,  6,$C7
-                dc.b   0,$98,  0,  0,  0,  0,  0,$C7
-                dc.b   0,$80,  9,  3,  0,$89,  0,$77
-                dc.b   3,$24,  6,$FF,  0,$45,  8,  2
-                dc.b   1,$56,  0,$DB,  7,$88,  0,$7F
-                dc.b $18,$FF,  0,$85,  0,$40,  3,$14
-                dc.b   1,  0,  0, $B,  0,$6A,  2,$A8
-                dc.b   0,$80,  8,$FE,  2,  4,  0,  0
-                dc.b $15,  0,  1,$A5,  5,$BA,  0,$C6
-                dc.b   2,$BD,  0,$78,  3, $A,  0,$A5
-                dc.b   4,$FF,  0,$FF,  0,$EA,  0,$20
-                dc.b   0,$FF,  0,$FF,  0,$D2,  0,$C0
-                dc.b $2D,  1,  0,$AC,  0,  0,  2,$8B
-                dc.b   0,$10, $B,  0,$25,  0, $F,  8
-                dc.b   0,$80,  0,  0,$3E,$80,  0,  0
-                dc.b $76,$18,  0,$E0, $F,$FF,$25,  0
-                dc.b   0,  0, $D,  3,  0,$72,  0,$FF
-                dc.b   0,$FF,$3E, $C,$32,$BA,  0,$C6
-                dc.b   2,$BD,  0,$78,$50,  0,  0,$22
-                dc.b   0,$45,  0,$55, $D,$C6,  0,  6
-                dc.b   0,$EF,$1D,$80,  0,  3,  0,$C0
-                dc.b  $D, $C,  0,$CA,  0,$40,  2,  0
-                dc.b   0,$90,  9,$CD,  0,$FB,  0,$E0
-                dc.b   3,$20,  9,$86,  0,  3,  0,$CF
-                dc.b  $D,$E6,  0,$24,  0,$BF,  0,$50
-                dc.b  $B,  0,$7F,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,$10,  0,  0
-                dc.b $36,$C2,  0,$21,  6,$55,  0,  0
-                dc.b $13,$E6,  0,$2F,  2,$27,  0,$87
-                dc.b $39,$4B,  0,$DA,$21,  0,  0,  0
-                dc.b   0,$65,  0,$38,  0,$FF,  0,$FF
-                dc.b   0,$EE,  0,$68, $D,$F7,  0,$91
-                dc.b   0,$40,$11, $D,  0,$66,  0,$20
-                dc.b   1,$F5,  0,$C5, $B,$8B,  0,$10
-                dc.b  $B,  0,$FF,$FF,$E2,$82,$1C,  0
-                dc.b   0,$91,  0,$C8,  0,$21,  6,$19
-                dc.b   0,$6E,  0,$F4,  3,  5,  0,$1B
-                dc.b   0,$3C,  0,$93,  6,$19,  0,$6E
-                dc.b   0,$F4,  3,  5,  0, $F,  0,$4F
-                dc.b   7,$19,  0,$6E,  0,$F4,  3,  5
-                dc.b   0,$E3,  0,$F8,  0,$C0, $D,$DA
-                dc.b   0,$A1, $E,$1B,  0,$21,  0,$30
-                dc.b  $D,$CF,  0,$1B,  0,$23,  2,  1
-                dc.b   0,$33,  9,$85,  0,$7C,  0,$CD
-                dc.b   0,$10,  2,$93,$88,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$E6,$D3,$18,  0
-                dc.b   6,$24,  6,$85,  0,  0,  0,  0
-                dc.b   1,$85,  0,  0,  0,  0, $D,$75
-                dc.b   0,$97,$CF,$9F,  0,  0, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$6F,  0,  7
-                dc.b   0,$FE, $D,$C3,  0,$A1,  0,$9A
-                dc.b $1D,$1E,  0,$16,  0,$80, $D,$28
-                dc.b   0,$1E, $E,$A3,  0,$1A,  0,$40
-                dc.b  $D,$2A,  0,$8E,  0,$DA, $D,$F2
-                dc.b   0,$56,  0,$FB,  0,$E0,$6E,  1
-                dc.b   0,$8E,  1,$1B,  0,$D3,  0,$F0
-                dc.b $17,  0,$19,$C0,  0,  0,  2,$BE
-                dc.b   0,$F2, $B,$8C, $A,$DB,  0,$3F
-                dc.b   1,$FF,  0,$EB,  0,$91,  6,$D0
-                dc.b   0,$BE,  8,  0, $A,$80,  0,  0
-                dc.b $18,  0,  0,$1D,  0,$FC,  3,  4
-                dc.b   1,$FF,  0,$CD,  0,$A6,  2,$9D
-                dc.b   0,$20,$22,  1,  1,$FF,  5,$9F
-                dc.b   0,$BA,  2,$99,  0,$42,  9,  0
-                dc.b   0,  0,  0,$10,  0,  0,  0,  0
-                dc.b   0,  2,  0,  0,  0,  0,$2E,$1E
-                dc.b   3,$9F,  0,  0, $B,  0,$35,  0
-                dc.b   0,$FF,  0,$FF,$3E,$FF,  0,$FF
-                dc.b $87,$FF,$34,  0,  0,  0,  0,  0
-                dc.b   0,  0,$3E,  0,$32,$9F,  0,$BA
-                dc.b   2,$99,  0,$42,$50,  0,  0,$E5
-                dc.b   0,$F4,  0,$D6, $D,$77,  0,$98
-                dc.b   0,$A2,$1D,$55,  0,$98,  0,$80
-                dc.b  $D,$C7,  0,$76,  0,  0,  2,  1
-                dc.b   0,  0,  9,$8E,  0,$87,  0,$40
-                dc.b   3,$E0,  9,$5A,  0,$EE,  0,$E2
-                dc.b  $D,$B0,  0,$71,  0,$79,  0,$60
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$39,$AD,  0,$B4,  6,$5A
-                dc.b   0,$42,$17,$1C,  0,$43,$39,$30
-                dc.b   0,$B7,$23,$A7,  0,$70,  2,$DB
-                dc.b   0,$20, $D,$F4,  0,$2C,  0,$E0
-                dc.b $11,$10,  0,$47,  0,$60,  1,$EC
-                dc.b   0,$A6,  0,  1, $A,$9F,  0,  0
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$D5
-                dc.b   0,$A5,  0,$F2, $D,$65,  0,$BB
-                dc.b   0,$26, $D,$7E,  0,$61,  0,$20
-                dc.b  $D,$B9,  0,$8D,  0,$80, $D,$A2
-                dc.b   0,$12, $E,$4A,  0,$91,  0,$E0
-                dc.b  $D,$8B,  0,$47,  0,$A6, $D,$64
-                dc.b   0,$FF,  0,$27,  0,$20,$8B,  0
-                dc.b   1,$10,$23,$BE,  0,$E6,  3,$9C
-                dc.b $2B,$14,  0,$6B,  2,  0,$26,$42
-                dc.b   0,$EC,$20,$FF,$30,$FF,  0,$A1
-                dc.b   0,$30,  3,  8,  3,  8,  2,  9
-                dc.b   0,$F9,  0,$80,  1,  1,  0,$3F
-                dc.b   0,$E0,  3,  2,  4,$65,  0,$21
-                dc.b   0,$9F,  8,  3,  3,  9,$D4,  8
-                dc.b   0,  4,  0,$ED,  0,$9F,  9,$40
-                dc.b   3,$80,$19,$FF,$D4,$FF,  0,$E6
-                dc.b  $B,  9,  0,  8,  2,  9,  0,  8
-                dc.b $18,  0,  0,  1,  0,$44,  0,$4A
-                dc.b  $C,  6,  0,$1B,  0, $E,  0,$A9
-                dc.b  $D,  3,  0,$A8,  0,$90, $D, $E
-                dc.b   0,$A2,  0,$40, $D,$13,  0,$83
-                dc.b  $E,$11,  0,$12,  0,$A0, $D,$28
-                dc.b   0,  5,  0,  9,  2,  3,  0,$33
-                dc.b   9,$2E,  0,$B8,  0,$81,  0,$30
-                dc.b   1,  3,  0,$B3,$88,  0,  1,$14
-                dc.b   0,$80,  1,  1,  0,$4E,  0,$B0
-                dc.b   1,  1,  0,$24,  0,$86,  2,$D5
-                dc.b   0,$FF,  0,$FF,  1,$C8,  0,$8F
-                dc.b   0,$FF,  1,$1D,  0,  8, $A,$70
-                dc.b   0,$6F,  0,$FF,$5D,$1A,  0,$C0
-                dc.b   0,$70,$6C,$65,  0,$21,  0,$9C
-                dc.b   0,  4,  7,  4,  1,  1,  1,  0
-                dc.b $15,$40,  0,$80,  0,  0,  2,$80
-                dc.b   0,  0,  6,$ED,  0,$9F,$DB,$FF
-                dc.b $14,$FF,  0,$F9,  0,$40,  2,$C0
-                dc.b   7,$30,  0,$9F,  0,$FF,$DB,  0
-                dc.b   0,$2B,  0,$23,  0,$B8, $D,$37
-                dc.b   0,$C5,  0,$A8, $D,  2,  0,$48
-                dc.b   0,$20,  2,  1,  0,$60,  8,  6
-                dc.b   0,$1E,  0,$2A, $E,$28,  0,$38
-                dc.b  $E,$23,  0,$31, $E,$1E,  0,$A2
-                dc.b   0,$A8, $C,  8,  0,$26,  0,$2F
-                dc.b   0,$AB,  0,$80, $D,$C7,  0,$95
-                dc.b $3E,  0,  9,  0,  9,  0,  4,$80
-                dc.b   3,$C7,  0,$95,  1,  2,  3,$1C
-                dc.b   0,  3,  0,$F8,  1,  2,  1, $F
-                dc.b $13,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $E5,$1B,  0,$D3,  0,$F0,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$E0,$FF
-                dc.b   0,$FF,  1,$DE,  1,  1,  0,$78
-                dc.b   0,$C0,$17,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$E5,$1B,  0,$C3,  0,$F0
-                dc.b $17,  0,  1,$14,  0,$80,$36,$27
-                dc.b   0,$7E,  6, $B,  0,$A2,$11,$FF
-                dc.b   0,$FF,  0,$E4,  0,$69,  2,$58
-                dc.b   0,$7F,  2,$79,  0, $B,  2,$7F
-                dc.b   0,$23,  2,$DE,  0,$8F,$19,  0
-                dc.b $13,  6,  0,$DE,$21,$FF,  0,$FE
-                dc.b   0,  4,  0,$20,  1,  1,  0,$2B
-                dc.b   0,$10, $C,$FF,  0,$EE,  0,$ED
-                dc.b   0,$C0,$11,  1,  0,$DE,  0,$80
-                dc.b   1, $C,  0,$85,  9,$65,  0,$21
-                dc.b   0,$9C,  0,  4,  7, $D,  1,  6
-                dc.b   1,  0,$39,  1,  7,  2,$12,  1
-                dc.b   0,  4,$10,$80,  0,  0,$2C,  1
-                dc.b   0,  4,$23,$40,  3,  1, $E,  1
-                dc.b   0,  4,$13,$40,  3,$80,$19,$FF
-                dc.b $38,$FF,  0,$FD,  0,$9C,  5,$FF
-                dc.b   0,$F9,  0,$80,$13,$13,  0,$9B
-                dc.b  $E,$6A,  0,$D2,$2D,$36,  0,$10
-                dc.b $21,$FF,  0,$FF,  0,$CE,  0,$80
-                dc.b   0,$FF,  0,$FF,  0,$DC, $D,$FF
-                dc.b   0,$F4,  0,$D4,$12,  9,  0,  8
-                dc.b   2,  9,  0,  8,$18,  0,  0,$7A
-                dc.b   0,$31,  0,$F8,  6,$19,  0,$6F
-                dc.b   0, $C,  3,  5,  0,$38,  0,$5C
-                dc.b   0,$68,  6,$19,  0,$6F,  0, $C
-                dc.b   3,  5,  0, $D,  0,$C1,  0,$90
-                dc.b   2,  2,  0,$60,  8,  6,  0,$BD
-                dc.b   0,$DA, $E,$52,  0,$78, $E,  8
-                dc.b   0,$29, $E,$C4,  0,$D1,  0,$68
-                dc.b  $D,$34,  0,$6D,  0, $F,  0,$80
-                dc.b $71,$1B,  0,$C3,  0,$F0,$17,  0
-                dc.b   1,$14,  0,$80,$22,$96,  0,$BE
-                dc.b   0,$80,  1,$BE,  0,$90,  0,$80
-                dc.b   8,  4,  0,$E5,  0,$7F,  0,$FF
-                dc.b   1,$7F,  0,$FF,  6,$36,  0,$D8
-                dc.b   8,$10,  1, $F,  0,$FF,  0,$FF
-                dc.b   0,$FF,  0,$FF,  0,$F6,  3,$9B
-                dc.b   0,$3F,  2,$88,  0,$7F,$14,$FF
-                dc.b   0,$D3,  0, $C,  1,$FF,  0,$FF
-                dc.b   0,$E4,  1,$FF,  0,$C0,  0,$C0
-                dc.b   1,$FF,  0,$EC,  0,$40,$22,  1
-                dc.b   1,$A5,  5,$A3,  0,$98,  2,$D1
-                dc.b   0,$46,  3,$1A,  0,$4C,  0,$FF
-                dc.b   0,$FF,  0,$FF,  0,$FF, $B,  8
-                dc.b $27,  3,  1,  3,  0,$5F,  0,$FF
-                dc.b   0,$65,  0,$21,  0,$9C,  0,  4
-                dc.b   7, $C,  1,  5,  1,  0,$25,$40
-                dc.b   3,$80, $C,$80,  0,  0,$39,$10
-                dc.b   0,$82,  0,$80,  5,$20,  3,$20
-                dc.b $2A,  8,  0,  4,  2,  2,  0,  4
-                dc.b $51,$FF,$25,$3A,  0,$3E,  2,$8F
-                dc.b   0,$10,  9,  4,  0,$E5,  0,$BF
-                dc.b   0,$FF,$38,$FF,  0,$FE,  0,$60
-                dc.b  $A,$2B,  0,$80,$2A,$93,  0,$60
-                dc.b   2,$BE,  0,$38,  3,  8,  0,$FA
-                dc.b   0,$FF,  0,$FF,  0,$FF,  0,$E2
-                dc.b   8,$FF,  0,$FF,  0,$FF,  0,$1E
-                dc.b $3B,  0,  0,$7D,  0,$8D,  0,$7E
-                dc.b  $D,$3C,  0,$BA,  0,$1A, $D,$4A
-                dc.b   0,$41,  0,$60,  2,  2,  9,  6
-                dc.b   0,$C0,  0,$36,  0,$80, $D,$55
-                dc.b   0,$9E, $E, $A,  0,$EA,  0,$40
-                dc.b  $D,$C7,  0,$37,  0,$5A, $D,$37
-                dc.b   0,$6A,  0,$53,  0,$E0,$71,$1B
-                dc.b   0,$C3,  0,$F0,$17,  0,  1,$10
-                dc.b   0,  0,  2,$23,  0,$D8,  2,$15
-                dc.b   0,$50,  1,  2,  0,$7C,  0,$7F
-                dc.b   1,  2,  0,$5B,  0,$1F,  1,$FF
-                dc.b   0,$F4,  0,$6C, $A,$77,  0,$8F
-                dc.b $CF,$9D,  0,  9, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$36,  0,$39,  0,$6D
-                dc.b  $D,$46,  0,$2F,  0,$B7,$1D,$25
-                dc.b   0,$F5,  0,$C0, $D,$32,  0,$9D
-                dc.b  $E,$2C,  0,$49,  0,$60, $D,$26
-                dc.b   0,$8D,  0,$97, $D,$30,  0, $E
-                dc.b   0,$30,  0,$D0, $D,$76,  0,$59
-                dc.b $5B,$76,  0,$59,$1F,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$10
-                dc.b   0,  0,$36,$10,  0,$DC,  5,$FF
-                dc.b   0,$C3,  0,$EA,$13,$DE,  0,$EA
-                dc.b   2,$3D,  0,$DF,$39,  1,  0,$5F
-                dc.b $22,$FD,  0,$D6,  0,$80,  1,  0
-                dc.b   0,$76,  0,  0, $E,$3D,  0,$E0
-                dc.b $12,$28,  0,  0,  1,$10,  0,$9E
-                dc.b   0,$80, $A,$9D,  0,  9, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$85,  0,$47
-                dc.b   0,$AD,  7,$6E,  0,$F4,  4,$46
-                dc.b   0,$C6,  0,$77,  7,$6E,  0,$F4
-                dc.b $14,$C5,  0,$A5,  0,$C0, $D,$5C
-                dc.b   0,$DD, $E,$11,  0,$41,  0,$60
-                dc.b  $D,$CC,  0,$BC,  0,$57, $D,$3E
-                dc.b   0,$4B,  0,$94,  0,$D0,$8B,  0
-                dc.b   1,$10,  0,  0,$22,$81,  0,$28
-                dc.b   2,$EB,  0,$6B,  0,  0,  8,  5
-                dc.b   0,$2E,  0,$1F,$14,  3,$24,  0
-                dc.b   0,  2,  0,$F4,  5,  0,  0,  7
-                dc.b   0,$DC,  1,  0,  0,$33,  0,$5C
-                dc.b $24,$FF,  6,$D8,  0,$80,  1,$FC
-                dc.b   0,$45,$43,$9D,  0,  9, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$88,  0,$A3
-                dc.b   0,$33, $D,$4B,  0,$24,  0,$29
-                dc.b $1D,$C8,  0,  2,  0,$40, $D,$60
-                dc.b   0,  3, $E,$14,  0,  2,  0,$A0
-                dc.b  $D,$CF,  0,$22,  0,$49, $D,$41
-                dc.b   0,$48,  0,$D9,  0,$30,$8B,  0
-                dc.b   5,$45,  0, $C,  0,$80,  1,$34
-                dc.b   0,$B0,  0,$80,  0,  0,  0,$DC
-                dc.b   3,$E1,  0,$3F,  2,$E0,  0,$24
-                dc.b  $A,$6E,  0,$EF,$CF,$9E,  0,$10
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$4E
-                dc.b   0,$65,  0,$C8, $D,$65,  0,$9E
-                dc.b   0,$D8,$1D,$36,  0,$F6,  0,  0
-                dc.b  $D,$49,  0,$48, $E,$40,  0,$1F
-                dc.b   0,  0, $D,$37,  0,$D1,  0,$D8
-                dc.b  $D,$45,  0,$93,  0,$EC,  0,$80
-                dc.b  $D,$4D,  0,$C8,$3E,  4,  9,  4
-                dc.b   9,  4,  4,  0,  3,$4D,  0,$C8
-                dc.b   1,  0,  0,  1,  0,$8E,  1,$1B
-                dc.b   0,$D3,  0,$F0,  1,  0,  1,  0
-                dc.b $13,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$39,  4,  0,  2,  6,$ED
-                dc.b   0,$58,$13,$E7,  0,$AB,  2,$88
-                dc.b $3A, $A,  0,$20,$22,$FF,  0,$20
-                dc.b   0,$A0,  2, $F,  0,$30, $D,$EF
-                dc.b   0,$56,  0,  0,$11,  6,  0,$68
-                dc.b   0,$80,  1, $B,  0,$F8,  0,$C0
-                dc.b  $A,$9E,  0,$10, $B,  0,$FF,$FF
-                dc.b $E2,$20,  3,$20,$18,  0,  0,$9D
-                dc.b   0,$74,  0,  8, $D,$66,  0,$35
-                dc.b   0,$98,$1D,$D6,  0,$A6,  0,  0
-                dc.b  $D,$73,  0,$88, $E,$25,  0,$17
-                dc.b   0,  0, $D,$4A,  0,$8E,  0,$28
-                dc.b   2,  6,  0,$F3,  9,$E2,  0,$70
-                dc.b   0,$D0,  0,$80,  1,  9,  0,$23
-                dc.b $88,  0,$25,$7C,  0,$1E,  2,$A3
-                dc.b   0,$36,  0,$80,  8,  3,  0,$42
-                dc.b   0,$7F,$39,$FF,  0,$C3,  0,$C0
-                dc.b   5,$FF,  0,$97,  0,$80,  1,$FF
-                dc.b   0,$C3,  0,  0,$22,  0,  7,$AB
-                dc.b   0,$B7,  0,  0,  2,$7B,  1,$FF
-                dc.b   0,$FF,  0,$ED,  0,$D7,$39,  8
-                dc.b   0,$99,  3,$9E,  0,$10, $B,  0
-                dc.b $24,  1,  0,  4,  2,$10,  0,  4
-                dc.b $C4,$83,  0,$9C, $F,$FF,$26,$38
-                dc.b $C6,  3,  0,$5F,  0,$FF, $F,  0
-                dc.b   0,$A0,  0,$CF,  0,$8E, $D,$6A
-                dc.b   0,$93,  0,$4A,$1D,$D9,  1,$80
-                dc.b  $D,$76,  0,$AE, $E,$27,  0,$D8
-                dc.b   0,$40, $D,$E0,  0,$66,  0,$8A
-                dc.b  $D,$56,  0,$CE,  0,$94,  0,$E0
-                dc.b $8B,  0,  1,$14,  0,$80,  3,  8
-                dc.b   0,  0,  2,$A0,  0,  0,  0,  1
-                dc.b   0,$E3,  0, $F,  1,  1,  0,$E2
-                dc.b   0,$7F,  1,  0,  0,$21,  0,$A8
-                dc.b  $A,$75,  0,$F3,$CF,$85,  0,  0
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$78
-                dc.b   0,$C1,  0,  0, $D,$9C,  0,$B3
-                dc.b   0,  0,$1D,$54,  0,$C0, $E,$71
-                dc.b   0,  0, $E,$62,  0,$E0, $E,$56
-                dc.b   0,$13,  0,  0, $D,$6B,  0,$4A
-                dc.b   0,$10,  0,  0, $D,$D0,  0,$D6
-                dc.b $1A,$82,  0,$46,$3B,$82,  0,$46
-                dc.b   2,$D0,  0,$D6,$1F,  0,  1,$14
-                dc.b   0,$80,$23,$AE,  2,$A4,  0,$9A
-                dc.b $2B,  0,  3,  0,$26,$16,  0,$20
-                dc.b $20,$FF,$31,$4C,  0,$70, $A,  6
-                dc.b   0,$4B,  0,$40,  1,  5,  0,$18
-                dc.b   4,  2,  4,$65,  0,$21,  0,$85
-                dc.b   8,  3,  3,  9,$D4,  1,  0,  4
-                dc.b   0,$17,  0,$64,  9,  1,  0,$80
-                dc.b   0,  0,  1,  2,  0,$80,  0,  0
-                dc.b $17,$FF,$D4,$FF,  0,$F4, $B,  9
-                dc.b   0,  8,  2,  9,  0,  8,$18,  0
-                dc.b   0,$2B,  0,$E0,  0,$79, $D,$38
-                dc.b   0,$BB,  0,$1B, $E,$43,  0,$B0
-                dc.b  $C,  6,  0,$1E,  0,$AE,  0,$C0
-                dc.b  $D,$28,  0,$E9, $E,$23,  0,$CB
-                dc.b   0,$E0, $D,$1F,  0,$29,  0,$7B
-                dc.b  $D,$26,  0,$D7,  0,$B9,  0,$90
-                dc.b  $D,  0,$7D,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,$14,  0,$80
-                dc.b $22,$99,  0,$F0,  2,$AE,  0,$DE
-                dc.b  $E,  0,  0,  0,  5,  0,  0,  0
-                dc.b   0,  0,$11,  0,  0,  0,  0,  0
-                dc.b   0,  0,  2,  0,  0,  0,  2,$80
-                dc.b   0,  0,  2,$80,  0,  0,  2,$80
-                dc.b   0,  0,$19,$14,$13,  0,  0,  0
-                dc.b  $C,$FF,$14,  0,  0,  0,  0,$10
-                dc.b   0,  0,  1,  2,  0,  0,  0,  0
-                dc.b  $C,  0,  0,  2,  0,$15,  0,$55
-                dc.b   5,$26,  0,$F0,  3,  8,  3,  8
-                dc.b   2,  4,  0,$14,  0,  0,  0,$FF
-                dc.b   0,$FF,  0,$7A,  0,  0,  3,  2
-                dc.b   6,$85,  0,  0,  7,  3,  1,  0
-                dc.b   1,  9,$39,  0,  7,  0,$12,  0
-                dc.b   0,  0,$10,$FF,  0,$FF,$2C,  0
-                dc.b   0,  0,$23,  0,  3,  0, $E,  0
-                dc.b   0,  0,  6,  4,  0,  4,  0,$2F
-                dc.b   0,  0,  9,  0,  3,  0,$19,$FF
-                dc.b $38,  0,  0,  0,  0,  0,  5,  0
-                dc.b   0,  0,  0,  0,$13,  0,  0,  0
-                dc.b  $E,  0,  0,  0,$2D,  0,  0,  0
-                dc.b $21,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  5,$FF,  0,$F4
-                dc.b  $B,  0,  0,  0,  2,  0,  0,  0
-                dc.b $18,  0,  0,$22,  0,$E7,  0,$6F
-                dc.b   6,$1E,  0,$75,  0,$40,  3,  0
-                dc.b   0,$2D,  0,$10,  0,$1D,  6,$1E
-                dc.b   0,$75,  0,$40,  3,  0,  0,  0
-                dc.b   0,$3F,  0,$70,  2,  1,  0,$B0
-                dc.b   9,$18,  0,$5F,  0,$40, $D,$20
-                dc.b   0,$7F, $E,$1C,  0,$6F,  0,$20
-                dc.b  $D,$18,  0,$C0,  0,$BD,  2,  0
-                dc.b   0,$C3,  9,$1E,  0,$DA,  0,$94
-                dc.b   0,$F0,  1,  0,  0,$F3, $A,  0
-                dc.b $64,$D3,$18,  0,  1,$14,  0,$80
-                dc.b $22,$C7,  0,$F8,  0,  0,  1,$90
-                dc.b   0,$76,  9,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,  0,  0,  0,  6,  0
-                dc.b   0,  0,  8,  8,  1,  8,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   3,  0,  0,  0,  2,  0,  0,  0
-                dc.b $14,  0,  0,  0,  0,  0,  1,  0
-                dc.b   0,  0,  0,  4,  1,  0,  0,  0
-                dc.b   0,  0,  1,  0,  0,$40,  3, $A
-                dc.b   0,$EB,$26,$C0,  0,  0,  2,$C0
-                dc.b   0,  0,  1,  0,  0,  0,  0,  8
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,$FF,  0,$FD,  0,$6B
-                dc.b   0,$C0,  2,$56,  0,$60,  3,  0
-                dc.b $11,$33,  0,$E0,  9,$FF,  0,$F9
-                dc.b   0,$3C,  0,$80,  1, $E,  0,$79
-                dc.b   4,  2,  1,  0,  0,  0,  0,  0
-                dc.b   2,$85,  0,  0,  7,  3,  1,  0
-                dc.b   1,  9,$24,  0,  0,  1,  0,$80
-                dc.b   0,  0,  0,  0,  0,  2,  0,$80
-                dc.b   0,  0, $A,$FF,  0,$FF,$39,  0
-                dc.b   0,$FF,  0,$FF,  5,  0,  3,  0
-                dc.b   2,$10,  0,  4,$26,  0,  0,  0
-                dc.b   2,  0,  0,  0,$26,  8,  0,  4
-                dc.b   0,$65,  0,$A0,$16,$FF,  0,$FF
-                dc.b  $F,$FF,$25,$C0,  0,$78,  2,$BF
-                dc.b  $A,  0,  0,  0,  0,  0,  0,  0
-                dc.b $38,  0,  0,  0,  0,  0, $A,  0
-                dc.b   0,  0,$2A,  0,  0,  0,  2,  0
-                dc.b   0,  0,  3,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  8,  0
-                dc.b   0,  0,  0,  0,  0,  0,$10,$FF
-                dc.b   0,$F6,$17,  0,  0,  0,  0,  0
-                dc.b  $F,  0,  0,$1E,  0,  6,  0,$AC
-                dc.b  $D,$26,  0,$B8,  0,$44, $D,  1
-                dc.b   0,$42,  0,$F0,  2,  0, $A,$14
-                dc.b   0,$F1,  0,  0, $D,$1B,  0,$EC
-                dc.b  $E,$18,  0,$6E,  0,$80, $D,$15
-                dc.b   0,$44,  0,$C4, $D,$1A,  0,$82
-                dc.b   0,$C2,  0,$C0, $D,  0,$64,$D3
-                dc.b $18,  0,  1,$10,  0,  0,  3,$80
-                dc.b   2,$1F,  0,$46,  2,$85,  0,  0
-                dc.b   0,  0,  1,$85,  0,  0,  0,  0
-                dc.b   1,  0,  0,  0, $A,$79,  0,$9F
-                dc.b $6C,  1,$62,$90, $C,  0,$15,  0
-                dc.b   0,$FF,  0,$FF,  2,$FF,  0,$FF
-                dc.b   6,$FF,  0,$FF,$DB,$FF,$14,  0
-                dc.b   0,  0,  0,  0,  2,  0,  7,  0
-                dc.b   0,  0,  0,  0,$DB,  0,  0,$31
-                dc.b   0,$95,  0,$73, $D,$40,  0,$26
-                dc.b   0,$E9, $D,  8,  0,$AC,  0,$90
-                dc.b   2,  0,  0,$30,  8,  0,  0,$22
-                dc.b   0,$B2,  0,$40, $D,$2E,  0,$43
-                dc.b  $E,$28,  0,$7A,  0,$A0, $D,$23
-                dc.b   0,$3D,  0,  9, $C,  0,  0,$2B
-                dc.b   0,$EC,  0,$7D,  0,$30, $D,$8C
-                dc.b   0,$9E,$5B,$8C,  0,$9E,  2,  0
-                dc.b   0,  0,  1,$1C,  0,  4,  0,  0
-                dc.b $17,  0,  1,$10,  0,  0,$6D,$FF
-                dc.b   0,$C1,  0,$80,$62,$8C,  0,$90
-                dc.b  $A,  7,  0,$70,  0,  0,  1, $C
-                dc.b   0,$47,  0,$E0, $A,$90, $C,  9
-                dc.b $71,$20,  0,$80,  0,  0,$62,$2B
-                dc.b   0,$84,$27,$FF,$E2,$38,  3,$38
-                dc.b $18,  0,  0,$95,  0,$93,  0,  0
-                dc.b   2,  4,  0,$E1,  9,$E8,  0,$5B
-                dc.b   0,$80,  2,  9,  0,$13,$19,$41
-                dc.b   0,$C4,  0,  0, $D,$57,  0,$B0
-                dc.b  $E,$4C,  0,$BA,  0,  0, $D,$42
-                dc.b   0,$CB,  0,$10, $D,$53,  0,$41
-                dc.b   0,$8B,  0,  0,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$10
-                dc.b   0,  0,$6E,$2A,  0,  2,$61,  2
-                dc.b   0,$85,  0,  0, $A,  1,  0,$63
-                dc.b   0,$A0,  0,  0,  0,  6,  0,$DF
-                dc.b   0,$80, $A,$90, $C,  9,$71,$40
-                dc.b   0,$80,  0,  0,$62,$D5,  0,$24
-                dc.b   9,  1,  0,$C1,  0,$68,  1,  2
-                dc.b $19,$FF,$E1,  4,  0,$3C,  1,$FF
-                dc.b   0,$FF,  0,$92,$18,  0,  0,$9C
-                dc.b   0,$94,  0,$16,  2,  7,  0,$31
-                dc.b   9,$C9,  0,$50,  0,$12,  2,  9
-                dc.b $1A,$3B,  0,$74,  0,$80, $D,$4F
-                dc.b   0,$46, $E,$45,  0,$5D,  0,$40
-                dc.b  $D,$3C,  0,$62,  0,$52, $D,$4B
-                dc.b   0,$44,  0,$66,  0,$60,$8B,  0
-                dc.b   1,$10,  0,  0,$22,$C4,  0,$33
-                dc.b   0,$80,  1,$94,  0,$83,  0,  0
-                dc.b $55,  6,  0,$C5,$52,$48,  0,$40
-                dc.b  $B,$93,  0,$A0,  1, $B,  0, $A
-                dc.b   0,$40, $A,$90, $C,  9,$E1,  1
-                dc.b   0,$80,  0,  0,  1,  2,  0,$80
-                dc.b   0,  0,$17,$FF,$E0,$FF,  0,$F9
-                dc.b   0,$44,  2, $E,  0,$96,$18,  0
-                dc.b   0,$80,  0,  3,  0,$53,  2,  7
-                dc.b   0,$41,  9,$8B,  0,$D2,  0,$89
-                dc.b   2,  6,  0,$33,$19,$38,  0,  6
-                dc.b   0,$40, $D,$4A,  0,$B3, $E,$41
-                dc.b   0,$5C,  0,$A0, $D,$38,  0,$E6
-                dc.b   0,$59, $D,$46,  0,$EC,  0,$94
-                dc.b   0,$30,$8B,  0,  1,$14,  0,$80
-                dc.b   2,$48,  0,$B0,  2, $F,  0,$50
-                dc.b $16,$55,  0,$D3,$5F,$D0, $C,  0
-                dc.b $6F,  0,$FF,$FF,$FF,  0,  0,$48
-                dc.b   0,$D2,  0,$EE, $D,$5E,  0,$5F
-                dc.b   0,$6A, $D, $C,  0,$C2,  0,$A0
-                dc.b  $D,$33,  0, $A,  0,$80, $D,$44
-                dc.b   0, $E, $E,$3B,  0,$8C,  0,$40
-                dc.b  $D,$33,  0,$D6,  0,$AA, $D,$40
-                dc.b   0,$9D,  0,$8A,  0,$E0,$8B,  0
-                dc.b   1,$14,  0,$80,$53,$14,  0,  3
-                dc.b $18,  0,  0,  6,  0,$8E, $E,$4D
-                dc.b   0,$E8,$52,$96,  0,$60, $A, $C
-                dc.b   0,$DD,  0,$40,  1,  6,  0,$69
-                dc.b   0,  0,  5,  1,  0,$D9,  0,$FF
-                dc.b  $F,  9,$FF,$FF,$E2,$20,  3,$20
-                dc.b $18,  0,  0,$91,  0,$4D,  0,$55
-                dc.b   2,  1,  0,$11,  9,$BC,  0,$9E
-                dc.b   0,$EF,  2,  1,  0,$63,$19,$66
-                dc.b   0,  3,  0,$C0, $D,$88,  0,  5
-                dc.b  $E,$77,  0,  4,  0,$60, $D,$67
-                dc.b   0,$9B,  0,$CF, $D,$81,  0,$25
-                dc.b   0,$3F,  0,$50,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$14
-                dc.b   0,$80,$53,$48,  0,$D7,  2,$41
-                dc.b   0,$67,$15,$3C,  0,  6, $E,$BC
-                dc.b   0,$38,$52,$2F,  0,$C0, $A,  9
-                dc.b   0,$62,  0,  0,  0,$FF,  0,$FD
-                dc.b   0,$43,  0,$20,  5,  1,  0,$EB
-                dc.b   0,$FF, $F,  9,$FF,$FF,$E2,$28
-                dc.b   3,$86,$18,  0,  0,$88,  0,$54
-                dc.b   0,$4B,  2,  1,  0,$11,  9,$B0
-                dc.b   0,$F3,  0,$F1,  2,  1,$1A,$5F
-                dc.b   0,$B4,  0,$40, $D,$7F,  0,$9B
-                dc.b  $E,$6F,  0,$A7,  0,$A0, $D,$61
-                dc.b   0,$33,  0,$11, $D,$79,  0,$28
-                dc.b   0,$1A,  0,$B0,$8B,  0,  1,$14
-                dc.b   0,$80,$22,$D8,  0,$C0,  0,  0
-                dc.b   1,$96,  0,$34,  0,$80,$2A,$31
-                dc.b   0,$87,$29,$3E,  0,$FE,$52,$4F
-                dc.b   0,$50,  3,  8,  3,  8,  3,$3C
-                dc.b   0,$80,  1, $E,  0,$79,  0,  0
-                dc.b   5,  1,  0,$5D,  0,$FF, $F,  9
-                dc.b $26,$DD,  0,$AC,  2,$AD,  0,$B8
-                dc.b $54,  0,$55,$49,  0,$9C,  9,  0
-                dc.b   0,$FF,  0,$FF,  1,  0,  0,$FF
-                dc.b   0,$FF,$17,$FF,$E0,  0,  0,  0
-                dc.b   0,  0,  2,  0,  0,  0,$18,  0
-                dc.b   0,$83,  0,$73,  0,$88,  2,  1
-                dc.b   0,$11,  9,$AA,  0,$9C,  0,$18
-                dc.b   2,  1,  0,$63,$19,$5C,  0,$46
-                dc.b   0,  0, $D,$7B,  0,  8, $E,$6B
-                dc.b   0,$A7,  0,  0, $D,$5D,  0,$B7
-                dc.b   0,$18, $D,$74,  0,$D0,  0,$48
-                dc.b   0,$80,$8B,  0,  5,$67,  0,$C4
-                dc.b   2,  0,  0,$38,  1,  2,  0, $E
-                dc.b   0,$4F,  0,$FF,  0,  2,  0,$19
-                dc.b   0,$CF,  0,$FF, $D,$68,  0,$5B
-                dc.b $CF,$8B,  0,  6, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$54,  0, $C,  0,$E5
-                dc.b  $D,$6C,  0,$F8,  0,$9F, $D, $E
-                dc.b   0,$BB,  0,$F0, $D,$3A,  0,$EF
-                dc.b   0,$C0, $D,$4E,  0,$95, $E,$44
-                dc.b   0,$C2,  0,$60, $D,$3B,  0,$DB
-                dc.b   0,$7F, $D,$4A,  0,$9C,  0,$58
-                dc.b   0,$50,$8B,  0,$4B,  2,  1,$19
-                dc.b   0,$5B,  0,$FF,$21,$3E,  0,$BE
-                dc.b $2E,  1,  1,  3,  5,$AE,  0,$15
-                dc.b   2,$FB,  0,$38,  0,$80,$25,$98
-                dc.b   0,$A0, $A,  8,  0,$68,  0,$E0
-                dc.b   1, $D,  0,  1,  6,  0,  0,  0
-                dc.b   0,  0,  2,$8B,  0,  6, $B,  9
-                dc.b $A9,  1,  3,  2,  0,$9F,  0,$80
-                dc.b $4F,$FF,$A9,$BF,  0,$40,  2,$C1
-                dc.b   0,$38,$50,  0,  0,$9C,  0,$87
-                dc.b   0,$4C, $D,$CB,  0,$38,  0,$24
-                dc.b $1D,$6D,  0,$E9,  0,  0, $D,$92
-                dc.b   0,$8C, $E,$80,  0,$3A,  0,$80
-                dc.b  $D,$6F,  0,$A0,  0,$A4, $D,$8B
-                dc.b   0,$24,  0, $C,  0,$C0,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $24,  1,  0,$1B,  0,$39,  0,$80
-                dc.b   0,  1,  0, $D,  0,$EB,$20,  2
-                dc.b   1,$2F,  0,$C7,  0,$FF,  6,$EC
-                dc.b   0,$BB,$19,$3D,  0,$F0,  5,$FF
-                dc.b   0,$EE,  0,$66,  6,$7F,  0,$EC
-                dc.b $1E,  1,  1,  3,  5,$F0,  0,$A8
-                dc.b   2,$B5,  0,$CE,$26,$E1,  0,$70
-                dc.b  $A,  2,  0,$16,  0,$E0,  1,$FC
-                dc.b   0,$FE,  0,$E0,  5,  0,  0,  0
-                dc.b   0,  0,  2,$8B,  0,  6, $B,  9
-                dc.b $25,$40,  3,$80,$4F,  2,  0,$80
-                dc.b   0,  0,$83,$FF,$25,$BE,  0,$50
-                dc.b   2,$C0,  0,$C0,$4E,  2,  0,$A0
-                dc.b $84,  0,  0,$93,  0,$8E,  0,$42
-                dc.b  $D,$BF,  0,$8D,  0,$26,$1D,$67
-                dc.b   0,$99,  0,$80, $D,$8A,  0,$22
-                dc.b  $E,$78,  0,$DD,  0,$C0, $D,$69
-                dc.b   0,$37,  0,$E6, $D,$83,  0,$26
-                dc.b   0,$E8,  0,$20,$8B,  0,$25,$76
-                dc.b   0,$71,  2,$FD,  0,$4D,  0,  0
-                dc.b $1F,  2,  1,$24,  0,$8F,  0,$FF
-                dc.b $51,  1,  1,  3,$31,$56,  0,$30
-                dc.b $16,  0,  0,  0,  0,  0,  2,$8B
-                dc.b   0,  6, $B,  9,$FF,$FF,$FF,  0
-                dc.b   0,$8E,  0,$AD,  0,$7F, $D,$B9
-                dc.b   0,$35,  0,$4D,$1D,$64,  0,$2B
-                dc.b   0,$40, $D,$85,  0,$8F, $E,$74
-                dc.b   0,$DD,  0,$20, $D,$65,  0,$BB
-                dc.b   0,$ED, $D,$7E,  0,$CF,  0,$15
-                dc.b   0,$F0,$8B,  0,  5,$5A,  0,$80
-                dc.b   2,  9,  0,$68,  2,$25,  0,$EF
-                dc.b   2,$2A,  0,$3F,  2,  1,  0,$42
-                dc.b  $A,$69,  0,$BF,$CF,$85,  0,  0
-                dc.b  $B,  0,$15,$20,  0,$80,  0,  0
-                dc.b $E7,$FF,$FF,  0,  0,  7,  0,$30
-                dc.b   0,$A2, $D,  9,  0,  6,  0,$46
-                dc.b  $D,  1,  0,$38,  0,$60, $D,  4
-                dc.b   0,$E1,  0,$80, $D,  6,  0,$82
-                dc.b  $E,  5,  0,$B1,  0,$C0, $C,  8
-                dc.b   0,  4,  0,$F5,  0,  6, $D,  6
-                dc.b   0,$2D,  0,$CE,  0,$20, $D,$82
-                dc.b   0,$88,$1A,$99,  0,$FA,$3B,$99
-                dc.b   0,$FA,  2,$82,  0,$88,  2,  1
-                dc.b   0,$8E,  1,$1B,  0,$E3,  0,$F0
-                dc.b $17,  0,$4B,  8,$24,$FF,  0,$F2
-                dc.b   0,$F0, $E,$95,  0,$A8,$1E,  0
-                dc.b   1,$FF,  5,$C1,  0,$42,  0,$80
-                dc.b   1,$BB,  0,  8,  0,  0,$25,$96
-                dc.b   0,$60, $A,  9,  0,$4D,  0,$60
-                dc.b   1,  8,  0,$CE,  0,$20, $A,$85
-                dc.b   0,  0, $B,  9,$FF,$FF,$E2,$38
-                dc.b   3,$38,$18,  0,  0,$55,  0,$7E
-                dc.b   0,$C5,  2,  6,  0,$81,  9,$D1
-                dc.b   0,$84,  0,$4F,  2,  9,  0,$53
-                dc.b $19,$8C,  0,$2B,  0,$C0, $D,$BA
-                dc.b   0,$E5, $E,$A3,  0,$88,  0,$60
-                dc.b  $D,$1B,  0,$CE,  0,$8F,  2,  6
-                dc.b   0,  3,  9,$63,  0,$55,  0, $D
-                dc.b   0,$50,  1,  7,  0,$93,$88,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $24,  0,  0,$A2,  0,$9D,  1,  0
-                dc.b   0,$D7,  0,$73,$20,  5,$24,$FF
-                dc.b   0,$ED,  0,$88,  5,  0,  0,$2A
-                dc.b   0,$AC,  6,$C8,  0,$B8,$1E,  0
-                dc.b   1,$FF,$30,  1,  0,$56,  0,$D0
-                dc.b  $A,  5,  0,$3F,  1,  0,  0,  4
-                dc.b   0,$93,  0,$A0, $A,$85,  0,  0
-                dc.b  $B,  9,$FF,$FF,$E2,$3C,  3,$92
-                dc.b $18,  0,  0,$C8,  0,  7,  0,$2B
-                dc.b   2, $B,  0,$B1,  9,$5F,  0,$63
-                dc.b   0,$F1,  2,  5,  0,$93,$19,$85
-                dc.b   0,$DC,  0,$40, $D,$B2,  0,$7B
-                dc.b  $E,$9C,  0,$2B,  0,$A0, $D,$87
-                dc.b   0,$F3,  0,$B1, $D,$A9,  0,$75
-                dc.b   1,$B0,$8B,  0,$25,$71,  0,$A0
-                dc.b   2,$F5,  0,$3A,$20,  8,$55,  0
-                dc.b   1,$FF,$31,$24,  0,$F0,  3,$10
-                dc.b   3,$10,$13,$85,  0,  0, $B,  9
-                dc.b $FF,$FF,$FF,  0,  0,$B9,  0,$B4
-                dc.b   0,$68, $D,$F1,  0,$28,  0,$B8
-                dc.b $1D,$82,  0,$6E,  0,  0, $D,$AD
-                dc.b   0,$E8, $E,$98,  0,$2B,  0,  0
-                dc.b  $D,$84,  0,$77,  0,$B8, $D,$A5
-                dc.b   0,$1E,  0,$16,  0,$80,$8B,  0
-                dc.b   4,  0,  0,  0,  0,  0,  1,  0
-                dc.b   0,$F6,  0,$30,  2,$1F,  0,$BF
-                dc.b   2,$26,  2,$FF,  0,$FF,  0,$F6
-                dc.b   2,$BF,  0,$E2,  3,$48,  2,$59
-                dc.b   0,$57,$CF,$86, $C,  0, $D,$40
-                dc.b   0,  0,  0,  0,  1,$40,  0,  0
-                dc.b   0,  0,$EB,$FF, $C,  2,  0,$1F
-                dc.b   0,$BF,  0,$FF,  0,  2,  0,$26
-                dc.b   0,$3F,  0,$FF,  1, $D,  0,$E0
-                dc.b $E8,  0,  0,$9B,  0,$48,  0,$71
-                dc.b  $D,$C9,  0,$99,  0,$83, $D,$1B
-                dc.b   0,$42,  0,$30, $D,$6D,  0,  8
-                dc.b   0,$C0, $D,$91,  0,$61, $E,$7F
-                dc.b   0,$34,  0,$E0, $D,$6E,  0,$BC
-                dc.b   0,$E3, $D,$8A,  0,  8,  0,$29
-                dc.b   0,$10, $D,$64,  0,$2C,$5B,$64
-                dc.b   0,$2C,  2,$17,  0,$D8,$1B,  0
-                dc.b $25,$BD,  0,$D8,  2,$BB,  0,$2C
-                dc.b  $D,$FF,  0,$FB,  0,$F3,  6,  2
-                dc.b   0,$90,$2E,$C7,  0,$80,$36,$B4
-                dc.b   0,$18,  0,  0,  1,$ED,  0,$B1
-                dc.b $26,$9D,  0,$F0, $A,  8,  0,$C1
-                dc.b   0,  0,  1, $C,  0,$31,  0,$60
-                dc.b  $A,$86, $C,  9,$FF,$FF,$FF,  0
-                dc.b   0,  1,  0,$84,  0,$B8, $D,$C8
-                dc.b   0,$22,  0,$98,$1D,$A0,  0,  2
-                dc.b   0,  0, $D,$D5,  0,$58, $E,$BA
-                dc.b   0,$AD,  0,  0, $D,$BA,  0,$CF
-                dc.b   0,$E8, $D,$2B,  0,$AB,  0,$BD
-                dc.b   0,$80,$8B,  0,  1,$14,  0,$80
-                dc.b $22,$E8,  0,$39,  0,$80,  1,$94
-                dc.b   0,$4D, $E, $E,  0,$AC,  6,$7F
-                dc.b   0,$FF,$13,  0,  3,  0,$15,$FF
-                dc.b   0,$F2,  0,$E4, $E,  7,  0,$6C
-                dc.b $20,$FF,$35,  2,  0,$B0,  3,$87
-                dc.b   0,$80, $B,  2,  4,$65,  0,$21
-                dc.b   0,$86,  8,  3,  3,  9,$25,  1
-                dc.b   0,$80,  0,  0,  1,  2,  0,$85
-                dc.b   0,$14,$45,$20,  0,$24,  0,$30
-                dc.b  $C,$10,  0,  4,$7D,$FF,$25,$C0
-                dc.b   3,$C0,$D5,  0,  0,$1D,  0,$56
-                dc.b   0,$B7, $D,$25,  0,$D3,  0,$75
-                dc.b  $D,  4,  0,$42,  0,$70,  2,  2
-                dc.b   0,$20,  8,  6,  0,$14,  0,$75
-                dc.b   0,$40, $D,$1B,  0,$47, $E,$17
-                dc.b   0,$DE,  0,$20, $D,$14,  0,$C7
-                dc.b   0,$15, $D,$19,  0,$E6,  0,$19
-                dc.b   0,$70, $D,$64,  0,$2C,$1A,$99
-                dc.b   0,$FA,$3B,$99,  0,$FA,  2,$64
-                dc.b   0,$2C,  0,  0,  0,  2,  1,  0
-                dc.b   1,$1B,  0,$E3,  0,$F0,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $25,$F5,  0,$7C,  0,  0,  1,$96
-                dc.b   0,$A2,$45,  0,  0,$24,  0,$C8
-                dc.b   5,$FF,  0,$CA,  0,$1C,$59,  2
-                dc.b   0,  8,  0,$90, $A, $A,  0,$2E
-                dc.b   1,$FF,  0,$F8,  0,$81, $B,$86
-                dc.b  $C,  9,$FF,$FF,$FF,  0,  0,$FD
-                dc.b   0,$41,  0,$AE, $D,$F2,  0,$D2
-                dc.b   0,$FA,$1D,$99,  0,$B2,  0,$80
-                dc.b  $D,$CC,  0,$EE, $E,$B3,  0,$50
-                dc.b   0,$40, $D,$9C,  0,$19,  0,$4A
-                dc.b  $D,$C2,  0,$92,  0,$B8,  0,$E0
-                dc.b $8B,  0,$25,$95,  0, $A,  2,$88
-                dc.b   0,$4A,$AA,$38,  0,$A0,$1B,$86
-                dc.b  $C,  9,$FF,$FF,$FF,  0,  0,$D5
-                dc.b   0,$E9,  0, $B, $D,$15,  0,$D6
-                dc.b   0,$31,$1D,$96,  0,$44,  0,$40
-                dc.b  $D,$C8,  0,$5B, $E,$AF,  0,$4F
-                dc.b   0,$A0, $D,$98,  0,$9D,  0,$51
-                dc.b  $D,$BE,  0,$3A,  0,$E6,  0,$B0
-                dc.b $8B,  0,  1,$10,  7,$F6,  0,$30
-                dc.b   1,  2,  0,$1F,  0,$BF,  0,$FF
-                dc.b   0,  2,  0,$26,  0,$3F,  0,$FF
-                dc.b   0,$FF,  0,$F0,  0,$6A,  2,$BF
-                dc.b   0,$E2,  3,$48,  2,$59,  0,$57
-                dc.b   0,$FF,$5D,$1A,  0,$D0,  0,$70
-                dc.b $6C,$65,  0,$21,  0,$81,  8,  4
-                dc.b   1,  1,  1,  0, $D,$40,  0,  0
-                dc.b   0,  0,  1,$40,  0,  0,  0,  0
-                dc.b   1,$20,  0,$80,  0,  0,$E7,$FF
-                dc.b  $C,  2,  0,$1F,  0,$BF,  0,$FF
-                dc.b   0,  2,  0,$26,  0,$3F,  0,$FF
-                dc.b   1, $D,  0,$E0,$E8,  0,  0,$EE
-                dc.b   0,$7E,  0,$F9, $D,$35,  0,$CE
-                dc.b   0,$9B, $D,$29,  0,$E3,  0,$B0
-                dc.b  $D,$A7,  0,$8E,  0,$C0, $D,$DF
-                dc.b   0,$69, $E,$C3,  0,$7B,  0,$E0
-                dc.b  $C,  8,  0,$AA,  0,$2C,  0,$FB
-                dc.b  $D,$D4,  0,$1E,  0,$A1,  0,$90
-                dc.b  $D,$45,  0,$15,$1A,$8A,  0,$CA
-                dc.b $3B,$8A,  0,$CA,  2,$45,  0,$15
-                dc.b   2,$37,  0,$AA,  1,$1B,  0,$E3
-                dc.b   0,$F0,$17,  0,  1,$10,$33,$A9
-                dc.b   0,$F0,$4A,$9B,$69,  3,  4,$65
-                dc.b   0,$21,  0,$81,  8,  2,  3,  0
-                dc.b $35,  4,$C9,$FF,$FF,  0,  0,$54
-                dc.b   0,$3C,  0,$E2, $D,$6D,  0,$37
-                dc.b   0,  6, $D, $B,  0,$AA,  0,$80
-                dc.b   3,$E0,  3,$78,  0,$4C,  3,  3
-                dc.b   0,$3B,  0,$11,  0,$80, $D,$4E
-                dc.b   0,$C2, $E,$44,  0,$E9,  0,$C0
-                dc.b  $D,$3B,  0,$FD,  0,$C6, $D,$4A
-                dc.b   0,$C7,  0,$12,  0,$20, $D,$64
-                dc.b   0,$2C,$1A,$99,  0,$FA,$3B,$99
-                dc.b   0,$FA,  2,$64,  0,$2C,  3,$9C
-                dc.b   1,$1B,  0,$E3,  0,$F0,$17,  0
-                dc.b   1,$10,$23,$93,  0,$CF,  2,$C7
-                dc.b   0,$38,$16,$7F,  0,$FF,$13,$1B
-                dc.b   0,$F6,  2,  0,$15,$FF,  0,$92
-                dc.b  $F,  0,$56,$FF,  0,$FC,  0,$F8
-                dc.b   3,  8,  1,$FF,  0,$FE,  0,$52
-                dc.b   0,$A0,  0,$FF,  0,$FF,  0,  8
-                dc.b   0,$20,  3,  2,  4,$65,  0,$21
-                dc.b   0,$81,  8,  3,  3,  9,$25,  1
-                dc.b   3,  2,  0,$E4,  0,$A4,$45,$10
-                dc.b  $E,$40,  0,  4,  0,$99,  0,$D4
-                dc.b $5D,  1,  0,$80,  0,  0,  1,  2
-                dc.b   0,$80,  0,  0,$17,$FF,$25,$C0
-                dc.b   3,$C0,$B8,$2A,  1,$FF,  0,$FE
-                dc.b   0,$B2,$18,  0,  0,$45,  0,$36
-                dc.b   0,$5B, $C,  8,  0,$59,  0,$AD
-                dc.b   0,$21, $C,  7,  0,  6,  0,$43
-                dc.b   0,$E0,  2,  4,  0,$90,  8,  6
-                dc.b   0,$30,  0,$80,  0,$40, $D,$40
-                dc.b   0,$AB, $E,$38,  0,$95,  0,$A0
-                dc.b  $D,$31,  0,$42,  0,$41, $D,$3D
-                dc.b   0,$66,  0,$5B,  0,$B0, $D,$64
-                dc.b   0,$2C,$1A,$99,  0,$FA,$3B,$99
-                dc.b   0,$FA,  2,$64,  0,$2C,  2,  2
-                dc.b   0,$19,  1,$1B,  0,$E3,  0,$F0
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $E5,$1B,  0,$C3,  0,$F0,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$81,$64
-                dc.b   0,$2C,$1A,$99,  0,$FA,$3B,$99
-                dc.b   0,$FA,  2,$64,  0,$2C,  2,  2
-                dc.b   0,$19,  1,$1B,  0,$E3,  0,$F0
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $81,$64,  0,$2C,$1A,$99,  0,$FA
-                dc.b $3B,$99,  0,$FA,  2,$64,  0,$2C
-                dc.b   2,  2,  0,$19,  1,$1B,  0,$E3
-                dc.b   0,$F0,$17,  0,$14,  0,  0,  0
-                dc.b   0,$E4,$DB,$80,  0,  2, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$FF,  0,$41
-                dc.b   0,$20, $D,$4B,  0,$99,  0,$60
-                dc.b  $D,$2C,  0,$D6,  0,  0, $D,$B3
-                dc.b   0,$58,  0,  0, $D,$EF,  0,$20
-                dc.b  $E,$D1,  0,$3C,  0,  0, $D,$B6
-                dc.b   0,$25,  0,$60, $D,$E3,  0, $A
-                dc.b   0,$52,  0,  0, $D,$66,  0,  9
-                dc.b $1A,$47,  0,$A3,$3B,$47,  0,$A3
-                dc.b   2,$66,  0,  9,  2,  8,  0,$E5
-                dc.b $1B,  0,$34,$FF,  0,$AA,  0,$80
-                dc.b $6C,$A5,$4E,$80,  0,  2, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$64,  0,$FF
-                dc.b   0,  9, $D,$83,  0,  1,  0,$CB
-                dc.b  $D,$19,  0,$6A,  0,$A0, $D,$46
-                dc.b   0,$DA,  0,$C0, $D,$5E,  0,$79
-                dc.b  $E,$52,  0,$A9,  0,$E0, $D,$47
-                dc.b   0,$F6,  0,$2B, $D,$59,  0,$B2
-                dc.b   0,$C2,  0,$90,$8B,  0,$25,$AC
-                dc.b   0,$86,  2,$9A,  0,$3E,$45,  0
-                dc.b   0,$54,  0,$FC,$30,$A5,$3D,$FF
-                dc.b   0,$5A,  0,$40,  1,$FC,  0,$EF
-                dc.b   0,  0, $A,$80,  0,  2, $B,  9
-                dc.b $FF,$FF,$FF,  0,  0,$55,  0,$F8
-                dc.b   0,$82, $D,$6F,  0,$77,  0,$E6
-                dc.b $1D,$3C,  0,$49,  0,$80, $D,$50
-                dc.b   0,$62, $E,$46,  0,$55,  0,$C0
-                dc.b  $D,$3D,  0,$3A,  0,$A6, $D,$4C
-                dc.b   0,$52,  0, $C,  0,$20,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,$12,$27,  0,$34
-                dc.b $DB,$92,  0,$1E, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$12,  0,$48,  0,$78
-                dc.b  $D,$64,  0,$57,  0,$E8, $D,$30
-                dc.b   0,$2E,  0,$80, $D,$C0,  0,$BA
-                dc.b  $E,  0,  0,$F8, $E,$E0,  0,$D9
-                dc.b  $E,$C3,  0,$BC,  0,$E8, $D,$F3
-                dc.b   0,$FB,  0,$77,  0,$80, $D,$B2
-                dc.b   0,$AD,$1A,$46,  0,$12,$3B,$46
-                dc.b   0,$12,  2,$B2,  0,$AD,  2,$25
-                dc.b   0,$64,$1B,  0,  1,$14,  0,$80
-                dc.b $31,$FE,  0,$1E,$4B,$6A,  0,$28
-                dc.b $20,$FF,$4E,$92,  0,$1E, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$78,  0,  6
-                dc.b   0,$61, $D,$9B,  0,$C0,  0,$53
-                dc.b  $D,$29,  0,  7, $E,$54,  0,$3C
-                dc.b  $E,$70,  0,$51, $E,$62,  0,$46
-                dc.b  $E,$55,  0,$8D,  0,$B3, $D,$6A
-                dc.b   0,$A3,  0,$E8,  0,$10,$8B,  0
-                dc.b   1,$14,  0,$80,$22,$E5,  0,$FF
-                dc.b   0,$80,  1,$99,  0,$31,  0,$80
-                dc.b $21,  7,  0,$FF,  0,$FF,  2,  8
-                dc.b   3,  5,  0,$BF,$19,$7C,$31,$FF
-                dc.b $35,$FF,  0,$76,  1,$FF,  0,$FE
-                dc.b   0,$6C,  1,  0,  0,  2,  0,$5D
-                dc.b   2,$FD,  0,$6E,  0,$80, $A,$92
-                dc.b   0,$1E, $B,  9,$82,$77,  0,$48
-                dc.b $7B,$FF,$E2,$C8,  2,$FF,  0,$3E
-                dc.b $18,  0,  0,$68,  0,$FF,  0,$DA
-                dc.b  $D,$88,  0,$36,  0,$6E,$1D,$49
-                dc.b   0,$AB, $E,$62,  0,$3A, $E,$55
-                dc.b   0,$F2, $E,$4A,  0,$D2,  0,$2E
-                dc.b  $D,$5D,  0,$43,  0,$31,  0,$A0
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$14,$FF,  0,$D8,  0,$38
-                dc.b $DB,$86,  0, $C, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$26,  0,  5,  0,$1A
-                dc.b  $D,$7E,  0,  2,  0,$2E, $D,$33
-                dc.b   0,$A6,  0,$E0, $D,$CE,  0,$9B
-                dc.b   0,$80, $D,$13,  0,$7A, $E,$F1
-                dc.b   0, $A,  0,$C0, $D,$D1,  0,$D5
-                dc.b   0,$EE, $D,  5,  0,$8E,  0,  5
-                dc.b   0,$A0, $D,$14,  0,$B0,$1A,$83
-                dc.b   0,$95,$3B,$83,  0,$95,  2,$14
-                dc.b   0,$B0,  2,  2,  0,$B6,$1B,  0
-                dc.b $35,$E5,$4B,$9B,  0,  0,$20,  3
-                dc.b $4E,$86,  0, $C, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$8B,  0,$C3,  0,  3
-                dc.b  $D,$B5,  0,$6A,  0,$99, $D,$39
-                dc.b   0,$39,  0,$60, $D,$62,  0,$1E
-                dc.b   0,$40, $D,$82,  0,$D3, $E,$72
-                dc.b   0,$78,  0,$A0, $D,$63,  0,$A6
-                dc.b   0,$B9, $D,$7C,  0,$36,  0,$76
-                dc.b   0,$30,$8B,  0,$25,$6F,  0,$84
-                dc.b   0,  0,  1,$C2,  0,$65, $E,  8
-                dc.b   0,$90,  6,$7A,  0,$FC,  8,  5
-                dc.b   2,$CB,  3,  0,  3,$1B,  0,$F6
-                dc.b $18,$FF,  0,$EA,  0,$30,$2E,  1
-                dc.b   1,  3, $E, $C,  0,$82,$25,$FE
-                dc.b   3,$FB,  0,$8C,  1,$FF,  0,$FC
-                dc.b   0,$CF,  0,$80,  1,$FE,  0,$CE
-                dc.b  $B,$86,  0, $C, $B,  9,$72,$2C
-                dc.b   0,$50, $E,$20,  0,$1C,$52,$80
-                dc.b   0,  0,$27,$FF,$D5,  8, $C,$2A
-                dc.b   2,$FE,  0,$B2,$18,  0,  0,$7C
-                dc.b   0,$BC,  0,$7C, $D,$A1,  0,$E0
-                dc.b   0,$B4,$1D,$57,  0,$8D,  0,  0
-                dc.b  $D,$74,  0,$BC, $E,$66,  0,$24
-                dc.b   0,$80, $D,$58,  0,$EB,  0,$34
-                dc.b  $D,$6E,  0,$D5,  0,$BF,  0,$C0
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  4,  1,  0,$46,  0,$40
-                dc.b   1,  1,  0, $C,  0,$98,  1,  1
-                dc.b   0,$85,  0,  0,  0,  0,  0,  1
-                dc.b   0,$85,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  2,$C0,  0,  0
-                dc.b   3,  0,  2,$75,  0,  3,$6C,  1
-                dc.b $62,$84,  0,  0, $B,  0, $D,  0
-                dc.b   0,$FF,  0,$FF,  1,  0,  0,$FF
-                dc.b   0,$FF,  1,  0,  0,$FF,  0,$FF
-                dc.b $E7,$FF, $C,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  1,  0,  0,  0,$E8,  0
-                dc.b   0,$14,  0,$C6,  0,$2F, $D,$1A
-                dc.b   0,$B0,  0,$5D, $D,  3,  0,$9B
-                dc.b   0,$D0, $D, $E,  0,$6F,  0,$40
-                dc.b  $E,$3F, $E,$10,  0,$D7,  0,$20
-                dc.b  $C,  0,  0, $E,  0,$A8,  0,$FD
-                dc.b  $D,$12,  0,$46,  0,  0,  0,$F0
-                dc.b  $D,$D7,  0,$30,$1A,$AE,  0,$CC
-                dc.b $3B,$AE,  0,$CC,  2,$D7,  0,$30
-                dc.b   2, $E,  0,  9,$1B,  0,  1,  0
-                dc.b   0,  0,$31,  0,  0,  0,  0,  0
-                dc.b $4A,$14,$69,  0,  4,  0,  0,  0
-                dc.b   0,  0,  0,  0,  7,  0,  3,  0
-                dc.b $35,  0,$C9,$FF,$FF,  0,  0,  0
-                dc.b   0,$40,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   3,$30,  3,$55,  0,$38,  3,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0, $E,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,$51
-                dc.b   0,$3C,$1A,$85,  0,$2B,$3B,$85
-                dc.b   0,$2B,  2,$51,  0,$3C,  2,  4
-                dc.b   0,$71,$1B,  0,$24,  1,  0,  1
-                dc.b   0,$61,  2,$DF,  0,$56,  0,  0
-                dc.b $45,$F3,  0,$5C,$30,$A5,$3C,  0
-                dc.b   0,  2,  0,$E3,  0,$60,  0,  0
-                dc.b   0,  0,  0,$28,  0,$40, $A,$84
-                dc.b   0,  0, $B,  9,$FF,$FF,$FF,  0
-                dc.b   0,$95,  0,$1E,  0,$29, $D,$C1
-                dc.b   0,$95,  0,$2B,$1D,$68,  0,$B2
-                dc.b   0,$C0, $D,$8B,  0,$99, $E,$7A
-                dc.b   0,$25,  0,$E0, $D,$6A,  0,$55
-                dc.b   0,$8B, $D,$84,  0,$8A,  0,$F4
-                dc.b   0,$90,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,$10,  0,  0
-                dc.b   2,$43,  0,$58,  2, $D,  0,$58
-                dc.b   2,$84,  0,$FF,  0,$FF,  1,$84
-                dc.b   0,$FF,  0,$FF,$DE,$8C, $C,  0
-                dc.b $FF,$FF,$FF,  0,  0,$1A,  0,$BA
-                dc.b   0,$14, $D,$22,  0,$6D,  0,$FC
-                dc.b  $D,  4,  0,$A7,  0,$C0, $D,$12
-                dc.b   0,$9F,  0,  0, $D,$18,  0,$D4
-                dc.b  $E,$15,  0,$B9,  0,$80, $D,$12
-                dc.b   0,$E9,  0,$7C, $D,$17,  0,$92
-                dc.b   0,$C9,  0,$40,$6E, $D,  0,$A3
-                dc.b $1B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$10,  0,  0,$21,  0
-                dc.b   0,$60,  0,  1,  0,$80,  1,$6A
-                dc.b   0,$42,  0,$80,$44,  0,  0,$13
-                dc.b   0,$BA, $E,  1,  0,$77,$20,$FF
-                dc.b $3C,$FF,  0,$FC,  0,$2A,  0,  0
-                dc.b   0,$FF,  0,$FA,  0,$B2,  0,  0
-                dc.b  $A,$8C, $C,  9,$FF,$FF,$FF,  0
-                dc.b   0,$9B,  0,$12,  0, $E, $D,$C9
-                dc.b   0,$52,  0,$CA,$1D,$6C,  0,$E2
-                dc.b   0,$80, $D,$91,  0,$2E, $E,$7F
-                dc.b   0,  8,  0,$40, $D,$6E,  0,$96
-                dc.b   0, $A, $D,$89,  0,$D7,  0,$BC
-                dc.b   0,$E0,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,$14,  0,$80
-                dc.b   1,  0,  0,  0,  0,  0,  1,  0
-                dc.b   0,$DF,  0,$F8,$E7,$8F,  0,  2
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$55
-                dc.b   0,$15,  0,$5D, $D,$6E,  0,$50
-                dc.b   0,$87, $D, $E,  0,$EA,  0,$70
-                dc.b  $D,$3B,  0,$A9,  0,$C0, $D,$4F
-                dc.b   0,$8D, $E,$45,  0,$9B,  0,$60
-                dc.b  $D,$3C,  0,$98,  0,$67, $D,$4B
-                dc.b   0,$87,  0,$CF,  0,$D0, $D,$64
-                dc.b   0,$26,$1A,$72,  0,$4E,$3B,$72
-                dc.b   0,$4E,  2,$64,  0,$26,  2,  2
-                dc.b   0,$F6,$1B,  0,  1,$14,  0,$80
-                dc.b $32,$E6,  0,$9F,  0,$FF,  1,  1
-                dc.b   0,$FC,  6, $A,  0,$98,$31,$FF
-                dc.b   0,$E9,  0,$AD,  0,$20,  9,$10
-                dc.b   8, $B,  0,$EB,  1,$10,$15,$FF
-                dc.b $29,  1,  0,  0,  0,$C0,$11,  5
-                dc.b   0,$D8,  2,  9,  0,  8,  4,  3
-                dc.b   4,$65,  0,$21,  0,$8F,  0,  2
-                dc.b   7,  5,  3,  2,$75,  1,  0,$ED
-                dc.b   0,$B4,$55,  2,  0,$7A,  0,$84
-                dc.b $11,$10,  0,$80,  0,  0,$1B,$FF
-                dc.b $74,$FF,  0,$F0,  0,$10,$56,  2
-                dc.b   0,$10,$12,  9,  0,  8,$1C,  0
-                dc.b   0,$1C,  0,$AB,  0,  6, $D,$24
-                dc.b   0,$F4,  0,$32, $D,  4,  0,$FF
-                dc.b   0,$20,  7,$75,  0,$40,  4,$13
-                dc.b   0,$FC,  0,$80, $D,$1A,  0,$A6
-                dc.b  $E,$17,  0,$51,  0,$40, $D,$14
-                dc.b   0,$4C,  0,$72, $D,$19,  0,$4D
-                dc.b   0,$3C,  0,$60, $D,$96,  0,$A9
-                dc.b $1A,$64,  0,$48,$3B,$64,  0,$48
-                dc.b   2,$96,  0,$A9,  2,$27,  0,$5E
-                dc.b $1B,  0,  1,$14,  0,$80,$3D,$FF
-                dc.b   0,$80,  0,  0,  0,  1, $A,$BF
-                dc.b   7,  0,  0,  0,$18,$FF,  0,$F3
-                dc.b   0,$8A, $E,$29,  0,$3C,$1E,  0
-                dc.b $12,$FF,  0,$FF,  0,$FF,  0,$FE
-                dc.b   8,$FF,  0,$FF,  0,$FA,  0,$59
-                dc.b $11,$28,  0,$10,  3,$82,  3,$94
-                dc.b   3,$32,  3,$B8, $B,$8F,  0,  2
-                dc.b  $B,  9,$80,  0,  0,  0,$52,$40
-                dc.b   0,  4,  0,$30,  0,$18,$27,$FF
-                dc.b $D4,$FF,  0,$FB, $C,$32,  3,$B8
-                dc.b $18,  0,  0,$D5,  0,$6D,  0,$57
-                dc.b  $D,$15,  0,$35,  0,$55,$1D,$95
-                dc.b   0,$ED,  0,$40, $D,$C7,  0,$E7
-                dc.b  $E,$AE,  0,$EA,  0,$20, $D,$98
-                dc.b   0,$44,  0,$F5, $D,$BD,  0,$CC
-                dc.b   0,$C3,  0,$70,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$F2,$8D
-                dc.b   0,  0, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$89,  0,$F6,  0,$53, $D,$B3
-                dc.b   0,$13,  0,$89, $D,$18,  0,$36
-                dc.b   0,$90, $D,$60,  0,$DA,  0,$40
-                dc.b  $D,$81,  0,$23, $E,$70,  0,$FE
-                dc.b   0,$A0, $D,$62,  0,$5D,  0,$A9
-                dc.b  $D,$7A,  0,$9C,  0,$4B,  0,$30
-                dc.b  $D,$77,  0,$5D,$1A,  0,  0,$42
-                dc.b $3B,  0,  0,$42,  2,$77,  0,$5D
-                dc.b   2,  1,  0,$12,$1B,  0,$25,$A6
-                dc.b   0,$E1,  0,$80,  1,$92,  0,$79
-                dc.b  $A,  0,  0,  0,  0,  0,  1,  0
-                dc.b   0,  0,  6,  0,  0,  0,$31,  0
-                dc.b   0,  0,  0,  4,  0,  0,  9,$7A
-                dc.b   0,$6C,  7,  4,  0,  0,  1,  0
-                dc.b $15,  3,$29,  2,  0,$15,  0,$55
-                dc.b $11,  8,  0,$F0,  2,  8,  0,$F0
-                dc.b  $B,$8D,  0,  0,  7,  2,  3,  0
-                dc.b $25,$40,  3,$80,  0,$FD,  0,  4
-                dc.b $49,  0,  0,$FF,  0,$FF,$55,  0
-                dc.b   0,$FF,  0,$FF,$11,  0,  0,$FF
-                dc.b   0,$FF,$1B,$FF,$25,$C0,  3,$C0
-                dc.b $4A,  0,  0,  0,  0,  0,$56,  0
-                dc.b   0,  0,$12,  0,  0,  0,$1C,  0
-                dc.b   0, $B,  0,$63,  0,$92, $D, $E
-                dc.b   0,$7C,  0,$16, $D,  1,  0,$F5
-                dc.b   0,$60, $D,  7,  0,$D5, $E, $A
-                dc.b   0,$72, $E,  9,  0,$23,  0,$C0
-                dc.b  $D,  7,  0,$F4,  0,$D6, $D,  9
-                dc.b   0,$EA,  0,$DD,  0,$20, $D,$2A
-                dc.b   0,$6A,$1A,$15,  0,$18,$3B,$15
-                dc.b   0,$18,  2,$2A,  0,$6A,  2,  7
-                dc.b   0,$BF,$1B,  0,$25,$6F,  0,$75
-                dc.b   0,  0,$23,  3,$24,  0,  0,  1
-                dc.b   0,$62, $E, $B,  0,$F4,$1E,  1
-                dc.b   1,  3,$31,$7C,  0,$C0,  3,$88
-                dc.b   3,$98,  3,$DE,  0,$E0,  2,$BE
-                dc.b  $B,$8D,  0,  0, $B,  9,$FF,$FF
-                dc.b $E2,$3A,  3,$BE,$18,  0,  0, $A
-                dc.b   0,$4E,  0,$4D, $D,$59,  0,$F8
-                dc.b   0,$57,$1D,$BB,  0,$1D,  0,$C0
-                dc.b  $D,$F9,  0,$7D, $E,$DA,  0,$4D
-                dc.b   0,$60, $D,$BE,  0, $A,  0,$37
-                dc.b  $D,$EC,  0,$E1,  0,$3E,  0,$D0
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$10,  0,  0,  1,  1
-                dc.b   0,$45,  0,$B0,  1,  1,  0, $D
-                dc.b   0,$58,$E7,$8C,  0, $A, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$B6,  0,$1D
-                dc.b   0,$2A, $D,$EC,  0,$7D,  0,$5E
-                dc.b  $D,$1F,  0,$F9,  0,$E0, $D,$7F
-                dc.b   0,$E7,  0,$80, $D,$AA,  0,$8A
-                dc.b  $E,$95,  0,$38,  0,$C0, $D,$81
-                dc.b   0,$E7,  0,$1E, $D,$A1,  0,$EB
-                dc.b   0,$A6,  0,$A0, $D, $D,  0,$B4
-                dc.b $1A,$20,  0,$BB,$3B,$20,  0,$BB
-                dc.b   2, $D,  0,$B4,  2,$1B,  0,$24
-                dc.b $1B,  0,  1,$10,  0,  0,$22,$AA
-                dc.b   0,$FD,  0,  0,  1,$FC,  0,$21
-                dc.b $56,$3D,  0,$2C,$20,$C3,$4E,$8C
-                dc.b   0, $A, $B,  0,$2A,$FF,  0,$FF
-                dc.b $D3,$FF,$FF,  0,  0,$19,  0,$65
-                dc.b   0,$E5, $D,$20,  0,$B3,  0,$9F
-                dc.b  $D,  4,  0,$6B,  0,$F0, $D,$11
-                dc.b   0,$AF,  0,$C0, $D,$17,  0,$95
-                dc.b  $E,$14,  0,$A2,  0,$60, $D,$11
-                dc.b   0,$F6,  0,$7F, $D,$16,  0,$63
-                dc.b   0,$E8,  0,$50, $D,  0,  0,  0
-                dc.b $1A,$3C,  0,$D2,$3B,$3C,  0,$D2
-                dc.b   2,  0,  0,  0,  3, $F,$1B,  0
-                dc.b   1,$10,  0,  0,$21,  1,  0,$1F
-                dc.b   0,$FD,$49,$FF,  0,$F2,  0,$52
-                dc.b $30,$C3,$30,$FF,  0,$FB,  0,  0
-                dc.b   9,  0,  0,  4,  0,$39, $F,$8C
-                dc.b   0, $A, $B,  9,$FF,$FF,$FF,  0
-                dc.b   0,$36,  0,$75,  0,$24, $D,$93
-                dc.b   0,$62,  0,$2C,$1D,$DA,  0,$2B
-                dc.b   0,  0, $D,$22,  0,$E4, $E,$FE
-                dc.b   0,$87,  0,$80, $D,$DD,  0,$93
-                dc.b   0,$AC, $D,$14,  0,$30,  0,$9A
-                dc.b   0,$40,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,$10,  2,  1
-                dc.b   0,$4E,  0,$92,  1,  1,  0, $E
-                dc.b   0,$C0, $F,$FC,  3,$78,  2,$6D
-                dc.b   0,$77,  0,$FF,$5D,  0,  0,$65
-                dc.b   0,$40, $B,  1,$60,$65,  0,$21
-                dc.b   0,$8E,  0,  1,  7,  4,  1,  1
-                dc.b   1,  0,$1A,$80,  0,  0,  2,$80
-                dc.b   0,  0,$DF,$FF,$19,$EF,  0,$28
-                dc.b   2,$B9,  0,$DF,$E0,  0,  0,$37
-                dc.b   0,$CE,  0,$A8, $D,$95,  0,$23
-                dc.b   0,$78, $D,$36,  0,$C7,  0,$80
-                dc.b  $D,$DB,  0,$1E, $E,$24,  0,$28
-                dc.b  $E,$FF,  0,$A3, $E,$DE,  0,$8A
-                dc.b   0,$78, $D,$15,  0,$64,  0,$3A
-                dc.b   0,$80, $D,$8F,  0,$64,$1A,$70
-                dc.b   0,$A9,$22,  0,  9,  0,  9,  0
-                dc.b   4,$70,  0,$A9,  2,$8F,  0,$64
-                dc.b   1,  2,  0,  4,  0,$49,  1,$1C
-                dc.b   0,  4,  2,  2,  1, $F,$13,  0
-                dc.b   1,$10,$23,$A8,  0,$82,  0,$80
-                dc.b   1,$86,  0,$58, $A,$62,  0,$77
-                dc.b   0,$FF,$1E,$88,  0,$7F,  2,$88
-                dc.b   0,$7F,$15,$5B,  0,$32,  1,$FF
-                dc.b   0,$FA,  0,  3,  0,$80,  4,$FF
-                dc.b   0,$FF,  0,$20,$24,$FF,$47,  3
-                dc.b   4,$65,  0,$21,  0,$8E,  0,  1
-                dc.b   7, $C,  1,  5,  1,  0,$25,$40
-                dc.b   0,$52,  0,$A0,  1,$80,  0,$AB
-                dc.b   0,$5C,  9,$40,  0,$40,  0,$FC
-                dc.b $39,$10,  0,$D0,  0,$7C,  1,$40
-                dc.b $89,$FF,$25,$C0,  3,$C0, $B,$C4
-                dc.b   0,$FF,  0,$FF,$3E,$14,$88,  0
-                dc.b   0,$5C,  0,$24,  0,$EC, $D,$77
-                dc.b   0,$7F,  0,  4, $D,$10,  0,$28
-                dc.b   0,$40, $D,$40,  0,$A1, $E,$56
-                dc.b   0,$2C, $E,$4B,  0,$66,  0,$80
-                dc.b  $D,$41,  0,$A3,  0,$84, $D,$51
-                dc.b   0,$D1,  0,$26,  0,$C0,$6E,$50
-                dc.b   0, $F,$1B,  0,  1,$10,$22,  1
-                dc.b   0,$11,  0,$25,  0,$80,  1,$91
-                dc.b   0,$ED,  0,$80,$15,$48,  0,$48
-                dc.b $2D,$FF,  0,$27,  0,$BE,  0,  1
-                dc.b  $D,  7,  0,$E8,$20,$FF,$47,  2
-                dc.b   4,$65,  0,$21,  0,$8E,  0,  1
-                dc.b   7,  3,  3,  9,$25,$40,  0,$D2
-                dc.b   0,$47,  1,$80,  0,$DF,  0,$7F
-                dc.b $45,$20,  0,$80,  0,  0, $E,$AC
-                dc.b   0,$70,$7B,$FF,$24,  1,  0,  7
-                dc.b   0,$AC,  2,$9B,  0,$FA,$45,$FF
-                dc.b   2,  1,$8B,  0,  0,$51,  0,$46
-                dc.b   0,$12,  3,$31,  9,$5F,  0,$42
-                dc.b   0,$D6, $D,  3,  0,$39,  0,$B0
-                dc.b   2,  2,  0,$10,  8,  6,  0,$33
-                dc.b   0,$85,  0,$80, $D,$44,  0,$B2
-                dc.b  $E,$3C,  0,$1B,  0,$C0, $D,$34
-                dc.b   0,$53,  0,$96, $C,  8,  0,$41
-                dc.b   0,$39,  0,$41,  0,$20, $B,  7
-                dc.b $62,$59,  0,$2C,$1B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$E2,$59,  0,$2C
-                dc.b $1B,  0,  1,$10,$23,$1A,  0,$A0
-                dc.b   2,$5F,  0,$40,$2B,$CD,  0,$17
-                dc.b $89,  0,  0,$93,  0,$80,  0,$FF
-                dc.b   0,$F0,  0,  0,  0,  1,  8,$65
-                dc.b   0,$21,  0,$8E,  0,  1,  7, $B
-                dc.b   1,  4,  1,  3,$55,$20,  0,$D2
-                dc.b   0,$14,$A7,$FF,$56,$9B,  0,$3F
-                dc.b $A7,  0,  0,$2B,  0,$27,  0,$FC
-                dc.b  $D,$37,  0,$CB,  0,$34, $D,  7
-                dc.b   0,$8B,  0,$40, $D,$1E,  0,$2D
-                dc.b  $E,$28,  0,$3C, $E,$23,  0,$34
-                dc.b   0,$80, $D,$1E,  0,$A5,  0,$B4
-                dc.b  $D,$26,  0,$33,  0,$77,  0,$C0
-                dc.b  $D,$8F,  0,$64,$1A,$70,  0,$A9
-                dc.b $3B,$70,  0,$A9,  2,$8F,  0,$64
-                dc.b   2,  3,  0,$35,  2,$83,  0,$E8
-                dc.b $17,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $E0,$FF,  0,$FF,  1,$DE,  1,  1
-                dc.b   0,$78,  0,$C0,$17,  0,  5,$48
-                dc.b   0,$38,  2, $A,  0,$16,$16,$49
-                dc.b   0,$5B,$CF,$98,  0,  0, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$2E,  0,$93
-                dc.b   0,$80, $D,$89,  0,$22,  0,$80
-                dc.b  $D,$35,  0,$28,  0,  0, $D,$D4
-                dc.b   0,$A0, $E,$1B,  0,$80, $E,$F8
-                dc.b   0,$10, $E,$D7,  0,$F2,  0,$80
-                dc.b  $D, $D,  0,$2C,  0,$38,  0,  0
-                dc.b $6E,  0,  0,  0,$1B,  0,$25,$BD
-                dc.b   0,$B4,  0,  0,  1,$C0,  0, $C
-                dc.b  $A,$15,  0,$1F,$39,$FF,  0,$F6
-                dc.b   0,$3A,  1,  0,  0,  2,  0,$3E
-                dc.b   0,  0,$21,  5,  0,$4F,  0,$FF
-                dc.b   7,  1,$49,  2,  0,$F5,  0,$FF
-                dc.b   2,$98,  0,  0, $B,  0,$25,  0
-                dc.b   3,  0, $B,  0,$C9,$FF,$FF,  0
-                dc.b   0,$52,  0,$E9,  0,$C4, $D,$6B
-                dc.b   0,$7E,  0, $C, $D, $E,  0,$88
-                dc.b   0,$C0, $D,$3A,  0,$23, $E,$4D
-                dc.b   0,$84, $E,$43,  0,$D3, $E,$3B
-                dc.b   0, $B,  0,$8C, $D,$49,  0,$99
-                dc.b   0,$24,  0,$40,$8B,  0,  1,  0
-                dc.b $22,  0,  0,$C0,  0,  0,  0,  0
-                dc.b   1,$C0,  0,  0,  0,  0,$15,  0
-                dc.b   0,  0,$2D,  0,  0,  0,  0,  0
-                dc.b   0,  0, $D,$14,  0,  0,$20,  3
-                dc.b $47,  0,  4,  0,  0,  0,  0,  0
-                dc.b   0,  0,  7,  0,  3,  0,$25,  0
-                dc.b   0,$FF,  0,$FF,  1,  0,  0,$FF
-                dc.b   0,$FF,$45,  0,  0,$FF,  0,$FF
-                dc.b  $E,$FF,  0,$FF,$7B,$FF,$24,  0
-                dc.b   0,  0,  0,  0,  2,  0,  0,  0
-                dc.b $45,  0,  2,  0,$8B,  0,  0,  0
-                dc.b   0,$40,  0,  0,  3,$11,  9,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0,  2,  0,  0,$30,  8,  0
-                dc.b   0,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0, $E,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $C,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b  $B,  0,  1,$8F,  0,$64,$1A,$70
-                dc.b   0,$A9,$3B,$70,  0,$A9,  2,$8F
-                dc.b   0,$64,  2,  1,  0,$4D,  2,$83
-                dc.b   0,$E8,$17,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$56,$8A,  0,$9B
-                dc.b $8A,$EE,  0,  0, $E,$98,  0,  0
-                dc.b  $B,  3,$FF,$FF,$56,$91,  0,$8F
-                dc.b $A7,  0,  0,$21,  0,$EC,  0,$D4
-                dc.b  $D,$2B,  0,$CA,  0,$3C, $D,  5
-                dc.b   0,$EB,  0,$C0, $D,$17,  0,$AF
-                dc.b  $E,$1F,  0,$94, $E,$31,  0,$85
-                dc.b   0,$50,  2,  2,  0,$40,  9,$18
-                dc.b   0, $D,  0,$BC, $D,$1D,  0,$FB
-                dc.b   0,$75,  0,$40,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  5,$4A
-                dc.b   0,$18,  2,$1A,  0,$36,  2,$E4
-                dc.b   0,$BF,  0,$FF,  1,$E9,  0,$2F
-                dc.b   0,$FF,  6,  0,  3,  0,  2,$7C
-                dc.b   0,$B7,$5E,$1A,  0,$70,  0,$68
-                dc.b  $B,  0,$62,$92,  0,$10, $B,  0
-                dc.b $1A,$FF,  0,$FF,  2,$FF,  0,$FF
-                dc.b $DF,$FF,$19,  0,  0,  0,  2,  0
-                dc.b   0,  0,$E0,  0,  0,$12,  0,$C3
-                dc.b   0,$1C, $D,$18,  0,$12,  0,$94
-                dc.b  $D,  3,  0,$41,  0,$40, $D, $D
-                dc.b   0,  5, $E,$11,  0,$5C, $E, $F
-                dc.b   0,$30,  0,$80, $D, $D,  0,$39
-                dc.b   0,$14, $D,$10,  0,$7B,  0,$69
-                dc.b   0,$C0,$8B,  0,$25,$C0,  0,  0
-                dc.b   3,  0, $A,  0,  0,  0,  0,  0
-                dc.b $1E,$80,  0,  0,  2,$80,  0,  0
-                dc.b $14,  0,  0,  0,  0,  0,  2,  0
-                dc.b   0,  4,  5,  0,  0,$40,  0,  0
-                dc.b   7,$1F,  0,$FF,  2,$20, $E,  0
-                dc.b   0,  0,  0,  0,  7,  3,$14,$FF
-                dc.b   0,$FE,  0,$E4,  1,$FF,  0,$FF
-                dc.b   0,$B8,  0,$80,$18,$FF,  0,$F7
-                dc.b   0,$9C,  0,$40,  1,  6,  0,$9D
-                dc.b   0,$80,  2,$FC,  3,$FC,  4,  0
-                dc.b   1,  0,  0,  0,  0,  0,  2,$92
-                dc.b   0,$10,  7, $A,  1,  4,  1,  2
-                dc.b $26,$FF,  0,$FF,  2,$FF,  0,$FF
-                dc.b  $A,$FF,  0,$FF,$39,  0,  0,$FF
-                dc.b   0,$FF,  1,  0,$43,$10,  3,$20
-                dc.b $1B,$40,  3,$80,$21,$FF,$25,  0
-                dc.b   3,  0, $B,  0,  0,  0,  0,  0
-                dc.b $3E,  0,$41,$FF,  0,$FF,  0,$D4
-                dc.b   1,$FF,  0,$FF,  0,$CA,  0,$80
-                dc.b $18,$FF,  0,$FF,  0,$68,  1,$FF
-                dc.b   0,$FF,  0,$DE,$20,  0,  0,$1A
-                dc.b   0,$75,  0,$D4, $D,$22,  0,$15
-                dc.b   0,$3C, $D,  4,  0,$9B, $E,$12
-                dc.b   0,$6F, $E,$18,  0,$94, $E,$15
-                dc.b   0,$81, $E,$12,  0,$B8,  0,$BC
-                dc.b  $D,$17,  0,$56,  0,  5, $E,$8F
-                dc.b   0,$64,$1A,$70,  0,$A9,$3B,$70
-                dc.b   0,$A9,  2,$8F,  0,$64,  2,  0
-                dc.b   0,  0,  2,$83,  0,$E8,$17,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $56,$AC,  0,$A9,$9A,$92,  0,$10
-                dc.b  $B,  3,$FF,$FF,$FF,  0,  0,$2D
-                dc.b   0,$B8,  0,$E4, $D,$3B,  0,$21
-                dc.b   0,$6C, $D,  7,  0,$FE, $E,$1F
-                dc.b   0,$FB, $E,$2A,  0,$A4, $E,$4A
-                dc.b   0,$69, $E,$20,  0,$7A,  0,$EC
-                dc.b  $D,$28,  0,$7C,  0,$56,$8C,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,  1,  0,  0,$AE
-                dc.b   2,  0,  0,$92,  0,  4,  2,$C4
-                dc.b   0,$7F,  2,$FA,  0,$FF,  6,$5A
-                dc.b   0,$5A,  2,$5C,  0,$9A,  2,$78
-                dc.b   0,  0,  0,  0,  9,$5B,  0,$5C
-                dc.b   2,$5C,  0,$52,$66,  1,$58,$96
-                dc.b   0,  2, $B,  0,$FF,$FF,$FF,  0
-                dc.b   0,$26,  0,$BF,  0,$BA, $D,$32
-                dc.b   0,$10,  0, $E, $D,  6,  0,$C4
-                dc.b   0,$E0, $D,$1B,  0,$13,  0,$80
-                dc.b  $D,$24,  0,$1A, $E,$1F,  0,$96
-                dc.b   0,$C0, $D,$1B,  0,$7F,  0,$CE
-                dc.b  $D,$22,  0,$46,  0,$EF,  0,$A0
-                dc.b $8B,  0,  1,$14,  0,$80,$22,$59
-                dc.b   0,$88,  2,$5F,  0,$E8,$5B,$16
-                dc.b   0,$B2,  2,$7A,  0,$47,$2E,$18
-                dc.b   1,  0,  0,  0,  0,$18,  0,$70
-                dc.b $1A,$A8,  0,  0,  1,  7,  0,$BD
-                dc.b   0,$C0,$12,$96,  0,  2, $B,  2
-                dc.b $FF,$FF,$FF,  0,  0,$36,  0,$74
-                dc.b   0,$14, $D,$46,  0,$7B,  0,$FC
-                dc.b  $D,  9,  0,$87, $E,$26,  0,$1F
-                dc.b  $E,$32,  0,$D4, $E,$2C,  0,$79
-                dc.b  $E,$26,  0,$B7,  0,$7C, $D,$30
-                dc.b   0,$42,  0,$69,$8C,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$14
-                dc.b   0,$80,$53,$99,  0,$C9,$9A,$96
-                dc.b   0,  2, $B,  3,$FF,$FF,$FF,  0
-                dc.b   0,$49,  0,$B7,  0,$24, $D,$5F
-                dc.b   0,$88,  0,$2C, $D, $C,  0,$EA
-                dc.b  $E,$33,  0,$AB, $E,$44,  0,$E4
-                dc.b  $E,$85,  0,$79, $E,$34,  0,$79
-                dc.b   0,$AC, $D,$41,  0,$68,  0,$BA
-                dc.b $8C,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$10,  0,  0,  6,$8E
-                dc.b   0,$5C,  2,$E9,  0,$AF,  2,$D9
-                dc.b   8,$48,  2,$5D,  0,$5A,  2,$79
-                dc.b   0,$DF,  0,$FF, $A,$50,  2,$5D
-                dc.b   0,$84,$BF,$99,  0,  0, $B,  0
-                dc.b $FF,$FF,$FF,  0,  0,$34,  0,$CC
-                dc.b   0,$B7, $D,$44,  0,$55,  0,$75
-                dc.b  $D,  9,  0,$3D,  0,$50, $D,$24
-                dc.b   0,$F5,  0,$40, $D,$31,  0,$47
-                dc.b  $E,$2B,  0,$1E,  0,$20, $D,$25
-                dc.b   0,$89,  0,$15, $D,$2E,  0,$C9
-                dc.b   0,$79,  0,$70,$8B,  0,  1,$10
-                dc.b   0,  0,$83,$B2,  0,$19,  2, $D
-                dc.b   0,$52,$2D,$FF,  0,$DF,  0,$F0
-                dc.b   0,$FF,  0,$FF,  0,$D4,  0,$F0
-                dc.b $1A,$88,  1,$FF,  0,$F8,  0, $D
-                dc.b   0,$20,$12,$99,  0,  0, $B,  2
-                dc.b $FF,$FF,$FF,  0,  0,$44,  0,$81
-                dc.b   0,$11, $D,$58,  0,$C1,  0,$63
-                dc.b  $D, $C,  0,  0,  0,$30, $D,$30
-                dc.b   0,  0,  0,$C0, $D,$40,  0,  1
-                dc.b  $E,$38,  0,  0,  0,$E0, $D,$30
-                dc.b   0,$C0,  0,$C3, $D,$3C,  0,$C4
-                dc.b   0,$F3,  0,$10,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$10
-                dc.b   0,  0,$53,$B4,  0,$E4,$9A,$99
-                dc.b   0,  0, $B,  3,$FF,$FF,$FF,  0
-                dc.b   0,$57,  0,$C4,  0,$21, $D,$71
-                dc.b   0,$CD,  0,$93, $D, $F,  0,$63
-                dc.b   0,$30, $D,$3D,  0,$8C,  0,$C0
-                dc.b  $D,$52,  0,$11, $E,$A3,  0,$1E
-                dc.b   0,$90, $D,$3E,  0,$82,  0,$F3
-                dc.b  $D,$4D,  0,$EB,  0,$44,  0,$10
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$14,  0,$80,  6,$86
-                dc.b   0,$4C,  2,$F6,  0,$3F,  2,$F1
-                dc.b   0,$7F,  7,$F0,  2,$5C,  0,$E2
-                dc.b $D3,$85, $C,  0,$FF,$FF,$FF,  0
-                dc.b   0,$6E,  0,$26,  0,$FF, $D,$8E
-                dc.b   0,$E9,  0,$CD, $D,$13,  0,$52
-                dc.b   0,$D0, $D,$4D,  0,$4B, $E,$67
-                dc.b   0, $F, $E,$5A,  0,$2D, $E,$4E
-                dc.b   0,$80,  0,$6D, $D,$61,  0,$D9
-                dc.b   0,$AD,  0,$F0,$8B,  0,  1,  0
-                dc.b $23,$C0,  0,  0,  2,$C0,  0,  0
-                dc.b $5B,  4,  0,  0,  2,  4,  0,  0
-                dc.b $2C,  0,  0,  0,  0,$10,  0,  0
-                dc.b   0,  0,  0,  2,  0,  0,  0,  0
-                dc.b $18,  0,  0,  1,  0,  0,  1,  0
-                dc.b   0,  1,  0,  0,  0,  0,  2,$F0
-                dc.b   3,$F0,  9,  0,  0,  0,  0,  0
-                dc.b   8,  0,  1,  0,  1,  0,$B9,  0
-                dc.b   3,  0,$1B,  0,  3,  0,$21,$FF
-                dc.b $B8,  0,  0,  0,  0,  0,  1,  0
-                dc.b   0,  0,  0,  0,  0,  0,$18,  0
-                dc.b   0,  0,  0,  0,  1,  0,  0,  0
-                dc.b   0,  0,$20,  0,  0,  0,  0,$40
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b  $D,  0,  1,  0, $D,  0,  1,  0
-                dc.b  $D,  0,  0,  0, $E,  0,  1,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0,  0,  0,$8B,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b $FF,  0,$FF,$FF,$FF,  0,$FF,  0
-                dc.b   1,$14,  0,$80,$22,$51,  0,$60
-                dc.b   2,$64,  0,$F2,$2B,$80,  0,  0
-                dc.b $62,$85,  0,$B0,  1,  0,  0,$20
-                dc.b   0,$B8,$19,  0,  0,$90,  1,$FF
-                dc.b   0,$FC,  0,$F9,  0,$60,  1,$10
-                dc.b   0,$7C,  0,$C0,  0,  0,  0,  1
-                dc.b   0,$7C,  0,$20, $A,$85,  8,  6
-                dc.b   3,  0,$55,  0,  0,$FF,  0,$FF
-                dc.b $61,$10,  0,$DC,  0,$83,  1,$20
-                dc.b   0,$80,  0,  0,$19,$40,  0,$80
-                dc.b   0,  0,  1,$80,  0,$8A,  0,$D8
-                dc.b   1,  1,  3,  2,$19,$FF,$56,  0
-                dc.b   0,  0,$60,$FF,  0,$FF,  0,$5A
-                dc.b   1,$FF,  0,$FF,  0,$DE,$19,$FF
-                dc.b   0,$FC,  0,$F2,  1,$FF,  0,$FF
-                dc.b   0,$10,  2,  9,  0,$14,  2,  9
-                dc.b   0,$14,$18,  0,  0,$3B,  0,$4E
-                dc.b   0,$71, $D,$4C,  0,$CB,  0,$83
-                dc.b  $D, $A,  0,$62, $E,$29,  0,$88
-                dc.b  $E,$37,  0,$61, $E,$30,  0,$74
-                dc.b   0,$E0,  2,  0,  0,$E0,  9,$2A
-                dc.b   0,$2E,  0,$E3, $D,$34,  0,$94
-                dc.b   0,$89,$6F,  0,  0,  0,$1B,  0
-                dc.b   1,$14,  0,$80,$22,$1A,  0,$16
-                dc.b   2,$61,  0,$B0,$2B,$A3,  0,$D1
-                dc.b $89,  0,  0,$8E,  1,$FF,  0,$F0
-                dc.b   0,  0,  0,  1,  8,$65,  0,$21
-                dc.b   0,$85,  8, $B,  1,  4,  1,  3
-                dc.b $55,$80,$A9,$FF,$56,$91,  0,$8F
-                dc.b $A7,  0,  0,$32,  0,$D8,  0,$92
-                dc.b  $D,$41,  0,$CB,  0,$16, $D,  8
-                dc.b   0,$E5,  0,$60, $D,$23,  0,$95
-                dc.b   0,$80, $D,$2F,  0,$72, $E,$29
-                dc.b   0,$83,  0,$C0, $D,$24,  0,$23
-                dc.b   0,$D6, $D,$2D,  0, $C,  0,$2D
-                dc.b   0,$20, $D,$8F,  0,$64,$1A,$70
-                dc.b   0,$A9,$3B,$70,  0,$A9,  2,$8F
-                dc.b   0,$64,  0,  0,  0,  2,  1,  0
-                dc.b   1,$1B,  0,$83,  0,$E8,$17,  0
-                dc.b   1,$10,  0,  0,  1,  1,  0,$47
-                dc.b   0,$5A,  1,  1,  0, $B,  0,$6C
-                dc.b   2,$85,  0,  0,  0,  0,  1,$85
-                dc.b   0,  0,  0,  0,  5,$C0,  0,  0
-                dc.b   2,$C0,  0,  0,  2,$6A,  0,$7B
-                dc.b  $A,$C0,  0,  0,  2,$C0,  0,  0
-                dc.b $5C,  1,  9,  0,$58,$90,  0,  2
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$1D
-                dc.b   0,$54,  0,$95, $D,$25,  0,$D0
-                dc.b   0,$AF, $D,  5,  0,$1C,  0,$F0
-                dc.b  $D,$14,  0,$73,  0,$C0, $D,$1B
-                dc.b   0,$45, $E,$17,  0,$DC,  0,$60
-                dc.b  $D,$14,  0,$C5,  0,$8F, $D,$19
-                dc.b   0,$E4,  0,$33,  0,$50,$4D,  4
-                dc.b   9,  4,  9,  4, $B,  0,  3,  0
-                dc.b   0,  0,  2,  0,  1,  0,$13,  0
-                dc.b   1,$10,$32,$FE,  0,$3C,$15,  1
-                dc.b   1,$30,  0,$BF,  0,$FF,$28,$FF
-                dc.b   0,$8F,  7,$F1,  0,$B4,$20,  1
-                dc.b $47,  3,  4,$65,  0,$21,  0,$90
-                dc.b   0,  2,  7,  2,  3,  0,$35,  8
-                dc.b $43,  8,$85,$FF,$FF,  0,  0,$19
-                dc.b   0,$ED,  0,$54, $D,$21,  0,$63
-                dc.b   0,$BC, $D,  4,  0,$83,  0,$C0
-                dc.b  $D,$12,  0, $F,  8,$78,  0,$4C
-                dc.b   3,  3,  0,$18,  0,$14, $E,$15
-                dc.b   0,$11,  0,$80, $D,$12,  0,$57
-                dc.b   0,$3C, $D,$16,  0,$DC,  0,$7D
-                dc.b   0,$40,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$81,$8F,  0,$64,$1A,$70
-                dc.b   0,$A9,$3B,$70,  0,$A9,  2,$8F
-                dc.b   0,$64,  2,  0,  0,  0,  2,$83
-                dc.b   0,$E8,$17,  0,  1,$10,  0,  0
-                dc.b $22,$B1,  0,$42,  2,$C3,  0,$AE
-                dc.b $8D,$FF,  0,$FE,  0,$A3,  0,$60
-                dc.b   2,$C6,  0,$F8,$18,$FF,  0,$FA
-                dc.b   0,$A3,  1,  0,  0,  0,  0,$26
-                dc.b   0,$E0,  2,$C3,  3,$E3,  0,$60
-                dc.b  $A,$90,  0,  2, $B,  0,$FF,$FF
-                dc.b $FF,  0,  0,$52,  0,$49,  0,$CE
-                dc.b  $D,$6A,  0,$AE,  0, $A, $D, $E
-                dc.b   0,$6C,  0,$A0, $D,$39,  0,$B2
-                dc.b   0,$80, $D,$4C,  0,$EE, $E,$43
-                dc.b   0,$50,  0,$40, $D,$3A,  0,$99
-                dc.b   0,$4A, $D,$49,  0, $A,  0,$B8
-                dc.b   0,$E0,$8B,  0,  1,$10,  0,  0
-                dc.b $22,$24,  0,$48,  1,  1,  0,$43
-                dc.b   0,$AC,$2B,$8E,  0,  5,$8A,$87
-                dc.b   0,$80,  1,$F5,  0,$B2,  0,  0
-                dc.b  $A,$90,  0,  2, $B,  3,$FF,$FF
-                dc.b $FF,  0,  0,$49,  0,$D3,  0,$EF
-                dc.b  $D,$5F,  0,$AD,  0,$9D, $D, $C
-                dc.b   0,$EF,  0,$D0, $D,$33,  0,$BF
-                dc.b   0,$40, $D,$44,  0,$FF, $E,$3C
-                dc.b   0,$5F,  0,$20, $D,$34,  0,$8E
-                dc.b   0,$3D, $D,$41,  0,$82,  0,$5C
-                dc.b   0,$F0,$8B,  0,  5,$4B,  0,$A4
-                dc.b   2,$10,  0,$FA,$E7,$92,  0,  4
-                dc.b  $B,  0,$FF,$FF,$FF,  0,  0,$40
-                dc.b   0,$1E,  0,$24, $D,$53,  0, $D
-                dc.b   0,$2C, $D, $B,  0,$3A,  0,$C0
-                dc.b  $D,$2C,  0,$EB,  0,  0, $D,$3B
-                dc.b   0,$E4, $E,$34,  0,$67,  0,$80
-                dc.b  $D,$2D,  0,$9E,  0,$AC, $D,$38
-                dc.b   0,$DD,  0,$2A,  0,$40,$4D,  0
-                dc.b   9,  0,  9,  0, $B,  2,  3,$1C
-                dc.b   0,  4,  2,  2,  1, $F,$13,  0
-                dc.b $25,$BE,  0,$6E,  2,$BC,  0,$EE
-                dc.b   9,  1,  0, $F,  0,$3F,  0,$FF
-                dc.b   1,  4,  0,$58,  6,  6,  0,$F0
-                dc.b   8,  8,  1,  8,  0,  0,  0,  0
-                dc.b $24,$FF,  0,$EA,  0,  0,  1,  0
-                dc.b   0,  0,  7,$15,  0,$40,  7,$17
-                dc.b   0,$7A,  1,$12,  0,$FC,$14,$FF
-                dc.b $28,$FF,  0,$FC,  0,$14,  0,  0
-                dc.b   8,$FF,  0,$FF,  0,$FF,  1,$FF
-                dc.b   0,$FE,  0,$93,  0,$80,  1,  0
-                dc.b   0,$13,  2, $F,  0,$FF,  0,$E0
-                dc.b  $A,$92,  0,  4,  7,  5,  3,  2
-                dc.b $35,  0,$3F,$10,  3,  0,$53,$20
-                dc.b $31,$FF,$74,$FF,  0,$F0,  0,$10
-                dc.b $56,  2,  0,$20,$30,  0,  0,$2A
-                dc.b   0,$4E,  0,$70, $D,$36,  0,$B0
-                dc.b   0,$50, $D,  7,  0,$65,  0,  0
-                dc.b  $D,$1D,  0,$94,  8,$75,  0,$40
-                dc.b   3,  0,  0,$27,  0,$70,  8,$76
-                dc.b   0,$44,  3,  1,  0,$41,  0,$8F
-                dc.b   0,$20,  2,  2,  0,$B0,  3,$76
-                dc.b   0,$44,  3,  1,  0,$1E,  0, $A
-                dc.b   0,$50, $D,$25,  0,$71,  0,$C7
-                dc.b   0,  0,$8B,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,$FF,  0,$FF,$FF
-                dc.b $FF,  0,$FF,  0,  1,  0,$23,$C0
-                dc.b   0,  0,  2,$C0,  0,  0,$8D,  0
-                dc.b   0,  0,  0,$10,  0,  0,  1,  2
-                dc.b   0,  0,  0,  0,$18,  0,  0,  1
-                dc.b   0,  0,  2,  1,  0,  0,  0,  0
-                dc.b   1,  8,  0,$F0,  0,  0,  1,  8
-                dc.b   0,$F0,  0,  0,  8,  0,  0,  0
-                dc.b   0,  0,  0,  0,  7,  0,  1,  0
-                dc.b   1,  0,$B9,  0,  0,$FF,  0,$FF
-                dc.b   1,  0,  0,$FF,  0,$FF,$19,  0
-                dc.b   0,$FF,  0,$FF,  1,  0,  0,$FF
-                dc.b   0,$FF,  1,  0,  3,  0,$19,$FF
-                dc.b $B8,  0,  0,  0,  0,  0,  1,  0
-                dc.b   0,  0,  0,  0,$19,  0,  0,  0
-                dc.b   0,  0,  1,  0,  0,  0,  0,  0
-                dc.b   2,  0,  0,  0,  2,  0,  0,  0
-                dc.b $18,  0,  0,  0,  0,$40,  0,  0
-                dc.b  $D,  0,  0,  0,  0,  0, $D,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0, $E,  0
-                dc.b   0,  0,  0,  0, $D,  0,  0,  0
-                dc.b   0,  0, $D,  0,  0,  0,  0,  0
-                dc.b   0,  0,$8B,  0,$25,$1A,  0,$94
-                dc.b   1,  0,  0,$5D,  0,$90,$2B,$98
-                dc.b   0,$91,$8A,$8E,  0,  0,  1,$F0
-                dc.b   0,  0,  0,  1, $A,$92,  0,  4
-                dc.b  $B,  3,$FF,$FF,$FF,  0,  0,$6C
-                dc.b   0,$9D,  0,$7E, $D,$8C,  0,$EA
-                dc.b   0,$1A, $D,$13,  0, $D,  0,$A0
-                dc.b  $D,$4C,  0,$36,  0,$80, $D,$65
-                dc.b   0,$9E, $E,$58,  0,$EA,  0,$40
-                dc.b  $D,$4D,  0,$67,  0,$5A, $D,$60
-                dc.b   0,$7B,  0,$53,  0,$E0,$8B,  0
-                dc.b   1,$14,  0,$80,  2,$3F,  0,$62
-                dc.b   2,$13,  0,$BE,$E7,$9C, $C,  0
-                dc.b $FF,$FF,$FF,  0,  0,$33,  0,$D3
-                dc.b   0,$2D, $D,$43,  0,$10,  0,$F7
-                dc.b  $D,  9,  0,$11,  0,$70, $D,$24
-                dc.b   0,$45,  0,$C0, $D,$30,  0,$5D
-                dc.b  $E,$2A,  0,$51,  0,$60, $D,$24
-                dc.b   0,$D6,  0,$D7, $D,$2D,  0,$EB
-                dc.b   0,$4C,  0,$D0,$8B,  0,  1,$14
-                dc.b   0,$80,$22,$C0,  0,  0,  2,$C0
-                dc.b   0,  0, $A,$83,  0,$F0,  0,  0
-                dc.b   1,  0,  0,  0,  6,  0,  0,  0
-                dc.b   8,  1,  1,$30,  0,$BF,  0,$FF
-                dc.b $24,  0,  0,  0,  0,  4,  2,$60
-                dc.b   0,$FC,  6,$F1,  0,$B4,  7,  4
-                dc.b   0,  0,  1,  0,  0,  0,$14,  1
-                dc.b $28,  0,  0,  2,  0,$15,  0,$55
-                dc.b   8,  0,  0,  1,  0,  0,  1,  0
-                dc.b   0,  1,  0,  0,  0,  0,  1,  8
-                dc.b   0,$F0,  2,  8,  0,$F0,  0,  0
-                dc.b  $A,$9C,  8,  2,  3,  0,$35,  8
-                dc.b $3F,  0,  3,  8,$53,  0,$31,$FF
-                dc.b $74,  0,  0,  0,  0,  0,$56,  0
-                dc.b   0,  0,$30,  0,  0,$30,  0,$6B
-                dc.b   0,$EC, $D,$3E,  0,$A4,  0,  4
-                dc.b  $D,  8,  0,$78,  0,$40, $D,$21
-                dc.b   0,$E1,  8,$78,  0,$4C,  3,  3
-                dc.b   0,$2D,  0,$2C,  8,$75,  0,$40
-                dc.b   3,  0,  0,$27,  0,$86,  0,$80
-                dc.b   2,  0,  0,$E0,  3,$75,  0,$40
-                dc.b   3,  0,  0,$22,  0,$68,  0,$84
-                dc.b  $D,$2A,  0,$E3,  0,$96,  0,$C0
-                dc.b $8B,  0,$FF,  0,$FF,$FF,$FF,  0
-                dc.b $FF,  0,  1,$14,  0,$80,$22,$C1
-                dc.b   0,$FE,  2,$BB,  0,$B6,$16,$7F
-                dc.b   0,$FF,$13,  0,  3,  0,$16,$51
-                dc.b   0,$4C, $E,  8,  0,$D0,$20,$FF
-                dc.b $36,  8,  2,  4,  0,$91, $C,  2
-                dc.b   4,$65,  0,$21,  0,$9C,  0,  4
-                dc.b   7,  3,  3,  9,$71,$20,$8D,$FF
-                dc.b $FF,  0,  0,$1B,  0,$B3,  0,$9E
-                dc.b  $D,$23,  0,$B2,  0,$7A, $D,  4
-                dc.b   0,$D3,  0,$A0, $D,$13,  0,$4E
-                dc.b   0,$80, $D,$19,  0,$BE, $E,$20
-                dc.b   0,$D1,  0,$50,  2,  1,  0,  0
-                dc.b   3,$78,  0,$4C,  3,  3,  0,$13
-                dc.b   0,$9B,  0,$BA, $D,$18,  0,$70
-                dc.b   0,$F5,  0,$E0,$8B,  0,$FF,  0
-                dc.b $FF,$FF,$FF,  0,$FF,  0,  1,$14
-                dc.b   0,$80,$22,$15,  0,$B4,  2,$5F
-                dc.b   0,$DC,$2B,$8C,  0,$8E,$9A,$9C
-                dc.b  $C,  3,$FF,$FF,$56,$9B,  0,$3F
-                dc.b $A7,  0,  0,$60,  0,$52,  0,$87
-                dc.b  $D,$7C,  0,$ED,  0,$E5, $D,$10
-                dc.b   0,$E4,  0,$50, $D,$43,  0,$91
-                dc.b   0,$40, $D,$5A,  0,$17, $E,$4E
-                dc.b   0,$D4,  0,$20, $D,$44,  0,$9F
-                dc.b   0,$85, $D,$55,  0,$89,  0,$76
-                dc.b   0,$70,$8B,  0,  0,  0,  0,$80
-                dc.b   0,$40,$C0,  2,$28,$24, $E, $D
-                dc.b   7,$83,$C2,$40,  0,$28,$64,$28
-                dc.b $20,  3,$19,$8C,$60,$A2,  8,$54
-                dc.b $1C,$28,$33,$89,$8D,  8,$84,  8
-                dc.b $B8,  0,$89,$21,$90,$90,$48,$84
-                dc.b $18,$F4,$5C,$23,$29,$95,  4,$48
-                dc.b $81,  8,$F8,  6,$4B,$2C,$99,$47
-                dc.b $C0,  0,$10,$88,$50,$83,$29,$97
-                dc.b $4D,$20,  0,  0,  0,  0,  0,$52
-                dc.b   0,$16,  0,  8,  0,  2,$FF,$FF
-                dc.b   0,  0,  0,$80,  0,$40,$C0,  0
-                dc.b $21,  4,$10,  0,$22,$84,$42,$E0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b $48,$E7,$FE,  0,$42,$79,  0,$1F
-                dc.b $D4,$26,$30,$39,  0,$F1,$40,  2
-                dc.b $C0,$7C,  0,$10,$67,  0,  0,$16
-                dc.b $34,$3C,  3,$37,$30,$3C,  5,$81
-                dc.b $3C,$3C,  1, $A,$38,$3C,  0,$F1
-                dc.b $60,  0,  0,$1A,$34,$3C,  3,$4B
-                dc.b $30,$3C,  5,$65,$3C,$3C,  1,$42
-                dc.b $38,$3C,  1,$1F,$33,$FC,  0,  1
-                dc.b   0,$1F,$D4,$26,$33,$C0,  0,$1F
-                dc.b $D4,$28,$33,$C4,  0,$1F,$D4,$20
-                dc.b $32,  0,$E2,$41,$94,$41,$D4,$7C
-                dc.b   0,  4,$92,$7C,  0,  1,$82,$7C
-                dc.b   4,  0,$33,$C1,  0,$1F,$D4,$2C
-                dc.b $33,$C1,  0,$F0,  0,$3C,$33,$C2
-                dc.b   0,$1F,$D4,$2A,$33,$C2,  0,$F0
-                dc.b   0,$38,$33,$C2,  0,$F0,  0,$3A
-                dc.b $3A,  6,$9A,$44,$33,$C5,  0,$1F
-                dc.b $D4,$22,$DC,$44,$33,$C6,  0,$1F
-                dc.b $D4,$24,$33,$FC,$FF,$FF,  0,$F0
-                dc.b   0,$48,$33,$FC,  0,  0,  0,$F0
-                dc.b   0,$58,$23,$FC,  0,  0,  0,  0
-                dc.b   0,$F0,  0,$2A,$4C,$DF,  0,$7F
-                dc.b $4E,$75,  0,  0,  0,  0,  0,  0
-                dc.b $48,$E7,$E0,$C0,$42,$80,$23,$C0
-                dc.b   0,$F0,$21,$14,$23,$FC,  0,  0
-                dc.b   0,  0,  0,$F0,$22,  8,$20,$3C
-                dc.b   0,  0,$40,$20,$23,$C0,  0,$F0
-                dc.b $22,  4,$23,$C0,  0,$F0,$22,$28
-                dc.b $20,$18,$22,  0,$C0,$BC,$FF,$FF
-                dc.b $FF,$F8,$92,$80,$23,$C0,  0,$F0
-                dc.b $22,  0,$E2,$81,$23,$C1,  0,$F0
-                dc.b $22, $C,$20,$18,$E2,$80,$80,$BC
-                dc.b   0,  1,  0,  0,$23,$C0,  0,$F0
-                dc.b $22,$3C,$20,  8,$24,  0,$C0,$BC
-                dc.b $FF,$FF,$FF,$F8,$94,$80,$23,$C0
-                dc.b   0,$F0,$22,$24,$E2,$82,$23,$C2
-                dc.b   0,$F0,$22,$30,$84,$81,$67,  8
-                dc.b $20,$3C,  1,$80,  0,  5,$60,  6
-                dc.b $20,$3C,  1,$80,  0,  1,$23,$C0
-                dc.b   0,$F0,$22,$38,$20,$39,  0,$F0
-                dc.b $22,$38,  8,  0,  0,  0,$67,$F4
-                dc.b $4C,$DF,  3,  7,$4E,$75,$61,  0
-                dc.b $FF,$68,$48,$E7,$C0,$80,$23,$D8
-                dc.b   0,$F0,$21,$10,$23,$FC,  0,  0
-                dc.b   0,$11,  0,$F0,$21,$14,$4C,$DF
-                dc.b   1,  3,$4E,$75,$48,$E7,$80,$80
-                dc.b $41,$F9,  0,$F0,$21,$14,$20,$10
-                dc.b   8,  0,  0,  0,$66,$F8,$4C,$DF
-                dc.b   1,  1,$4E,$75,  0,  0,  0,  0
-                dc.b   0,$1A,$69,$F0,  0,$1A,$73,$C8
-                dc.b   0,$1A,$79,$F0,  0,$1A,$88,$C0
-                dc.b   0,$1A,$8F,$E8,  0,$1A,$95,$20
-                dc.b   0,$1A,$9F,  8,  0,$1A,$A1,$38
-                dc.b   0,$1A,$AB,$38,  0,$1A,$B3,$C8
-                dc.b   0,$1A,$B9,$C0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  9,$D0
-                dc.b $98,  0,$3F,$5C,  0,$F0,$98, $E
-                dc.b $3F,$80,  0,$F0,$A4,  1,$98,  0
-                dc.b   0,$48,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$4C,  0,  0,  0,$60
-                dc.b $A4,  2,$BD,$C1,$C4,$22,$98,  0
-                dc.b   0,$50,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$A4,  0,  0,  0,$60
-                dc.b $A4,  2,$C4,$41,$C4,$62,$2C,$21
-                dc.b $C4,$81,$98,  0,$3F,$40,  0,$F0
-                dc.b $A4,$17,$98,  0,  0,$A0,  0,  0
-                dc.b   0,$60,$A4,$16,$98, $A,  3,  0
-                dc.b   0,  0,$98, $F,  1,$7E,  0,  0
-                dc.b $98, $D,  0,$FF,  0,  0,$98,  0
-                dc.b   0,$E8,  0,  0,  0,$60,$A4,  1
-                dc.b $63,$C1,$98,  0,$39,$B0,  0,$F0
-                dc.b   0,$20,$A4,  1,$C6,$21,$98,  0
-                dc.b $3F,$5C,  0,$F0,$A4,$1D,$7C,$3D
-                dc.b $D4,$C1,$E4,  0,$98,  0,$33,$92
-                dc.b   0,$F0,$D0,  0,$E4,  0,$98,  0
-                dc.b $36,$46,  0,$F0,$7D,$3D,$D0,  2
-                dc.b $E4,  0,$98,  0,$31,$C8,  0,$F0
-                dc.b $7C,$5D,$D0,  2,$E4,  0,$98,  0
-                dc.b   0,$E0,  0,  0,  0,$60,$A4,  2
-                dc.b $98,  0,  0,$E4,  0,  0,  0,$60
-                dc.b $A4,  1,$88,$40,$8F,$DE,$88,$1F
-                dc.b $88,$25,$66,$1F,$66,  5,$27,$DF
-                dc.b $27,$C5,$64,$3E,$13,$DF,$D4,$54
-                dc.b $E4,  0,$20,$1F,$13,$C5,$D4,$54
-                dc.b $E4,  0,$20,  5,$63,$9F,$2B,$E5
-                dc.b $63,  5,$98,  0,$31,$BC,  0,$F0
-                dc.b $28,  0,$C5,$E0,$98,  0,  0,$24
-                dc.b   0,  0,  0,$60,$A4,  6,$98,  0
-                dc.b   0,$28,  0,  0,  0,$60,$A4,  7
-                dc.b $98,  0,  0,$34,  0,  0,  0,$60
-                dc.b $A4,$18,$98,  0,  0,$EC,  0,  0
-                dc.b   0,$60,$A4,  1,$66,  1,$28,$21
-                dc.b $C7,$61,$6D,$86,$6D,$87,$6D,$98
-                dc.b $98,  0,  0,$84,  0,  0,  0,$60
-                dc.b $A4,$15,$98,$13,$31,$BC,  0,$F0
-                dc.b $98,$14,$31,$6C,  0,$F0,$98,  9
-                dc.b $35,  0,  0,  0,$98, $B,  1,$FF
-                dc.b   0,  0,$98,$1B,$FF,$FF,  0,  0
-                dc.b $98,  0,  0,$9C,  0,  0,  0,$60
-                dc.b $A4,$1C,$8C,$E8,$8D,$FA,$98,  0
-                dc.b   0,$80,  0,  0,  0,$60,$A4,  4
-                dc.b   8,$28,$66,  4,$34,  8,$D4,$42
-                dc.b $64,$28,$2D,$28,$E4,  0,$89,$11
-                dc.b $34,$15,$D4,$42,$64,$35,$2D,$35
-                dc.b $E4,  0,$8A,$B2,$34,$1A,$D4,$42
-                dc.b $64,$3A,$2D,$3A,$E4,  0,$8B,$59
-                dc.b $88,$C0,$88,$E1,$8B,  2,$64,$80
-                dc.b $64,$81,$64,$82,  0,$11,  0,$32
-                dc.b   0,$59,$25,$71,$25,$72,$98,  0
-                dc.b   0,$FF,  0,  0,$25,$79,$10,$11
-                dc.b $10,$12,$98, $C,$39,$44,  0,$F0
-                dc.b $D1,$80,$E4,  0,$18,$24,$D2,$94
-                dc.b $E4,  0,$AE,$A0,$D0,  0,$E4,  0
-                dc.b $98,  0,$33,$4E,  0,$F0,$C5,$E0
-                dc.b $98,  0,  0,$88,  0,  0,  0,$60
-                dc.b $A4,  1,$C7,$41,$98,  0,  0,$EC
-                dc.b   0,  0,  0,$60,$A4,  1,$66,  1
-                dc.b $C7,$61,$98,  0,  0,$24,  0,  0
-                dc.b   0,$60,$A4,  6,$98,  0,  0,$28
-                dc.b   0,  0,  0,$60,$A4,  7,$98,  0
-                dc.b   0,$34,  0,  0,  0,$60,$A4,$18
-                dc.b $98,  0,  0,  0,  0,$C0,$10,  6
-                dc.b $10,  7,$98,  0,  0,$80,  0,  0
-                dc.b   0,$60,$A4,  4,$98,  0,  0,$8C
-                dc.b   0,  0,  0,$60,$A4,$14,$66,  4
-                dc.b $66,$14,$98,  0,  0,$38,  0,  0
-                dc.b   0,$60,$A4,  8,$98,  0,  0,$40
-                dc.b   0,  0,  0,$60,$A4,$15,$89,  0
-                dc.b $88,$81,$62,  1,$88,$3E,$8C,$1B
-                dc.b $8B,$7C,$58,  0,  7,$9B,$58,  1
-                dc.b   7,$9B,$88,$3C,$40,$1C,$88,$1D
-                dc.b $66,$1C,$66,$1D,$40,$3D,$66,  1
-                dc.b   3,$BC,$88,$3D,$40,$1D,$66,  0
-                dc.b   3,$BC,$40,$20,$62,  0,  3,$80
-                dc.b $34,$1B,$D4,$42,$8B,$C1,$20,  0
-                dc.b $6C,$20,$10,  6,$98,  0,  0,$74
-                dc.b   0,  0,  0,$60,$A4,  0,$90,  9
-                dc.b $98,  0,  0,$CC,  0,  0,  0,$60
-                dc.b $A4,$1A,$98,  0,  0,$70,  0,  0
-                dc.b   0,$60,$A4,$10,$98,  0,  0,$E0
-                dc.b   0,  0,  0,$60,$A4,  2,$98,  0
-                dc.b   0,$E4,  0,  0,  0,$60,$A4,  1
-                dc.b $C7,$82,$C7,$A1,$90,$4A,$90,$C5
-                dc.b $90,$86,$94,$A6,$94,$C4,  3,$50
-                dc.b $92,  7,$98,  0,  0,$DC,  0,  0
-                dc.b   0,$60,$A4,  1,$AF,$A0,  0,$20
-                dc.b $95,$41,$C7,$A0,$C7,$81,$E4,  0
-                dc.b $E4,  0,$AF,$82,$AF,$A1,$88,$40
-                dc.b $8F,$DE,$88,$1F,$88,$25,$66,$1F
-                dc.b $66,  5,$27,$DF,$27,$C5,$64,$3E
-                dc.b $13,$DF,$D4,$54,$E4,  0,$20,$1F
-                dc.b $13,$C5,$D4,$54,$E4,  0,$20,  5
-                dc.b $63,$9F,$2B,$E5,$63,  5,$98,  0
-                dc.b   0,$D8,  0,  0,  0,$60,$A4,  1
-                dc.b   0,$22,$C7,$82,$AC,$62,$8A,  0
-                dc.b $66,  0,$25,$A0,  0,$40,$9C,$1E
-                dc.b   8,$20,$9C,$1C,$13,$DC,$8A,  2
-                dc.b $65,  2,$63,$1E,$25,$A2,$44,$5C
-                dc.b   3,$DC,$AF,$41,$40,$3C,$6D,$1C
-                dc.b $88,$D1,$88,$F2,$8B,$19,  3,$92
-                dc.b $66,$19,$92,  8,$98, $C,$39,$48
-                dc.b   0,$F0,$D1,$80,$E4,  0,$95,$10
-                dc.b   1,  6,$98,  0,$32,$D6,  0,$F0
-                dc.b $95,$21,$18,$24,$D0,$14,  0,$30
-                dc.b $98,  0,$33,$7C,  0,$F0,$12,$B8
-                dc.b $D0,$18,$94,$F0,$18,$34,$D0,$18
-                dc.b $E4,  0,$98,  0,$32,$BA,  0,$F0
-                dc.b $D0,  0,$E4,  0,$AE,$A0,$D0,  0
-                dc.b $E4,  0,$98,  1,$21,$14,  0,$F0
-                dc.b $A4,$20,$3C,  0,$BC,$20,$D7,$E0
-                dc.b $E4,  0,$98,$1F,$35,$54,  0,$F0
-                dc.b $36,$16,$D4,$81,$E4,  0,$AD,$F3
-                dc.b $D3,$E0,$E4,  0,$C5,$45,$65,  5
-                dc.b $98,  1,  0, $F,  0,  0,$88,$A0
-                dc.b $64,$85,$24,$20,$62,  5,$62,  0
-                dc.b $C5,$65,$C5,$80,$98,  0,  0,$48
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$4C,  0,  0,  0,$60,$A4,  2
-                dc.b $BD,$C1,$C4,$22,$98,  0,  0,$50
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$A4,  0,  0,  0,$60,$A4,  2
-                dc.b $C4,$41,$C4,$62,$98,  0,  0,$78
-                dc.b   0,  0,  0,$60,$A4,  1,$C4,$81
-                dc.b $98,$1D,  0,$80,  0,  0,$98,  0
-                dc.b   0,$A8,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$AC,  0,  0,  0,$60
-                dc.b $A4,  2,$C5,$A1,$C5,$C2,$6E,  1
-                dc.b $6E,  2,$10,$31,$10,$52,$C4,$B1
-                dc.b $C4,$D2,$AC,$20,$AC,$81,$AC,$42
-                dc.b   0,  1,  0,$40,$C4,$20,$AC,$62
-                dc.b $C4,$81,$66,  1,$25,$A1,$88,$20
-                dc.b   8,  1,  0,$40,  8,  1,$9C,$1E
-                dc.b   8,$20,$9C,$13,$13,$D3,$AC,$9F
-                dc.b $13,$BE,$65,$1F,$63,$1E,$25,$BF
-                dc.b $47,$F3,  2,$7E,$25,$A1,$8B,$C0
-                dc.b   0,$41,$46,$40,$9C,$22,  8,$21
-                dc.b $9C,$33,$10,$53,$13,$A2,$63,  2
-                dc.b $47,$F3,  2,$62,$46,$3E,$44,$51
-                dc.b $44,$52,$10,$11,  3,$D2,$6D,$F1
-                dc.b $6D,$F2,$98,  0,  0,$B0,  0,  0
-                dc.b   0,$60,$A4,  1,$44,$31,$44,$32
-                dc.b $6D,$91,$6D,$92,$AD,$A1,$AD,$C2
-                dc.b $6E,  1,$6E,  2,  0,$31,  0,$52
-                dc.b $AD,$60,$AD,$81,$8F,$DE,$88,$1F
-                dc.b $88,$25,$66,$1F,$66,  5,$27,$DF
-                dc.b $27,$C5,$64,$3E,$13,$DF,$D4,$54
-                dc.b $E4,  0,$20,$1F,$13,$C5,$D4,$54
-                dc.b $E4,  0,$20,  5,$63,$9F,$2B,$E5
-                dc.b $63,  5,$88,$1F,$98,  0,  0,$B8
-                dc.b   0,  0,  0,$60,$A4,$1E,  3,$DF
-                dc.b $C5,$7F,$98,  0,  0,$BC,  0,  0
-                dc.b   0,$60,$A4,$1E,  3,$C1,$C5,$81
-                dc.b $98,$1F,$35,$54,  0,$F0,$98,$13
-                dc.b $34,$F0,  0,$F0,$D3,$E0,$E4,  0
-                dc.b $AC,$B1,$AC,$D2,$98,  0,  0,$B4
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$C0,  0,  0,  0,$60,$A4,  2
-                dc.b $98,$1E,$10,  0,  0,  0,  3,$C1
-                dc.b   3,$C2,$44,$31,$44,$52,$6D,$91
-                dc.b $6D,$92,$AD,$A1,$AD,$C2,$98,  0
-                dc.b   0,$C4,  0,  0,  0,$60,$A4,$1E
-                dc.b   3,$C1,$C5,$A1,$98,  0,  0,$C8
-                dc.b   0,  0,  0,$60,$A4,$1E,  3,$C2
-                dc.b $C5,$C2,$A5,$C0,$98,  1,$34,$1E
-                dc.b   0,$F0,$18,$20,$D4,$78,$BD,$C0
-                dc.b $D0,$20,$E4,  0,$AD,$F3,$AD,$45
-                dc.b $D2,$60,$E4,  0,$98,$1F,$35,$DA
-                dc.b   0,$F0,$C4,$F3,$C5,$36,$34,$16
-                dc.b $D4,$C2,$E4,  0,$98,$13,$35,$6E
-                dc.b   0,$F0,$D3,$E0,$E4,  0,$89,$E0
-                dc.b $98,$1F,$35,$DA,  0,$F0,$12,$20
-                dc.b $88,$11,$34,$36,$D4,$C2,$E4,  0
-                dc.b $98,$13,$35,$8A,  0,$F0,$D3,$E0
-                dc.b $E4,  0,$89,$E0,$12,$40,$88,$12
-                dc.b $34,$56,$D4,$C2,$E4,  0,$98,$13
-                dc.b $35,$A0,  0,$F0,$D3,$E0,$E4,  0
-                dc.b $89,$E0,$12,$20,$98,$13,$35,$B6
-                dc.b   0,$F0,$88,$11,$34,$76,$D4,$62
-                dc.b $E4,  0,$D3,$E0,$E4,  0,$89,$E0
-                dc.b $12,$20,$64,$96,$8A,$51,$88,$12
-                dc.b $34,$96,$D4,$A2,$E4,  0,$AC,$F3
-                dc.b $AD,$36,$D2,$60,$E4,  0,$39,$16
-                dc.b $98,  0,$35,$5E,  0,$F0,$D0,  0
-                dc.b $E4,  0,$AE,$20,$D0,  0,$E4,  0
-                dc.b $79,$F1,$D2,$74,$79,$F2,$D2,$74
-                dc.b $7C,$11,$D2,$78,$7C,$12,$D2,$78
-                dc.b $8A,$21,$8A,$42,$63,$E1,$41,$42
-                dc.b   0,$22,  2,$E2,$8B,$60,$65,  0
-                dc.b $28,$A0,$B8,$40,$D2,$60,$E4,  0
-                dc.b $79,$F1,$D2,$74,$79,$F2,$D2,$74
-                dc.b $7C,$11,$D2,$78,$7C,$12,$D2,$78
-                dc.b $8A,$21,$8A,$42,$63,$E1,$41,$42
-                dc.b   0,$22,  2,$E2,$8B,$60,$65,  0
-                dc.b $28,$A0,$B8,$40,  8,$42,$B8,$40
-                dc.b   1,$42,$B8,$40,$18,$42,$B8,$40
-                dc.b $D2,$60,$E4,  0,$98,  0,$33,$82
-                dc.b   0,$F0,$D0,  0,$E4,  0,$98,  0
-                dc.b   0,$54,  0,  0,  0,$60,$A4,  2
-                dc.b $98,  0,  0,$58,  0,  0,  0,$60
-                dc.b $A4,  1,$65,$82,$65,$81,  8,$22
-                dc.b   8,$21,$90,$49,$90,$2A,$98,  0
-                dc.b   0,$E0,  0,  0,  0,$60,$A4,  2
-                dc.b $98,  0,  0,$E4,  0,  0,  0,$60
-                dc.b $A4,  1,$88,$40,$8F,$DE,$88,$1F
-                dc.b $88,$25,$66,$1F,$66,  5,$27,$DF
-                dc.b $27,$C5,$64,$3E,$13,$DF,$D4,$54
-                dc.b $E4,  0,$20,$1F,$13,$C5,$D4,$54
-                dc.b $E4,  0,$20,  5,$63,$9F,$2B,$E5
-                dc.b $63,  5,$98,  0,  0,$24,  0,  0
-                dc.b   0,$60,$A4,  4,$98,  0,  0,$28
-                dc.b   0,  0,  0,$60,$A4,  6,$98,  0
-                dc.b   0,$70,  0,  0,  0,$60,$A4,$15
-                dc.b $98,  0,  0,$80,  0,  0,  0,$60
-                dc.b $A4,$18,$98,  0,  0,$D4,  0,  0
-                dc.b   0,$60,$A4,$19,$6E,$18,$98,  0
-                dc.b   0,$7C,  0,  0,  0,$60,$A4,  9
-                dc.b $98,  0,$38,$7C,  0,$F0,$7C,$38
-                dc.b $D0,$18,$8B,$21,$6E,  1,$7C,$81
-                dc.b $D0,$18,$E4,  0,$98,  0,$37,$E6
-                dc.b   0,$F0,$C5,$E0,$98, $B,  0,  0
-                dc.b   1,  0,$57, $B,$88,$91,$88,$D2
-                dc.b $AC,$62,$8A,$A0,$95,$21,$98,$1D
-                dc.b   0,$80,  0,  0,$66,  0,$40,$20
-                dc.b $25,$A0,  0,$40,$9C,$1E,  8,$20
-                dc.b $9C,$1A,$13,$DA,$8A,$A2,$13,$BE
-                dc.b $65,  2,$40,$22,$63,$1E,$25,$A2
-                dc.b $44,$5A,  3,$DA,$8B,$3E,$8C,$1B
-                dc.b $8B,$7C,$58,$1A,  7,$9B,$58,$19
-                dc.b   7,$9B,$8B,$3C,$43,$5C,$8B,$5D
-                dc.b $66,$1C,$66,$1D,$43,$3D,$66,$19
-                dc.b   3,$BC,$8B,$3D,$43,$5D,$66,$1A
-                dc.b   3,$BC,$43,$3A,$62,$1A,  3,$9A
-                dc.b $34,$1B,$D4,$42,$8B,$D9,$20,$1A
-                dc.b $92,$AB,$95,$5B,  1,$35,$98,$1D
-                dc.b   0,$80,  0,  0,$AC,$62,$8A,$A0
-                dc.b $66,  0,$43,$60,$25,$A0,  0,$40
-                dc.b $9C,$1F,  8,$20,$9C,  1,$13,$E1
-                dc.b $8A,$A2,$13,$BF,$65,  2,$43,$62
-                dc.b $63,$1F,$25,$A2,$44,$41,  0,$3F
-                dc.b $8B,$3E,$8C,$1B,$8B,$7C,$58,$1F
-                dc.b   7,$9B,$58,$19,  7,$9B,$8B,$3C
-                dc.b $43,$FC,$8B,$FD,$66,$1C,$66,$1D
-                dc.b $43,$3D,$66,$19,  3,$BC,$8B,$3D
-                dc.b $43,$FD,$66,$1F,  3,$BC,$43,$3F
-                dc.b $62,$1F,  3,$9F,$34,$1B,$D4,$42
-                dc.b $8B,$D9,$20,$1F,$95,$75,  3,$52
-                dc.b   3,$F1,$66,$11,$66,$12,$98, $C
-                dc.b $33,$92,  0,$F0,$98,$1B,$FF,$FF
-                dc.b   0,  0,$D1,$80,$E4,  0,$98,  0
-                dc.b $37,  4,  0,$F0,$18,$38,$D0,$14
-                dc.b   1,$75,$AE,$A0,$98,  1,$3F,$58
-                dc.b   0,$F0,$A4,$22,$34,  2,$D0,  2
-                dc.b $E4,  0,$98,  0,  0,$40,  0,  0
-                dc.b   0,$60,$A4,  1,$6C,$61,  0,$39
-                dc.b $98,  0,  0,$D4,  0,  0,  0,$60
-                dc.b $BC,$19,$98,  0,  0,$E0,  0,  0
-                dc.b   0,$60,$A4,  4,$98,  0,  0,$E4
-                dc.b   0,  0,  0,$60,$A4,  5,$98,  0
-                dc.b   0,$D8,  0,  0,  0,$60,$A4,  6
-                dc.b $98,  0,  0,$DC,  0,  0,  0,$60
-                dc.b $A4,  7,  0,$C4,  0,$E5,$98,  0
-                dc.b   0,$E0,  0,  0,  0,$60,$BC,  4
-                dc.b $98,  0,  0,$E4,  0,  0,  0,$60
-                dc.b $BC,  5,$98,  0,  0,$EC,  0,  0
-                dc.b   0,$60,$A4,  4,$98,  0,  0,$38
-                dc.b   0,  0,  0,$60,$A4,  5,$6C,$E5
-                dc.b   0,$A4,$98,  0,  0,$EC,  0,  0
-                dc.b   0,$60,$BC,  4,$AE,$A0,$D0,  0
-                dc.b $E4,  0,$98,  0,  0,$EC,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,$35,$E0
-                dc.b   0,$F0,$66,  1,$98,  2,$36,  8
-                dc.b   0,$F0,  8,$21,$7C,$21,$D0,  2
-                dc.b $E4,  0,$7C,$41,$D0,$42,$E4,  0
-                dc.b $98,  0,$22,$38,  0,$F0,$A4,  2
-                dc.b $34,  2,$D7,$A2,$E4,  0,$98,  0
-                dc.b $22,  0,  0,$F0,$BC,$17,$98,  2
-                dc.b $44,$20,  0,  1,  8,$80,$BC,  2
-                dc.b $89,$F0,$10,$30,$8A,$3C,$88,$22
-                dc.b $64,$22,$10,$5C,$7C,$1C,$D2,$78
-                dc.b $7B,$90,$D2,$78,$8B,$80,$8A,$5C
-                dc.b $62,  0,$10,$5C,$7C,$1C,$D2,$78
-                dc.b $7B,$90,$D2,$78,$66,  0,$62,$1C
-                dc.b $28,$1C,$98,  0,$22, $C,  0,$F0
-                dc.b $BC,$1C,$88,$22,$20,  2,  8,$80
-                dc.b $62,  2,$66,  2,$3A,  2,$8B,$7C
-                dc.b $BC,  2,$65,$1C,$98,  0,$22,$6C
-                dc.b   0,$F0,$28,$BC,$8B,$82,$62,$1C
-                dc.b $28,$5C,$BC,$1C,$18,$80,$BC,$1C
-                dc.b $88,$22,$98,  0,$22,$3C,  0,$F0
-                dc.b $62,  1,$28,$41,$BC,  1,$98,  2
-                dc.b   2,  0,  0,  1,$18,$80,$BC,  2
-                dc.b $A4,  1,$34,  1,$D7,$A2,$E4,  0
-                dc.b $D2,$60,$E4,  0,$62,$51,$62,$52
-                dc.b $98,$1B,  1,$FF,  0,  0,$27,$79
-                dc.b $13,$3B,$63,$D9,$63,$3B,$8A,$3D
-                dc.b $58,$11,$57,$31,$37,$FD,$D4,$42
-                dc.b $E4,  0,$20,$11,$8A,$5D,$58,$12
-                dc.b $57,$32,$37,$FD,$D4,$42,$E4,  0
-                dc.b $20,$12,$6C,$B1,$6C,$B2,$98,  0
-                dc.b   0,$C0,  0,  0,  0,$11,  0,$12
-                dc.b $98,  0,$33,$92,  0,$F0,$D0,  0
-                dc.b $E4,  0,$AF,$60,$8B,$61,$40,  1
-                dc.b $98,  0,  0,  0,  0,$7F,$24,  1
-                dc.b $98,  0,$38,$8C,  0,$F0,$D0,  0
-                dc.b $E4,  0,$98,  0,$33,$92,  0,$F0
-                dc.b $D0,  0,$E4,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$36,  8,  0,$F0,$36,  8
-                dc.b   0,$F0,$38,$82,  0,$F0,$39,$8A
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  6,$1E
-                dc.b $88,$72,$92,$52,$98,  0,  0,$E0
-                dc.b   0,  0,  2,$40,$A4,  2,$98,  0
-                dc.b   0,$E4,  0,  0,  2,$40,$A4,  1
-                dc.b $88,$40,$8F,$DE,$88,$1F,$88,$27
-                dc.b $66,$1F,$66,  7,$27,$DF,$27,$C7
-                dc.b $64,$3E,$13,$DF,$D4,$54,$E4,  0
-                dc.b $20,$1F,$13,$C7,$D4,$54,$E4,  0
-                dc.b $20,  7,$63,$9F,$2B,$E7,$63,  7
-                dc.b $98,  0,  0,  4,  0,  0,  2,$40
-                dc.b $A4,$17,$66,$17,$98,  0,  0,  8
-                dc.b   0,  0,  2,$40,$A4,$18,$66,$18
-                dc.b $98,$1D,$34,$F6,  0,$F0,$98, $B
-                dc.b   1,$80,  0,  0,$98, $C,  1,$80
-                dc.b   0,  0,$98,  0,  0,$98,  0,  0
-                dc.b   2,$40,$A4,  1,$98,  0,$3F,$60
-                dc.b   0,$F0,$66,  1,$A4,  2,  8,$82
-                dc.b $A4,$40,$B8,  1,$98,  0,  0,$2C
-                dc.b   0,  0,  2,$40,$A4,  3,$98,  0
-                dc.b   0,$30,  0,  0,  2,$40,$A4,  4
-                dc.b $66,  3,$66,  4,$12,$EB,$13, $C
-                dc.b $64,$2B,$64,$2C,$98,$1B,  0,$C0
-                dc.b   0,  0,$98,$1A,$30,$E0,  0,$F0
-                dc.b $8B,$7C,$13,$63,  3,$7C,$13,$64
-                dc.b   0,$6B,$D3,$58,$E4,  0,$7B,$8B
-                dc.b $D3,$B4,$E4,  0,$98,$1A,$30,$EE
-                dc.b   0,$F0,$98,$19,$30,$F2,  0,$F0
-                dc.b   0,$8C,$D3,$58,$E4,  0,$7B,$8C
-                dc.b $D3,$B4,$E4,  0,$D3,$20,$E4,  0
-                dc.b   1,$77,$2D,$6B,$98,  0,$30,$C4
-                dc.b   0,$F0,$D0,  0,$E4,  0,  1,$98
-                dc.b $2D,$8C,$98,$1C,  1,$80,  0,  0
-                dc.b $7C,$17,$D3,$A2,$E4,  0,$D3,$B8
-                dc.b $E4,  0,$7C,$18,$D3,$A2,$E4,  0
-                dc.b $D3,$B8,$E4,  0,$7B,$97,$D3,$B4
-                dc.b $E4,  0,$7B,$98,$D3,$B4,$E4,  0
-                dc.b $98,  0,  0,  0,  0,  0,  2,$40
-                dc.b $A4,  8,$98,$10,  1,$80,  0,  0
-                dc.b $98,$11,$31,$68,  0,$F0,$98,  6
-                dc.b $31,$9A,  0,$F0,$7B,$10,$D2,$22
-                dc.b $2C,$63,$2C,$84,$98,  5,  1,$7F
-                dc.b   0,  0,$98,  6,  1,$7F,  0,  0
-                dc.b $98,  0,$35,$98,  0,$F0,$CC,$1E
-                dc.b $D0,  0,  8,$DE,$98,  6,  1,$80
-                dc.b   0,  0,$8B,  4,  1,$84,$2C,$63
-                dc.b $8A,  5,$98,  0,$35,$98,  0,$F0
-                dc.b $98,$11,$31,$9A,  0,$F0,$7A,$F0
-                dc.b $D2,$22,$2C,$63,$89,$84,$89,$86
-                dc.b   3,  6,$89,$65,$98,  0,$35,$98
-                dc.b   0,$F0,$98,  5,  1,$80,  0,  0
-                dc.b $8A,$E3,$89,$84,$89,$86,  1,$63
-                dc.b   3,  6,$18,$83,$98,  0,$35,$98
-                dc.b   0,$F0,$62, $C,$98,  0,$3F,$80
-                dc.b   0,$F0,$29,$6C,$BC, $C,$98, $D
-                dc.b $22,$38,  0,$F0,$98,$1A,$2F,$41
-                dc.b $41,$80,$98, $E,$22,  0,  0,$F0
-                dc.b $98, $F,$22,$24,  0,$F0,$98,  1
-                dc.b   0,  0,  0,$80,$98,  0,  0,$20
-                dc.b   0,  0,  2,$40,$A4,  0,$10,$20
-                dc.b $98,  1,$FF,$FF,  0,$FF,$24,$20
-                dc.b $98,  1,$22,$68,  0,$F0,$7C,  0
-                dc.b $D4,$81,$E4,  0,$98,$1A, $F,$41
-                dc.b   1,$80,$BC,$20,$98,  1,$22,$74
-                dc.b   0,$F0,$BC,$20,$98,  1,$22,$70
-                dc.b   0,$F0,$BC,$20,$98,  1,$22,$7C
-                dc.b   0,$F0,$BC,$20,  8,$81,$BC,$20
-                dc.b   8,$81,$BC,$20,  8,$81,$BC,$20
-                dc.b $98, $A,  0,  0,$FF,$FF,$98,  9
-                dc.b $FF,$FF,  0,  0,$98,  0,  0,$A4
-                dc.b   0,  0,  2,$40,$A4,$13,$98,  0
-                dc.b   0,  0,  0,  0,  2,$40,$A4,  1
-                dc.b $BD,$E1,$98,  2,$35,$22,  0,$F0
-                dc.b $98,  0,  0,$8C,  0,  0,  2,$40
-                dc.b $A4,$15,$7C,$15,$D0,$41,$E4,  0
-                dc.b $98,$15,$44,$20,  0,  3,$C4,$35
-                dc.b $28,$15,$98,$15,$44,$20,  0,  1
-                dc.b $C8,$35,$98,  0,$3F,$44,  0,$F0
-                dc.b $A4,$14,$BD,$D4,$98,  0,  0,  4
-                dc.b   0,  0,  2,$40,$A4,$17,$66,$17
-                dc.b $98,  0,  0,  8,  0,  0,  2,$40
-                dc.b $A4,$18,$66,$18,$8B,$14,$62,$14
-                dc.b $2A,$F4,$98,$14,  1,$80,  1,$80
-                dc.b $C4,$54,$8A,$EB,$8B, $C,$98,  0
-                dc.b   0, $C,  0,  0,  2,$40,$A4,$14
-                dc.b $66,$14,$42,$8B,$98,  0,  0,$10
-                dc.b   0,  0,  2,$40,$A4,$14,$66,$14
-                dc.b $42,$8C,$65,  9,$8A,$62,$98,  0
-                dc.b   0,$14,  0,  0,  2,$40,$A4,$14
-                dc.b $8A,$80,$66,  0,$25,$20,  0,$40
-                dc.b $9C,$1E,  8,$20,$9C,$1C,$13,$DC
-                dc.b $8A,$82,$65,  2,$63,$1E,$25,$22
-                dc.b $44,$5C,  3,$DC,$98,  1,$80,  0
-                dc.b   0,  0,$10,$3C,$8B,$90,$12,$60
-                dc.b $98,  1,  0,$3F,  0,  0,  0,$20
-                dc.b $25,$20,  2,$60,$9C,$1E,  8,$20
-                dc.b $9C,$1C,$13,$DC,$8A,$82,$65,  2
-                dc.b $63,$1E,$25,$22,$44,$5C,  3,$DC
-                dc.b $98,  1,$80,  0,  0,  0,$10,$3C
-                dc.b $8B,$91,$63, $B,$63, $C,$89,$63
-                dc.b $92,$20,$8C,$1B,$8B,$7C,$58,  3
-                dc.b   7,$9B,$58,$11,  7,$9B,$8A,$3C
-                dc.b $40,$7C,$88,$7D,$66,$1C,$66,$1D
-                dc.b $42,$3D,$66,$11,  3,$BC,$8A,$3D
-                dc.b $40,$7D,$66,  3,  3,$BC,$42,$23
-                dc.b $62,  3,  3,$83,$34,$1B,$D4,$42
-                dc.b $94,$11,$20,  3,$89,$64,$92,  0
-                dc.b $8C,$1B,$8B,$7C,$58,  4,  7,$9B
-                dc.b $58,$10,  7,$9B,$8A,$1C,$40,$9C
-                dc.b $88,$9D,$66,$1C,$66,$1D,$42,$1D
-                dc.b $66,$10,  3,$BC,$8A,$1D,$40,$9D
-                dc.b $66,  4,  3,$BC,$42,  4,$62,  4
-                dc.b   3,$84,$34,$1B,$D4,$42,$94,$10
-                dc.b $20,  4,$89,$85,$92,  0,$8C,$1B
-                dc.b $8B,$7C,$58,  5,  7,$9B,$58,$10
-                dc.b   7,$9B,$8A,$1C,$40,$BC,$88,$BD
-                dc.b $66,$1C,$66,$1D,$42,$1D,$66,$10
-                dc.b   3,$BC,$8A,$1D,$40,$BD,$66,  5
-                dc.b   3,$BC,$42,  5,$62,  5,  3,$85
-                dc.b $34,$1B,$D4,$42,$94,$10,$20,  5
-                dc.b $20,  5,$89,$86,$92,$20,$8C,$1B
-                dc.b $8B,$7C,$58,  6,  7,$9B,$58,$11
-                dc.b   7,$9B,$8A,$3C,$40,$DC,$88,$DD
-                dc.b $66,$1C,$66,$1D,$42,$3D,$66,$11
-                dc.b   3,$BC,$8A,$3D,$40,$DD,$66,  6
-                dc.b   3,$BC,$42,$26,$62,  6,  3,$86
-                dc.b $34,$1B,$D4,$42,$94,$11,$20,  6
-                dc.b $98,  9,$FF,$FF,  0,  0,$88,$67
-                dc.b $88,$F5,$88,$FB,$58,  7,$56,$E7
-                dc.b $37,$FB,$D4,$42,$E4,  0,$20,  7
-                dc.b $88,$E8,$66,  7,$25,$28,$88,$8B
-                dc.b $89,$76,$89,$7B,$58, $B,$56,$EB
-                dc.b $37,$FB,$D4,$42,$E4,  0,$20, $B
-                dc.b $89,$6C,$25,$4B,$62, $C,$29,$67
-                dc.b $29,$88,$90,$E7,$91,  8,$88,$A7
-                dc.b $88,$FB,$58,  7,$57,  7,$37,$FB
-                dc.b $D4,$42,$E4,  0,$20,  7,$12,$A7
-                dc.b $88,$E8,$66,  7,$25,$28,$88,$CB
-                dc.b $89,$7B,$58, $B,$57, $B,$37,$FB
-                dc.b $D4,$42,$E4,  0,$20, $B,$12,$CB
-                dc.b $89,$6C,$25,$4B,$62, $C,$29,$67
-                dc.b $29,$88,$98,$1B,$80,  0,  0,  0
-                dc.b $98,  0,  0,$18,  0,  0,  2,$40
-                dc.b $A4, $B,  3,$6B,$98,  0,  0,$1C
-                dc.b   0,  0,  2,$40,$A4, $C,  3,$6C
-                dc.b $6C,$23,$6C,$24,$10,$6B,$6C,$25
-                dc.b $10,$8C,$6C,$26,$10,$AB,$10,$CC
-                dc.b $89,$65,$89,$66,$66,  5,$25,$26
-                dc.b $89,$8B,$62, $C,$25,$4B,$29,$86
-                dc.b $29,$65,$A5,$A0,$34,  0,$D7,$A2
-                dc.b $E4,  0,$C4,$65,$C4,$C6,$C4,$87
-                dc.b $C4,$A8,$94,$E7,$95,  8,$C4,$E7
-                dc.b $C5,  8,$8A,$E0,$20,  0,$25,$20
-                dc.b $3A,  0,$C8,$80,$98,  0,$3F,$80
-                dc.b   0,$F0,$A4,$15,$C8,$75,$62,$18
-                dc.b $2B,$17,$98,  0,$22,$3C,  0,$F0
-                dc.b $BC,$17,$BD,$BA,$A5,$A0,$34,  0
-                dc.b $D7,$A2,$E4,  0,$98,  0,$35,$16
-                dc.b   0,$F0,$D0,  0,$E4,  0,$98,  1
-                dc.b $21,$14,  0,$F0,$A4,$20,$3C,  0
-                dc.b $BC,$20,$D7,$E0,$E4,  0,$98,  0
-                dc.b $3F,$54,  0,$F0,$A4,  8,$2C,$63
-                dc.b $2C,$84,$98,  5,  1,$80,  0,  0
-                dc.b $88,$A6,$98,  0,$35,$98,  0,$F0
-                dc.b $CC,$1E,$D0,  0,  8,$DE,$98, $E
-                dc.b $3F,$80,  0,$F0,$AE,$A0,$D0,  0
-                dc.b $E4,  0,$98,$1A,$2E,  1,$41,$80
-                dc.b $98,$15,$44,$20,  0,  0,$C4,$35
-                dc.b $28,$15,$98,$15,$44,$20,  0,  0
-                dc.b $C8,$35,$98,  0,$3F,$44,  0,$F0
-                dc.b $A4,$14,$BD,$D4,$8A,$E0,$20,  0
-                dc.b $25,$20,$3A,  0,$C8,$80,$C4,$80
-                dc.b $98,  0,$3F,$80,  0,$F0,$A4,$15
-                dc.b $2A,$B5,$C8,$75,$98,  0,  0,$1C
-                dc.b   0,  0,  2,$40,$A4, $C,$98,  0
-                dc.b   0,  0,  0,$C0,$89,$34,$62,$14
-                dc.b $10, $C,$26,$8C,  1,$95,$C4,$75
-                dc.b $62,$18,$2B,$17,$98,  0,$22,$3C
-                dc.b   0,$F0,$BC,$17,$BD,$BA,$A5,$A0
-                dc.b $34,  0,$D7,$A2,$E4,  0,$98,  0
-                dc.b $35,$16,  0,$F0,$D0,  0,$E4,  0
-                dc.b $98,$1D,$36,$1A,  0,$F0,$78,$65
-                dc.b $D3,$B8,$E4,  0,$78,$86,$D3,$B8
-                dc.b $E4,  0,$98, $E,$22,  0,  0,$F0
-                dc.b $98,$11,$22,$38,  0,$F0,$88,$80
-                dc.b $62,  0,$28,$60,$C4,$60,$88,$E0
-                dc.b $62,  0,$28,$E0,$98,  1,$22,$68
-                dc.b   0,$F0,$BC,$20,  8,$81,$BC,$20
-                dc.b $BD,$C8,$98,  0,$44,$20,  0,  0
-                dc.b $C4,$20,$98,$1D,$36,$1A,  0,$F0
-                dc.b $88,$BB,$88,$DC,$10,$7B,$D3,$B8
-                dc.b $10,$9C,$D3,$B8,  8,$3B,  8,$3C
-                dc.b $E4,  0,$8B,$60,$20,  0,$62,  0
-                dc.b $66,  0,$3A,  0,$C4,$80,$98,  0
-                dc.b $22,$3C,  0,$F0,$62,$1C,$2B,$7C
-                dc.b $BC,$1C,$98,  0,  2,  0,  0,  1
-                dc.b $BE,$20,$A6,$20,$34,  0,$D7,$A2
-                dc.b $E4,  0,$D3,$C0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0, $A,$38
-                dc.b $98, $E,$3F,$80,  0,$F0,$98,  0
-                dc.b   0,$F0,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$F4,  0,  0,  0,$60
-                dc.b $A4,  2,$98,  0,$39,$20,  0,$F0
-                dc.b $7C,  2,$D4,$82,$24,$41,$78,$41
-                dc.b $D0,  1,$E4,  0,$98,  0,  0,$70
-                dc.b   0,  0,  0,$60,$A4,  6,$98,  5
-                dc.b   0,$FF,  0,  0,$66,  6,$88,$C7
-                dc.b $98,  0,  0,$A4,  0,  0,  0,$60
-                dc.b $A4,  4,$98,  2,  0,$40,  0,  0
-                dc.b $24,$A6,  0,$47,  0,$86,$24,$A7
-                dc.b $9C,$C8,  0,$87,$98,  0,  0,$80
-                dc.b   0,  0,$9C,$E9,$10,  8,$10,  9
-                dc.b $C7,$48,$C7,$69,$98,  0,  0,$84
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  4
-                dc.b $80,  0,  0,  0,$98,  0,  0,$88
-                dc.b   0,  0,  0,$60,$A4,  2,$10,$81
-                dc.b $C7,$81,$10,$82,$C7,$A2,$98,  0
-                dc.b $3F,$78,  0,$F0,$A4,  1,$98,  0
-                dc.b   0,$98,  0,  0,  0,$60,$A4,$14
-                dc.b $8C,$F5,$66,$14,$26,$B4,$63,$D4
-                dc.b   2,$81,$A4,$26,$A0,$C8,  8,$46
-                dc.b $A0,$C9,  8,$46,$A0,$CA,$91,$29
-                dc.b $91,$4A,  8,$46,$89,  7,$63,$87
-                dc.b   0,$C7,$98, $E,$3F,$80,  0,$F0
-                dc.b $94,$63,$98,  0,$34,$AE,  0,$F0
-                dc.b $CC,$1E,$D0,  0,  8,$DE,$98,  0
-                dc.b   0,  0,  0,  0,  0,$60,$A4,$17
-                dc.b $98,  0,  0,$A0,  0,  0,  0,$60
-                dc.b $A4,$16,$98, $A,  3,  0,  0,  0
-                dc.b $98, $F,  1,$7E,  0,  0,$98, $D
-                dc.b   0,$FF,  0,  0,$98,  0,  0,$24
-                dc.b   0,  0,  0,$60,$A4,$1E,$98,  0
-                dc.b   0,$28,  0,  0,  0,$60,$A4,$1F
-                dc.b $6E,$1E,$6E,$1F,$98,  0,$3F,$7C
-                dc.b   0,$F0,$A4,  1,$28,$21,$C6,  1
-                dc.b $A0,$C5,  8,$46,$63,  5,$A0,$C1
-                dc.b   8,$46,$A0,$DB,  8,$46,$63,$C1
-                dc.b   0,$E1,$A0,$31,  8,$41,$A0,$32
-                dc.b $95,$20,$95,$41,$10,$11,$10,$32
-                dc.b $64,$91,$64,$92,$AF,$98,$AF,$B9
-                dc.b $47,$11,$47,$32,$6D,$71,$6D,$72
-                dc.b $8A,$38,$8A,$59,$20,$12,$AF,$5C
-                dc.b $AF,$7D,$47,$B1,$47,$92,$47,$98
-                dc.b $47,$B9,  2,$51,  3,$19,$8B,$32
-                dc.b $6C,$F1,$6C,$F2,  3,$D1,  3,$F2
-                dc.b $98, $C,$33,$4C,  0,$F0,$98,  0
-                dc.b $31,$84,  0,$F0,$28,  0,$C5,$E0
-                dc.b $D1,$80,$E4,  0,$98,  0,$30,  0
-                dc.b   0,  0,$AE,  1,  0,  1,$28,$21
-                dc.b $C6,  1,$98,  0,  0,$24,  0,  0
-                dc.b   0,$60,$A4,$1E,$98,  0,  0,$28
-                dc.b   0,  0,  0,$60,$A4,$1F,$6E,$1E
-                dc.b $6E,$1F,$A0,$C1,  8,$46,$A0,$DB
-                dc.b   8,$46,$63,$C1,  0,$E1,$A0,$31
-                dc.b   8,$41,$A0,$32,$95,$20,$95,$41
-                dc.b $10,$11,$10,$32,$64,$91,$64,$92
-                dc.b $AF,$98,$AF,$B9,$47,$11,$47,$32
-                dc.b $6D,$71,$6D,$72,$8A,$38,$8A,$59
-                dc.b $20,$12,$AF,$5C,$AF,$7D,$47,$B1
-                dc.b $47,$92,$47,$98,$47,$B9,  2,$51
-                dc.b   3,$19,$8B,$32,$6C,$F1,$6C,$F2
-                dc.b   3,$D1,  3,$F2,$98, $C,$33,$4C
-                dc.b   0,$F0,$98,  0,$32,  8,  0,$F0
-                dc.b $28,  0,$C5,$E0,$D1,$80,$E4,  0
-                dc.b $98,  0,$30,  0,  0,  0,$AE,  1
-                dc.b   0,  1,$28,$21,$C6,  1,$98,  0
-                dc.b   0,$24,  0,  0,  0,$60,$A4,$1E
-                dc.b $98,  0,  0,$28,  0,  0,  0,$60
-                dc.b $A4,$1F,$6E,$1E,$6E,$1F,$A0,$C1
-                dc.b   8,$46,$A0,$DB,  8,$86,$63,$C1
-                dc.b   0,$E1,$A0,$31,  8,$41,$A0,$32
-                dc.b $95,$20,$95,$41,$10,$11,$10,$32
-                dc.b $64,$91,$64,$92,$AF,$98,$AF,$B9
-                dc.b $47,$11,$47,$32,$6D,$71,$6D,$72
-                dc.b $8A,$38,$8A,$59,$20,$12,$AF,$5C
-                dc.b $AF,$7D,$47,$B1,$47,$92,$47,$98
-                dc.b $47,$B9,  2,$51,  3,$19,$8B,$32
-                dc.b $6C,$F1,$6C,$F2,  3,$D1,  3,$F2
-                dc.b $98, $C,$33,$4C,  0,$F0,$98,  0
-                dc.b $32,$8C,  0,$F0,$28,  0,$C5,$E0
-                dc.b $D1,$80,$E4,  0,$90,$C6,$90,$E7
-                dc.b $91,  8,$98,  0,$3F,$7C,  0,$F0
-                dc.b $A4,  1,$28,$21,$C6,  1,$C6,$44
-                dc.b $98,  0,$33,$1C,  0,$F0,$C5,$E0
-                dc.b $AE,  0,$98,  1,$2F,$FA,  0,  0
-                dc.b $A0,  3,  8,$40,$A0,  4,  8,$40
-                dc.b $A0,$14,  8,$40,$8A,$97,$28,  0
-                dc.b $C6,  0,  0,$20,$A0,  5,  8,$40
-                dc.b $A0,  6,  8,$40,$A0,$18,  8,$40
-                dc.b   0,$20,$A0,  7,  8,$40,$A0,  8
-                dc.b   8,$40,$A0,$19,$8F,$8C,$94,$7A
-                dc.b $98,  0,  0,$54,  0,  0,  0,$1A
-                dc.b $25,$97,$25,$98,$25,$99,  3,$57
-                dc.b   3,$58,  3,$59,$A6,$E9,$A7, $A
-                dc.b $A7,$2B,$62,  3,$62,  4,$62,  5
-                dc.b $62,  6,$62,  7,$62,  8,$6E,  3
-                dc.b $6E,  4,$6E,  5,$6E,  6,$6E,  7
-                dc.b $6E,  8,$98,  1,$34,$F4,  0,$F0
-                dc.b $D0,$20,$E4,  0,$AE,$40,$98,  1
-                dc.b $32,$A8,  0,$F0,$18,$20,$28,  0
-                dc.b $C6,$40,$7C,  0,$D0,$21,$E4,  0
-                dc.b $94,$C6,$94,$E7,$95,  8,$98,  0
-                dc.b $30,$C2,  0,$F0,$18,$28,$D0,  1
-                dc.b $E4,  0,$98,  0,$39,$20,  0,$F0
-                dc.b $D0,  0,$E4,  0,$AE,  0,$98,$1F
-                dc.b $34,$76,  0,$F0,$C6,$20,$2C,$84
-                dc.b $36,$16,$D4,$81,$E4,  0,$AD,$F3
-                dc.b $D3,$E0,$E4,  0,$98,  0,$34,$AE
-                dc.b   0,$F0,$CC,$1E,$D0,  0,  8,$DE
-                dc.b $98,  0,  0,$A8,  0,  0,  0,$60
-                dc.b $A4,  1,$98,  0,  0,$AC,  0,  0
-                dc.b   0,$60,$A4,  2,$C5,$A1,$C5,$C2
-                dc.b $6E,  1,$6E,  2,$10,$31,$10,$52
-                dc.b $C4,$B1,$C4,$D2,$AC,$20,$AC,$81
-                dc.b   0,  1,$AC,$62,$C4,$81,$66,  1
-                dc.b $25,$A1,$88,$20,  8,  1,  0,$40
-                dc.b   8,  1,$9C,$1E,  8,$20,$9C,$13
-                dc.b $13,$D3,$AC,$9F,$13,$BE,$65,$1F
-                dc.b $63,$1E,$25,$BF,$47,$F3,  2,$7E
-                dc.b $25,$A1,$8B,$C0,  0,$41,$46,$40
-                dc.b $9C,$22,  8,$21,$9C,$33,$10,$53
-                dc.b $13,$A2,$63,  2,$47,$F3,  2,$62
-                dc.b $46,$3E,$44,$51,$44,$52,$10,$11
-                dc.b   3,$D2,$6D,$F1,$6D,$F2,$98,  0
-                dc.b   0,$B0,  0,  0,  0,$60,$A4,  1
-                dc.b $44,$31,$44,$32,$6D,$91,$6D,$92
-                dc.b $AD,$A1,$AD,$C2,$6E,  1,$6E,  2
-                dc.b   0,$31,  0,$52,$98,$1F,$34,$76
-                dc.b   0,$F0,$98,$13,$34,$14,  0,$F0
-                dc.b $D3,$E0,$E4,  0,$AC,$B1,$AC,$D2
-                dc.b $98,  0,  0,$B4,  0,  0,  0,$60
-                dc.b $A4,  1,$98,  0,  0,$C0,  0,  0
-                dc.b   0,$60,$A4,  2,$98,$1E,$10,  0
-                dc.b   0,  0,  3,$C1,  3,$C2,$44,$31
-                dc.b $44,$52,$6D,$91,$6D,$92,$AD,$A1
-                dc.b $AD,$C2,$98,  0,  0,$C4,  0,  0
-                dc.b   0,$60,$A4,$1E,  3,$C1,$C5,$A1
-                dc.b $98,  0,  0,$C8,  0,  0,  0,$60
-                dc.b $A4,$1E,  3,$C2,$C5,$C2,$A5,$C0
-                dc.b $98,  1,$33,$90,  0,$F0,$18,$20
-                dc.b $D4,$78,$BD,$C0,$D0,$20,$E4,  0
-                dc.b $AD,$F3,$D2,$60,$E4,  0,$98,$1F
-                dc.b $34,$92,  0,$F0,$C4,$F3,$C5,$36
-                dc.b $98,$13,$34,$8A,  0,$F0,$D3,$E0
-                dc.b $E4,  0,$AC,$F3,$AD,$36,$D2,$60
-                dc.b $E4,  0,  8,$24,$AE,$20,$B8,$11
-                dc.b   8,$40,$B8,$12,$88,$A1,$2B,$61
-                dc.b   8,$40,$B8,  1,  8,$40,$28,  0
-                dc.b $C6,$20,$D2,$60,$E4,  0,$98,  0
-                dc.b   0,$48,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$4C,  0,  0,  0,$60
-                dc.b $A4,  2,$BD,$C1,$C4,$22,$98,  0
-                dc.b   0,$50,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$A4,  0,  0,  0,$60
-                dc.b $A4,  2,$C4,$41,$C4,$62,$98,  0
-                dc.b   0,$78,  0,  0,  0,$60,$A4,  1
-                dc.b $C4,$81,$98,$1D,  0,$80,  0,  0
-                dc.b $D3,$C0,$E4,  0,$65,$14,$92,$94
-                dc.b $98, $E,$22,  0,  0,$F0,$98, $D
-                dc.b $22,$38,  0,$F0,$98,  2,$10,$40
-                dc.b   0,  1,$A5,$BF,$34,$1F,$D7,$A2
-                dc.b $E4,  0,$98,  0,$3F,$40,  0,$F0
-                dc.b $A4,  1,$28,$21,$BD,$C1,$98,  0
-                dc.b   1,$80,  1,$80,$28,  0,$C4,$40
-                dc.b $E4,  0,$63,  9,$63, $A,$63, $B
-                dc.b $78,$86,$D5,$34,$88,$7F,$88,$A3
-                dc.b $8B,$E5,$88,$9F,$88,$C4,$8B,$E6
-                dc.b $89,$3F,$89,$49,$8B,$EA,$78,$88
-                dc.b $D5,$34,$88,$7F,$88,$E3,$8B,$E7
-                dc.b $88,$9F,$89,  4,$8B,$E8,$89,$3F
-                dc.b $89,$69,$8B,$EB,$78,$C8,$D5,$34
-                dc.b $88,$BF,$88,$E5,$8B,$E7,$88,$DF
-                dc.b $89,  6,$8B,$E8,$89,$5F,$89,$6A
-                dc.b $8B,$EB,$88,$D2,$89,$13,$10,$92
-                dc.b $10,$D3,$89,$16,  8,$32,$10,$96
-                dc.b   8,$33,  8,$36,$88,$F0,$88,$AC
-                dc.b $10,$70,$10,$6C,$89,$71,$89,$4F
-                dc.b $11,$31,$11,$2F,$62,$10,$62, $C
-                dc.b $89,$9F,$58, $C,$56,$4C,$37,$FF
-                dc.b $D4,$42,$E4,  0,$20, $C,$8A,$1F
-                dc.b $58,$10,$56,$D0,$37,$FF,$D4,$42
-                dc.b $E4,  0,$20,$10,$89,$FF,$58, $F
-                dc.b $56,$4F,$37,$FF,$D4,$42,$E4,  0
-                dc.b $20, $F,$8A,$3F,$58,$11,$56,$D1
-                dc.b $37,$FF,$D4,$42,$E4,  0,$20,$11
-                dc.b $96,$96,$98,$14,$39,$2C,  0,$F0
-                dc.b $8A,$C0,$98,$15,$39,$2E,  0,$F0
-                dc.b $62,$16,$88,$77,$28,$16,$89,$38
-                dc.b $63,$16,$88,$79,$89,$3A,$62,$17
-                dc.b $62,$19,$98,  0,$37,$90,  0,$F0
-                dc.b $7C,  4,$D0,$14,$E4,  0,$98,  0
-                dc.b $36,$A4,  0,$F0,$7C,  6,$D5,$62
-                dc.b $E4,  0,$D0,$14,$E4,  0,$7C,  8
-                dc.b $D4,$D4,$E4,  0,$98,  0,$39,$14
-                dc.b   0,$F0,$D0,  0,$E4,  0,$8A,$40
-                dc.b $62,  0,$8A,  1,$8A,$3F,$90,$1F
-                dc.b $8C,$1B,$8B,$7C,$58,  1,  7,$9B
-                dc.b $58,  0,  7,$9B,$88,$1C,$40,$3C
-                dc.b $88,$3D,$66,$1C,$66,$1D,$40,$1D
-                dc.b $66,  0,  3,$BC,$88,$1D,$40,$3D
-                dc.b $66,  1,  3,$BC,$40,  1,$62,  1
-                dc.b   3,$81,$34,$1B,$D4,$42,$97,$E0
-                dc.b $20,  1,$90,$1F,$8C,$1B,$8B,$7C
-                dc.b $58,$1F,  7,$9B,$58,  0,  7,$9B
-                dc.b $88,$1C,$43,$FC,$8B,$FD,$66,$1C
-                dc.b $66,$1D,$40,$1D,$66,  0,  3,$BC
-                dc.b $88,$1D,$43,$FD,$66,$1F,  3,$BC
-                dc.b $40,$1F,$62,$1F,  3,$9F,$34,$1B
-                dc.b $D4,$42,$97,$E0,$20,$1F,  0,$39
-                dc.b   3,$FA,$2C,$84,$88,$B7,$89,$58
-                dc.b $62,$17,$98,  0,$37,$C4,  0,$F0
-                dc.b $D0,  0,$E4,  0,$88,$80,  0,$92
-                dc.b $20,  0,  8,$32,$62,  0,$89,$81
-                dc.b $89,$FF,$90,$1F,$8C,$1B,$8B,$7C
-                dc.b $58,  1,  7,$9B,$58,  0,  7,$9B
-                dc.b $88,$1C,$40,$3C,$88,$3D,$66,$1C
-                dc.b $66,$1D,$40,$1D,$66,  0,  3,$BC
-                dc.b $88,$1D,$40,$3D,$66,  1,  3,$BC
-                dc.b $40,  1,$62,  1,  3,$81,$34,$1B
-                dc.b $D4,$42,$97,$E0,$20,  1,$90,$1F
-                dc.b $8C,$1B,$8B,$7C,$58,$1F,  7,$9B
-                dc.b $58,  0,  7,$9B,$88,$1C,$43,$FC
-                dc.b $8B,$FD,$66,$1C,$66,$1D,$40,$1D
-                dc.b $66,  0,  3,$BC,$88,$1D,$43,$FD
-                dc.b $66,$1F,  3,$BC,$40,$1F,$62,$1F
-                dc.b   3,$9F,$34,$1B,$D4,$42,$97,$E0
-                dc.b $20,$1F,  0,$37,  3,$F8,$8A,  1
-                dc.b $8A,$3F,$90,$1F,$8C,$1B,$8B,$7C
-                dc.b $58,  1,  7,$9B,$58,  0,  7,$9B
-                dc.b $88,$1C,$40,$3C,$88,$3D,$66,$1C
-                dc.b $66,$1D,$40,$1D,$66,  0,  3,$BC
-                dc.b $88,$1D,$40,$3D,$66,  1,  3,$BC
-                dc.b $40,  1,$62,  1,  3,$81,$34,$1B
-                dc.b $D4,$42,$97,$E0,$20,  1,$90,$1F
-                dc.b $8C,$1B,$8B,$7C,$58,$1F,  7,$9B
-                dc.b $58,  0,  7,$9B,$88,$1C,$43,$FC
-                dc.b $8B,$FD,$66,$1C,$66,$1D,$40,$1D
-                dc.b $66,  0,  3,$BC,$88,$1D,$43,$FD
-                dc.b $66,$1F,  3,$BC,$40,$1F,$62,$1F
-                dc.b   3,$9F,$34,$1B,$D4,$42,$97,$E0
-                dc.b $20,$1F,  0,$39,  3,$FA,$8C,  4
-                dc.b $98,  0,  1,$3F,  0,  0,$98,$1F
-                dc.b $39,$14,  0,$F0,$78,  4,$D3,$F4
-                dc.b $E4,  0,$98,  1,$37,$BC,  0,$F0
-                dc.b $78,  6,$D0,$38,$E4,  0,$88,$C1
-                dc.b $10,  1,$10,$32,$D3,$F8,$E4,  0
-                dc.b $D3,$E2,$E4,  0,$62,  4,$CC,$1E
-                dc.b $D2,$80,  8,$DE,$88,$EC,$89,$6F
-                dc.b $10,$AC,$11,$4F,$62, $C,$89,$9F
-                dc.b $58, $C,$56,$6C,$37,$FF,$D4,$42
-                dc.b $E4,  0,$20, $C,$89,$FF,$58, $F
-                dc.b $56,$6F,$37,$FF,$D4,$42,$E4,  0
-                dc.b $20, $F,$98,  0,$38,$E0,  0,$F0
-                dc.b $7C,  6,$D0,$14,$E4,  0,$88,$C0
-                dc.b   0,$D3,$20,  0,  8,$33,$62,  0
-                dc.b $89,$81,$89,$FF,$90,$1F,$8C,$1B
-                dc.b $8B,$7C,$58,  1,  7,$9B,$58,  0
-                dc.b   7,$9B,$88,$1C,$40,$3C,$88,$3D
-                dc.b $66,$1C,$66,$1D,$40,$1D,$66,  0
-                dc.b   3,$BC,$88,$1D,$40,$3D,$66,  1
-                dc.b   3,$BC,$40,  1,$62,  1,  3,$81
-                dc.b $34,$1B,$D4,$42,$97,$E0,$20,  1
-                dc.b $90,$1F,$8C,$1B,$8B,$7C,$58,$1F
-                dc.b   7,$9B,$58,  0,  7,$9B,$88,$1C
-                dc.b $43,$FC,$8B,$FD,$66,$1C,$66,$1D
-                dc.b $40,$1D,$66,  0,  3,$BC,$88,$1D
-                dc.b $43,$FD,$66,$1F,  3,$BC,$40,$1F
-                dc.b $62,$1F,  3,$9F,$34,$1B,$D4,$42
-                dc.b $97,$E0,$20,$1F,  0,$37,  3,$F8
-                dc.b $8A,  1,$8A,$3F,$90,$1F,$8C,$1B
-                dc.b $8B,$7C,$58,  1,  7,$9B,$58,  0
-                dc.b   7,$9B,$88,$1C,$40,$3C,$88,$3D
-                dc.b $66,$1C,$66,$1D,$40,$1D,$66,  0
-                dc.b   3,$BC,$88,$1D,$40,$3D,$66,  1
-                dc.b   3,$BC,$40,  1,$62,  1,  3,$81
-                dc.b $34,$1B,$D4,$42,$97,$E0,$20,  1
-                dc.b $90,$1F,$8C,$1B,$8B,$7C,$58,$1F
-                dc.b   7,$9B,$58,  0,  7,$9B,$88,$1C
-                dc.b $43,$FC,$8B,$FD,$66,$1C,$66,$1D
-                dc.b $40,$1D,$66,  0,  3,$BC,$88,$1D
-                dc.b $43,$FD,$66,$1F,  3,$BC,$40,$1F
-                dc.b $62,$1F,  3,$9F,$34,$1B,$D4,$42
-                dc.b $97,$E0,$20,$1F,  0,$39,  3,$FA
-                dc.b $98,  0,  1,$3F,  0,  0,$98,$1F
-                dc.b $39,$14,  0,$F0,$78,  6,$D3,$F4
-                dc.b $E4,  0,$98,  1,$39, $C,  0,$F0
-                dc.b $78,  8,$D0,$38,$E4,  0,$89,  1
-                dc.b $10,  1,$10,$33,$D3,$F8,$E4,  0
-                dc.b $D3,$E2,$E4,  0,$8A,$72,$CC,$1E
-                dc.b $D2,$80,  8,$DE,$98, $E,$3F,$80
-                dc.b   0,$F0,$AD,$E0,$D0,  0,$E4,  0
-                dc.b $98, $E,$3F,$80,  0,$F0,$AE,$A0
-                dc.b $D0,  0,$E4,  0,$93,$DE,$8A,$FB
-                dc.b $8B,$1C,$8B,$3D,$8B,$5E,$7A,$F9
-                dc.b $D4,$D4,$8B,$7F,$8B,$BB,$8B,$FD
-                dc.b $8B,$9F,$8B,$DC,$8B,$FE,$13,$7D
-                dc.b $13,$9E,$6E,$1B,$66,$1D,  8,$3D
-                dc.b $8B,$DF,$58,$1E,$57,$BE,$37,$FF
-                dc.b $D4,$42,$E4,  0,$20,$1E,$A5,$BF
-                dc.b $34,$1F,$D7,$A2,$E4,  0,$98,  1
-                dc.b $22,$68,  0,$F0,$BC,$36,  8,$81
-                dc.b $BC,$36,$98,  1,$44,$20,  0,  0
-                dc.b $8B,$A0,$64,$80,$D4,$C2,$E4,  0
-                dc.b $98,  0,$39,$A0,  0,$F0,$D0,  0
-                dc.b $E4,  0,$3A,  1,$98,  0,$22,$7C
-                dc.b   0,$F0,$BC,$1C,$98,  0,$39,$EA
-                dc.b   0,$F0,$C4,$21,$D0,  0,$E4,  0
-                dc.b $C4,$21,$93,$80,$8B,$60,$8C,$7F
-                dc.b $27,$E0,$7C,  0,$D4,$A2,$E4,  0
-                dc.b $13,$DC,$18,$20,$D7,$40,$E4,  0
-                dc.b $8B,$80,$67,  0,$D4,$E2,$E4,  0
-                dc.b $98,  0,$39,$8A,  0,$F0,$94,$1C
-                dc.b $D0,  0,$E4,  0,$8B,$C1,$63,$DE
-                dc.b $98,  0,$22,$88,  0,$F0,$BC,$1C
-                dc.b   0,$3C,$18,$80,$BC,$1C,  0,$3C
-                dc.b $18,$80,$BC,$1C,  0,$3C,$18,$80
-                dc.b $BC,$1C,$98,  0,$22,$70,  0,$F0
-                dc.b $98,  1,$FF,$FF,  0,$FF,$24,$3E
-                dc.b $BC,$1E,$98,  1,$3A,$1E,  0,$F0
-                dc.b $7C,  4,$D0,$38,$E4,  0,$98,  1
-                dc.b $FF,$FF,  0,  0,$24,$3B,$28,$9B
-                dc.b $C4,$7B,$3A,$1D,$98,  0,$22,$3C
-                dc.b   0,$F0,$BC,$1D,$BD,$A2,$98,  0
-                dc.b   0,  0,  0,  1,  0,  4,  1,$97
-                dc.b   1,$F8,  2,$19,$18,$32,$D2,$A1
-                dc.b   2,$3A,$97,$DE,$D3,$C0,$E4,  0
-                dc.b   0,$F0,$3A,$78,  0,  0,  4,$84
-                dc.b $98, $E,$3F,$80,  0,$F0,$98,  0
-                dc.b $3F,$4C,  0,$F0,$8C,$21,$BC,  1
-                dc.b $A4,  1,$7C,  1,$D7,$A1,$E4,  0
-                dc.b $98,  2,$3F,$68,  0,$F0,$8C,$A1
-                dc.b $A4,$40,$28,$21,$C7,  1,$98,  2
-                dc.b $3D,$C0,  0,$F0,$A4,  3,  8,$80
-                dc.b $7C,  3,$D0,$42,$E4,  0,$28,$63
-                dc.b $28,  0,$C6,$E3,$C7,$20,$98,  1
-                dc.b   0,  0,  0, $A,$98,  2,$3A,$D0
-                dc.b   0,$F0,$98,  0,$3E,$82,  0,$F0
-                dc.b $28,$42,$C6,$A2,$D0,  0,$E4,  0
-                dc.b $98,  0,$3B,$64,  0,$F0,$7C,  1
-                dc.b $D0,  2,$E4,  0,$8B,$54,$98,  1
-                dc.b   0,$3F,  0,  0,$24,$34,$98,  0
-                dc.b   6,  0,  0,  0,$40,$14,  3,$74
-                dc.b $8A,$83,$98,  1,$3B,$4C,  0,$F0
-                dc.b $98,  0,  0,$F8,  0,  0,  0,$60
-                dc.b $A4,  2,$7C,  2,$D0,$22,$E4,  0
-                dc.b $98,  0,$3F,$40,  0,$F0,$A4,  1
-                dc.b $98,  0,  0,  0,  0,  0,  0,$60
-                dc.b $BC,  1,$98,  0,  0,$FC,  0,  0
-                dc.b   0,$60,$A4,  1,$93,$5A,$93,$7B
-                dc.b $93,$18,$93,$39,$98,  2,$3B,$40
-                dc.b   0,$F0,$98,  0,$3E,$82,  0,$F0
-                dc.b $28,$42,$C6,$A2,$D0,  0,$E4,  0
-                dc.b $94,$63,$95,$CE,$97,$5A,$97,$7B
-                dc.b $97,$18,$97,$39,  3,$3A,$98,  0
-                dc.b $3A,$DC,  0,$F0,$18,$38,$D0,  1
-                dc.b $E4,  0,$97,$BD,  8,$5D,$A3,$A0
-                dc.b   8,$20,$BB,$A0,$AE,$E3,$98,  0
-                dc.b $3F,$54,  0,$F0,$A4,  1,$98,  0
-                dc.b   0,  0,  0,  0,  0,$60,$BC,  1
-                dc.b $98,  0,$3F,$3C,  0,$F0,$A4,  1
-                dc.b $98,  0,  0,$F0,  0,  0,  0,$60
-                dc.b $BC,  1,$2C,$21,$98,  0,$3F,$58
-                dc.b   0,$F0,$BC,  1,$98,  0,  0,$FC
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  2
-                dc.b $3B,$B2,  0,$F0,$98,  0,$3E,$82
-                dc.b   0,$F0,$28,$42,$C6,$A2,$D0,  0
-                dc.b $E4,  0,$94,$63,$95,$CE,$98,  0
-                dc.b   3,  0,  0,  0,$8C,$E1,  0,  3
-                dc.b $98,$14,$3B,$C8,  0,$F0,$88,$76
-                dc.b $A6,$D5,  8,$96,$A6,$C0,  9,$16
-                dc.b $A6,$C4,$19,$96,$7C,$C4,$D4,$41
-                dc.b $E4,  0,$2C,  0,  0,$15,$BE,$D5
-                dc.b  $A,$16,$18,$21,$D2,$94,$E4,  0
-                dc.b $98,  0,$3F,$64,  0,$F0,$A4,  4
-                dc.b  $A,  0,$98,$14,$FF,$FF,  0,  0
-                dc.b $98,$15,  0,$FF,  0,  0,$98,$16
-                dc.b   0,  8,  0,  0,$98,$17,$3C,$10
-                dc.b   0,$F0,$98,$18,$3C,$54,  0,$F0
-                dc.b $A4,$6A,  9,  3,$A4,$6B,  8,$83
-                dc.b $A4,$6C,  8,$83,$7C,$EC,$D5,$18
-                dc.b $89,$81,$18,$E1,$A4,  2,$63,$C1
-                dc.b $19,  2,  0,$22,$A4,$4C,$D3,  0
-                dc.b $7C,$6C,$D4,$61,$89,$4C,$65, $C
-                dc.b $D3,  0,$89,$4F,$66, $A,$26,$AA
-                dc.b   1,$4B,$9D,$6C,  8,$2B,$9D,$6D
-                dc.b $65, $F,$11,$8D,$26,$AF,$63, $C
-                dc.b $45,$ED,  1,$AC,$B8,$8C,  8,$44
-                dc.b $18,$36,$D2,$E1,$E4,  0,$98,  0
-                dc.b $3F,$6C,  0,$F0,$AE,$F6,$98,$1A
-                dc.b   0,$3F,  0,  0,$98,  2,  1,  0
-                dc.b   0,  0,$8A,$D7,$8A,$D9,  0,$59
-                dc.b   0,$57,  0,$59,$A4,$18,$A2,$E1
-                dc.b $98,  2,$3D,$AA,  0,$F0,  8,$57
-                dc.b $7C,  1,$D0,$42,$62,  1,$A2,$E2
-                dc.b $28,$41,$98,  0,  0,$3F,  0,  0
-                dc.b $13,$40,$63,$A0,$88,  2,$63,$C0
-                dc.b   0,$40,$98,  2,$3F,$70,  0,$F0
-                dc.b $A4,$5B,  3,$60,$8F,$DB,  3,$60
-                dc.b $19,$82,$A4,$48,$88,$3C,$8B,$35
-                dc.b $88,  4,$89,$10,$8B,$93, $A,$10
-                dc.b $66,$1C,$64,$33, $A,$10,$8D,  3
-                dc.b $98,  5,$7F,$FF,  0,  0,$98,  7
-                dc.b $3C,$E8,  0,$F0,$24,$B3,$88,$BB
-                dc.b $63,$FB,$98, $A,$3C,$F8,  0,$F0
-                dc.b $98,$11,$80,  0,  0,  0,$2E,$52
-                dc.b $34,$1C,$D1,$42,$E4,  0,$A1,  1
-                dc.b $12,$21,$44,$25,$6E,  5,  0,$B2
-                dc.b $35,$1C,$D4,$42,$64,$3C,$A2,$1B
-                dc.b   8,$50,$18,$23,$D0,$E1,  8,$48
-                dc.b $43,$73,$66,$13,$46,$72,$6D,$F2
-                dc.b $7C,$12,$D4,$34,  2,$32,$2A,$52
-                dc.b $C6,$D2,$8A,$45,$AE,$E6,  8,$64
-                dc.b $9C,$89,  8,$24,$A0,$80,  8,$44
-                dc.b $63,$C0,$A4,$88,  0,  6,$89, $A
-                dc.b $2C,$E7,$64,$2A,$34,$E9,$D4,$42
-                dc.b $3C,$E9,$8C,$27,$98,  0,$3D,$56
-                dc.b   0,$F0,$7C,$49,$D0,  2,$E4,  0
-                dc.b $40,$A8,$66,  8,$98,  0,$3D,$90
-                dc.b   0,$F0,$D0,  0,$E4,  0,$88,$BE
-                dc.b $8C,$1B,$8B,$7C,$58,  8,  7,$9B
-                dc.b $58,  5,  7,$9B,$88,$BC,$41,$1C
-                dc.b $89,$1D,$66,$1C,$66,$1D,$40,$BD
-                dc.b $66,  5,  3,$BC,$88,$BD,$41,$1D
-                dc.b $66,  8,  3,$BC,$40,$A8,$62,  8
-                dc.b   3,$88,$34,$1B,$D4,$42,$8B,$C5
-                dc.b $20,  8,$7C,$15,$D4,$61,$E4,  0
-                dc.b $7C,$27,$D4,$41,$E4,  0,$11,$48
-                dc.b $7C,$15,$D4,$62,$E4,  0,$A6,$A0
-                dc.b   0,  8,$BC,$C8,$AE,$C0,$28,  0
-                dc.b $BB,  0,  8,$58,  8,$57,  8,$99
-                dc.b   8,$96,$98,  0,$3C,$7E,  0,$F0
-                dc.b $18,$3A,$D0,$14,$E4,  0,$AF,$20
-                dc.b $AF,  2,$18,$22,$98,  3,$3A,$9E
-                dc.b   0,$F0,$28,$42,$C7,  2,$D0,$74
-                dc.b $E4,  0,$98,  2,$3D,$EC,  0,$F0
-                dc.b $98,  1,  0,  0,  0,  3,$98,  0
-                dc.b $3E,$82,  0,$F0,$28,$42,$C6,$A2
-                dc.b $D0,  0,$E4,  0,$8C,$20,$98,  1
-                dc.b $3F,$50,  0,$F0,$BC,$20,$98,  0
-                dc.b $3A,$7E,  0,$F0,$D0,  0,$E4,  0
-                dc.b $98,$14,$22,$38,  0,$F0,$A6,$95
-                dc.b $34,$15,$D7,$A2,$E4,  0,$98,$14
-                dc.b $22,  0,  0,$F0,$98,$15,$22,$24
-                dc.b   0,$F0,$88,$39,$98,$1A,$FF,$F8
-                dc.b $FF,$FF,$8B,$38,$27,$59,$13,$38
-                dc.b $BE,$99,  8,$94,$98,$16,$40,$20
-                dc.b   0,  0,$BE,$96,  9,$14,$64,$38
-                dc.b $BE,$98,$88,$19,$88,$17,$27,$59
-                dc.b $13,$37,$BE,$B9,  8,$95,$BE,$B6
-                dc.b   9,$15,$64,$37,$BE,$B7,$64,$22
-                dc.b $98,$19,$22,$3C,  0,$F0,$3A,  2
-                dc.b $BF,$22,$98,$16,  0,  1,  1,$80
-                dc.b $2A,$F8,$D4,$82,$E4,  0,$98,$16
-                dc.b   0,  5,  1,$80,$98,$14,$22,$38
-                dc.b   0,$F0,$BE,$96,$A6,$95,$34,$15
-                dc.b $D7,$A2,$E4,  0,$AE,$B4,$D2,$80
-                dc.b $E4,  0,$90,$63,$91,$CE,$88,$24
-                dc.b $88,$25,$62,  4,$66,  5,$66,  4
-                dc.b $98,  0,$3F,$5C,  0,$F0,$BC,  4
-                dc.b $98,  0,$30,  0,  0,$F0,$98,  1
-                dc.b $3E,$F8,  0,$F0,$A4,$22,$78,$45
-                dc.b $D0,  2,$E4,  0,$BC,$25,$98,  0
-                dc.b $3F,$48,  0,$F0,$A4,  4,$63,$C5
-                dc.b   0,$85,$A4,$A4,$A4,$81,  8,$84
-                dc.b $A4,$82,  8,$84,$88,$80,$AE,$A4
-                dc.b $98,  5,$3E,$E4,  0,$F0,$98,  6
-                dc.b $3E,  0,  0,$F0,$98,$14,$80,  0
-                dc.b   0,  0,$28,$A5,  2,$81,$C6,$A5
-                dc.b $D0,$C0,$E4,  0,$28,$84,$C6,$A4
-                dc.b $98,  0,$30,  0,  0,$F0,$D0,  0
-                dc.b $E4,  0,  0,  0,  0,  0,  0,  0
-                dc.b $FF,$FF,  0,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  7,$1C
-                dc.b $98,  0,$3F,$60,  0,$F0,$98, $E
-                dc.b $3F,$80,  0,$F0,$A4,  1, $B,$81
-                dc.b $A4,$20, $A,  1,$A4,$22,  8,$82
-                dc.b $C7,$C2,$98,$18,  0,$FC,  0,  0
-                dc.b $98,  1,$B0,$34,  0,$F1,  0,$18
-                dc.b $98, $A,$B1,$30,  0,$F1,$98,  2
-                dc.b   0,$3F,  0,  0,$98,  4,$30,$40
-                dc.b   0,$F0,$98,  5,$30,  0,  0,  0
-                dc.b $88,$34,$8C,$75,$2E,$D6,$A6,$97
-                dc.b   8,$94,$18,$35,$D7,$94,  2,$F6
-                dc.b $64,$56,$8A,$C6,$A4,  7,$2F,$39
-                dc.b $88,$1A,  8,$9A,$A7,$5B,  8,$9A
-                dc.b $A7,$5C,$7B,$67,$D4,$94,$7B,$7C
-                dc.b $D4,$54,$E4,  0,$8C,$39,  8,$81
-                dc.b $BF,$19,$10,$A7,$D4,$54,  8,$98
-                dc.b $2C,$E7,$78,$C7,$D4,$54,$E4,  0
-                dc.b $88,$C7,$BC,  7,$18,$22,$D0,$94
-                dc.b   8,$80,$98,  3,$36,$5A,  0,$F0
-                dc.b $CC,$1E,$D0,$60,  8,$DE,$98,  0
-                dc.b $3F,$60,  0,$F0,$A4,  1,  8,  1
-                dc.b   9,$81,$A4,$20,  8,$81,$A4,$22
-                dc.b $A0,$43,$7C,  3,$D4,$C2,$E4,  0
-                dc.b $98,  1,$31,$76,  0,$F0,$D0,$20
-                dc.b $E4,  0,$8C,$21,$B8,  1,$98,  0
-                dc.b $3F,$60,  0,$F0,$A4,  1,  8,  1
-                dc.b   9,$81,$A4,$20,  8,$40,$98,  1
-                dc.b $31,$4A,  0,$F0,$A0,  2,$7C,  2
-                dc.b $D0,$22,$E4,  0,$7D,  2,$D4,$81
-                dc.b $E4,  0,$98,  3,$34,$1A,  0,$F0
-                dc.b $7C,$C2,$D4,$81,$E4,  0,$98,  3
-                dc.b $33,$E4,  0,$F0,$7C,$E2,$D4,$81
-                dc.b $E4,  0,$98,  3,$33,$AE,  0,$F0
-                dc.b $7C,$62,$D4,$81,$E4,  0,$98,  3
-                dc.b $32,$2E,  0,$F0,$7C,$42,$D4,$81
-                dc.b $E4,  0,$98,  3,$31,$8E,  0,$F0
-                dc.b $7C,$A2,$D4,$81,$E4,  0,$98,  3
-                dc.b $34,$AC,  0,$F0,$7C,$22,$D4,$81
-                dc.b $E4,  0,$98,  3,$35,$12,  0,$F0
-                dc.b $CC,$1E,$D0,$60,  8,$DE,$98,  0
-                dc.b $3F,$60,  0,$F0,$A4,  1,  8,  1
-                dc.b   9,$81,$A4,$20,  8,$40,$2C,$21
-                dc.b $B8,  1,$98,  0,$3F,$60,  0,$F0
-                dc.b $A4,  1,  8,  1,  9,$81,$A4,$20
-                dc.b $A0,  1,$7C,  1,$D4,$C2,$E4,  0
-                dc.b $98,  0,$30,$BE,  0,$F0,$D0,  0
-                dc.b $E4,  0,$98, $E,$3F,$80,  0,$F0
-                dc.b $AE,$A0,$D0,  0,$E4,  0,$7C,$23
-                dc.b $D7,  2,$E4,  0,$2C,$63,$98,  1
-                dc.b $21,$14,  0,$F0,$A4,$20,$3C,  0
-                dc.b $BC,$20,$D7,$E0,$E4,  0,$2E,$B5
-                dc.b $98, $E,$3F,$80,  0,$F0,$AF,$C0
-                dc.b $A4,  4,  8,$80,$A4,  5,  8,$80
-                dc.b $A4,  6,  8,$80,  8,$64,$9C,$89
-                dc.b   8,$24,$A0,$80,  8,$44,$63,$C0
-                dc.b $A4,$88,  0,  6,$89, $A,$2C,$E7
-                dc.b $64,$2A,$34,$E9,$D4,$42,$3C,$E9
-                dc.b $8C,$27,$98,  0,$31,$DC,  0,$F0
-                dc.b $7C,$49,$D0,  2,$E4,  0,$40,$A8
-                dc.b $66,  8,$98,  0,$32,$16,  0,$F0
-                dc.b $D0,  0,$E4,  0,$90,$BF,$8C,$1B
-                dc.b $8B,$7C,$58,  8,  7,$9B,$58,  5
-                dc.b   7,$9B,$88,$BC,$41,$1C,$89,$1D
-                dc.b $66,$1C,$66,$1D,$40,$BD,$66,  5
-                dc.b   3,$BC,$88,$BD,$41,$1D,$66,  8
-                dc.b   3,$BC,$40,$A8,$62,  8,  3,$88
-                dc.b $34,$1B,$D4,$42,$97,$E5,$20,  8
-                dc.b $7C,$15,$D4,$61,$E4,  0,$7C,$27
-                dc.b $D4,$41,$E4,  0,$11,$48,$7C,$15
-                dc.b $D4,$62,$E4,  0,$A6,$A0,  0,  8
-                dc.b $BC,$C8,$D3,$C0,$E4,  0,$98, $E
-                dc.b $3F,$80,  0,$F0,$AF,$C0,$A4,  1
-                dc.b   8,$80,$98,  3,$22,  0,  0,$F0
-                dc.b $A4,  2,$BC,$61,$A0,$49,  8,$42
-                dc.b $A0,$4A,  8,$42,$A0,$4B,  8,$42
-                dc.b $A0,$4C,  8,$42,$A0,$53,$98,$14
-                dc.b $22,$38,  0,$F0,$98,$16,$22, $C
-                dc.b   0,$F0,$98,$15,$22,$3C,  0,$F0
-                dc.b $98,  0,$44,$20,  0,  3,$98,  1
-                dc.b $22,  4,  0,$F0,$BC,$20,$98,$1C
-                dc.b $32,$E4,  0,$F0,$CC,$1F,$D3,$80
-                dc.b   8,$DF,$8A,$60,$62,  0,$2A,$60
-                dc.b $98,  3,$32,$E0,  0,$F0,$88,$FC
-                dc.b $3E,$1C,$7C,$1C,$D0,$62,$E4,  0
-                dc.b $98,  1,$22,$68,  0,$F0,$BC,$20
-                dc.b   8,$81,$BC,$20,$98,  1,$22,$20
-                dc.b   0,$F0,$BC,$28,$98,  1,$22,$1C
-                dc.b   0,$F0,$BC,$25,$BE,$C6,$8C,  0
-                dc.b $98,  1,$22,$18,  0,$F0,$BC,$20
-                dc.b $88,$E0,$88,  1,$98,  2,  1,$FF
-                dc.b   0,  0,$24,$41,$3A,  1,$BE,$A1
-                dc.b $98,  0,  0,  0,  0,  1,$BE,$80
-                dc.b $A6,$9C,$34,$1C,$D7,$A2,$E4,  0
-                dc.b $D3,$C0,$E4,  0,$11,$2B,$11,$4C
-                dc.b $89,$46,$62,  6,$29,$26,$89,$60
-                dc.b $89,$81,$58,  0,$58,  1,$78,  1
-                dc.b $D4,$D8,$E4,  0,$98,  0,$33,$54
-                dc.b   0,$F0,$D0,  0,$E4,  0,$98,$1C
-                dc.b $33,$A8,  0,$F0,$7C,  0,$D3,$82
-                dc.b $E4,  0,$62, $C,$8C,  3,$78,$6C
-                dc.b $D4,$74,$E4,  0,$38,  3,$58, $C
-                dc.b $54, $C,$88,  7,  8,$27,$3A,  7
-                dc.b $34,  3,$E4,  0,$D4,$42,$E4,  0
-                dc.b $20, $C,$89,$88,$62,  8,$98,  3
-                dc.b   0,  0,$FF,$FF,$89,$85,$24,$65
-                dc.b $8C,$20,$7C, $B,$D4,$94,$E4,  0
-                dc.b $98,  0,$FF,$FF,  0,  0,$28,  5
-                dc.b $D3,$E0,$E4,  0,$98,$1C,$33,$A8
-                dc.b   0,$F0,$7C,  1,$D3,$82,$E4,  0
-                dc.b $62, $B,$8C,  3,$78,$6B,$D4,$74
-                dc.b $E4,  0,$38,  3,$58, $B,$54,$2B
-                dc.b $88,$27,  8,$27,$3A,  7,$34,  3
-                dc.b $E4,  0,$D4,$42,$E4,  0,$20, $B
-                dc.b $89,$68,$98,  3,$FF,$FF,  0,  0
-                dc.b $24,$68,$89,$65,$66,  5,$98,  0
-                dc.b   0,  0,  0,  1,$7C, $C,$E4,  0
-                dc.b $D4,$94,$E4,  0,$98,  0,  0,  0
-                dc.b $FF,$FF,$28,  5,$D3,$E0,$E4,  0
-                dc.b $8C,  7,$D3,$E0,$E4,  0,$98,  1
-                dc.b $34,$5C,  0,$F0,$CC,$1F,$D0,$20
-                dc.b   8,$DF,$98,$13,$33,$DA,  0,$F0
-                dc.b $98,$14,$33,$C8,  0,$F0,$88,$D1
-                dc.b $89,$C0,  8,$2E,$25,$60,$88,$F2
-                dc.b   1,  0,$9C,  1,$10,$32,$D1,$80
-                dc.b $E4,  0,$18,$24,$D2,$94,  8,$31
-                dc.b $D3,$C0,$E4,  0,$98,  1,$34,$5C
-                dc.b   0,$F0,$CC,$1F,$D0,$20,  8,$DF
-                dc.b $98,$13,$34,$10,  0,$F0,$98,$14
-                dc.b $33,$FE,  0,$F0,$88,$F2,$89,$C0
-                dc.b   8,$2E,$25,$60,$88,$D1,  1,  0
-                dc.b $9C,  1,  0,$31,$D1,$80,$E4,  0
-                dc.b $18,$24,$D2,$94,$18,$32,$D3,$C0
-                dc.b $E4,  0,$98,  1,$34,$5C,  0,$F0
-                dc.b $CC,$1F,$D0,$20,  8,$DF,$98,$13
-                dc.b $34,$52,  0,$F0,$98,$14,$34,$38
-                dc.b   0,$F0,$98,$1A,  0,$40,  0,  0
-                dc.b $89,$C0,  8,$2E,$25,$60,$88,$D1
-                dc.b   1,  0,$88,$F2,$9C,  1,  3,$40
-                dc.b   0,$31,$9C,  1,$10,$32,$D1,$80
-                dc.b $E4,  0,$18,$24,$D2,$94,$E4,  0
-                dc.b $D3,$C0,$E4,  0,$98, $E,$3F,$80
-                dc.b   0,$F0,$AF,$C0,$A4,$17,  8,$80
-                dc.b $A4,  8,  8,$80,$A4,  7,  8,$80
-                dc.b $88,$E6,$66,  7,$98, $D,$FF,$FF
-                dc.b   0,  0,$98, $B,  0,$3F,  0,  0
-                dc.b $25,$A6,$A4, $E,$89,$C5,$25,$6E
-                dc.b $66,  5,$98, $A,  3,  0,  0,  0
-                dc.b $98, $F,  1,$7F,  0,  0,$98,$1B
-                dc.b $FF,$FF,  0,  0,$98,  4,  0,$3F
-                dc.b   0,  0,$98, $C,$36,$26,  0,$F0
-                dc.b $D3,$E0,$E4,  0,$98,  1,$34,$5C
-                dc.b   0,$F0,$CC,$1F,$D0,$20,  8,$DF
-                dc.b $A5, $E,  8,$88,$A5,$1C,  8,$88
-                dc.b $A5,  8,$98,$13,$35,  6,  0,$F0
-                dc.b $98,$14,$34,$DC,  0,$F0,$98, $B
-                dc.b   0,$FF,  0,  0,$98,  5,$88,  0
-                dc.b   0,  0,$88,$D1,$89,$C0,  3,$8E
-                dc.b $66,  0,$25,$60,$88,$F2,  1,  0
-                dc.b $9C,  1,$64,$41,$10,$32,$92,$31
-                dc.b $98,$18,$3F,$60,  0,$F0,$A7,$19
-                dc.b   8,$99,$A7,$38,$A3,$19,$5F,$31
-                dc.b $5F,$32,$D1,$80,$E4,  0,$96,$31
-                dc.b $18,$24,$D2,$94,  8,$31,$D3,$C0
-                dc.b $E4,  0,$98,  0,$3F,$40,  0,$F0
-                dc.b $A4,$17,$98,  6,  0,  0,  0,  0
-                dc.b $98,  7,  0,$C0,  0,  0,$98,  5
-                dc.b   0,  0,  0,  0,$98,$1B,$FF,$FF
-                dc.b   0,  0,$98, $A,  3,  0,  0,  0
-                dc.b $98, $F,  1,$7F,  0,  0,$98,  8
-                dc.b   4,  0,  0,  0,$98, $E,$3F,$80
-                dc.b   0,$F0,$AF,$C0,$2F,$9C,$A4,  8
-                dc.b $A1,$16,$98,  4,$FF,$FF,  0,  0
-                dc.b $64,$56,$98, $C,$35, $E,  0,$F0
-                dc.b $98,$13,$33,$AA,  0,$F0,$98,  0
-                dc.b $36, $A,  0,$F0,$CC,$1F,$D0,  0
-                dc.b   8,$DF,  2,$DC,  8,$26,$7B,$84
-                dc.b $D4,$D8,$E4,  0,$98,  0,$35,$66
-                dc.b   0,$F0,$D0,  0,$E4,  0,$98,  5
-                dc.b $F0,  0,  0,  0,  8,$48,$88,$9C
-                dc.b $A1,$16,  8,$48,$64,$56,$A1,  4
-                dc.b $98,  0,$36, $A,  0,$F0,$CC,$1F
-                dc.b $D0,  0,  8,$DF,$12,$DC,  8,$26
-                dc.b $7B,$84,$D4,$D4,$E4,  0,$98,  0
-                dc.b $35,$98,  0,$F0,$D0,  0,$E4,  0
-                dc.b $88,$9C,$8E,  9,$98,  5,$8F,  0
-                dc.b   0,  0,$98,  0,$36, $A,  0,$F0
-                dc.b $CC,$1F,$D0,  0,  8,$DF,  8,$86
-                dc.b $18,$29,$D4,$D8,$E4,  0,$98,  0
-                dc.b $35,$C2,  0,$F0,$D0,  0,$E4,  0
-                dc.b   8,$48,$A1,$16,$98,  5,$80,  0
-                dc.b   0,  0,$64,$56,$98,  0,$36, $A
-                dc.b   0,$F0,$CC,$1F,$D0,  0,  8,$DF
-                dc.b   8,$26,$12,$DC,$D1,$98,$E4,  0
-                dc.b $98,  0,$35,$EC,  0,$F0,$D0,  0
-                dc.b $E4,  0,$78,$C8,$D1,$98,$88,$D1
-                dc.b $98,  0,  0,$40,  0,  0,$64,$31
-                dc.b $98,$12,  0,$E0,  0,  0,  0,$11
-                dc.b $8B,$81,$65,$41,$10,$32,$79,$F1
-                dc.b $D2,$74,$79,$F2,$D2,$74,$7C,$11
-                dc.b $D2,$78,$7C,$12,$D2,$78,$8A,$21
-                dc.b $8A,$42,$63,$E1,$41,$42,  0,$22
-                dc.b   2,$E2,$8B,$60,$65,  0,$28,$A0
-                dc.b $B8,$40,  8,$42,$B8,$40,  1,$42
-                dc.b $B8,$40,$18,$42,$B8,$40,$D2,$60
-                dc.b $E4,  0,$98,  0,$3F,$60,  0,$F0
-                dc.b $A4,  1, $B,$81,$A4,$24,  9,  1
-                dc.b $A4,$29,  8,$81,$A4,$2A,$98,$13
-                dc.b   2,  0,  0,  0,$8C,$8B,$98, $C
-                dc.b $36,$90,  0,$F0,$98, $D,$36,$AA
-                dc.b   0,$F0,$98,  0,$3F,$3C,  0,$F0
-                dc.b $A4,$14,$2E,$31,$65,$14,$8C,$3C
-                dc.b $A1,$25,$2C,$E7,  8,$49,$A1,$26
-                dc.b $88,$C8,  8,$49,$10,$A8,$D4,$74
-                dc.b $E4,  0,$20,  8,$88,$C5,$63,$C5
-                dc.b   0,$85,$A4,$A0,$78,$E0,$D4,$58
-                dc.b   8,$85,$88,  7,$18,$28,$D7,$34
-                dc.b $E4,  0,$63,$E7,$84,  7,$A1,$52
-                dc.b $12,$72,$78,$F2,$D4,$54,$E4,  0
-                dc.b $88,$F2,$B9,$52,$98,$1D,  3,  0
-                dc.b   0,  0,$A1,$20,  8,$49,$A1,$21
-                dc.b $2C,$42,$78,$E0,$D4,$B4,$E4,  0
-                dc.b $2B,$82,$88,$E0,$D4,$C0,$E4,  0
-                dc.b $2C,$42,$13,$A0,$D4,$54,$E4,  0
-                dc.b $2C,  0,$78,$E1,$D4,$58,$E4,  0
-                dc.b $2C,$42,$28,$51,$2C,$54,$18,$49
-                dc.b $B9,$20,  8,$89,$63,$FC,$18,$2B
-                dc.b $D1,$94,  8,$4A,$63,$14,$98,  0
-                dc.b $3F,$3C,  0,$F0,$2A,$91,$BC,$11
-                dc.b $D3,$C0,$E4,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  5,$30
-                dc.b $98,  0,  0,$98,  0,  0,  0,$60
-                dc.b $A4,  2,$8C,$64,$98,  0,$3F,$60
-                dc.b   0,$F0,$66,  2,$A4,  1,$24,$82
-                dc.b $A4,$20,$63,$C2,  0,$40,$A4,$18
-                dc.b $98, $E,$3F,$80,  0,$F0,$98,  0
-                dc.b $3F,$5C,  0,$F0,$A4,  1,$7C,$61
-                dc.b $D4,$C1,$E4,  0,$98,  0,$33,$80
-                dc.b   0,$F0,$D0,  0,$E4,  0,$A3,$10
-                dc.b $98, $A,  3,  0,  0,  0,  8,$58
-                dc.b $98,  0,$3F,$40,  0,$F0,$A3,$13
-                dc.b $98, $F,  1,$7E,  0,  0,  8,$58
-                dc.b $A4,$17,$98,  0,  0,$24,  0,  0
-                dc.b   0,$60,$A4,$11,$98,  0,  0,$28
-                dc.b   0,  0,  0,$60,$A4,$12,$66,$11
-                dc.b $66,$12,$8A,  0,$8A,$61,$63,$80
-                dc.b $64,$21,$10,$11,$10,$32,$98,  0
-                dc.b   0,$54,  0,  0,  0,$60,$A4,$1B
-                dc.b $98,  0,  0,$B8,  0,  0,  0,$60
-                dc.b $A4,  9,$65,$1B,$98,  0,  0,$BC
-                dc.b   0,  0,  0,$60,$A4, $B,$98,  0
-                dc.b   0,$D8,  0,  0,  0,$60,$A4, $C
-                dc.b $98,  0,  0,$DC,  0,  0,  0,$60
-                dc.b $A4, $D,$98,  0,  0,$E0,  0,  0
-                dc.b   0,$60,$A4,  7,$98,  0,  0,$E4
-                dc.b   0,  0,  0,$60,$A4,  8,$8A,$54
-                dc.b $8A,$21,$41,$54,$63,$E1,  2,$F4
-                dc.b   0,$34,$92,$94,$90,$E7,$91,  8
-                dc.b $92,$10,$8F,$F6,$A7,$1A,$98,  0
-                dc.b $3F,$5C,  0,$F0,$A4,  1,$7C,  1
-                dc.b $D4,$C1,$E4,  0,$98,  0,$31,$2C
-                dc.b   0,$F0,$D0,  0,$E4,  0,$7C,$41
-                dc.b $D4,$C1,$E4,  0,$98,  0,$32,$84
-                dc.b   0,$F0,$D0,  0,$E4,  0,$7C,$81
-                dc.b $D4,$C1,$E4,  0,$98,  0,$34,$1E
-                dc.b   0,$F0,$D0,  0,$E4,  0,$98,$19
-                dc.b $32,$4E,  0,$F0,$98,$15,$32,$2E
-                dc.b   0,$F0,$98,  0,$31,$E2,  0,$F0
-                dc.b $D0,  0,$E4,  0,$98,  0,  0,$F0
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$F4,  0,  0,  0,$60,$A4,  2
-                dc.b $98,  0,$31,$DC,  0,$F0,$7C,  2
-                dc.b $D4,$82,$24,$41,$78,$41,$D0,  1
-                dc.b $E4,  0,$6C,$8C,$6C,$8D,$6C,$49
-                dc.b $6C,$4B,$98,$1C,  0,$40,  0,  0
-                dc.b $98,$1D,$FF,$FF,  0,$1F,$98,$19
-                dc.b $31,$AC,  0,$F0,$98,$15,$31,$72
-                dc.b   0,$F0,$37,$FA,$D3,$22,$88,$E2
-                dc.b $89,  1,$88,$40,$8B,$BE,$88,$1F
-                dc.b $88,$25,$27,$DF,$27,$C5,$64,$3E
-                dc.b $13,$DF,$D4,$54,$E4,  0,$20,$1F
-                dc.b $13,$C5,$D4,$54,$E4,  0,$20,  5
-                dc.b $88,$BB,$66,$1F,$66,  5,$63,$9F
-                dc.b $2B,$E5,$65,$BB,$63,  5,  3,$9B
-                dc.b $2B,$65,$BA,$85,  8,$54,$63,$FA
-                dc.b   1,$27,$18,$36,$D2,$B4,  1,$68
-                dc.b $8F,$F6,  8,$98,$A7,$1A,$18,$30
-                dc.b $D2,$B4,$E4,  0,$94,$E7,$95,  8
-                dc.b $96,$94,$96,$10,  1,$87,  1,$A8
-                dc.b   1,$54,$90,$E7,$91,  8,$18,$33
-                dc.b $D2,$B4,$92,$94,$AE,$A0,$D0,  0
-                dc.b $E4,  0,$6C,$4B,$6C,$8D,$88,$E2
-                dc.b $89,  1,$88,$40,$8F,$DE,$88,$1F
-                dc.b $88,$25,$66,$1F,$66,  5,$27,$DF
-                dc.b $27,$C5,$64,$3E,$13,$DF,$D4,$54
-                dc.b $E4,  0,$20,$1F,$13,$C5,$D4,$54
-                dc.b $E4,  0,$20,  5,$63,$9F,$2B,$E5
-                dc.b $63,  5,$98,  0,  0,$54,  0,  0
-                dc.b   0,$60,$A4,$1C,$63,$1C,$98,$1D
-                dc.b $FF,$FE,  1,$FF,$98,$1F,  0,$40
-                dc.b   0,  0,$93,$9C,$91,$29,$37,$FA
-                dc.b $D3,$22,$8B,$82,$88,$40,$8B,$BE
-                dc.b $88,$1B,$27,$DB,$64,$3E,$13,$DB
-                dc.b $D4,$54,$E4,  0,$20,$1B,$66,$3B
-                dc.b   3,$FB,$28,$BB,$BA,$9B,  8,$54
-                dc.b   1,$69,$63,$FA,  1,$3C,$18,$36
-                dc.b $D2,$B4,$E4,  0,$8F,$F6,  8,$98
-                dc.b $A7,$1A,$18,$30,$D2,$B4,$E4,  0
-                dc.b $95,$29,$97,$9C,$96,$94,  1,$AC
-                dc.b $96,$10,  1,$9C,  1,$54,$93,$9C
-                dc.b $18,$33,$D2,$B4,$92,$94,$AE,$A0
-                dc.b $D0,  0,$E4,  0,$98,$15,$33,$10
-                dc.b   0,$F0,$98,  0,  0,$24,  0,  0
-                dc.b   0,$60,$A4,$11,$98,  0,  0,$28
-                dc.b   0,  0,  0,$60,$A4,$12,$66,$11
-                dc.b $66,$12,$98,  0,  0,$84,  0,  0
-                dc.b   0,$60,$A4,$10,$98,  0,  0,$88
-                dc.b   0,  0,  0,$60,$A4,$13,$65,$10
-                dc.b $65,$13,$8A,  0,$8A,$61,$64,$20
-                dc.b $64,$21,$10,$11,$10,$32,$8A,$54
-                dc.b $8A,$21,$41,$54,$63,$E1,  2,$F4
-                dc.b   0,$34,$92,$94,$92,$10,$6C,$8C
-                dc.b $6C,$8D,$6C,$49,$6C,$4B,$98,$1C
-                dc.b   0,$40,  0,  0,$98,$1D,$FF,$FF
-                dc.b   0,$1F,$98,  0,  0,$F0,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$F4
-                dc.b   0,  0,  0,$60,$A4,  2,$65,  1
-                dc.b $98,  0,$31,$DC,  0,$F0,$7C,  2
-                dc.b $D4,$42,$E4,  0,$24,$22,$90,$42
-                dc.b $88,$E2,$89,  1,$88,$40,$8B,$BE
-                dc.b $88,$1F,$88,$25,$27,$DF,$27,$C5
-                dc.b $64,$3E,$13,$DF,$D4,$54,$E4,  0
-                dc.b $20,$1F,$13,$C5,$D4,$54,$E4,  0
-                dc.b $20,  5,$88,$BB,$66,$1F,$66,  5
-                dc.b $63,$9F,$2B,$E5,$65,$BB,$98,  1
-                dc.b   0,$FF,  0,  0,$94,$42,$7C,  2
-                dc.b $D4,$42,$E4,  0,$2C,$25,$63,  5
-                dc.b   3,$9B,$2B,$65,$BA,$85,  8,$54
-                dc.b   1,$27,  1,$68,$18,$30,$D2,$B4
-                dc.b $E4,  0,$94,$E7,$95,  8,$96,$94
-                dc.b $96,$10,  1,$87,  1,$A8,  1,$54
-                dc.b $90,$E7,$91,  8,$18,$33,$D2,$B4
-                dc.b $92,$94,$AE,$A0,$D0,  0,$E4,  0
-                dc.b $98,  0,$3F,$60,  0,$F0,$A4,  1
-                dc.b   9,  1,$A4,$22,$98,  0,  0,$C0
-                dc.b   0,  0,  0,  2,$98,  0,  0,$24
-                dc.b   0,  0,  0,$60,$A4,  4,$98,  0
-                dc.b   0,$28,  0,  0,  0,$60,$A4,  5
-                dc.b $63,$E5,$BC,$44,  8,$82,$BC,$45
-                dc.b   9,  2,$98,  0,  0,  5,  0,  0
-                dc.b $B8,$40,$98,  0,  0,$54,  0,  0
-                dc.b   0,$60,$A4,$1B,$65,$1B,$98,  0
-                dc.b   0,$E0,  0,  0,  0,$60,$A4,  7
-                dc.b $98,  0,  0,$E4,  0,  0,  0,$60
-                dc.b $A4,  8,$98,$1D,$FF,$FF,  0,$1F
-                dc.b $89,  1,$88,$E0,$8B,$BE,$88,$1F
-                dc.b $88,$25,$27,$DF,$27,$C5,$64,$3E
-                dc.b $13,$DF,$D4,$54,$E4,  0,$20,$1F
-                dc.b $13,$C5,$D4,$54,$E4,  0,$20,  5
-                dc.b $66,$1F,$66,  5,$63,$9F,$2B,$E5
-                dc.b $63,  5,$98,  0,$3F,$60,  0,$F0
-                dc.b $2B,$65,$A4,  1,$18,$81,$B8,$25
-                dc.b $AE,$A0,$D0,  0,$E4,  0,$6C,$8C
-                dc.b $6C,$8D,$6C,$49,$6C,$4B,$98,$1C
-                dc.b   0,$40,  0,  0,$98,$1D,$FF,$FF
-                dc.b   0,$1F,$98,$15,$34,$B4,  0,$F0
-                dc.b $98,  0,  0,$A4,  0,  0,  0,$60
-                dc.b $A4,$16,$98,  0,  0,$24,  0,  0
-                dc.b   0,$60,$A4,$11,$98,  0,  0,$28
-                dc.b   0,  0,  0,$60,$A4,$12,$66,$11
-                dc.b $66,$12,$98,  0,  0,$84,  0,  0
-                dc.b   0,$60,$A4,$10,$98,  0,  0,$88
-                dc.b   0,  0,  0,$60,$A4,$13,$64,$F0
-                dc.b $65,$13,$8A,  0,$8A,$61,$64,$20
-                dc.b $64,$21,$10,$11,$10,$32,$8A,$54
-                dc.b $8A,$21,$41,$54,$63,$E1,  2,$F4
-                dc.b   0,$34,$92,$94,$92,$10,$98,  0
-                dc.b   0,$F0,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$F4,  0,  0,  0,$60
-                dc.b $A4,  2,$65,  1,$98,  0,$31,$DC
-                dc.b   0,$F0,$7C,  2,$D4,$42,$E4,  0
-                dc.b $24,$22,$90,$42,$88,$E2,$89,  1
-                dc.b $88,$40,$8B,$BE,$88,$1F,$88,$25
-                dc.b $27,$DF,$27,$C5,$64,$3E,$13,$DF
-                dc.b $D4,$54,$E4,  0,$20,$1F,$13,$C5
-                dc.b $D4,$54,$E4,  0,$20,  5,$88,$BB
-                dc.b $65,$9F,$65,$85,  2,$DF,  2,$C5
-                dc.b $9F,$E0,$9C,$A1,$64,$80,$64,$81
-                dc.b $63,$80,$28,  1,$98,  0,  0,$FF
-                dc.b   0,  0,$94,$42,$7C,  2,$D4,$42
-                dc.b $E4,  0,$2C,  1,$65,$BB,$63,  1
-                dc.b   3,$9B,$2B,$61,$BA,$81,  8,$54
-                dc.b   1,$27,  1,$68,$18,$30,$D2,$B4
-                dc.b $E4,  0,$94,$E7,$95,  8,$96,$94
-                dc.b $96,$10,  1,$87,  1,$A8,  1,$54
-                dc.b $90,$E7,$91,  8,$18,$33,$D2,$B4
-                dc.b $92,$94,$AE,$A0,$D0,  0,$E4,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  9,$E0
-                dc.b $98,  0,$3F,$5C,  0,$F0,$98, $E
-                dc.b $3F,$80,  0,$F0,$A4,  1,$98,  0
-                dc.b   0,$48,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$4C,  0,  0,  0,$60
-                dc.b $A4,  2,$BD,$C1,$C4,$22,$98,  0
-                dc.b   0,$50,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$A4,  0,  0,  0,$60
-                dc.b $A4,  2,$C4,$41,$C4,$62,$2C,$21
-                dc.b $C4,$81,$98,  0,  0,  0,  0,  0
-                dc.b   0,$60,$A4,$17,$98,  0,  0,$A0
-                dc.b   0,  0,  0,$60,$A4,$16,$98, $A
-                dc.b   3,  0,  0,  0,$98, $F,  1,$7E
-                dc.b   0,  0,$98, $D,  0,$FF,  0,  0
-                dc.b $98,  0,  0,$E8,  0,  0,  0,$60
-                dc.b $A4,  1,$63,$C1,$98,  0,$39,$C0
-                dc.b   0,$F0,  0,$20,$A4,  1,$C6,$21
-                dc.b $E4,  0,$98,  0,  0,$E0,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$E4
-                dc.b   0,  0,  0,$60,$A4,  2,$88,$40
-                dc.b $98,$1E,$FF,$FF,  0,$1F,$88,$1F
-                dc.b $88,$25,$27,$DF,$27,$C5,$64,$3E
-                dc.b $13,$DF,$D4,$54,$E4,  0,$20,$1F
-                dc.b $13,$C5,$D4,$54,$E4,  0,$20,  5
-                dc.b $66,$1F,$66,  5,$63,$9F,$2B,$E5
-                dc.b $63,  5,$98,  0,  0,$7C,  0,  0
-                dc.b   0,$60,$A4,$14,$98,  9,  0,  0
-                dc.b   0,$40,$AC,$62,$8A,$80,$98,$1D
-                dc.b   0,$80,  0,  0,$66,  0,$25,$A0
-                dc.b   0,$40,$9C,$1E,  8,$20,$9C,$1A
-                dc.b $13,$DA,$8A,$82,$13,$BE,$65,  2
-                dc.b $63,$1E,$25,$A2,$44,$5A,  3,$DA
-                dc.b $93,$54,  1,$34,$AC,$62,$8A,$80
-                dc.b $98,$1D,  0,$80,  0,  0,$66,  0
-                dc.b $25,$A0,  0,$40,$9C,$1E,  8,$20
-                dc.b $9C,$1A,$13,$DA,$8A,$82,$13,$BE
-                dc.b $65,  2,$63,$1E,$25,$A2,$44,$5A
-                dc.b   3,$DA,$93,$55,$98,  0,  0,$74
-                dc.b   0,  0,  0,$60,$A4,$14,$63,$94
-                dc.b $AC,$62,$8A,$80,$98,$1D,  0,$80
-                dc.b   0,  0,$66,  0,$25,$A0,  0,$40
-                dc.b $9C,$1E,  8,$20,$9C,$1A,$13,$DA
-                dc.b $8A,$82,$13,$BE,$65,  2,$63,$1E
-                dc.b $25,$A2,$44,$5A,  3,$DA,$93,$52
-                dc.b   1,$34,$AC,$62,$8A,$80,$98,$1D
-                dc.b   0,$80,  0,  0,$66,  0,$25,$A0
-                dc.b   0,$40,$9C,$1E,  8,$20,$9C,$1A
-                dc.b $13,$DA,$8A,$82,$13,$BE,$65,  2
-                dc.b $63,$1E,$25,$A2,$44,$5A,  3,$DA
-                dc.b $93,$53,$98,  0,  0,$70,  0,  0
-                dc.b   0,$60,$A4,$14,$AC,$62,$8A,$80
-                dc.b $98,$1D,  0,$80,  0,  0,$66,  0
-                dc.b $25,$A0,  0,$40,$9C,$1E,  8,$20
-                dc.b $9C,$1A,$13,$DA,$8A,$82,$13,$BE
-                dc.b $65,  2,$63,$1E,$25,$A2,$44,$5A
-                dc.b   3,$DA,$8B,$55,  1,$34,$AC,$62
-                dc.b $8A,$80,$98,$1D,  0,$80,  0,  0
-                dc.b $66,  0,$25,$A0,  0,$40,$9C,$1E
-                dc.b   8,$20,$9C,$1A,$13,$DA,$8A,$82
-                dc.b $13,$BE,$65,  2,$63,$1E,$25,$A2
-                dc.b $44,$5A,  3,$DA,$8B,$5A,$98,  0
-                dc.b   0,$98,  0,  0,  0,$60,$A4,  2
-                dc.b $8C,$21,$66,  2,$98,  0,$3F,$60
-                dc.b   0,$F0,$24,$22,$A4,  1,$63,$C2
-                dc.b   9,$81,$A4,$20,  0,$40,$A4, $B
-                dc.b $A1,$68,$98,  0,$35,$78,  0,$F0
-                dc.b   8,$4B,$28,  0,$C5,$E0,$98,  0
-                dc.b   0,$24,  0,  0,  0,$60,$A4,  6
-                dc.b $98,  0,  0,$28,  0,  0,  0,$60
-                dc.b $A4,  7,$98,  0,  0,$34,  0,  0
-                dc.b   0,$60,$A4,$18,$98,  0,  0,$EC
-                dc.b   0,  0,  0,$60,$A4,  1,$66,  1
-                dc.b $28,$21,$C7,$61,$98,  0,  0,  0
-                dc.b   0,$C0,$10,  6,$10,  7,$98,$13
-                dc.b $32,$7E,  0,$F0,$98,  0,  0,$54
-                dc.b   0,  0,  0,$60,$A4,$1B,$98,  0
-                dc.b   0,$9C,  0,  0,  0,$60,$A4,$1C
-                dc.b $98,  0,  0,$84,  0,  0,  0,$60
-                dc.b $A4,  9,$98,  0,  0,$88,  0,  0
-                dc.b   0,$60,$A4,$14,$98,  0,  0,$6C
-                dc.b   0,  0,  0,$60,$A4,  4,$18,$4B
-                dc.b $A5,$68,$98,$11,$35,$84,  0,$F0
-                dc.b   8,$8B,$7C,  8,$D2,$38,$E4,  0
-                dc.b $A1,$71,  8,$8B,$A1,$72,  8,$8B
-                dc.b $A1,$79,  8,$8B,$45,$31,$44,$99
-                dc.b $46,$92,$63,$11,$63,$12,$63,$19
-                dc.b $A1,$65,  8,$4B,$A1,$7B, $A,$4B
-                dc.b $7C,$1B,$D4,$C1,$E4,  0,  8,$28
-                dc.b $98,  0,$35,$78,  0,$F0,$D0,  0
-                dc.b $8B,$5C,$8A,$A0,$8A,$BE,$8B,$5F
-                dc.b $92,$20,$8C,  1,$88,$22,$58,$1C
-                dc.b   4,$41,$58,$11,  4,$41,$8A,$22
-                dc.b $43,$82,$8B,$9D,$66,  2,$66,$1D
-                dc.b $42,$3D,$66,$11,  3,$A2,$8A,$3D
-                dc.b $43,$9D,$66,$1C,  3,$A2,$42,$3C
-                dc.b $62,$1C,  0,$5C,$34,  1,$D4,$42
-                dc.b $94,$11,$20,$1C,$92,$40,$8C,  1
-                dc.b $88,$22,$58,$1E,  4,$41,$58,$12
-                dc.b   4,$41,$8A,$42,$43,$C2,$8B,$DD
-                dc.b $66,  2,$66,$1D,$42,$5D,$66,$12
-                dc.b   3,$A2,$8A,$5D,$43,$DD,$66,$1E
-                dc.b   3,$A2,$42,$5E,$62,$1E,  0,$5E
-                dc.b $34,  1,$D4,$42,$94,$12,$20,$1E
-                dc.b $92,$20,$8C,  1,$88,$22,$58,  0
-                dc.b   4,$41,$58,$11,  4,$41,$8A,$22
-                dc.b $40,  2,$88,$1D,$66,  2,$66,$1D
-                dc.b $42,$3D,$66,$11,  3,$A2,$8A,$3D
-                dc.b $40,$1D,$66,  0,  3,$A2,$42,$20
-                dc.b $62,  0,  0,$40,$34,  1,$D4,$42
-                dc.b $94,$11,$20,  0,$92,$40,$8C,  1
-                dc.b $88,$22,$58,$1F,  4,$41,$58,$12
-                dc.b   4,$41,$8A,$42,$43,$E2,$8B,$FD
-                dc.b $66,  2,$66,$1D,$42,$5D,$66,$12
-                dc.b   3,$A2,$8A,$5D,$43,$FD,$66,$1F
-                dc.b   3,$A2,$42,$5F,$62,$1F,  0,$5F
-                dc.b $34,  1,$D4,$42,$94,$12,$20,$1F
-                dc.b $13,$DC,  3,$E0,$8B,$91,$88,$12
-                dc.b $96,$BC,$96,$80,$96,$9E,$96,$BF
-                dc.b $93,$20,$8C,  1,$88,$22,$58,$1C
-                dc.b   4,$41,$58,$19,  4,$41,$8B,$22
-                dc.b $43,$82,$8B,$9D,$66,  2,$66,$1D
-                dc.b $43,$3D,$66,$19,  3,$A2,$8B,$3D
-                dc.b $43,$9D,$66,$1C,  3,$A2,$43,$3C
-                dc.b $62,$1C,  0,$5C,$34,  1,$D4,$42
-                dc.b $94,$19,$20,$1C,$92,$40,$8C,  1
-                dc.b $88,$22,$58,$1E,  4,$41,$58,$12
-                dc.b   4,$41,$8A,$42,$43,$C2,$8B,$DD
-                dc.b $66,  2,$66,$1D,$42,$5D,$66,$12
-                dc.b   3,$A2,$8A,$5D,$43,$DD,$66,$1E
-                dc.b   3,$A2,$42,$5E,$62,$1E,  0,$5E
-                dc.b $34,  1,$D4,$42,$94,$12,$20,$1E
-                dc.b $93,$20,$8C,  1,$88,$22,$58,  0
-                dc.b   4,$41,$58,$19,  4,$41,$8B,$22
-                dc.b $40,  2,$88,$1D,$66,  2,$66,$1D
-                dc.b $43,$3D,$66,$19,  3,$A2,$8B,$3D
-                dc.b $40,$1D,$66,  0,  3,$A2,$43,$20
-                dc.b $62,  0,  0,$40,$34,  1,$D4,$42
-                dc.b $94,$19,$20,  0,$92,$40,$8C,  1
-                dc.b $88,$22,$58,$1F,  4,$41,$58,$12
-                dc.b   4,$41,$8A,$42,$43,$E2,$8B,$FD
-                dc.b $66,  2,$66,$1D,$42,$5D,$66,$12
-                dc.b   3,$A2,$8A,$5D,$43,$FD,$66,$1F
-                dc.b   3,$A2,$42,$5F,$62,$1F,  0,$5F
-                dc.b $34,  1,$D4,$42,$94,$12,$20,$1F
-                dc.b $13,$DC,  3,$E0,$8B,$99,$88,$12
-                dc.b $96,$7C,$96,$40,$96,$5E,$96,$7F
-                dc.b $92,$20,$8C,  1,$88,$22,$58,$1C
-                dc.b   4,$41,$58,$11,  4,$41,$8A,$22
-                dc.b $43,$82,$8B,$9D,$66,  2,$66,$1D
-                dc.b $42,$3D,$66,$11,  3,$A2,$8A,$3D
-                dc.b $43,$9D,$66,$1C,  3,$A2,$42,$3C
-                dc.b $62,$1C,  0,$5C,$34,  1,$D4,$42
-                dc.b $94,$11,$20,$1C,$93,$20,$8C,  1
-                dc.b $88,$22,$58,$1E,  4,$41,$58,$19
-                dc.b   4,$41,$8B,$22,$43,$C2,$8B,$DD
-                dc.b $66,  2,$66,$1D,$43,$3D,$66,$19
-                dc.b   3,$A2,$8B,$3D,$43,$DD,$66,$1E
-                dc.b   3,$A2,$43,$3E,$62,$1E,  0,$5E
-                dc.b $34,  1,$D4,$42,$94,$19,$20,$1E
-                dc.b $92,$20,$8C,  1,$88,$22,$58,  0
-                dc.b   4,$41,$58,$11,  4,$41,$8A,$22
-                dc.b $40,  2,$88,$1D,$66,  2,$66,$1D
-                dc.b $42,$3D,$66,$11,  3,$A2,$8A,$3D
-                dc.b $40,$1D,$66,  0,  3,$A2,$42,$20
-                dc.b $62,  0,  0,$40,$34,  1,$D4,$42
-                dc.b $94,$11,$20,  0,$93,$20,$8C,  1
-                dc.b $88,$22,$58,$1F,  4,$41,$58,$19
-                dc.b   4,$41,$8B,$22,$43,$E2,$8B,$FD
-                dc.b $66,  2,$66,$1D,$43,$3D,$66,$19
-                dc.b   3,$A2,$8B,$3D,$43,$FD,$66,$1F
-                dc.b   3,$A2,$43,$3F,$62,$1F,  0,$5F
-                dc.b $34,  1,$D4,$42,$94,$19,$20,$1F
-                dc.b $13,$DC,  3,$E0,$8B,$91,$88,$19
-                dc.b $88,$C0,$88,$E1,$8B,  2,  0,$11
-                dc.b   0,$32,  0,$59,$AD,$F3,$98, $C
-                dc.b $39,$6C,  0,$F0,$D1,$80,$E4,  0
-                dc.b $98,  0,$32,$90,  0,$F0,$18,$28
-                dc.b $D0,$14,$E4,  0,$AE,$A0,$98,  1
-                dc.b $3F,$58,  0,$F0,$A4,$22,$34,  2
-                dc.b $D0,  2,$E4,  0,$98,  0,  0,$38
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$94,  0,  0,  0,$60,$A4,$15
-                dc.b $98,  0,  0,$40,  0,  0,  0,$60
-                dc.b $A4,  2,$6D,$81,$6D,$82,$6D,$95
-                dc.b   0,$29,  0,$54,  2,$A4,$98,  0
-                dc.b   0,$84,  0,  0,  0,$60,$BC,  9
-                dc.b $98,  0,  0,$88,  0,  0,  0,$60
-                dc.b $BC,$14,$98,  0,  0,$6C,  0,  0
-                dc.b   0,$60,$BC,  4,$98,  0,  0,$58
-                dc.b   0,  0,  0,$60,$A4,  1,$62,  1
-                dc.b $6E,$61,  0,$3B,$98,  0,  0,$54
-                dc.b   0,  0,  0,$60,$BC,$1B,$AE,$A0
-                dc.b $D0,  0,$E4,  0,$98,$1F,$37,$BE
-                dc.b   0,$F0,$36,$16,$D4,$81,$E4,  0
-                dc.b $AD,$F3,$D3,$E0,$E4,  0,$C5,$45
-                dc.b $65,  5,$98,  1,  0, $F,  0,  0
-                dc.b $88,$A0,$64,$85,$24,$20,$62,  5
-                dc.b $62,  0,$C5,$65,$C5,$80,$98,  0
-                dc.b   0,$48,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$4C,  0,  0,  0,$60
-                dc.b $A4,  2,$BD,$C1,$C4,$22,$98,  0
-                dc.b   0,$50,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$A4,  0,  0,  0,$60
-                dc.b $A4,  2,$C4,$41,$C4,$62,$98,  0
-                dc.b   0,$78,  0,  0,  0,$60,$A4,  1
-                dc.b $C4,$81,$98,$1D,  0,$80,  0,  0
-                dc.b $98,  0,  0,$A8,  0,  0,  0,$60
-                dc.b $A4,  1,$98,  0,  0,$AC,  0,  0
-                dc.b   0,$60,$A4,  2,$C5,$A1,$C5,$C2
-                dc.b $6E,  1,$6E,  2,$10,$31,$10,$52
-                dc.b $C4,$B1,$C4,$D2,$AC,$20,$AC,$81
-                dc.b $AC,$42,  0,  1,  0,$40,$C4,$20
-                dc.b $AC,$62,$C4,$81,$66,  1,$25,$A1
-                dc.b $88,$20,  8,  1,  0,$40,  8,  1
-                dc.b $9C,$1E,  8,$20,$9C,$13,$13,$D3
-                dc.b $AC,$9F,$13,$BE,$65,$1F,$63,$1E
-                dc.b $25,$BF,$47,$F3,  2,$7E,$25,$A1
-                dc.b $8B,$C0,  0,$41,$46,$40,$9C,$22
-                dc.b   8,$21,$9C,$33,$10,$53,$13,$A2
-                dc.b $63,  2,$47,$F3,  2,$62,$46,$3E
-                dc.b $44,$51,$44,$52,$10,$11,  3,$D2
-                dc.b $6D,$F1,$6D,$F2,$98,  0,  0,$B0
-                dc.b   0,  0,  0,$60,$A4,  1,$44,$31
-                dc.b $44,$32,$6D,$91,$6D,$92,$AD,$A1
-                dc.b $AD,$C2,$6E,  1,$6E,  2,  0,$31
-                dc.b   0,$52,$AD,$60,$AD,$81,$8F,$DE
-                dc.b $88,$1F,$88,$25,$66,$1F,$66,  5
-                dc.b $27,$DF,$27,$C5,$64,$3E,$13,$DF
-                dc.b $D4,$54,$E4,  0,$20,$1F,$13,$C5
-                dc.b $D4,$54,$E4,  0,$20,  5,$63,$9F
-                dc.b $2B,$E5,$63,  5,$88,$1F,$98,  0
-                dc.b   0,$B8,  0,  0,  0,$60,$A4,$1E
-                dc.b   3,$DF,$C5,$7F,$98,  0,  0,$BC
-                dc.b   0,  0,  0,$60,$A4,$1E,  3,$C1
-                dc.b $C5,$81,$98,$1F,$37,$BE,  0,$F0
-                dc.b $98,$13,$37,$5A,  0,$F0,$D3,$E0
-                dc.b $E4,  0,$AC,$B1,$AC,$D2,$98,  0
-                dc.b   0,$B4,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$C0,  0,  0,  0,$60
-                dc.b $A4,  2,$98,$1E,$10,  0,  0,  0
-                dc.b   3,$C1,  3,$C2,$44,$31,$44,$52
-                dc.b $6D,$91,$6D,$92,$AD,$A1,$AD,$C2
-                dc.b $98,  0,  0,$C4,  0,  0,  0,$60
-                dc.b $A4,$1E,  3,$C1,$C5,$A1,$98,  0
-                dc.b   0,$C8,  0,  0,  0,$60,$A4,$1E
-                dc.b   3,$C2,$C5,$C2,$A5,$C0,$98,  1
-                dc.b $36,$88,  0,$F0,$18,$20,$D4,$78
-                dc.b $BD,$C0,$D0,$20,$E4,  0,$AD,$F3
-                dc.b $AD,$45,$D2,$60,$E4,  0,$98,$1F
-                dc.b $38,$44,  0,$F0,$C4,$F3,$C5,$36
-                dc.b $34,$16,$D4,$C2,$E4,  0,$98,$13
-                dc.b $37,$D8,  0,$F0,$D3,$E0,$E4,  0
-                dc.b $89,$E0,$98,$1F,$38,$44,  0,$F0
-                dc.b $12,$20,$88,$11,$34,$36,$D4,$C2
-                dc.b $E4,  0,$98,$13,$37,$F4,  0,$F0
-                dc.b $D3,$E0,$E4,  0,$89,$E0,$12,$40
-                dc.b $88,$12,$34,$56,$D4,$C2,$E4,  0
-                dc.b $98,$13,$38, $A,  0,$F0,$D3,$E0
-                dc.b $E4,  0,$89,$E0,$12,$20,$98,$13
-                dc.b $38,$20,  0,$F0,$88,$11,$34,$76
-                dc.b $D4,$62,$E4,  0,$D3,$E0,$E4,  0
-                dc.b $89,$E0,$12,$20,$64,$96,$8A,$51
-                dc.b $88,$12,$34,$96,$D4,$A2,$E4,  0
-                dc.b $AC,$F3,$AD,$36,$D2,$60,$E4,  0
-                dc.b $39,$16,$98,  0,$37,$C8,  0,$F0
-                dc.b $D0,  0,$E4,  0,$AE,$20,$D0,  0
-                dc.b $E4,  0,$79,$F1,$D2,$74,$79,$F2
-                dc.b $D2,$74,$7C,$11,$D2,$78,$7C,$12
-                dc.b $D2,$78,$8A,$21,$8A,$42,$63,$E1
-                dc.b $41,$42,  0,$22,  2,$E2,$8B,$60
-                dc.b $65,  0,$28,$A0,$B8,$40,$D2,$60
-                dc.b $E4,  0,$79,$F1,$D2,$74,$79,$F2
-                dc.b $D2,$74,$7C,$11,$D2,$78,$7C,$12
-                dc.b $D2,$78,$8A,$21,$8A,$42,$63,$E1
-                dc.b $41,$42,  0,$22,  2,$E2,$8B,$60
-                dc.b $65,  0,$28,$A0,$B8,$40,  8,$42
-                dc.b $B8,$40,  1,$42,$B8,$40,$18,$42
-                dc.b $B8,$40,$D2,$60,$E4,  0,$98,  0
-                dc.b   0,$EC,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,$38,$4A,  0,$F0,$66,  1
-                dc.b $98,  2,$38,$72,  0,$F0,  8,$21
-                dc.b $7C,$21,$D0,  2,$E4,  0,$7C,$41
-                dc.b $D0,$42,$E4,  0,$98,  0,$22,$38
-                dc.b   0,$F0,$A4,  2,$34,  2,$D7,$A2
-                dc.b $E4,  0,$98,  0,$22,  0,  0,$F0
-                dc.b $BC,$17,$98,  2,$44,$20,  0,  1
-                dc.b   8,$80,$BC,  2,$89,$F0,$10,$30
-                dc.b $8A,$3C,$88,$22,$64,$22,$10,$5C
-                dc.b $7C,$1C,$D2,$78,$7B,$90,$D2,$78
-                dc.b $8B,$80,$8A,$5C,$62,  0,$10,$5C
-                dc.b $7C,$1C,$D2,$78,$7B,$90,$D2,$78
-                dc.b $66,  0,$62,$1C,$28,$1C,$98,  0
-                dc.b $22, $C,  0,$F0,$BC,$1C,$88,$22
-                dc.b $20,  2,  8,$80,$62,  2,$66,  2
-                dc.b $3A,  2,$8B,$7C,$BC,  2,$65,$1C
-                dc.b $98,  0,$22,$6C,  0,$F0,$28,$BC
-                dc.b $8B,$82,$62,$1C,$28,$5C,$BC,$1C
-                dc.b $18,$80,$BC,$1C,$88,$22,$98,  0
-                dc.b $22,$3C,  0,$F0,$62,  1,$28,$41
-                dc.b $BC,  1,$98,  2,  2,  0,  0,  1
-                dc.b $18,$80,$BC,  2,$A4,  1,$34,  1
-                dc.b $D7,$A2,$E4,  0,$D2,$60,$E4,  0
-                dc.b $62,$51,$62,$52,$6D,$D9,$7C,$39
-                dc.b $D2,$78,$8A,$3D,$58,$11,$57,$31
-                dc.b $37,$FD,$D4,$42,$E4,  0,$20,$11
-                dc.b $8A,$5D,$58,$12,$57,$32,$37,$FD
-                dc.b $D4,$42,$E4,  0,$20,$12,$6C,$F1
-                dc.b $6C,$F2,$98,  0,  0,$C0,  0,  0
-                dc.b   0,$11,  0,$12,$98,  0,$35,$FC
-                dc.b   0,$F0,$D0,  0,$E4,  0,$AF,$60
-                dc.b $8B,$61,$40,  1,$98,  0,  0,  0
-                dc.b   0,$7F,$24,  1,$98,  0,$38,$B0
-                dc.b   0,$F0,$D0,  0,$E4,  0,  0,  0
-                dc.b   0,$F0,$38,$72,  0,$F0,$38,$72
-                dc.b   0,$F0,$38,$A6,  0,$F0,$39,$A6
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  2,$24
-                dc.b $98, $E,$3F,$80,  0,$F0,$98,  0
-                dc.b $3F,$60,  0,$F0,$A4,  1,  9,$81
-                dc.b $A4,$22,$A4,$44,$A4,$86,$88,$8B
-                dc.b $98,  0,  0,$24,  0,  0,  0,$60
-                dc.b $A4,$10,$98,  0,  0,$28,  0,  0
-                dc.b   0,$60,$A4,$11,$98,  1,  0,  0
-                dc.b   0,$C0,$98,  0,  0,$34,  0,  0
-                dc.b   0,$60,$A4,$12,$10,$30,$10,$31
-                dc.b $98,  0,  0,$38,  0,  0,  0,$60
-                dc.b $A4,$13,$98,  0,  0,$40,  0,  0
-                dc.b   0,$60,$A4,$14,$98,  0,  0,$94
-                dc.b   0,  0,  0,$60,$A4,$15,$6C,$93
-                dc.b $6C,$94,$6C,$95,$98,  0,  0,$B8
-                dc.b   0,  0,  0,$60,$A4,$16,$98,  0
-                dc.b   0,$BC,  0,  0,  0,$60,$A4,$17
-                dc.b $98,  0,  0,$CC,  0,  0,  0,$60
-                dc.b $A4,$18,$63,$F6,$63,$F7,$6C,$38
-                dc.b   2,$D3,  2,$F4,  3,$15,$98,  1
-                dc.b $80,  0,  0,  0,$98,  0,  0,$5C
-                dc.b   0,  0,  0,$60,$A4,$16,$98,  0
-                dc.b   0,$60,  0,  0,  0,$60,$A4,$17
-                dc.b $98,  0,  0,$64,  0,  0,  0,$60
-                dc.b $A4,$18,$10,$36,$10,$37,$10,$38
-                dc.b $98,  0,  0,$54,  0,  0,  0,$60
-                dc.b $A4,$1A,$38,$1A,$7C,$1A,$D4,$41
-                dc.b $E4,  0,$8C,$3A,$98,  0,  0,$E4
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$E0,  0,  0,  0,$60,$A4,  2
-                dc.b $98,$1D,$FF,$FF,  0,$1F,$88,$40
-                dc.b $8B,$BE,$88,$1F,$88,$39,$27,$DF
-                dc.b $27,$D9,$64,$3E,$13,$DF,$D4,$54
-                dc.b $E4,  0,$20,$1F,$13,$D9,$D4,$54
-                dc.b $E4,  0,$20,$19,$66,$1F,$66,$19
-                dc.b $63,$9F,$2B,$F9,$63,$19,$98,  0
-                dc.b   0,$58,  0,  0,  0,$60,$A4,  5
-                dc.b   8,$84,$64,$85,$98,  7,$32,  6
-                dc.b   0,$F0,$2D,$8C,$98,  1,$31,$AE
-                dc.b   0,$F0,$98,  0,  0,  4,  0,  0
-                dc.b   0,$60,$A4,  2,$18,$22,$98,  0
-                dc.b   0,  4,  0,  0,  0,$60,$BC,  2
-                dc.b $7C,  2,$D0,$34,$E4,  0,$98,  0
-                dc.b   0,$80,  0,  0,  0,$60,$A4,  2
-                dc.b $66,  2,$98,  0,  0,  4,  0,  0
-                dc.b   0,$60,$BC,  2,$98,$1E,  1,$F4
-                dc.b   0,  0,$10,$DE,$D0,$38,$E4,  0
-                dc.b   8,$26,$BD,$66,$88,$89,$98, $A
-                dc.b $31,$74,  0,$F0,  9,$C9,$A1,$20
-                dc.b $7C,  0,$D4,$62,$E4,  0,$D1,$40
-                dc.b  $A,$49,$89,$21,$98,  0,$FF,$FF
-                dc.b   0,  0,$19,$C1,$B9,$20,$BC,$30
-                dc.b   8,$81,$BC,$31,  8,$81,$BC,$32
-                dc.b   8,$81,$B8,$39,  8,$41,$B8,$3A
-                dc.b   8,$41,$BC,$33,  8,$81,$BC,$34
-                dc.b   8,$81,$BC,$35, $A,$49,$98,$1E
-                dc.b   1,$FF,  0,  0,  9,$C4,$A0,$88
-                dc.b $7C,  8,$D0,$E2,$E4,  0,$88,$80
-                dc.b $88,$81,$19,$C0,  8,$41,$A4,$34
-                dc.b $A4,$15,  2,$95,$BC,$15,  2,$D4
-                dc.b   8,$80,$BC,$34,  8,$81,$A4,$34
-                dc.b $A4,$15,  2,$95,$BC,$15,  2,$F4
-                dc.b   8,$80,$BC,$34,  8,$81,$A4,$34
-                dc.b $A4,$15,  2,$95,$BC,$15,  3,$14
-                dc.b   8,$80,$BC,$34,  8,$81,$10,$A8
-                dc.b $7C,$28,$D4,$74,$E4,  0,$2D,  8
-                dc.b   8,$2C,$B8,$88,$18,$26,$98,  0
-                dc.b $31,$B4,  0,$F0, $A,$44,$18,$3E
-                dc.b $D4,$78,$7C,  6,$D0,$14,$E4,  0
-                dc.b $A5,$60,$11,$80,$BD,$60,$AE,$A0
-                dc.b $D0,  0,$E4,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  9,$F8
-                dc.b $98,  0,$3F,$5C,  0,$F0,$98, $E
-                dc.b $3F,$80,  0,$F0,$A4,  1,$98,  0
-                dc.b   0,$48,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$4C,  0,  0,  0,$60
-                dc.b $A4,  2,$BD,$C1,$C4,$22,$98,  0
-                dc.b   0,$50,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$A4,  0,  0,  0,$60
-                dc.b $A4,  2,$C4,$41,$C4,$62,$2C,$21
-                dc.b $C4,$81,$98,  0,  0,  0,  0,  0
-                dc.b   0,$60,$A4,$17,$98,  0,  0,$A0
-                dc.b   0,  0,  0,$60,$A4,$16,$98, $A
-                dc.b   3,  0,  0,  0,$98, $F,  1,$7E
-                dc.b   0,  0,$98, $D,  0,$FF,  0,  0
-                dc.b $98,  0,  0,$E8,  0,  0,  0,$60
-                dc.b $A4,  1,$63,$C1,$98,  0,$39,$D8
-                dc.b   0,$F0,  0,$20,$A4,  1,$C6,$21
-                dc.b $E4,  0,$98,  0,  0,$E0,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$E4
-                dc.b   0,  0,  0,$60,$A4,  2,$88,$40
-                dc.b $98,$1E,$FF,$FF,  0,$1F,$88,$1F
-                dc.b $88,$25,$27,$DF,$27,$C5,$64,$3E
-                dc.b $13,$DF,$D4,$54,$E4,  0,$20,$1F
-                dc.b $13,$C5,$D4,$54,$E4,  0,$20,  5
-                dc.b $66,$1F,$66,  5,$63,$9F,$2B,$E5
-                dc.b $63,  5,$98,  0,  0,$7C,  0,  0
-                dc.b   0,$60,$A4,$14,$98,  9,  0,  0
-                dc.b   0,$40,$AC,$62,$8A,$80,$98,$1D
-                dc.b   0,$80,  0,  0,$66,  0,$25,$A0
-                dc.b   0,$40,$9C,$1E,  8,$20,$9C,$1A
-                dc.b $13,$DA,$8A,$82,$13,$BE,$65,  2
-                dc.b $63,$1E,$25,$A2,$44,$5A,  3,$DA
-                dc.b $93,$54,  1,$34,$AC,$62,$8A,$80
-                dc.b $98,$1D,  0,$80,  0,  0,$66,  0
-                dc.b $25,$A0,  0,$40,$9C,$1E,  8,$20
-                dc.b $9C,$1A,$13,$DA,$8A,$82,$13,$BE
-                dc.b $65,  2,$63,$1E,$25,$A2,$44,$5A
-                dc.b   3,$DA,$93,$55,$98,  0,  0,$74
-                dc.b   0,  0,  0,$60,$A4,$14,$63,$94
-                dc.b $AC,$62,$8A,$80,$98,$1D,  0,$80
-                dc.b   0,  0,$66,  0,$25,$A0,  0,$40
-                dc.b $9C,$1E,  8,$20,$9C,$1A,$13,$DA
-                dc.b $8A,$82,$13,$BE,$65,  2,$63,$1E
-                dc.b $25,$A2,$44,$5A,  3,$DA,$93,$52
-                dc.b   1,$34,$AC,$62,$8A,$80,$98,$1D
-                dc.b   0,$80,  0,  0,$66,  0,$25,$A0
-                dc.b   0,$40,$9C,$1E,  8,$20,$9C,$1A
-                dc.b $13,$DA,$8A,$82,$13,$BE,$65,  2
-                dc.b $63,$1E,$25,$A2,$44,$5A,  3,$DA
-                dc.b $93,$53,$98,  0,  0,$70,  0,  0
-                dc.b   0,$60,$A4,$14,$AC,$62,$8A,$80
-                dc.b $98,$1D,  0,$80,  0,  0,$66,  0
-                dc.b $25,$A0,  0,$40,$9C,$1E,  8,$20
-                dc.b $9C,$1A,$13,$DA,$8A,$82,$13,$BE
-                dc.b $65,  2,$63,$1E,$25,$A2,$44,$5A
-                dc.b   3,$DA,$8B,$55,  1,$34,$AC,$62
-                dc.b $8A,$80,$98,$1D,  0,$80,  0,  0
-                dc.b $66,  0,$25,$A0,  0,$40,$9C,$1E
-                dc.b   8,$20,$9C,$1A,$13,$DA,$8A,$82
-                dc.b $13,$BE,$65,  2,$63,$1E,$25,$A2
-                dc.b $44,$5A,  3,$DA,$8B,$5A,$98,  0
-                dc.b   0,$98,  0,  0,  0,$60,$A4,  2
-                dc.b $8C,$21,$66,  2,$98,  0,$3F,$60
-                dc.b   0,$F0,$24,$22,$A4,  1,$63,$C2
-                dc.b  $A,  1,$A4,$20,  0,$40,$A4, $B
-                dc.b $A1,$68,$98,  0,$35,$4E,  0,$F0
-                dc.b   8,$4B,$28,  0,$C5,$E0,$98,  0
-                dc.b   0,$24,  0,  0,  0,$60,$A4,  6
-                dc.b $98,  0,  0,$28,  0,  0,  0,$60
-                dc.b $A4,  7,$98,  0,  0,$34,  0,  0
-                dc.b   0,$60,$A4,$18,$98,  0,  0,$EC
-                dc.b   0,  0,  0,$60,$A4,  1,$66,  1
-                dc.b $28,$21,$C7,$61,$98,  0,  0,  0
-                dc.b   0,$C0,$10,  6,$10,  7,$98,$13
-                dc.b $35,$4E,  0,$F0,$98,  0,  0,$54
-                dc.b   0,  0,  0,$60,$A4,$1B,$98,  0
-                dc.b   0,$9C,  0,  0,  0,$60,$A4,$1C
-                dc.b $98,  0,  0,$84,  0,  0,  0,$60
-                dc.b $A4,  9,$98,  0,  0,$88,  0,  0
-                dc.b   0,$60,$A4,$14,$98,  0,  0,$6C
-                dc.b   0,  0,  0,$60,$A4,  4,$A1,$71
-                dc.b   8,$4B,$A1,$72,  8,$4B,$A1,$79
-                dc.b   8,$4B,$45,$31,$44,$99,$46,$92
-                dc.b $63,$11,$63,$12,$63,$19,$8B,$5C
-                dc.b $8A,$A0,$8A,$BE,$8B,$5F,$92,$20
-                dc.b $8C,  1,$88,$22,$58,$1C,  4,$41
-                dc.b $58,$11,  4,$41,$8A,$22,$43,$82
-                dc.b $8B,$9D,$66,  2,$66,$1D,$42,$3D
-                dc.b $66,$11,  3,$A2,$8A,$3D,$43,$9D
-                dc.b $66,$1C,  3,$A2,$42,$3C,$62,$1C
-                dc.b   0,$5C,$34,  1,$D4,$42,$94,$11
-                dc.b $20,$1C,$92,$40,$8C,  1,$88,$22
-                dc.b $58,$1E,  4,$41,$58,$12,  4,$41
-                dc.b $8A,$42,$43,$C2,$8B,$DD,$66,  2
-                dc.b $66,$1D,$42,$5D,$66,$12,  3,$A2
-                dc.b $8A,$5D,$43,$DD,$66,$1E,  3,$A2
-                dc.b $42,$5E,$62,$1E,  0,$5E,$34,  1
-                dc.b $D4,$42,$94,$12,$20,$1E,$92,$20
-                dc.b $8C,  1,$88,$22,$58,  0,  4,$41
-                dc.b $58,$11,  4,$41,$8A,$22,$40,  2
-                dc.b $88,$1D,$66,  2,$66,$1D,$42,$3D
-                dc.b $66,$11,  3,$A2,$8A,$3D,$40,$1D
-                dc.b $66,  0,  3,$A2,$42,$20,$62,  0
-                dc.b   0,$40,$34,  1,$D4,$42,$94,$11
-                dc.b $20,  0,$92,$40,$8C,  1,$88,$22
-                dc.b $58,$1F,  4,$41,$58,$12,  4,$41
-                dc.b $8A,$42,$43,$E2,$8B,$FD,$66,  2
-                dc.b $66,$1D,$42,$5D,$66,$12,  3,$A2
-                dc.b $8A,$5D,$43,$FD,$66,$1F,  3,$A2
-                dc.b $42,$5F,$62,$1F,  0,$5F,$34,  1
-                dc.b $D4,$42,$94,$12,$20,$1F,$13,$DC
-                dc.b   3,$E0,$8B,$91,$88,$12,$96,$BC
-                dc.b $96,$80,$96,$9E,$96,$BF,$93,$20
-                dc.b $8C,  1,$88,$22,$58,$1C,  4,$41
-                dc.b $58,$19,  4,$41,$8B,$22,$43,$82
-                dc.b $8B,$9D,$66,  2,$66,$1D,$43,$3D
-                dc.b $66,$19,  3,$A2,$8B,$3D,$43,$9D
-                dc.b $66,$1C,  3,$A2,$43,$3C,$62,$1C
-                dc.b   0,$5C,$34,  1,$D4,$42,$94,$19
-                dc.b $20,$1C,$92,$40,$8C,  1,$88,$22
-                dc.b $58,$1E,  4,$41,$58,$12,  4,$41
-                dc.b $8A,$42,$43,$C2,$8B,$DD,$66,  2
-                dc.b $66,$1D,$42,$5D,$66,$12,  3,$A2
-                dc.b $8A,$5D,$43,$DD,$66,$1E,  3,$A2
-                dc.b $42,$5E,$62,$1E,  0,$5E,$34,  1
-                dc.b $D4,$42,$94,$12,$20,$1E,$93,$20
-                dc.b $8C,  1,$88,$22,$58,  0,  4,$41
-                dc.b $58,$19,  4,$41,$8B,$22,$40,  2
-                dc.b $88,$1D,$66,  2,$66,$1D,$43,$3D
-                dc.b $66,$19,  3,$A2,$8B,$3D,$40,$1D
-                dc.b $66,  0,  3,$A2,$43,$20,$62,  0
-                dc.b   0,$40,$34,  1,$D4,$42,$94,$19
-                dc.b $20,  0,$92,$40,$8C,  1,$88,$22
-                dc.b $58,$1F,  4,$41,$58,$12,  4,$41
-                dc.b $8A,$42,$43,$E2,$8B,$FD,$66,  2
-                dc.b $66,$1D,$42,$5D,$66,$12,  3,$A2
-                dc.b $8A,$5D,$43,$FD,$66,$1F,  3,$A2
-                dc.b $42,$5F,$62,$1F,  0,$5F,$34,  1
-                dc.b $D4,$42,$94,$12,$20,$1F,$13,$DC
-                dc.b   3,$E0,$8B,$99,$88,$12,$96,$7C
-                dc.b $96,$40,$96,$5E,$96,$7F,$93,$20
-                dc.b $8C,  1,$88,$22,$58,$1C,  4,$41
-                dc.b $58,$19,  4,$41,$8B,$22,$43,$82
-                dc.b $8B,$9D,$66,  2,$66,$1D,$43,$3D
-                dc.b $66,$19,  3,$A2,$8B,$3D,$43,$9D
-                dc.b $66,$1C,  3,$A2,$43,$3C,$62,$1C
-                dc.b   0,$5C,$34,  1,$D4,$42,$94,$19
-                dc.b $20,$1C,$92,$20,$8C,  1,$88,$22
-                dc.b $58,$1E,  4,$41,$58,$11,  4,$41
-                dc.b $8A,$22,$43,$C2,$8B,$DD,$66,  2
-                dc.b $66,$1D,$42,$3D,$66,$11,  3,$A2
-                dc.b $8A,$3D,$43,$DD,$66,$1E,  3,$A2
-                dc.b $42,$3E,$62,$1E,  0,$5E,$34,  1
-                dc.b $D4,$42,$94,$11,$20,$1E,$93,$20
-                dc.b $8C,  1,$88,$22,$58,  0,  4,$41
-                dc.b $58,$19,  4,$41,$8B,$22,$40,  2
-                dc.b $88,$1D,$66,  2,$66,$1D,$43,$3D
-                dc.b $66,$19,  3,$A2,$8B,$3D,$40,$1D
-                dc.b $66,  0,  3,$A2,$43,$20,$62,  0
-                dc.b   0,$40,$34,  1,$D4,$42,$94,$19
-                dc.b $20,  0,$92,$20,$8C,  1,$88,$22
-                dc.b $58,$1F,  4,$41,$58,$11,  4,$41
-                dc.b $8A,$22,$43,$E2,$8B,$FD,$66,  2
-                dc.b $66,$1D,$42,$3D,$66,$11,  3,$A2
-                dc.b $8A,$3D,$43,$FD,$66,$1F,  3,$A2
-                dc.b $42,$3F,$62,$1F,  0,$5F,$34,  1
-                dc.b $D4,$42,$94,$11,$20,$1F,$13,$DC
-                dc.b   3,$E0,$8B,$99,$88,$11,$88,$C0
-                dc.b $88,$E1,$8B,  2,  0,$11,  0,$32
-                dc.b   0,$59,$AD,$F3,$98, $C,$39,$82
-                dc.b   0,$F0,$D1,$80,$E4,  0,$98,  0
-                dc.b $32,$7E,  0,$F0,$18,$28,$D0,$14
-                dc.b $E4,  0,$AE,$A0,$98,  1,$3F,$58
-                dc.b   0,$F0,$A4,$22,$34,  2,$D0,  2
-                dc.b $E4,  0,$98,  0,  0,$38,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$94
-                dc.b   0,  0,  0,$60,$A4,$15,$98,  0
-                dc.b   0,$40,  0,  0,  0,$60,$A4,  2
-                dc.b $6D,$81,$6D,$82,$6D,$95,  0,$29
-                dc.b   0,$54,  2,$A4,$98,  0,  0,$84
-                dc.b   0,  0,  0,$60,$BC,  9,$98,  0
-                dc.b   0,$88,  0,  0,  0,$60,$BC,$14
-                dc.b $98,  0,  0,$6C,  0,  0,  0,$60
-                dc.b $BC,  4,$98,  0,  0,$E0,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$E4
-                dc.b   0,  0,  0,$60,$A4,  2,$98,  0
-                dc.b   0,$B8,  0,  0,  0,$60,$A4,$14
-                dc.b $98,  0,  0,$BC,  0,  0,  0,$60
-                dc.b $A4,$15,  2,$81,  2,$A2,$98,  0
-                dc.b   0,$E0,  0,  0,  0,$60,$BC,  1
-                dc.b $98,  0,  0,$E4,  0,  0,  0,$60
-                dc.b $BC,  2,$98,  0,  0,$58,  0,  0
-                dc.b   0,$60,$A4,  1,$62,  1,$6E,$61
-                dc.b   0,$3B,$98,  0,  0,$54,  0,  0
-                dc.b   0,$60,$BC,$1B,$AE,$A0,$D0,  0
-                dc.b $E4,  0,$98,$1F,$37,$D4,  0,$F0
-                dc.b $36,$16,$D4,$81,$E4,  0,$AD,$F3
-                dc.b $D3,$E0,$E4,  0,$C5,$45,$65,  5
-                dc.b $98,  1,  0, $F,  0,  0,$88,$A0
-                dc.b $64,$85,$24,$20,$62,  5,$62,  0
-                dc.b $C5,$65,$C5,$80,$98,  0,  0,$48
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$4C,  0,  0,  0,$60,$A4,  2
-                dc.b $BD,$C1,$C4,$22,$98,  0,  0,$50
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$A4,  0,  0,  0,$60,$A4,  2
-                dc.b $C4,$41,$C4,$62,$98,  0,  0,$78
-                dc.b   0,  0,  0,$60,$A4,  1,$C4,$81
-                dc.b $98,$1D,  0,$80,  0,  0,$98,  0
-                dc.b   0,$A8,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$AC,  0,  0,  0,$60
-                dc.b $A4,  2,$C5,$A1,$C5,$C2,$6E,  1
-                dc.b $6E,  2,$10,$31,$10,$52,$C4,$B1
-                dc.b $C4,$D2,$AC,$20,$AC,$81,$AC,$42
-                dc.b   0,  1,  0,$40,$C4,$20,$AC,$62
-                dc.b $C4,$81,$66,  1,$25,$A1,$88,$20
-                dc.b   8,  1,  0,$40,  8,  1,$9C,$1E
-                dc.b   8,$20,$9C,$13,$13,$D3,$AC,$9F
-                dc.b $13,$BE,$65,$1F,$63,$1E,$25,$BF
-                dc.b $47,$F3,  2,$7E,$25,$A1,$8B,$C0
-                dc.b   0,$41,$46,$40,$9C,$22,  8,$21
-                dc.b $9C,$33,$10,$53,$13,$A2,$63,  2
-                dc.b $47,$F3,  2,$62,$46,$3E,$44,$51
-                dc.b $44,$52,$10,$11,  3,$D2,$6D,$F1
-                dc.b $6D,$F2,$98,  0,  0,$B0,  0,  0
-                dc.b   0,$60,$A4,  1,$44,$31,$44,$32
-                dc.b $6D,$91,$6D,$92,$AD,$A1,$AD,$C2
-                dc.b $6E,  1,$6E,  2,  0,$31,  0,$52
-                dc.b $AD,$60,$AD,$81,$8F,$DE,$88,$1F
-                dc.b $88,$25,$66,$1F,$66,  5,$27,$DF
-                dc.b $27,$C5,$64,$3E,$13,$DF,$D4,$54
-                dc.b $E4,  0,$20,$1F,$13,$C5,$D4,$54
-                dc.b $E4,  0,$20,  5,$63,$9F,$2B,$E5
-                dc.b $63,  5,$88,$1F,$98,  0,  0,$B8
-                dc.b   0,  0,  0,$60,$A4,$1E,  3,$DF
-                dc.b $C5,$7F,$98,  0,  0,$BC,  0,  0
-                dc.b   0,$60,$A4,$1E,  3,$C1,$C5,$81
-                dc.b $98,$1F,$37,$D4,  0,$F0,$98,$13
-                dc.b $37,$70,  0,$F0,$D3,$E0,$E4,  0
-                dc.b $AC,$B1,$AC,$D2,$98,  0,  0,$B4
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$C0,  0,  0,  0,$60,$A4,  2
-                dc.b $98,$1E,$10,  0,  0,  0,  3,$C1
-                dc.b   3,$C2,$44,$31,$44,$52,$6D,$91
-                dc.b $6D,$92,$AD,$A1,$AD,$C2,$98,  0
-                dc.b   0,$C4,  0,  0,  0,$60,$A4,$1E
-                dc.b   3,$C1,$C5,$A1,$98,  0,  0,$C8
-                dc.b   0,  0,  0,$60,$A4,$1E,  3,$C2
-                dc.b $C5,$C2,$A5,$C0,$98,  1,$36,$9E
-                dc.b   0,$F0,$18,$20,$D4,$78,$BD,$C0
-                dc.b $D0,$20,$E4,  0,$AD,$F3,$AD,$45
-                dc.b $D2,$60,$E4,  0,$98,$1F,$38,$5A
-                dc.b   0,$F0,$C4,$F3,$C5,$36,$34,$16
-                dc.b $D4,$C2,$E4,  0,$98,$13,$37,$EE
-                dc.b   0,$F0,$D3,$E0,$E4,  0,$89,$E0
-                dc.b $98,$1F,$38,$5A,  0,$F0,$12,$20
-                dc.b $88,$11,$34,$36,$D4,$C2,$E4,  0
-                dc.b $98,$13,$38, $A,  0,$F0,$D3,$E0
-                dc.b $E4,  0,$89,$E0,$12,$40,$88,$12
-                dc.b $34,$56,$D4,$C2,$E4,  0,$98,$13
-                dc.b $38,$20,  0,$F0,$D3,$E0,$E4,  0
-                dc.b $89,$E0,$12,$20,$98,$13,$38,$36
-                dc.b   0,$F0,$88,$11,$34,$76,$D4,$62
-                dc.b $E4,  0,$D3,$E0,$E4,  0,$89,$E0
-                dc.b $12,$20,$64,$96,$8A,$51,$88,$12
-                dc.b $34,$96,$D4,$A2,$E4,  0,$AC,$F3
-                dc.b $AD,$36,$D2,$60,$E4,  0,$39,$16
-                dc.b $98,  0,$37,$DE,  0,$F0,$D0,  0
-                dc.b $E4,  0,$AE,$20,$D0,  0,$E4,  0
-                dc.b $79,$F1,$D2,$74,$79,$F2,$D2,$74
-                dc.b $7C,$11,$D2,$78,$7C,$12,$D2,$78
-                dc.b $8A,$21,$8A,$42,$63,$E1,$41,$42
-                dc.b   0,$22,  2,$E2,$8B,$60,$65,  0
-                dc.b $28,$A0,$B8,$40,$D2,$60,$E4,  0
-                dc.b $79,$F1,$D2,$74,$79,$F2,$D2,$74
-                dc.b $7C,$11,$D2,$78,$7C,$12,$D2,$78
-                dc.b $8A,$21,$8A,$42,$63,$E1,$41,$42
-                dc.b   0,$22,  2,$E2,$8B,$60,$65,  0
-                dc.b $28,$A0,$B8,$40,  8,$42,$B8,$40
-                dc.b   1,$42,$B8,$40,$18,$42,$B8,$40
-                dc.b $D2,$60,$E4,  0,$98,  0,  0,$EC
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b $38,$60,  0,$F0,$66,  1,$98,  2
-                dc.b $38,$88,  0,$F0,  8,$21,$7C,$21
-                dc.b $D0,  2,$E4,  0,$7C,$41,$D0,$42
-                dc.b $E4,  0,$98,  0,$22,$38,  0,$F0
-                dc.b $A4,  2,$34,  2,$D7,$A2,$E4,  0
-                dc.b $98,  0,$22,  0,  0,$F0,$BC,$17
-                dc.b $98,  2,$44,$20,  0,  1,  8,$80
-                dc.b $BC,  2,$89,$F0,$10,$30,$8A,$3C
-                dc.b $88,$22,$64,$22,$10,$5C,$7C,$1C
-                dc.b $D2,$78,$7B,$90,$D2,$78,$8B,$80
-                dc.b $8A,$5C,$62,  0,$10,$5C,$7C,$1C
-                dc.b $D2,$78,$7B,$90,$D2,$78,$66,  0
-                dc.b $62,$1C,$28,$1C,$98,  0,$22, $C
-                dc.b   0,$F0,$BC,$1C,$88,$22,$20,  2
-                dc.b   8,$80,$62,  2,$66,  2,$3A,  2
-                dc.b $8B,$7C,$BC,  2,$65,$1C,$98,  0
-                dc.b $22,$6C,  0,$F0,$28,$BC,$8B,$82
-                dc.b $62,$1C,$28,$5C,$BC,$1C,$18,$80
-                dc.b $BC,$1C,$88,$22,$98,  0,$22,$3C
-                dc.b   0,$F0,$62,  1,$28,$41,$BC,  1
-                dc.b $98,  2,  2,  0,  0,  1,$18,$80
-                dc.b $BC,  2,$A4,  1,$34,  1,$D7,$A2
-                dc.b $E4,  0,$D2,$60,$E4,  0,$62,$51
-                dc.b $62,$52,$7C,$39,$D2,$78,$65,$D9
-                dc.b $8A,$3D,$58,$11,$57,$31,$37,$FD
-                dc.b $D4,$42,$E4,  0,$20,$11,$8A,$5D
-                dc.b $58,$12,$57,$32,$37,$FD,$D4,$42
-                dc.b $E4,  0,$20,$12,$6C,$F1,$6C,$F2
-                dc.b $98,  0,  0,$C0,  0,  0,  0,$11
-                dc.b   0,$12,$98,  0,$36,$12,  0,$F0
-                dc.b $D0,  0,$E4,  0,$AF,$60,$8B,$61
-                dc.b $40,  1,$98,  0,  0,  0,  0,$7F
-                dc.b $24,  1,$98,  0,$38,$C6,  0,$F0
-                dc.b $D0,  0,$E4,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$38,$88,  0,$F0,$38,$88
-                dc.b   0,$F0,$38,$BC,  0,$F0,$39,$BC
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  8,$88
-                dc.b $98,  0,$3F,$5C,  0,$F0,$98, $E
-                dc.b $3F,$80,  0,$F0,$A4,  1,$98,  0
-                dc.b   0,$A4,  0,  0,  0,$60,$A4,  2
-                dc.b $C4,$62,$2C,$21,$C4,$81,$98,  0
-                dc.b   0,  0,  0,  0,  0,$60,$A4,$17
-                dc.b $98, $A,  3,  0,  0,  0,$98, $F
-                dc.b   1,$7E,  0,  0,$98, $D,  0,$FF
-                dc.b   0,  0,$E4,  0,$98,  0,  0,$98
-                dc.b   0,  0,  0,$60,$A4,  4,$66,  4
-                dc.b $98,  0,  0,  3,  0,  0,$24,  4
-                dc.b $98,  0,$3F,$60,  0,$F0,$A4,  1
-                dc.b  $A,$81,$63,$C4,$A4,$20,  0,$80
-                dc.b $A4,$1C,$93,$82,$98,  0,$30,$76
-                dc.b   0,$F0,$98,  1,$36,$9C,  0,$F0
-                dc.b $C5,$E0,$D0,$20,$E4,  0,$98,  0
-                dc.b $33,$F8,  0,$F0,$28,  0,$C5,$E0
-                dc.b $98,$13,$33,$F8,  0,$F0,$98,  0
-                dc.b   0,$38,  0,  0,  0,$60,$A4, $B
-                dc.b $98,  0,  0,$40,  0,  0,  0,$60
-                dc.b $A4,  8,$98,  0,  0,$94,  0,  0
-                dc.b   0,$60,$A4,$16,$98,  0,$FF,$FF
-                dc.b   0,$1F,$24, $B,$24,  8,$24,$16
-                dc.b $66, $B,$66,  8,$66,$16,$91,$64
-                dc.b $91,  5,$92,$C6,$89,$71,$89,$12
-                dc.b $8A,$D9,$64,$31,$64,$32,$64,$39
-                dc.b $20,$11,$20,$12,$20,$19,$92,$2A
-                dc.b $92,$4B,$93,$2C,$89,  1,$89,$7E
-                dc.b $94,$5C,$25,$9E,$25,$81,$63,$BE
-                dc.b   0,$3C,  3,$DC,$9F,$90,$8A,  0
-                dc.b $63,  0,$2A,  0,$88,$10,$62,  0
-                dc.b $28,$10,$34,$10,$D4,$A1,$74,$30
-                dc.b $98,  0,$33,$F8,  0,$F0,$D0,  0
-                dc.b $AF,$A1,$AF,$80,  1,$60,  1,  1
-                dc.b $98,$1E,  0,$1E,  0,  0,$88,$1F
-                dc.b $88,$25,$27,$DF,$27,$C5,$64,$3E
-                dc.b $13,$DF,$D4,$54,$E4,  0,$20,$1F
-                dc.b $8B,$FB,$13,$C5,$D4,$54,$E4,  0
-                dc.b $20,  5,$63,$9F,$62,$BB,$2B,$E5
-                dc.b $39,$FB,$63,  5,$45,$31,$44,$99
-                dc.b $46,$92,$63,$11,$63,$12,$63,$19
-                dc.b $8B,$5C,$8A,$A0,$8A,$BE,$8B,$5F
-                dc.b $92,$20,$8C,  1,$88,$22,$58,$1C
-                dc.b   4,$41,$58,$11,  4,$41,$8A,$22
-                dc.b $43,$82,$8B,$9D,$66,  2,$66,$1D
-                dc.b $42,$3D,$66,$11,  3,$A2,$8A,$3D
-                dc.b $43,$9D,$66,$1C,  3,$A2,$42,$3C
-                dc.b $62,$1C,  0,$5C,$34,  1,$D4,$42
-                dc.b $94,$11,$20,$1C,$92,$40,$8C,  1
-                dc.b $88,$22,$58,$1E,  4,$41,$58,$12
-                dc.b   4,$41,$8A,$42,$43,$C2,$8B,$DD
-                dc.b $66,  2,$66,$1D,$42,$5D,$66,$12
-                dc.b   3,$A2,$8A,$5D,$43,$DD,$66,$1E
-                dc.b   3,$A2,$42,$5E,$62,$1E,  0,$5E
-                dc.b $34,  1,$D4,$42,$94,$12,$20,$1E
-                dc.b $92,$20,$8C,  1,$88,$22,$58,  0
-                dc.b   4,$41,$58,$11,  4,$41,$8A,$22
-                dc.b $40,  2,$88,$1D,$66,  2,$66,$1D
-                dc.b $42,$3D,$66,$11,  3,$A2,$8A,$3D
-                dc.b $40,$1D,$66,  0,  3,$A2,$42,$20
-                dc.b $62,  0,  0,$40,$34,  1,$D4,$42
-                dc.b $94,$11,$20,  0,$92,$40,$8C,  1
-                dc.b $88,$22,$58,$1F,  4,$41,$58,$12
-                dc.b   4,$41,$8A,$42,$43,$E2,$8B,$FD
-                dc.b $66,  2,$66,$1D,$42,$5D,$66,$12
-                dc.b   3,$A2,$8A,$5D,$43,$FD,$66,$1F
-                dc.b   3,$A2,$42,$5F,$62,$1F,  0,$5F
-                dc.b $34,  1,$D4,$42,$94,$12,$20,$1F
-                dc.b $13,$DC,  3,$E0,$8B,$91,$88,$12
-                dc.b $96,$BC,$96,$80,$96,$9E,$96,$BF
-                dc.b $93,$20,$8C,  1,$88,$22,$58,$1C
-                dc.b   4,$41,$58,$19,  4,$41,$8B,$22
-                dc.b $43,$82,$8B,$9D,$66,  2,$66,$1D
-                dc.b $43,$3D,$66,$19,  3,$A2,$8B,$3D
-                dc.b $43,$9D,$66,$1C,  3,$A2,$43,$3C
-                dc.b $62,$1C,  0,$5C,$34,  1,$D4,$42
-                dc.b $94,$19,$20,$1C,$92,$40,$8C,  1
-                dc.b $88,$22,$58,$1E,  4,$41,$58,$12
-                dc.b   4,$41,$8A,$42,$43,$C2,$8B,$DD
-                dc.b $66,  2,$66,$1D,$42,$5D,$66,$12
-                dc.b   3,$A2,$8A,$5D,$43,$DD,$66,$1E
-                dc.b   3,$A2,$42,$5E,$62,$1E,  0,$5E
-                dc.b $34,  1,$D4,$42,$94,$12,$20,$1E
-                dc.b $93,$20,$8C,  1,$88,$22,$58,  0
-                dc.b   4,$41,$58,$19,  4,$41,$8B,$22
-                dc.b $40,  2,$88,$1D,$66,  2,$66,$1D
-                dc.b $43,$3D,$66,$19,  3,$A2,$8B,$3D
-                dc.b $40,$1D,$66,  0,  3,$A2,$43,$20
-                dc.b $62,  0,  0,$40,$34,  1,$D4,$42
-                dc.b $94,$19,$20,  0,$92,$40,$8C,  1
-                dc.b $88,$22,$58,$1F,  4,$41,$58,$12
-                dc.b   4,$41,$8A,$42,$43,$E2,$8B,$FD
-                dc.b $66,  2,$66,$1D,$42,$5D,$66,$12
-                dc.b   3,$A2,$8A,$5D,$43,$FD,$66,$1F
-                dc.b   3,$A2,$42,$5F,$62,$1F,  0,$5F
-                dc.b $34,  1,$D4,$42,$94,$12,$20,$1F
-                dc.b $13,$DC,  3,$E0,$8B,$99,$88,$12
-                dc.b $96,$7C,$96,$40,$96,$5E,$96,$7F
-                dc.b $92,$20,$8C,  1,$88,$22,$58,$1C
-                dc.b   4,$41,$58,$11,  4,$41,$8A,$22
-                dc.b $43,$82,$8B,$9D,$66,  2,$66,$1D
-                dc.b $42,$3D,$66,$11,  3,$A2,$8A,$3D
-                dc.b $43,$9D,$66,$1C,  3,$A2,$42,$3C
-                dc.b $62,$1C,  0,$5C,$34,  1,$D4,$42
-                dc.b $94,$11,$20,$1C,$93,$20,$8C,  1
-                dc.b $88,$22,$58,$1E,  4,$41,$58,$19
-                dc.b   4,$41,$8B,$22,$43,$C2,$8B,$DD
-                dc.b $66,  2,$66,$1D,$43,$3D,$66,$19
-                dc.b   3,$A2,$8B,$3D,$43,$DD,$66,$1E
-                dc.b   3,$A2,$43,$3E,$62,$1E,  0,$5E
-                dc.b $34,  1,$D4,$42,$94,$19,$20,$1E
-                dc.b $92,$20,$8C,  1,$88,$22,$58,  0
-                dc.b   4,$41,$58,$11,  4,$41,$8A,$22
-                dc.b $40,  2,$88,$1D,$66,  2,$66,$1D
-                dc.b $42,$3D,$66,$11,  3,$A2,$8A,$3D
-                dc.b $40,$1D,$66,  0,  3,$A2,$42,$20
-                dc.b $62,  0,  0,$40,$34,  1,$D4,$42
-                dc.b $94,$11,$20,  0,$93,$20,$8C,  1
-                dc.b $88,$22,$58,$1F,  4,$41,$58,$19
-                dc.b   4,$41,$8B,$22,$43,$E2,$8B,$FD
-                dc.b $66,  2,$66,$1D,$43,$3D,$66,$19
-                dc.b   3,$A2,$8B,$3D,$43,$FD,$66,$1F
-                dc.b   3,$A2,$43,$3F,$62,$1F,  0,$5F
-                dc.b $34,  1,$D4,$42,$94,$19,$20,$1F
-                dc.b $13,$DC,  3,$E0,$8B,$91,$88,$19
-                dc.b $88,$C0,$88,$E1,$8B,  2,  0,$11
-                dc.b   0,$32,  0,$59,$AD,$F3,$98,  0
-                dc.b $36,$54,  0,$F0,$D0,  0,$E4,  0
-                dc.b $95,$51,$95,$72,$95,$99,$98,  0
-                dc.b $30,$F2,  0,$F0,  8,$39,$18,$36
-                dc.b $D0,$14,$93,$2C,$18,$28,$89,  1
-                dc.b $89,$7E,$94,$5C,$25,$9E,$25,$81
-                dc.b $63,$BE,  0,$3C,  3,$DC,$9F,$90
-                dc.b $8A,  1,$63,  1,$2A,  1,$88,$30
-                dc.b $62,  1,$28,$30,$94,$D6,$18,$39
-                dc.b $12,$D9,$93,$2C,  8,$32,$7C,  8
-                dc.b $D0,$14,$92,$4B,$94,$A8,$18,$32
-                dc.b $11,$12,$92,$4B,  8,$31,$18,$2B
-                dc.b $D0,$14,$92,$2A,$AE,$A0,$D0,  0
-                dc.b $E4,  0,$98,  0,$34,$64,  0,$F0
-                dc.b $98,  1,$36,$9C,  0,$F0,$C5,$E0
-                dc.b $D0,$20,$E4,  0,$98,  0,$34,$D6
-                dc.b   0,$F0,$28,  0,$C5,$E0,$98,$13
-                dc.b $34,$D6,  0,$F0,$98,  0,  0,$98
-                dc.b   0,  0,  0,$60,$A4,$1E,$98,$1F
-                dc.b   0,  3,  0,  0,$66,$1E,$27,$FE
-                dc.b $98,  0,$3F,$60,  0,$F0,$63,$DE
-                dc.b $A4,  1,$A4,$20,  3,$C0,$A4,$1C
-                dc.b $A3,$8B,  8,$5C,$A3,$88,  8,$5C
-                dc.b $2F,$39,$89,$71,$89,$12,$64,$31
-                dc.b $64,$32,$20,$11,$20,  8,$8A,$36
-                dc.b $92,$2A,$92,$4B,$91,$6C,$A7,$90
-                dc.b $34,$10,$D4,$A1,$74,$30,$98,  0
-                dc.b $34,$D6,  0,$F0,$D0,  0,$AF,$A1
-                dc.b $AF,$80,$AD,$F3,$98,  0,$36,$54
-                dc.b   0,$F0,$D0,  0,$E4,  0,$95,$51
-                dc.b $95,$72,$98,  0,$34,$B8,  0,$F0
-                dc.b   8,$31,$18,$36,$D0,$14,$93,$2C
-                dc.b $18,$28,$89,  1,$89,$7E,$94,$5C
-                dc.b $25,$9E,$25,$81,$63,$BE,  0,$3C
-                dc.b   3,$DC,$9F,$90,$8A,  1,$63,  1
-                dc.b $2A,  1,$88,$30,$62,  1,$28,$30
-                dc.b $94,$D6,$18,$39,$12,$D9,$93,$2C
-                dc.b   8,$32,$7C,  8,$D0,$14,$92,$4B
-                dc.b $94,$A8,$18,$32,$11,$12,$92,$4B
-                dc.b   8,$31,$18,$2B,$D0,$14,$92,$2A
-                dc.b $AE,$A0,$D0,  0,$E4,  0,$AE,$20
-                dc.b $D0,  0,$E4,  0,$79,$F1,$D2,$74
-                dc.b $79,$F2,$D2,$74,$7C,$11,$D2,$78
-                dc.b $7C,$12,$D2,$78,$8A,$21,$8A,$42
-                dc.b $63,$E1,$41,$42,  0,$22,  2,$E2
-                dc.b $8B,$60,$65,  0,$28,$A0,$B8,$40
-                dc.b $D2,$60,$E4,  0,$79,$F1,$D2,$74
-                dc.b $79,$F2,$D2,$74,$7C,$11,$D2,$78
-                dc.b $7C,$12,$D2,$78,$8A,$21,$8A,$42
-                dc.b $63,$E1,$41,$42,  0,$22,  2,$E2
-                dc.b $8B,$60,$65,  0,$28,$A0,$B8,$40
-                dc.b   8,$42,$B8,$40,  1,$42,$B8,$40
-                dc.b $18,$42,$B8,$40,$D2,$60,$E4,  0
-                dc.b $98,  0,  0,$EC,  0,  0,  0,$60
-                dc.b $A4,  1,$98,  0,$35,$34,  0,$F0
-                dc.b $66,  1,$98,  2,$35,$5C,  0,$F0
-                dc.b   8,$21,$7C,$21,$D0,  2,$E4,  0
-                dc.b $7C,$41,$D0,$42,$E4,  0,$98,  0
-                dc.b $22,$38,  0,$F0,$A4,  2,$34,  2
-                dc.b $D7,$A2,$E4,  0,$98,  0,$22,  0
-                dc.b   0,$F0,$BC,$17,$98,  2,$44,$20
-                dc.b   0,  1,  8,$80,$BC,  2,$89,$F9
-                dc.b $10,$39,$88,$22,$64,$22,$10,$51
-                dc.b $7C,$11,$D2,$78,$7A,$39,$D2,$78
-                dc.b $8A,$20,$8A,$51,$62,  0,$10,$51
-                dc.b $7C,$11,$D2,$78,$7A,$39,$D2,$78
-                dc.b $66,  0,$62,$11,$28,$11,$98,  0
-                dc.b $22, $C,  0,$F0,$BC,$11,$88,$22
-                dc.b $20,  2,  8,$80,$62,  2,$66,  2
-                dc.b $3A,  2,$8B,$71,$BC,  2,$65,$11
-                dc.b $98,  0,$22,$6C,  0,$F0,$28,$B1
-                dc.b $8A,$22,$62,$11,$28,$51,$BC,$11
-                dc.b $18,$80,$BC,$11,$88,$22,$98,  0
-                dc.b $22,$3C,  0,$F0,$62,  1,$28,$41
-                dc.b $BC,  1,$98,  2,  2,  0,  0,  1
-                dc.b $18,$80,$BC,  2,$A4,  1,$34,  1
-                dc.b $D7,$A2,$E4,  0,$D2,$60,$E4,  0
-                dc.b $62,$51,$62,$52,$7C,$39,$D2,$78
-                dc.b $65,$D9,$8A,$3D,$58,$11,$57,$31
-                dc.b $37,$FD,$D4,$42,$E4,  0,$20,$11
-                dc.b $8A,$5D,$58,$12,$57,$32,$37,$FD
-                dc.b $D4,$42,$E4,  0,$20,$12,$6C,$F1
-                dc.b $6C,$F2,$98,  0,  0,$C0,  0,  0
-                dc.b   0,$11,  0,$12,$AF,$60,$8B,$61
-                dc.b $40,  1,$98,  0,  0,  0,  0,$7F
-                dc.b $24,  1,$98,  0,$35,$9A,  0,$F0
-                dc.b $D0,  0,$E4,  0,$98,  0,  0,$E0
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$E4,  0,  0,  0,$60,$A4,  2
-                dc.b $66,  1,$66,  2,$C7,$81,$C7,$A2
-                dc.b $88,$40,$98,$1E,  0,$1F,  0,  0
-                dc.b $88,$1F,$88,$25,$27,$DF,$27,$C5
-                dc.b $64,$3E,$13,$DF,$D4,$54,$E4,  0
-                dc.b $20,$1F,$13,$C5,$D4,$54,$E4,  0
-                dc.b $20,  5,$66,$1F,$66,  5,$63,$9F
-                dc.b $2B,$E5,$63,  5,$98,  0,  0,$7C
-                dc.b   0,  0,  0,$60,$A4,$14,$8C,$EC
-                dc.b $98,  9,  0,  0,  0,$40,$AC,$62
-                dc.b $8A,$80,$98,$1D,  0,$80,  0,  0
-                dc.b $66,  0,$25,$A0,  0,$40,$9C,$1E
-                dc.b   8,$20,$9C,$1A,$13,$DA,$8A,$82
-                dc.b $13,$BE,$65,  2,$63,$1E,$25,$A2
-                dc.b $44,$5A,  3,$DA,$93,$54,  1,$34
-                dc.b $AC,$62,$8A,$80,$98,$1D,  0,$80
-                dc.b   0,  0,$66,  0,$25,$A0,  0,$40
-                dc.b $9C,$1E,  8,$20,$9C,$1A,$13,$DA
-                dc.b $8A,$82,$13,$BE,$65,  2,$63,$1E
-                dc.b $25,$A2,$44,$5A,  3,$DA,$93,$55
-                dc.b $98,  0,  0,$74,  0,  0,  0,$60
-                dc.b $A4,$14,$63,$94,$AC,$62,$8A,$80
-                dc.b $98,$1D,  0,$80,  0,  0,$66,  0
-                dc.b $25,$A0,  0,$40,$9C,$1E,  8,$20
-                dc.b $9C,$1A,$13,$DA,$8A,$82,$13,$BE
-                dc.b $65,  2,$63,$1E,$25,$A2,$44,$5A
-                dc.b   3,$DA,$93,$52,  1,$34,$AC,$62
-                dc.b $8A,$80,$98,$1D,  0,$80,  0,  0
-                dc.b $66,  0,$25,$A0,  0,$40,$9C,$1E
-                dc.b   8,$20,$9C,$1A,$13,$DA,$8A,$82
-                dc.b $13,$BE,$65,  2,$63,$1E,$25,$A2
-                dc.b $44,$5A,  3,$DA,$93,$53,$98,  0
-                dc.b   0,$70,  0,  0,  0,$60,$A4,$14
-                dc.b $AC,$62,$8A,$80,$98,$1D,  0,$80
-                dc.b   0,  0,$66,  0,$25,$A0,  0,$40
-                dc.b $9C,$1E,  8,$20,$9C,$1A,$13,$DA
-                dc.b $8A,$82,$13,$BE,$65,  2,$63,$1E
-                dc.b $25,$A2,$44,$5A,  3,$DA,$8B,$55
-                dc.b   1,$34,$AC,$62,$8A,$80,$98,$1D
-                dc.b   0,$80,  0,  0,$66,  0,$25,$A0
-                dc.b   0,$40,$9C,$1E,  8,$20,$9C,$1A
-                dc.b $13,$DA,$8A,$82,$13,$BE,$65,  2
-                dc.b $63,$1E,$25,$A2,$44,$5A,  3,$DA
-                dc.b $8B,$5A,$98,  0,  0,$54,  0,  0
-                dc.b   0,$60,$A4,$1B,$98,  0,  0,$84
-                dc.b   0,  0,  0,$60,$A4,  9,$98,  0
-                dc.b   0,$88,  0,  0,  0,$60,$A4,$14
-                dc.b $98,  0,  0,$6C,  0,  0,  0,$60
-                dc.b $A4,  4,$98,  0,  0,$24,  0,  0
-                dc.b   0,$60,$A4,  6,$98,  0,  0,$28
-                dc.b   0,  0,  0,$60,$A4,  7,$98,  0
-                dc.b   0,$34,  0,  0,  0,$60,$A4,$18
-                dc.b $98,  0,  0,$EC,  0,  0,  0,$60
-                dc.b $A4,  1,$66,  1,$28,$21,$C7,$61
-                dc.b $98,  0,  0,  0,  0,$C0,$10,  6
-                dc.b $10,  7,$AD,$E0,$D0,  0,$E4,  0
-                dc.b   0,$F0,$35,$5C,  0,$F0,$35,$5C
-                dc.b   0,$F0,$35,$90,  0,$F0,$36,$84
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  5,$F0
-                dc.b $98,  0,$3F,$5C,  0,$F0,$98, $E
-                dc.b $3F,$80,  0,$F0,$A4,  1,$98,  0
-                dc.b   0,$48,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$4C,  0,  0,  0,$60
-                dc.b $A4,  2,$BD,$C1,$C4,$22,$98,  0
-                dc.b   0,$18,  0,  0,  0,$60,$A4,  1
-                dc.b $98,  0,  0,$1C,  0,  0,  0,$60
-                dc.b $A4,  2,$98,  0,  0,$C0,  0,  0
-                dc.b $66,  1,$66,  2,$10,  1,$10,  2
-                dc.b $C7,$C1,$C7,$E2,$98,  0,  0,$50
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$A4,  0,  0,  0,$60,$A4,  2
-                dc.b $C4,$41,$C4,$62,$2C,$21,$C4,$81
-                dc.b $98,  0,  0,  0,  0,  0,  0,$60
-                dc.b $A4,$17,$98,  0,  0,$A0,  0,  0
-                dc.b   0,$60,$A4,$16,$98, $A,  3,  0
-                dc.b   0,  0,$98, $F,  1,$7E,  0,  0
-                dc.b $98, $D,  0,$FF,  0,  0,$98,  0
-                dc.b   0,$E8,  0,  0,  0,$60,$A4,  1
-                dc.b $63,$C1,$98,  0,$35,$D0,  0,$F0
-                dc.b   0,$20,$A4,  1,$C6,$21,$98,  0
-                dc.b   0,$E0,  0,  0,  0,$60,$A4,  2
-                dc.b $98,  0,  0,$E4,  0,  0,  0,$60
-                dc.b $A4,  1,$90,$49,$90,$2A,$98,  0
-                dc.b $31,$E0,  0,$F0,$28,  0,$C5,$E0
-                dc.b $98,  4,  0,$3F,  0,  0,$98,  0
-                dc.b $3F,$60,  0,$F0,$A4,  1, $B,$81
-                dc.b $A4,$26,$98,  0,  0,$D8,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$DC
-                dc.b   0,  0,  0,$60,$A4,  2,$6C,$81
-                dc.b $6C,$82,$90,$24,$90,$45,$98,  0
-                dc.b   0,$78,  0,  0,  0,$60,$A4,  1
-                dc.b $90,$26,$98,  0,  0,$24,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$28
-                dc.b   0,  0,  0,$60,$A4,  2,$66,  1
-                dc.b $66,  2,$98,  0,  0,$EC,  0,  0
-                dc.b   0,$60,$A4,$1D,$66,$1D,$8B,$BE
-                dc.b $63,$7E,$64,$3D,$13,$C1,$13,$A2
-                dc.b $90,$30,$90,$51,$98,  0,  0,$88
-                dc.b   0,  0,  0,$60,$A4,  1,$65,  1
-                dc.b $38,  1,$90,$32,$98,  0,  0,$EC
-                dc.b   0,  0,  0,$60,$A4,  1,$66,  1
-                dc.b $28,$21,$C7,$61,$98,$1B,$FF,$FF
-                dc.b   0,  0,$98,$13,$31,$E0,  0,$F0
-                dc.b $98,$14,$31,$6C,  0,$F0,$98,  4
-                dc.b   0,$3F,  0,  0,$96,$32,$A4,$DB
-                dc.b $63,$DB,$84,$1B,$8B,$7E,$63,$FB
-                dc.b $63,$7E,$8B,$60,$65,$60,$10,$12
-                dc.b $94,$C1,  3,$C1,$98,  0,  0,$78
-                dc.b   0,  0,  0,$60,$BC,  1,$95,$22
-                dc.b $95,$41,$88,$40,$8F,$DE,$88,$1F
-                dc.b $88,$25,$66,$1F,$66,  5,$27,$DF
-                dc.b $27,$C5,$64,$3E,$13,$DF,$D4,$54
-                dc.b $E4,  0,$20,$1F,$13,$C5,$D4,$54
-                dc.b $E4,  0,$20,  5,$63,$9F,$2B,$E5
-                dc.b $63,  5,$94,$9E,$63,$DB,$94,$BF
-                dc.b $84,$1B,  3,$C1,  3,$E2,$90,$2A
-                dc.b $90,$49,  8,$86,$AF,$60,$88,$91
-                dc.b $40,$11,$96,  0,  0,$11,$98, $C
-                dc.b $31,$F8,  0,$F0,$D1,$80,$E4,  0
-                dc.b $18,$24,$D2,$94,$E4,  0,$94,$C1
-                dc.b $98,  0,  0,$78,  0,  0,  0,$60
-                dc.b $BC,  1,$AE,$A0,$D0,  0,$E4,  0
-                dc.b $98,$1F,$33,$BA,  0,$F0,$36,$16
-                dc.b $D4,$81,$E4,  0,$AD,$F3,$D3,$E0
-                dc.b $E4,  0,$C5,$45,$65,  5,$98,  1
-                dc.b   0, $F,  0,  0,$88,$A0,$64,$85
-                dc.b $24,$20,$62,  5,$62,  0,$C5,$65
-                dc.b $C5,$80,$98,  0,  0,$48,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$4C
-                dc.b   0,  0,  0,$60,$A4,  2,$BD,$C1
-                dc.b $C4,$22,$98,  0,  0,$50,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$A4
-                dc.b   0,  0,  0,$60,$A4,  2,$C4,$41
-                dc.b $C4,$62,$98,  0,  0,$78,  0,  0
-                dc.b   0,$60,$A4,  1,$C4,$81,$98,$1D
-                dc.b   0,$80,  0,  0,$98,  0,  0,$A8
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b   0,$AC,  0,  0,  0,$60,$A4,  2
-                dc.b $C5,$A1,$C5,$C2,$6E,  1,$6E,  2
-                dc.b $10,$31,$10,$52,$C4,$B1,$C4,$D2
-                dc.b $AC,$20,$AC,$81,$AC,$42,  0,  1
-                dc.b   0,$40,$C4,$20,$AC,$62,$C4,$81
-                dc.b $66,  1,$25,$A1,$88,$20,  8,  1
-                dc.b   0,$40,  8,  1,$9C,$1E,  8,$20
-                dc.b $9C,$13,$13,$D3,$AC,$9F,$13,$BE
-                dc.b $65,$1F,$63,$1E,$25,$BF,$47,$F3
-                dc.b   2,$7E,$25,$A1,$8B,$C0,  0,$41
-                dc.b $46,$40,$9C,$22,  8,$21,$9C,$33
-                dc.b $10,$53,$13,$A2,$63,  2,$47,$F3
-                dc.b   2,$62,$46,$3E,$44,$51,$44,$52
-                dc.b $10,$11,  3,$D2,$6D,$F1,$6D,$F2
-                dc.b $98,  0,  0,$B0,  0,  0,  0,$60
-                dc.b $A4,  1,$44,$31,$44,$32,$6D,$91
-                dc.b $6D,$92,$AD,$A1,$AD,$C2,$6E,  1
-                dc.b $6E,  2,  0,$31,  0,$52,$AD,$60
-                dc.b $AD,$81,$8F,$DE,$88,$1F,$88,$25
-                dc.b $66,$1F,$66,  5,$27,$DF,$27,$C5
-                dc.b $64,$3E,$13,$DF,$D4,$54,$E4,  0
-                dc.b $20,$1F,$13,$C5,$D4,$54,$E4,  0
-                dc.b $20,  5,$63,$9F,$2B,$E5,$63,  5
-                dc.b $88,$1F,$98,  0,  0,$B8,  0,  0
-                dc.b   0,$60,$A4,$1E,  3,$DF,$C5,$7F
-                dc.b $98,  0,  0,$BC,  0,  0,  0,$60
-                dc.b $A4,$1E,  3,$C1,$C5,$81,$98,$1F
-                dc.b $33,$BA,  0,$F0,$98,$13,$33,$56
-                dc.b   0,$F0,$D3,$E0,$E4,  0,$AC,$B1
-                dc.b $AC,$D2,$98,  0,  0,$B4,  0,  0
-                dc.b   0,$60,$A4,  1,$98,  0,  0,$C0
-                dc.b   0,  0,  0,$60,$A4,  2,$98,$1E
-                dc.b $10,  0,  0,  0,  3,$C1,  3,$C2
-                dc.b $44,$31,$44,$52,$6D,$91,$6D,$92
-                dc.b $AD,$A1,$AD,$C2,$98,  0,  0,$C4
-                dc.b   0,  0,  0,$60,$A4,$1E,  3,$C1
-                dc.b $C5,$A1,$98,  0,  0,$C8,  0,  0
-                dc.b   0,$60,$A4,$1E,  3,$C2,$C5,$C2
-                dc.b $A5,$C0,$98,  1,$32,$84,  0,$F0
-                dc.b $18,$20,$D4,$78,$BD,$C0,$D0,$20
-                dc.b $E4,  0,$AD,$F3,$AD,$45,$D2,$60
-                dc.b $E4,  0,$98,$1F,$34,$4E,  0,$F0
-                dc.b $C4,$F3,$C5,$36,$C6,$51,$C6,$72
-                dc.b $34,$16,$D4,$C2,$E4,  0,$98,$13
-                dc.b $33,$D8,  0,$F0,$D3,$E0,$E4,  0
-                dc.b $89,$E0,$AE,$51,$AE,$72,$12,$20
-                dc.b $88,$11,$34,$36,$D4,$C2,$E4,  0
-                dc.b $98,$13,$33,$F2,  0,$F0,$D3,$E0
-                dc.b $E4,  0,$89,$E0,$AE,$51,$AE,$72
-                dc.b $12,$40,$88,$12,$34,$56,$D4,$C2
-                dc.b $E4,  0,$98,$13,$34, $C,  0,$F0
-                dc.b $D3,$E0,$E4,  0,$89,$E0,$AE,$51
-                dc.b $AE,$72,$12,$20,$98,$13,$34,$26
-                dc.b   0,$F0,$88,$11,$34,$76,$D4,$62
-                dc.b $E4,  0,$D3,$E0,$E4,  0,$89,$E0
-                dc.b $AE,$51,$AE,$72,$12,$20,$64,$96
-                dc.b $8A,$51,$88,$12,$34,$96,$D4,$A2
-                dc.b $E4,  0,$AC,$F3,$AD,$36,$D2,$60
-                dc.b $E4,  0,$39,$16,$98,  0,$33,$C8
-                dc.b   0,$F0,$D0,  0,$E4,  0,$C6,$51
-                dc.b $C6,$72,$AF,$C0,$AF,$E1,  0,$11
-                dc.b   0,$32,$AE,$20,$D0,  0,$E4,  0
-                dc.b $79,$F1,$D2,$74,$79,$F2,$D2,$74
-                dc.b $7C,$11,$D2,$78,$7C,$12,$D2,$78
-                dc.b $8A,$21,$8A,$42,$63,$E1,$41,$42
-                dc.b   0,$22,  2,$E2,$8B,$60,$65,  0
-                dc.b $28,$A0,$B8,$40,$D2,$60,$E4,  0
-                dc.b $79,$F1,$D2,$74,$79,$F2,$D2,$74
-                dc.b $7C,$11,$D2,$78,$7C,$12,$D2,$78
-                dc.b $8A,$21,$8A,$42,$63,$E1,$41,$42
-                dc.b   0,$22,  2,$E2,$8B,$60,$65,  0
-                dc.b $28,$A0,$B8,$40,  8,$42,$B8,$40
-                dc.b   1,$42,$B8,$40,$18,$42,$B8,$40
-                dc.b $D2,$60,$E4,  0,$98,  0,  0,$EC
-                dc.b   0,  0,  0,$60,$A4,  1,$98,  0
-                dc.b $34,$60,  0,$F0,$96,$41,$98,  2
-                dc.b $34,$88,  0,$F0,$7C,  1,$D0,  2
-                dc.b $E4,  0,$7C,$21,$D0,$42,$E4,  0
-                dc.b $98,  0,$22,$38,  0,$F0,$A4,  2
-                dc.b $34,  2,$D7,$A2,$E4,  0,$98,  0
-                dc.b $22,  0,  0,$F0,$BC,$17,$98,  2
-                dc.b $44,$20,  0,  1,  8,$80,$BC,  2
-                dc.b $89,$F0,$10,$30,$8A,$3C,$88,$22
-                dc.b $64,$22,$10,$5C,$7C,$1C,$D2,$78
-                dc.b $7B,$90,$D2,$78,$8B,$80,$8A,$5C
-                dc.b $62,  0,$10,$5C,$7C,$1C,$D2,$78
-                dc.b $7B,$90,$D2,$78,$66,  0,$62,$1C
-                dc.b $28,$1C,$98,  0,$22, $C,  0,$F0
-                dc.b $BC,$1C,$88,$22,$20,  2,  8,$80
-                dc.b $62,  2,$66,  2,$3A,  2,$8B,$7C
-                dc.b $BC,  2,$65,$1C,$98,  0,$22,$6C
-                dc.b   0,$F0,$28,$BC,$8B,$82,$62,$1C
-                dc.b $28,$5C,$BC,$1C,$18,$80,$BC,$1C
-                dc.b $88,$22,$98,  0,$22,$3C,  0,$F0
-                dc.b $62,  1,$28,$41,$BC,  1,$98,  2
-                dc.b   2,  0,  0,  1,$18,$80,$BC,  2
-                dc.b $A4,  1,$34,  1,$D7,$A2,$E4,  0
-                dc.b $D2,$60,$E4,  0,$62,$51,$62,$52
-                dc.b $98,$1B,  1,$FF,  0,  0,$27,$79
-                dc.b $13,$3B,$63,$D9,$63,$3B,$8A,$3D
-                dc.b $58,$11,$57,$31,$37,$FD,$D4,$42
-                dc.b $E4,  0,$20,$11,$8A,$5D,$58,$12
-                dc.b $57,$32,$37,$FD,$D4,$42,$E4,  0
-                dc.b $20,$12,$6C,$B1,$6C,$B2,$98,  0
-                dc.b   0,$C0,  0,  0,  0,$11,  0,$12
-                dc.b $98,  0,$31,$F8,  0,$F0,$D0,  0
-                dc.b $E4,  0,$AF,$61,$62,  1,$98,  0
-                dc.b $34,$C6,  0,$F0,$D0,  0,$E4,  0
-                dc.b   0,$F0,$34,$60,  0,$F0,$34,$88
-                dc.b   0,$F0,$34,$BC,  0,$F0,$35,$C2
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b   0,$F0,$30,  0,  0,  0,  1,$3C
-                dc.b $98,  0,$3F,$74,  0,$F0,$A4,$1D
-                dc.b $93,$BD,$A3,$BB,$98,  0,$30,$AC
-                dc.b   0,$F0,$7C,$1B,$D0,$18,$E4,  0
-                dc.b $98,  0,$30,$4E,  0,$F0,$AF,  2
-                dc.b $8C,$A1,$10,$41,$78,$3B,$D0,  2
-                dc.b $E4,  0,$98,  0,$3F,$60,  0,$F0
-                dc.b $A4,  1,  8,  1,$A4,$3D,$93,$BD
-                dc.b $A3,$BB,$98,  0,$30,$AC,  0,$F0
-                dc.b $7C,$1B,$D0,$18,$E4,  0,$8C,$A1
-                dc.b $10,$41,$78,$3B,$D0,  1,  8,$5D
-                dc.b $98,  0,  0,$3F,  0,  0,$A3,$BC
-                dc.b $24,$1C,$8B,$9A,$98,  0,  6,  0
-                dc.b   0,  0,  8,$5D,$40,$1A,$A7,$A1
-                dc.b   0,$3A,$98,  2,  3,  0,  0,  0
-                dc.b $88,$60,$8B,$41,$98,$14,$30,$BA
-                dc.b   0,$F0,$98,$15,$30,$88,  0,$F0
-                dc.b $2A,$B5,$C7,$F5,$D2,$80,$E4,  0
-                dc.b   8,$9D,$A3,$BA,  8,$5D,$8B,$59
-                dc.b $A3,$B8,$43,$1A,$20,$1A,  3,$9A
-                dc.b $18,$DD,$A7,$BB,$98,  0,$3F,$58
-                dc.b   0,$F0,$8C,$21,$BC,  1,$8C,$21
-                dc.b $D4,$40,$E4,  0,$2C,$21,$98, $E
-                dc.b $3F,$80,  0,$F0,$AE,$A0,$D0,  0
-                dc.b $E4,  0,$98,$14,$22,$38,  0,$F0
-                dc.b $A6,$95,$34,$15,$D7,$A2,$E4,  0
-                dc.b $98,$14,$22,  0,  0,$F0,$98,$15
-                dc.b $22,$24,  0,$F0,$88,$39,$98,$1A
-                dc.b $FF,$F8,$FF,$FF,$8B,$38,$27,$59
-                dc.b $13,$38,$BE,$99,  8,$94,$98,$16
-                dc.b $40,$20,  0,  0,$BE,$96,  9,$14
-                dc.b $64,$38,$BE,$98,$88,$19,$88,$17
-                dc.b $27,$59,$13,$37,$BE,$B9,  8,$95
-                dc.b $BE,$B6,  9,$15,$64,$37,$BE,$B7
-                dc.b $64,$22,$98,$19,$22,$3C,  0,$F0
-                dc.b $3A,  2,$BF,$22,$98,$16,  0,  1
-                dc.b   1,$80,$2A,$F8,$D4,$82,$E4,  0
-                dc.b $98,$16,  0,  5,  1,$80,$98,$14
-                dc.b $22,$38,  0,$F0,$BE,$96,$A6,$95
-                dc.b $34,$15,$D7,$A2,$E4,  0,$AF,$F4
-                dc.b $D2,$80,$E4,  0,  0,  0,  0,  0
-                dc.b   0,$1A,$BC,$C6,  0,$1A,$BB,$94
-                dc.b   0,$1A,$BB,$28,  0,$1A,$BC,$6C
-                dc.b   0,$1A,$BB,$CA,  0,$1A,$BC,  0
-                dc.b   0,$1A,$BC,$36,  0,$1A,$BB,$5E
-                dc.b   0,  2,  0,$50,  0,$60,  0,$48
-                dc.b   0,  0,  0,  0,  0,  1,  0,  4
-                dc.b   0,  2,  0,  8,  0,  0,  0,$49
-                dc.b   0,  3,  0,  0,  0,  1,  0,  4
-                dc.b   0,  2,  0,  8,  0,  0,  0,  0
-                dc.b   0,$C0,  0,$50,  0,  0,  0,$50
-                dc.b   0,$80,  0,$A0,  0,$C0,  0,  2
-                dc.b   0,$50,  0,$60,  0,$FE,  0,  0
-                dc.b   0,  0,  0,  1,  0,  4,  0,  2
-                dc.b   0,  8,  0,  0,  0,$FD,  0,  3
-                dc.b   0,  0,  0,  1,  0,  4,  0,  2
-                dc.b   0,  8,  0,  0,  0,  0,  0,$C0
-                dc.b   0,$50,  0,  0,  0,$50,  0,$80
-                dc.b   0,$A0,  0,$C0,  0,  2,  0,$50
-                dc.b   0,$60,  0,$F1,  0,  0,  0,  0
-                dc.b   0,  1,  0,  4,  0,  2,  0,  8
-                dc.b   0,  0,  0,$F2,  0,  3,  0,  0
-                dc.b   0,  1,  0,  4,  0,  2,  0,  8
-                dc.b   0,  0,  0,  0,  0,$C0,  0,$50
-                dc.b   0,  0,  0,$50,  0,$80,  0,$A0
-                dc.b   0,$C0,  0,  2,  0,$50,  0,$60
-                dc.b   0,$81,  0,  0,  0,  0,  0,  1
-                dc.b   0,  4,  0,  2,  0,  8,  0,  0
-                dc.b   0,$82,  0,  3,  0,  0,  0,  1
-                dc.b   0,  4,  0,  2,  0,  8,  0,  0
-                dc.b   0,  0,  0,$C0,  0,$50,  0,  0
-                dc.b   0,$50,  0,$80,  0,$A0,  0,$C0
-                dc.b   0,  2,  0,$50,  0,$60,  0,$8F
-                dc.b   0,  0,  0,  0,  0,  1,  0,  4
-                dc.b   0,  2,  0,  8,  0,  0,  0,$8E
-                dc.b   0,  3,  0,  0,  0,  1,  0,  4
-                dc.b   0,  2,  0,  8,  0,  0,  0,  0
-                dc.b   0,$C0,  0,$50,  0,  0,  0,$50
-                dc.b   0,$80,  0,$A0,  0,$C0,  0,  2
-                dc.b   0,$50,  0,$60,  0,$12,  0,  0
-                dc.b   0,  0,  0,  1,  0,  4,  0,  2
-                dc.b   0,  8,  0,  0,  0,$13,  0,  3
-                dc.b   0,  0,  0,  1,  0,  4,  0,  2
-                dc.b   0,  8,  0,  0,  0,  0,  0,$C0
-                dc.b   0,$50,  0,  0,  0,$50,  0,$80
-                dc.b   0,$A0,  0,$C0,  0,  4,  1,  0
-                dc.b   1,  0,  0,  4,  0,  1,  0,  0
-                dc.b   0,  2,  0,  4,  0,  0,  0,$10
-                dc.b   0,  0,  0,  4,  0,  2,  0,  4
-                dc.b   0,  4,  0,  8,  0,  0,  0,$10
-                dc.b   0,  0,  0,  4,  0,  4,  0,  8
-                dc.b   0,  3,  0, $C,  0,  0,  0,$10
-                dc.b   0,  0,  0,  4,  0,  3,  0, $C
-                dc.b   0,  1,  0,  0,  0,  0,  0,$10
-                dc.b   0,  0,  1,  0,  1,  0,  0,  0
-                dc.b   0,  0,  2,  0,  0,  0,  0,  0
-                dc.b   2,  0,  2,  0,  2,  0,  0,  8
-                dc.b   0,$E0,  0,$40,  0,$F0,  0,  0
-                dc.b   0,$10,  0,  1,  0, $C,  0,  2
-                dc.b   0,$14,  0,  0,  0,$8F,  0,  3
-                dc.b   0,  8,  0,  4,  0, $C,  0,  5
-                dc.b   0,$10,  0,  0,  0,$8F,  0,  4
-                dc.b   0, $C,  0,  6,  0,$14,  0,  5
-                dc.b   0,$10,  0,  0,  0,$8F,  0,  6
-                dc.b   0,$14,  0,  7,  0, $C,  0,  5
-                dc.b   0,$10,  0,  0,  0,$8F,  0,  7
-                dc.b   0, $C,  0,  8,  0,$14,  0,  5
-                dc.b   0,$10,  0,  0,  0,  0,  0,  9
-                dc.b   0,$14,  0, $A,  0,  8,  0, $C
-                dc.b   0, $C,  0,  0,  0,  0,  0, $A
-                dc.b   0,  8,  0, $D,  0,$10,  0, $C
-                dc.b   0, $C,  0,  0,  0,  0,  0, $B
-                dc.b   0,$14,  0, $A,  0,  8,  0, $D
-                dc.b   0,$10,  0,  0,  0,  0,  0,  0
-                dc.b   0,$80,  0,  0,  0,$40,  0,$80
-                dc.b   0,$A0,  0,  0,  0,$E0,  0,  0
-                dc.b   0,$A0,  0,$80,  0,$E0,  0,$40
-                dc.b   1,$20,  0,$40,  1,$20,  0,$80
-                dc.b   1,$40,  0,  0,  1,$80,  0,$40
-                dc.b   1,$C0,  0,  0,  1,$40,  0,$80
-                dc.b   1,$C0,  0,$80,  0,  0,  0,  0
-                dc.b   0,  8,  0,  8,  3,$98,  3,$F8
-                dc.b   4,  0,  4,  8,  4,$10,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$30
-                dc.b   1,$38,  1,$40,  1,$48,  1,$50
-                dc.b   1,$58,  1,$60,  1,$68,  1,$70
-                dc.b   1,$78,  1,$80,  1,$88,  1,$90
-                dc.b   1,$98,  1,$A0,  1,$A8,  1,$B0
-                dc.b   1,$B8,  1,$C0,  1,$C8,  1,$D0
-                dc.b   1,$D8,  1,$E0,  1,$E8,  1,$F0
-                dc.b   3,$A0,  1,$18,  1,$28,  1,$18
-                dc.b   1,$20,  1,$18,  1,$18,  2,$C8
-                dc.b   2,$D0,  2,$D8,  2,$E0,  2,$E8
-                dc.b   2,$F0,  2,$F8,  3,  0,  3,  8
-                dc.b   3,$10,  3,$18,  3,$20,  3,$28
-                dc.b   3,$30,  3,$38,  3,$40,  3,$48
-                dc.b   3,$50,  3,$58,  3,$60,  3,$68
-                dc.b   3,$70,  3,$78,  3,$80,  3,$88
-                dc.b   3,$90,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  1,$18,  1,$F8
-                dc.b   2,  0,  2,  8,  2,$10,  2,$18
-                dc.b   2,$20,  2,$28,  2,$30,  2,$38
-                dc.b   2,$40,  2,$48,  2,$50,  2,$58
-                dc.b   2,$60,  2,$68,  2,$70,  2,$78
-                dc.b   2,$80,  2,$88,  2,$90,  2,$98
-                dc.b   2,$A0,  2,$A8,  2,$B0,  2,$B8
-                dc.b   2,$C0,  1,$18,  1,$18,  1,$18
-                dc.b   1,$18,  1,$18,  3,$A8,  3,$B0
-                dc.b   3,$B8,  3,$C0,  3,$C8,  3,$D0
-                dc.b   3,$D8,  3,$E0,  3,$E8,  3,$F0
-                dc.b   0,  0,  0,  0,  0,  0,  0,  0
-                dc.b $20,$10,  8,  4,  4,  8,$10,$20
-                dc.b   4,  8,$10,$20,$20,$10,  8,  4
-                dc.b $20,$20,$20,$20,$20,  0,  0,$20
-                dc.b $50,$50,$50,  0,  0,  0,  0,  0
-                dc.b $48,$48,$FE,$48,$48,$FE,$48,$48
-                dc.b $10,$7E,$90,$70,$10,$14,$FE,$20
-                dc.b $60,$62,  4,  8,$10,$20,$4C,$8C
-                dc.b $20,$50,$88,$70,$64,$98,$9A,$64
-                dc.b   0,$10,$20,$40,  0,  0,  0,  0
-                dc.b $10,$20,$40,$40,$40,$40,$20,$10
-                dc.b $20,$10,  8,  8,  8,  8,$10,$20
-                dc.b   0,$92,$54,$38,$38,$54,$92,  0
-                dc.b $10,$10,$10,$FE,$10,$10,$10,  0
-                dc.b   0,  0,  0,  0,  0,$10,$10,$20
-                dc.b   0,  0,  0,$FE,  0,  0,  0,  0
-                dc.b   0,  0,  0,  0,  0,$60,$60,  0
-                dc.b   0,  2,  4,  8,$10,$20,$40,$80
-                dc.b $7C,$82,$86,$8A,$92,$A2,$C2,$7C
-                dc.b $10,$30,$50,$10,$10,$10,$10,$FE
-                dc.b $78,$84,  4,  8,$10,$20,$40,$FE
-                dc.b $7C,$82,  2,  4,$7C,  2,$82,$7C
-                dc.b   4, $C,$14,$24,$44,$84,$FE,  4
-                dc.b $FE,$80,$80,$FC,  2,  2,$82,$7C
-                dc.b $38,$40,$80,$FC,$82,$82,$82,$7C
-                dc.b $FE,  2,  4,  8,$10,$20,$40,$80
-                dc.b $7C,$82,$82,$7C,$82,$82,$82,$7C
-                dc.b $7C,$82,$82,$82,$7E,  2,$82,$7C
-                dc.b   0,  0,  0,$7C,  2,$7E,$82,$7E
-                dc.b $80,$80,$80,$FC,$82,$82,$82,$FC
-                dc.b   0,  0,  0,$7E,$80,$80,$80,$7E
-                dc.b   2,  2,  2,$7E,$82,$82,$82,$7E
-                dc.b   0,  0,  0,$7C,$82,$FC,$80,$7C
-                dc.b   0,$3E,$40,$40,$FE,$40,$40,$40
-                dc.b   0,  0,  0,$7E,$82,$7E,  2,$7C
-                dc.b $80,$80,$80,$FC,$82,$82,$82,$82
-                dc.b   0,$10,  0,$30,$10,$10,$10,$38
-                dc.b   0,$10,  0,$10,$10,$10,$10,$E0
-                dc.b $80,$80,$80,$88,$90,$F0,$88,$84
-                dc.b $60,$20,$20,$20,$20,$20,$20,$70
-                dc.b   0,  0,  0,$7C,$92,$92,$92,$82
-                dc.b   0,  0,  0,$78,$84,$84,$84,$84
-                dc.b   0,  0,  0,$7C,$82,$82,$82,$7C
-                dc.b   0,  0,  0,$FC,$82,$FC,$80,$80
-                dc.b   0,  0,  0,$7E,$82,$7E,  2,  2
-                dc.b   0,  0,  0,$FC,$82,$80,$80,$80
-                dc.b   0,  0,  0,$7E,$40,$38,  4,$FC
-                dc.b   0,  0,$10,$FE,$10,$10,$10, $C
-                dc.b   0,  0,  0,$82,$82,$82,$86,$7A
-                dc.b   0,  0,  0,$82,$82,$44,$28,$10
-                dc.b   0,  0,  0,$82,$82,$92,$AA,$C6
-                dc.b   0,  0,  0,$84,$48,$30,$48,$84
-                dc.b   0,  0,  0,$82,$82,$7E,  2,$FC
-                dc.b   0,  0,  0,$FE,  4,$10,$40,$FE
-                dc.b $10,$28,$44,$82,$FE,$82,$82,$82
-                dc.b $FC,$82,$84,$FC,$82,$82,$82,$FC
-                dc.b $7E,$C0,$80,$80,$80,$80,$C0,$7E
-                dc.b $FC,$86,$82,$82,$82,$82,$86,$FC
-                dc.b $FE,$80,$80,$FE,$80,$80,$80,$FE
-                dc.b $FE,$80,$80,$FE,$80,$80,$80,$80
-                dc.b $7E,$C0,$80,$80,$80,$86,$C2,$7C
-                dc.b $82,$82,$82,$FE,$82,$82,$82,$82
-                dc.b $FE,$10,$10,$10,$10,$10,$10,$FE
-                dc.b $FE,  8,  8,  8,  8,$88,$88,$70
-                dc.b $84,$88,$90,$E0,$90,$88,$84,$82
-                dc.b $80,$80,$80,$80,$80,$80,$80,$FE
-                dc.b $82,$C6,$AA,$92,$82,$82,$82,$82
-                dc.b $82,$C2,$A2,$92,$8A,$86,$82,$82
-                dc.b $7C,$C6,$82,$82,$82,$82,$C6,$7C
-                dc.b $FC,$82,$82,$82,$FC,$80,$80,$80
-                dc.b $7C,$C6,$82,$82,$82,$8A,$C6,$7A
-                dc.b $FC,$82,$82,$82,$FC,$88,$84,$82
-                dc.b $7E,$80,$C0,$30,$1C,  6,  2,$FC
-                dc.b $FE,$10,$10,$10,$10,$10,$10,$10
-                dc.b $82,$82,$82,$82,$82,$82,$82,$7C
-                dc.b $82,$82,$82,$44,$44,$28,$28,$10
-                dc.b $82,$82,$82,$82,$82,$92,$AA,$C6
-                dc.b $82,$82,$44,$38,$28,$44,$82,$82
-                dc.b $82,$82,$82,$44,$28,$10,$10,$10
-                dc.b $FE,  2,  4,  8,$10,$20,$40,$FE
-                dc.b $C0,$F0,$FC,$FE,$FE,$FC,$F0,$C0
-                dc.b   0,  0,$30,  0,  0,$30,  0,  0
-                dc.b   0,$3C,$66,$66,$66,$66,$3C,  0
-                dc.b   0,$38,$18,$18,$18,$18,$3C,  0
-                dc.b   0,$38,$6C, $C,$18,$30,$7C,  0
-                dc.b   0,$7E,  6, $C,  6,$66,$3C,  0
-                dc.b   0,$1C,$3C,$6C,$7E, $C, $C,  0
-                dc.b   0,$7E,$60,$7C,  6,  6,$7C,  0
-                dc.b   0,$3C,$60,$7C,$66,$66,$3C,  0
-                dc.b   0,$3E,  6, $C,$18,$18,$18,  0
-                dc.b   0,$3C,$66,$3C,$66,$66,$3C,  0
-                dc.b   0,$3C,$66,$3E,  6,  6,$3C,  0
-                dc.b $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-                dc.b $FF,$8F,$8F,$8F,$8F,$8F,$8F,$FF
-                dc.b $FF,$F1,$F1,$F1,$F1,$F1,$F1,$FF
-                dc.b $FF,$81,$81,$81,$81,$81,$81,$FF
+
+loc_1A6838:                             ; CODE XREF: sub_19324E↑p
+                movem.l d0-d6,-(sp)
+                clr.w   ($1FD426).l
+                move.w  ($F14002).l,d0
+                and.w   #$10,d0
+                beq.w   loc_1A6864
+                move.w  #$337,d2
+                move.w  #$581,d0
+                move.w  #$10A,d6
+                move.w  #$F1,d4
+                bra.w   loc_1A687C
+; ---------------------------------------------------------------------------
+
+loc_1A6864:                             ; CODE XREF: ROM:001A684C↑j
+                move.w  #$34B,d2
+                move.w  #$565,d0
+                move.w  #$142,d6
+                move.w  #$11F,d4
+                move.w  #1,($1FD426).l
+
+loc_1A687C:                             ; CODE XREF: ROM:001A6860↑j
+                move.w  d0,($1FD428).l
+                move.w  d4,($1FD420).l
+                move.w  d0,d1
+                asr.w   #1,d1
+                sub.w   d1,d2
+                add.w   #4,d2
+                sub.w   #1,d1
+                or.w    #$400,d1
+                move.w  d1,($1FD42C).l
+                move.w  d1,($F0003C).l
+                move.w  d2,($1FD42A).l
+                move.w  d2,($F00038).l
+                move.w  d2,($F0003A).l
+                move.w  d6,d5
+                sub.w   d4,d5
+                move.w  d5,($1FD422).l
+                add.w   d4,d6
+                move.w  d6,($1FD424).l
+                move.w  #$FFFF,($F00048).l
+                move.w  #0,($F00058).l
+                move.l  #0,($F0002A).l
+                movem.l (sp)+,d0-d6
+                rts
+; ---------------------------------------------------------------------------
+                align $10
+
+; =============== S U B R O U T I N E =======================================
+
+
+sub_1A68F0:                             ; CODE XREF: ROM:loc_1A6986↓p
+                movem.l d0-d2/a0-a1,-(sp)
+                clr.l   d0
+                move.l  d0,($F02114).l
+                move.l  #0,($F02208).l
+                move.l  #$4020,d0
+                move.l  d0,($F02204).l
+                move.l  d0,($F02228).l
+                move.l  (a0)+,d0
+                move.l  d0,d1
+                and.l   #$FFFFFFF8,d0
+                sub.l   d0,d1
+                move.l  d0,($F02200).l
+                asr.l   #1,d1
+                move.l  d1,($F0220C).l
+                move.l  (a0)+,d0
+                asr.l   #1,d0
+                or.l    #$10000,d0
+                move.l  d0,($F0223C).l
+                move.l  a0,d0
+                move.l  d0,d2
+                and.l   #$FFFFFFF8,d0
+                sub.l   d0,d2
+                move.l  d0,($F02224).l
+                asr.l   #1,d2
+                move.l  d2,($F02230).l
+                or.l    d1,d2
+                beq.s   loc_1A6968
+                move.l  #$1800005,d0
+                bra.s   loc_1A696E
+; ---------------------------------------------------------------------------
+
+loc_1A6968:                             ; CODE XREF: sub_1A68F0+6E↑j
+                move.l  #$1800001,d0
+
+loc_1A696E:                             ; CODE XREF: sub_1A68F0+76↑j
+                move.l  d0,($F02238).l
+
+loc_1A6974:                             ; CODE XREF: sub_1A68F0+8E↓j
+                move.l  ($F02238).l,d0
+                btst    #0,d0
+                beq.s   loc_1A6974
+                movem.l (sp)+,d0-d2/a0-a1
+                rts
+; End of function sub_1A68F0
+
+; ---------------------------------------------------------------------------
+
+loc_1A6986:                             ; CODE XREF: sub_192088+DA6↑p
+                bsr.w   sub_1A68F0
+                movem.l d0-d1/a0,-(sp)
+                move.l  (a0)+,($F02110).l
+                move.l  #$11,($F02114).l
+                movem.l (sp)+,d0-d1/a0
+                rts
+; ---------------------------------------------------------------------------
+                movem.l d0/a0,-(sp)
+                lea     ($F02114).l,a0
+
+loc_1A69AE:                             ; CODE XREF: ROM:001A69B4↓j
+                move.l  (a0),d0
+                btst    #0,d0
+                bne.s   loc_1A69AE
+                movem.l (sp)+,d0/a0
+                rts
+; ---------------------------------------------------------------------------
+                align $10
+off_1A69C0:     dc.l dword_1A69F0       ; DATA XREF: sub_192088+D8A↑o
+                dc.l dword_1A73C8
+                dc.l dword_1A79F0
+                dc.l dword_1A88C0
+                dc.l dword_1A8FE8
+                dc.l dword_1A9520
+                dc.l dword_1A9F08
+                dc.l dword_1AA138
+                dc.l dword_1AAB38
+                dc.l dword_1AB3C8
+                dc.l dword_1AB9C0
+                align $10
+dword_1A69F0:   dc.l $F03000, $9D0, $98003F5C, $F0980E, $3F8000F0, $A4019800
+                                        ; DATA XREF: ROM:off_1A69C0↑o
+                dc.l $480000, $60A401, $9800004C, $60, $A402BDC1, $C4229800
+                dc.l $500000, $60A401, $980000A4, $60, $A402C441, $C4622C21
+                dc.l $C4819800, $3F4000F0, $A4179800, $A00000, $60A416
+                dc.l $980A0300, $980F, $17E0000, $980D00FF, $9800, $E80000
+                dc.l $60A401, $63C19800, $39B000F0, $20A401, $C6219800
+                dc.l $3F5C00F0, $A41D7C3D, $D4C1E400, $98003392, $F0D000
+                dc.l $E4009800, $364600F0, $7D3DD002, $E4009800, $31C800F0
+                dc.l $7C5DD002, $E4009800, $E00000, $60A402, $980000E4
+                dc.l $60, $A4018840, $8FDE881F, $8825661F, $660527DF, $27C5643E
+                dc.l $13DFD454, $E400201F, $13C5D454, $E4002005, $639F2BE5
+                dc.l $63059800, $31BC00F0, $2800C5E0, $98000024, $60, $A4069800
+                dc.l $280000, $60A407, $98000034, $60, $A4189800, $EC0000
+                dc.l $60A401, $66012821, $C7616D86, $6D876D98, $98000084
+                dc.l $60, $A4159813, $31BC00F0, $9814316C, $F09809, $35000000
+                dc.l $980B01FF, $981B, $FFFF0000, $9800009C, $60, $A41C8CE8
+                dc.l $8DFA9800, $800000, $60A404, $8286604, $3408D442
+                dc.l $64282D28, $E4008911, $3415D442, $64352D35, $E4008AB2
+                dc.l $341AD442, $643A2D3A, $E4008B59, $88C088E1, $8B026480
+                dc.l $64816482, $110032, $592571, $25729800, $FF0000, $25791011
+                dc.l $1012980C, $394400F0, $D180E400, $1824D294, $E400AEA0
+                dc.l $D000E400, $9800334E, $F0C5E0, $98000088, $60, $A401C741
+                dc.l $980000EC, $60, $A4016601, $C7619800, $240000, $60A406
+                dc.l $98000028, $60, $A4079800, $340000, $60A418, $98000000
+                dc.l $C01006, $10079800, $800000, $60A404, $9800008C, $60
+                dc.l $A4146604, $66149800, $380000, $60A408, $98000040
+                dc.l $60, $A4158900, $88816201, $883E8C1B, $8B7C5800, $79B5801
+                dc.l $79B883C, $401C881D, $661C661D, $403D6601, $3BC883D
+                dc.l $401D6600, $3BC4020, $62000380, $341BD442, $8BC12000
+                dc.l $6C201006, $98000074, $60, $A4009009, $980000CC, $60
+                dc.l $A41A9800, $700000, $60A410, $980000E0, $60, $A4029800
+                dc.l $E40000, $60A401, $C782C7A1, $904A90C5, $908694A6
+                dc.l $94C40350, $92079800, $DC0000, $60A401, $AFA00020
+                dc.l $9541C7A0, $C781E400, $E400AF82, $AFA18840, $8FDE881F
+                dc.l $8825661F, $660527DF, $27C5643E, $13DFD454, $E400201F
+                dc.l $13C5D454, $E4002005, $639F2BE5, $63059800, $D80000
+                dc.l $60A401, $22C782, $AC628A00, $660025A0, $409C1E, $8209C1C
+                dc.l $13DC8A02, $6502631E, $25A2445C, $3DCAF41, $403C6D1C
+                dc.l $88D188F2, $8B190392, $66199208, $980C3948, $F0D180
+                dc.l $E4009510, $1069800, $32D600F0, $95211824, $D0140030
+                dc.l $9800337C, $F012B8, $D01894F0, $1834D018, $E4009800
+                dc.l $32BA00F0, $D000E400, $AEA0D000, $E4009801, $211400F0
+                dc.l $A4203C00, $BC20D7E0, $E400981F, $355400F0, $3616D481
+                dc.l $E400ADF3, $D3E0E400, $C5456505, $9801000F, $88A0
+                dc.l $64852420, $62056200, $C565C580, $98000048, $60, $A4019800
+                dc.l $4C0000, $60A402, $BDC1C422, $98000050, $60, $A4019800
+                dc.l $A40000, $60A402, $C441C462, $98000078, $60, $A401C481
+                dc.l $981D0080, $9800, $A80000, $60A401, $980000AC, $60
+                dc.l $A402C5A1, $C5C26E01, $6E021031, $1052C4B1, $C4D2AC20
+                dc.l $AC81AC42, $10040, $C420AC62, $C4816601, $25A18820
+                dc.l $8010040, $8019C1E, $8209C13, $13D3AC9F, $13BE651F
+                dc.l $631E25BF, $47F3027E, $25A18BC0, $414640, $9C220821
+                dc.l $9C331053, $13A26302, $47F30262, $463E4451, $44521011
+                dc.l $3D26DF1, $6DF29800, $B00000, $60A401, $44314432
+                dc.l $6D916D92, $ADA1ADC2, $6E016E02, $310052, $AD60AD81
+                dc.l $8FDE881F, $8825661F, $660527DF, $27C5643E, $13DFD454
+                dc.l $E400201F, $13C5D454, $E4002005, $639F2BE5, $6305881F
+                dc.l $980000B8, $60, $A41E03DF, $C57F9800, $BC0000, $60A41E
+                dc.l $3C1C581, $981F3554, $F09813, $34F000F0, $D3E0E400
+                dc.l $ACB1ACD2, $980000B4, $60, $A4019800, $C00000, $60A402
+                dc.l $981E1000, $3C1, $3C24431, $44526D91, $6D92ADA1, $ADC29800
+                dc.l $C40000, $60A41E, $3C1C5A1, $980000C8, $60, $A41E03C2
+                dc.l $C5C2A5C0, $9801341E, $F01820, $D478BDC0, $D020E400
+                dc.l $ADF3AD45, $D260E400, $981F35DA, $F0C4F3, $C5363416
+                dc.l $D4C2E400, $9813356E, $F0D3E0, $E40089E0, $981F35DA
+                dc.l $F01220, $88113436, $D4C2E400, $9813358A, $F0D3E0
+                dc.l $E40089E0, $12408812, $3456D4C2, $E4009813, $35A000F0
+                dc.l $D3E0E400, $89E01220, $981335B6, $F08811, $3476D462
+                dc.l $E400D3E0, $E40089E0, $12206496, $8A518812, $3496D4A2
+                dc.l $E400ACF3, $AD36D260, $E4003916, $9800355E, $F0D000
+                dc.l $E400AE20, $D000E400, $79F1D274, $79F2D274, $7C11D278
+                dc.l $7C12D278, $8A218A42, $63E14142, $2202E2, $8B606500
+                dc.l $28A0B840, $D260E400, $79F1D274, $79F2D274, $7C11D278
+                dc.l $7C12D278, $8A218A42, $63E14142, $2202E2, $8B606500
+                dc.l $28A0B840, $842B840, $142B840, $1842B840, $D260E400
+                dc.l $98003382, $F0D000, $E4009800, $540000, $60A402, $98000058
+                dc.l $60, $A4016582, $65810822, $8219049, $902A9800, $E00000
+                dc.l $60A402, $980000E4, $60, $A4018840, $8FDE881F, $8825661F
+                dc.l $660527DF, $27C5643E, $13DFD454, $E400201F, $13C5D454
+                dc.l $E4002005, $639F2BE5, $63059800, $240000, $60A404
+                dc.l $98000028, $60, $A4069800, $700000, $60A415, $98000080
+                dc.l $60, $A4189800, $D40000, $60A419, $6E189800, $7C0000
+                dc.l $60A409, $9800387C, $F07C38, $D0188B21, $6E017C81
+                dc.l $D018E400, $980037E6, $F0C5E0, $980B0000, $100570B
+                dc.l $889188D2, $AC628AA0, $9521981D, $800000, $66004020
+                dc.l $25A00040, $9C1E0820, $9C1A13DA, $8AA213BE, $65024022
+                dc.l $631E25A2, $445A03DA, $8B3E8C1B, $8B7C581A, $79B5819
+                dc.l $79B8B3C, $435C8B5D, $661C661D, $433D6619, $3BC8B3D
+                dc.l $435D661A, $3BC433A, $621A039A, $341BD442, $8BD9201A
+                dc.l $92AB955B, $135981D, $800000, $AC628AA0, $66004360
+                dc.l $25A00040, $9C1F0820, $9C0113E1, $8AA213BF, $65024362
+                dc.l $631F25A2, $4441003F, $8B3E8C1B, $8B7C581F, $79B5819
+                dc.l $79B8B3C, $43FC8BFD, $661C661D, $433D6619, $3BC8B3D
+                dc.l $43FD661F, $3BC433F, $621F039F, $341BD442, $8BD9201F
+                dc.l $95750352, $3F16611, $6612980C, $339200F0, $981BFFFF
+                dc.l $D180, $E4009800, $370400F0, $1838D014, $175AEA0
+                dc.l $98013F58
+                dc.l $F0A422, $3402D002, $E4009800, $400000, $60A401, $6C610039
+                dc.l $980000D4, $60, $BC199800, $E00000, $60A404, $980000E4
+                dc.l $60, $A4059800, $D80000, $60A406, $980000DC, $60
+                dc.l $A40700C4, $E59800, $E00000, $60BC04, $980000E4, $60
+                dc.l $BC059800, $EC0000, $60A404, $98000038, $60, $A4056CE5
+                dc.l $A49800, $EC0000, $60BC04, $AEA0D000, $E4009800, $EC0000
+                dc.l $60A401, $980035E0, $F06601, $98023608, $F00821, $7C21D002
+                dc.l $E4007C41, $D042E400, $98002238, $F0A402, $3402D7A2
+                dc.l $E4009800, $220000F0, $BC179802, $44200001, $880BC02
+                dc.l $89F01030, $8A3C8822, $6422105C, $7C1CD278, $7B90D278
+                dc.l $8B808A5C, $6200105C, $7C1CD278, $7B90D278, $6600621C
+                dc.l $281C9800, $220C00F0, $BC1C8822, $20020880, $62026602
+                dc.l $3A028B7C, $BC02651C, $9800226C, $F028BC, $8B82621C
+                dc.l $285CBC1C, $1880BC1C, $88229800, $223C00F0, $62012841
+                dc.l $BC019802, $2000001, $1880BC02, $A4013401, $D7A2E400
+                dc.l $D260E400, $62516252, $981B01FF, $2779, $133B63D9
+                dc.l $633B8A3D, $58115731, $37FDD442, $E4002011, $8A5D5812
+                dc.l $573237FD, $D442E400, $20126CB1, $6CB29800, $C00000
+                dc.l $110012, $98003392, $F0D000, $E400AF60, $8B614001
+                dc.l $98000000, $7F2401, $9800388C, $F0D000, $E4009800
+                dc.l $339200F0, $D000E400, 0
+                dcb.l 2,$F03608
+                dc.l $F03882, $F0398A
+                dcb.l 4,0
+dword_1A73C8:   dc.l $F03000, $61E, $88729252, $980000E0, $240, $A4029800
+                                        ; DATA XREF: ROM:001A69C4↑o
+                dc.l $E40000, $240A401, $88408FDE, $881F8827, $661F6607
+                dc.l $27DF27C7, $643E13DF, $D454E400, $201F13C7, $D454E400
+                dc.l $2007639F, $2BE76307, $98000004, $240, $A4176617
+                dc.l $98000008, $240, $A4186618, $981D34F6, $F0980B, $1800000
+                dc.l $980C0180, $9800, $980000, $240A401, $98003F60, $F06601
+                dc.l $A4020882, $A440B801, $9800002C, $240, $A4039800
+                dc.l $300000, $240A404, $66036604, $12EB130C, $642B642C
+                dc.l $981B00C0, $981A, $30E000F0, $8B7C1363, $37C1364
+                dc.l $6BD358, $E4007B8B, $D3B4E400, $981A30EE, $F09819
+                dc.l $30F200F0, $8CD358, $E4007B8C, $D3B4E400, $D320E400
+                dc.l $1772D6B, $980030C4, $F0D000, $E4000198, $2D8C981C
+                dc.l $1800000, $7C17D3A2, $E400D3B8, $E4007C18, $D3A2E400
+                dc.l $D3B8E400, $7B97D3B4, $E4007B98, $D3B4E400, $98000000
+                dc.l $240, $A4089810, $1800000, $98113168, $F09806, $319A00F0
+                dc.l $7B10D222, $2C632C84, $9805017F, $9806, $17F0000
+                dc.l $98003598, $F0CC1E, $D00008DE, $98060180, $8B04, $1842C63
+                dc.l $8A059800, $359800F0, $9811319A, $F07AF0, $D2222C63
+                dc.l $89848986, $3068965, $98003598, $F09805, $1800000
+                dc.l $8AE38984, $89860163, $3061883, $98003598, $F0620C
+                dc.l $98003F80, $F0296C, $BC0C980D, $223800F0, $981A2F41
+                dc.l $4180980E, $220000F0, $980F2224, $F09801, $80, $98000020
+                dc.l $240, $A4001020, $9801FFFF, $FF2420, $98012268, $F07C00
+                dc.l $D481E400, $981A0F41, $180BC20, $98012274, $F0BC20
+                dc.l $98012270, $F0BC20, $9801227C, $F0BC20
+                dcb.l 3,$881BC20
+                dc.l $980A0000, $FFFF9809, $FFFF0000, $980000A4, $240
+                dc.l $A4139800, 0
+                dc.l $240A401, $BDE19802, $352200F0, $9800008C, $240, $A4157C15
+                dc.l $D041E400, $98154420, $3C435, $28159815, $44200001
+                dc.l $C8359800, $3F4400F0, $A414BDD4, $98000004, $240
+                dc.l $A4176617, $98000008, $240, $A4186618, $8B146214
+                dc.l $2AF49814, $1800180, $C4548AEB, $8B0C9800, $C0000
+                dc.l $240A414, $6614428B, $98000010, $240, $A4146614, $428C6509
+                dc.l $8A629800, $140000, $240A414, $8A806600, $25200040
+                dc.l $9C1E0820, $9C1C13DC, $8A826502, $631E2522, $445C03DC
+                dc.l $98018000, $103C, $8B901260, $9801003F, $20, $25200260
+                dc.l $9C1E0820, $9C1C13DC, $8A826502, $631E2522, $445C03DC
+                dc.l $98018000, $103C, $8B91630B, $630C8963, $92208C1B
+                dc.l $8B7C5803, $79B5811, $79B8A3C, $407C887D, $661C661D
+                dc.l $423D6611, $3BC8A3D, $407D6603, $3BC4223, $62030383
+                dc.l $341BD442, $94112003, $89649200, $8C1B8B7C, $5804079B
+                dc.l $5810079B, $8A1C409C, $889D661C, $661D421D, $661003BC
+                dc.l $8A1D409D, $660403BC, $42046204, $384341B, $D4429410
+                dc.l $20048985, $92008C1B, $8B7C5805, $79B5810, $79B8A1C
+                dc.l $40BC88BD, $661C661D, $421D6610, $3BC8A1D, $40BD6605
+                dc.l $3BC4205, $62050385, $341BD442, $94102005, $20058986
+                dc.l $92208C1B, $8B7C5806, $79B5811, $79B8A3C, $40DC88DD
+                dc.l $661C661D, $423D6611, $3BC8A3D, $40DD6606, $3BC4226
+                dc.l $62060386, $341BD442, $94112006, $9809FFFF, $8867
+                dc.l $88F588FB, $580756E7, $37FBD442, $E4002007, $88E86607
+                dc.l $2528888B, $8976897B, $580B56EB, $37FBD442, $E400200B
+                dc.l $896C254B, $620C2967, $298890E7, $910888A7, $88FB5807
+                dc.l $570737FB, $D442E400, $200712A7, $88E86607, $252888CB
+                dc.l $897B580B, $570B37FB, $D442E400, $200B12CB, $896C254B
+                dc.l $620C2967, $2988981B, $80000000, $98000018, $240
+                dc.l $A40B036B, $9800001C, $240, $A40C036C, $6C236C24
+                dc.l $106B6C25, $108C6C26, $10AB10CC, $89658966, $66052526
+                dc.l $898B620C, $254B2986, $2965A5A0, $3400D7A2, $E400C465
+                dc.l $C4C6C487, $C4A894E7, $9508C4E7, $C5088AE0, $20002520
+                dc.l $3A00C880, $98003F80, $F0A415, $C8756218, $2B179800
+                dc.l $223C00F0, $BC17BDBA, $A5A03400, $D7A2E400, $98003516
+                dc.l $F0D000, $E4009801, $211400F0, $A4203C00, $BC20D7E0
+                dc.l $E4009800, $3F5400F0, $A4082C63, $2C849805, $1800000
+                dc.l $88A69800, $359800F0, $CC1ED000, $8DE980E, $3F8000F0
+                dc.l $AEA0D000, $E400981A, $2E014180, $98154420, $C435
+                dc.l $28159815, $44200000, $C8359800, $3F4400F0, $A414BDD4
+                dc.l $8AE02000, $25203A00, $C880C480, $98003F80, $F0A415
+                dc.l $2AB5C875, $9800001C, $240, $A40C9800, $C0, $89346214
+                dc.l $100C268C, $195C475, $62182B17, $9800223C, $F0BC17
+                dc.l $BDBAA5A0, $3400D7A2, $E4009800, $351600F0, $D000E400
+                dc.l $981D361A, $F07865, $D3B8E400, $7886D3B8, $E400980E
+                dc.l $220000F0, $98112238, $F08880, $62002860, $C46088E0
+                dc.l $620028E0, $98012268, $F0BC20, $881BC20, $BDC89800
+                dc.l $44200000, $C420981D, $361A00F0, $88BB88DC, $107BD3B8
+                dc.l $109CD3B8, $83B083C, $E4008B60, $20006200, $66003A00
+                dc.l $C4809800, $223C00F0, $621C2B7C, $BC1C9800, $2000001
+                dc.l $BE20A620, $3400D7A2, $E400D3C0, 0
+dword_1A79F0:   dc.l $F03000, $A38, $980E3F80, $F09800, $F00000, $60A401
+                                        ; DATA XREF: ROM:001A69C8↑o
+                dc.l $980000F4, $60, $A4029800, $392000F0, $7C02D482, $24417841
+                dc.l $D001E400, $98000070, $60, $A4069805, $FF0000, $660688C7
+                dc.l $980000A4, $60, $A4049802, $400000, $24A60047, $8624A7
+                dc.l $9CC80087, $98000080, $9CE9, $10081009, $C748C769
+                dc.l $98000084, $60, $A4019804, $80000000, $98000088, $60
+                dc.l $A4021081, $C7811082, $C7A29800, $3F7800F0, $A4019800
+                dc.l $980000, $60A414, $8CF56614, $26B463D4, $281A426
+                dc.l $A0C80846, $A0C90846, $A0CA9129, $914A0846, $89076387
+                dc.l $C7980E, $3F8000F0, $94639800, $34AE00F0, $CC1ED000
+                dc.l $8DE9800, 0
+                dc.l $60A417, $980000A0, $60, $A416980A, $3000000, $980F017E
+                dc.l $980D, $FF0000, $98000024, $60, $A41E9800, $280000
+                dc.l $60A41F, $6E1E6E1F, $98003F7C, $F0A401, $2821C601
+                dc.l $A0C50846, $6305A0C1, $846A0DB, $84663C1, $E1A031
+                dc.l $841A032, $95209541, $10111032, $64916492, $AF98AFB9
+                dc.l $47114732, $6D716D72, $8A388A59, $2012AF5C, $AF7D47B1
+                dc.l $47924798, $47B90251, $3198B32, $6CF16CF2, $3D103F2
+                dc.l $980C334C, $F09800, $318400F0, $2800C5E0, $D180E400
+                dc.l $98003000, $AE01, $12821, $C6019800, $240000, $60A41E
+                dc.l $98000028, $60, $A41F6E1E, $6E1FA0C1, $846A0DB, $84663C1
+                dc.l $E1A031, $841A032, $95209541, $10111032, $64916492
+                dc.l $AF98AFB9, $47114732, $6D716D72, $8A388A59, $2012AF5C
+                dc.l $AF7D47B1, $47924798, $47B90251, $3198B32, $6CF16CF2
+                dc.l $3D103F2, $980C334C, $F09800, $320800F0, $2800C5E0
+                dc.l $D180E400, $98003000, $AE01, $12821, $C6019800, $240000
+                dc.l $60A41E, $98000028, $60, $A41F6E1E, $6E1FA0C1, $846A0DB
+                dc.l $88663C1, $E1A031, $841A032, $95209541, $10111032
+                dc.l $64916492, $AF98AFB9, $47114732, $6D716D72, $8A388A59
+                dc.l $2012AF5C, $AF7D47B1, $47924798, $47B90251, $3198B32
+                dc.l $6CF16CF2, $3D103F2, $980C334C, $F09800, $328C00F0
+                dc.l $2800C5E0, $D180E400, $90C690E7, $91089800, $3F7C00F0
+                dc.l $A4012821, $C601C644, $9800331C, $F0C5E0, $AE009801
+                dc.l $2FFA0000, $A0030840, $A0040840, $A0140840, $8A972800
+                dc.l $C6000020, $A0050840, $A0060840, $A0180840, $20A007
+                dc.l $840A008, $840A019, $8F8C947A, $98000054, $1A, $25972598
+                dc.l $25990357, $3580359, $A6E9A70A, $A72B6203, $62046205
+                dc.l $62066207, $62086E03, $6E046E05, $6E066E07, $6E089801
+                dc.l $34F400F0, $D020E400, $AE409801, $32A800F0, $18202800
+                dc.l $C6407C00, $D021E400, $94C694E7, $95089800, $30C200F0
+                dc.l $1828D001, $E4009800, $392000F0, $D000E400, $AE00981F
+                dc.l $347600F0, $C6202C84, $3616D481, $E400ADF3, $D3E0E400
+                dc.l $980034AE, $F0CC1E, $D00008DE, $980000A8, $60, $A4019800
+                dc.l $AC0000, $60A402, $C5A1C5C2, $6E016E02, $10311052
+                dc.l $C4B1C4D2, $AC20AC81, $1AC62, $C4816601, $25A18820
+                dc.l $8010040, $8019C1E, $8209C13, $13D3AC9F, $13BE651F
+                dc.l $631E25BF, $47F3027E, $25A18BC0, $414640, $9C220821
+                dc.l $9C331053, $13A26302, $47F30262, $463E4451, $44521011
+                dc.l $3D26DF1, $6DF29800, $B00000, $60A401, $44314432
+                dc.l $6D916D92, $ADA1ADC2, $6E016E02, $310052, $981F3476
+                dc.l $F09813, $341400F0, $D3E0E400, $ACB1ACD2, $980000B4
+                dc.l $60, $A4019800, $C00000, $60A402, $981E1000, $3C1
+                dc.l $3C24431, $44526D91, $6D92ADA1, $ADC29800, $C40000
+                dc.l $60A41E, $3C1C5A1, $980000C8, $60, $A41E03C2, $C5C2A5C0
+                dc.l $98013390, $F01820, $D478BDC0, $D020E400, $ADF3D260
+                dc.l $E400981F, $349200F0, $C4F3C536, $9813348A, $F0D3E0
+                dc.l $E400ACF3, $AD36D260, $E4000824, $AE20B811, $840B812
+                dc.l $88A12B61, $840B801, $8402800, $C620D260, $E4009800
+                dc.l $480000, $60A401, $9800004C, $60, $A402BDC1, $C4229800
+                dc.l $500000, $60A401, $980000A4, $60, $A402C441, $C4629800
+                dc.l $780000, $60A401, $C481981D, $800000, $D3C0E400, $65149294
+                dc.l $980E2200, $F0980D, $223800F0, $98021040, $1A5BF
+                dc.l $341FD7A2, $E4009800, $3F4000F0, $A4012821, $BDC19800
+                dc.l $1800180, $2800C440, $E4006309, $630A630B, $7886D534
+                dc.l $887F88A3, $8BE5889F, $88C48BE6, $893F8949, $8BEA7888
+                dc.l $D534887F, $88E38BE7, $889F8904, $8BE8893F, $89698BEB
+                dc.l $78C8D534, $88BF88E5, $8BE788DF, $89068BE8, $895F896A
+                dc.l $8BEB88D2, $89131092, $10D38916, $8321096, $8330836
+                dc.l $88F088AC, $1070106C, $8971894F, $1131112F, $6210620C
+                dc.l $899F580C, $564C37FF, $D442E400, $200C8A1F, $581056D0
+                dc.l $37FFD442, $E4002010, $89FF580F, $564F37FF, $D442E400
+                dc.l $200F8A3F, $581156D1, $37FFD442, $E4002011, $96969814
+                dc.l $392C00F0, $8AC09815, $392E00F0, $62168877, $28168938
+                dc.l $63168879, $893A6217, $62199800, $379000F0, $7C04D014
+                dc.l $E4009800, $36A400F0, $7C06D562, $E400D014, $E4007C08
+                dc.l $D4D4E400, $98003914, $F0D000, $E4008A40, $62008A01
+                dc.l $8A3F901F, $8C1B8B7C, $5801079B, $5800079B, $881C403C
+                dc.l $883D661C, $661D401D, $660003BC, $881D403D, $660103BC
+                dc.l $40016201, $381341B, $D44297E0, $2001901F, $8C1B8B7C
+                dc.l $581F079B, $5800079B, $881C43FC, $8BFD661C, $661D401D
+                dc.l $660003BC, $881D43FD, $661F03BC, $401F621F, $39F341B
+                dc.l $D44297E0, $201F0039, $3FA2C84, $88B78958, $62179800
+                dc.l $37C400F0, $D000E400, $88800092, $20000832, $62008981
+                dc.l $89FF901F, $8C1B8B7C, $5801079B, $5800079B, $881C403C
+                dc.l $883D661C, $661D401D, $660003BC, $881D403D, $660103BC
+                dc.l $40016201, $381341B, $D44297E0, $2001901F, $8C1B8B7C
+                dc.l $581F079B, $5800079B, $881C43FC, $8BFD661C, $661D401D
+                dc.l $660003BC, $881D43FD, $661F03BC, $401F621F, $39F341B
+                dc.l $D44297E0, $201F0037, $3F88A01, $8A3F901F, $8C1B8B7C
+                dc.l $5801079B, $5800079B, $881C403C, $883D661C, $661D401D
+                dc.l $660003BC, $881D403D, $660103BC, $40016201, $381341B
+                dc.l $D44297E0, $2001901F, $8C1B8B7C, $581F079B, $5800079B
+                dc.l $881C43FC, $8BFD661C, $661D401D, $660003BC, $881D43FD
+                dc.l $661F03BC, $401F621F, $39F341B, $D44297E0, $201F0039
+                dc.l $3FA8C04, $9800013F, $981F, $391400F0, $7804D3F4
+                dc.l $E4009801, $37BC00F0, $7806D038, $E40088C1, $10011032
+                dc.l $D3F8E400, $D3E2E400, $6204CC1E, $D28008DE, $88EC896F
+                dc.l $10AC114F, $620C899F, $580C566C, $37FFD442, $E400200C
+                dc.l $89FF580F, $566F37FF, $D442E400, $200F9800, $38E000F0
+                dc.l $7C06D014, $E40088C0, $D32000, $8336200, $898189FF
+                dc.l $901F8C1B, $8B7C5801, $79B5800, $79B881C, $403C883D
+                dc.l $661C661D, $401D6600, $3BC881D, $403D6601, $3BC4001
+                dc.l $62010381, $341BD442, $97E02001, $901F8C1B, $8B7C581F
+                dc.l $79B5800, $79B881C, $43FC8BFD, $661C661D, $401D6600
+                dc.l $3BC881D, $43FD661F, $3BC401F, $621F039F, $341BD442
+                dc.l $97E0201F, $3703F8, $8A018A3F, $901F8C1B, $8B7C5801
+                dc.l $79B5800, $79B881C, $403C883D, $661C661D, $401D6600
+                dc.l $3BC881D, $403D6601, $3BC4001, $62010381, $341BD442
+                dc.l $97E02001, $901F8C1B, $8B7C581F, $79B5800, $79B881C
+                dc.l $43FC8BFD, $661C661D, $401D6600, $3BC881D, $43FD661F
+                dc.l $3BC401F, $621F039F, $341BD442, $97E0201F
+                dc.l $3903FA, $9800013F, $981F, $391400F0, $7806D3F4, $E4009801
+                dc.l $390C00F0, $7808D038, $E4008901, $10011033, $D3F8E400
+                dc.l $D3E2E400, $8A72CC1E, $D28008DE, $980E3F80, $F0ADE0
+                dc.l $D000E400, $980E3F80, $F0AEA0, $D000E400, $93DE8AFB
+                dc.l $8B1C8B3D, $8B5E7AF9, $D4D48B7F, $8BBB8BFD, $8B9F8BDC
+                dc.l $8BFE137D, $139E6E1B, $661D083D, $8BDF581E, $57BE37FF
+                dc.l $D442E400, $201EA5BF, $341FD7A2, $E4009801, $226800F0
+                dc.l $BC360881, $BC369801, $44200000, $8BA06480, $D4C2E400
+                dc.l $980039A0, $F0D000, $E4003A01, $9800227C, $F0BC1C
+                dc.l $980039EA, $F0C421, $D000E400, $C4219380, $8B608C7F
+                dc.l $27E07C00, $D4A2E400, $13DC1820, $D740E400, $8B806700
+                dc.l $D4E2E400, $9800398A, $F0941C, $D000E400, $8BC163DE
+                dc.l $98002288, $F0BC1C, $3C1880, $BC1C003C, $1880BC1C
+                dc.l $3C1880, $BC1C9800, $227000F0, $9801FFFF, $FF243E
+                dc.l $BC1E9801, $3A1E00F0, $7C04D038, $E4009801, $FFFF0000
+                dc.l $243B289B, $C47B3A1D, $9800223C, $F0BC1D, $BDA29800
+                dc.l 1, $40197, $1F80219, $1832D2A1, $23A97DE, $D3C0E400
+dword_1A8430:   dc.l $F03A78, $484, $980E3F80, $F09800, $3F4C00F0, $8C21BC01
+                                        ; DATA XREF: sub_192088+DA0↑o
+                dc.l $A4017C01, $D7A1E400, $98023F68, $F08CA1, $A4402821
+                dc.l $C7019802, $3DC000F0, $A4030880, $7C03D042, $E4002863
+                dc.l $2800C6E3, $C7209801, $A, $98023AD0, $F09800, $3E8200F0
+                dc.l $2842C6A2, $D000E400, $98003B64, $F07C01, $D002E400
+                dc.l $8B549801, $3F0000, $24349800, $6000000, $40140374
+                dc.l $8A839801, $3B4C00F0, $980000F8, $60, $A4027C02, $D022E400
+                dc.l $98003F40, $F0A401, $98000000, $60, $BC019800, $FC0000
+                dc.l $60A401, $935A937B, $93189339, $98023B40, $F09800
+                dc.l $3E8200F0, $2842C6A2, $D000E400, $946395CE, $975A977B
+                dc.l $97189739, $33A9800, $3ADC00F0, $1838D001, $E40097BD
+                dc.l $85DA3A0, $820BBA0, $AEE39800, $3F5400F0, $A4019800
+                dc.l 0
+                dc.l $60BC01, $98003F3C, $F0A401, $980000F0, $60, $BC012C21
+                dc.l $98003F58, $F0BC01, $980000FC, $60, $A4019802, $3BB200F0
+                dc.l $98003E82, $F02842, $C6A2D000, $E4009463, $95CE9800
+                dc.l $3000000, $8CE10003, $98143BC8, $F08876, $A6D50896
+                dc.l $A6C00916, $A6C41996, $7CC4D441, $E4002C00, $15BED5
+                dc.l $A161821, $D294E400, $98003F64, $F0A404, $A009814
+                dc.l $FFFF0000, $981500FF, $9816, $80000, $98173C10, $F09818
+                dc.l $3C5400F0, $A46A0903, $A46B0883, $A46C0883, $7CECD518
+                dc.l $898118E1, $A40263C1, $19020022, $A44CD300, $7C6CD461
+                dc.l $894C650C, $D300894F, $660A26AA, $14B9D6C, $82B9D6D
+                dc.l $650F118D, $26AF630C, $45ED01AC, $B88C0844, $1836D2E1
+                dc.l $E4009800, $3F6C00F0, $AEF6981A, $3F0000, $98020100
+                dc.l $8AD7, $8AD90059, $570059, $A418A2E1, $98023DAA, $F00857
+                dc.l $7C01D042, $6201A2E2, $28419800, $3F0000, $134063A0
+                dc.l $880263C0, $409802, $3F7000F0, $A45B0360, $8FDB0360
+                dc.l $1982A448, $883C8B35, $88048910, $8B930A10, $661C6433
+                dc.l $A108D03, $98057FFF, $9807, $3CE800F0, $24B388BB
+                dc.l $63FB980A, $3CF800F0, $98118000, $2E52, $341CD142
+                dc.l $E400A101, $12214425, $6E0500B2, $351CD442, $643CA21B
+                dc.l $8501823, $D0E10848, $43736613, $46726DF2, $7C12D434
+                dc.l $2322A52, $C6D28A45, $AEE60864, $9C890824, $A0800844
+                dc.l $63C0A488, $6890A, $2CE7642A, $34E9D442, $3CE98C27
+                dc.l $98003D56, $F07C49, $D002E400, $40A86608, $98003D90
+                dc.l $F0D000, $E40088BE, $8C1B8B7C, $5808079B, $5805079B
+                dc.l $88BC411C, $891D661C, $661D40BD, $660503BC, $88BD411D
+                dc.l $660803BC, $40A86208, $388341B, $D4428BC5, $20087C15
+                dc.l $D461E400, $7C27D441, $E4001148, $7C15D462, $E400A6A0
+                dc.l $8BCC8, $AEC02800, $BB000858, $8570899, $8969800
+                dc.l $3C7E00F0, $183AD014, $E400AF20, $AF021822, $98033A9E
+                dc.l $F02842, $C702D074, $E4009802, $3DEC00F0, $98010000
+                dc.l $39800, $3E8200F0, $2842C6A2, $D000E400, $8C209801
+                dc.l $3F5000F0, $BC209800, $3A7E00F0, $D000E400, $98142238
+                dc.l $F0A695, $3415D7A2, $E4009814, $220000F0, $98152224
+                dc.l $F08839, $981AFFF8, $FFFF8B38, $27591338, $BE990894
+                dc.l $98164020, $BE96, $9146438, $BE988819, $88172759
+                dc.l $1337BEB9, $895BEB6, $9156437, $BEB76422, $9819223C
+                dc.l $F03A02, $BF229816, $10180, $2AF8D482, $E4009816
+                dc.l $50180, $98142238, $F0BE96, $A6953415, $D7A2E400
+                dc.l $AEB4D280, $E4009063, $91CE8824, $88256204, $66056604
+                dc.l $98003F5C, $F0BC04, $98003000, $F09801, $3EF800F0
+                dc.l $A4227845, $D002E400, $BC259800, $3F4800F0, $A40463C5
+                dc.l $85A4A4, $A4810884, $A4820884, $8880AEA4, $98053EE4
+                dc.l $F09806, $3E0000F0, $98148000, $28A5, $281C6A5, $D0C0E400
+                dc.l $2884C6A4, $98003000, $F0D000, $E4000000, 0
+                dc.l $FFFF0000, 0
+dword_1A88C0:   dc.l $F03000, $71C, $98003F60, $F0980E, $3F8000F0, $A4010B81
+                                        ; DATA XREF: ROM:001A69CC↑o
+                dc.l $A4200A01, $A4220882, $C7C29818, $FC0000, $9801B034
+                dc.l $F10018, $980AB130, $F19802, $3F0000, $98043040, $F09805
+                dc.l $30000000, $88348C75, $2ED6A697, $8941835, $D79402F6
+                dc.l $64568AC6, $A4072F39, $881A089A, $A75B089A, $A75C7B67
+                dc.l $D4947B7C, $D454E400, $8C390881, $BF1910A7, $D4540898
+                dc.l $2CE778C7, $D454E400, $88C7BC07, $1822D094, $8809803
+                dc.l $365A00F0, $CC1ED060, $8DE9800, $3F6000F0, $A4010801
+                dc.l $981A420, $881A422, $A0437C03, $D4C2E400, $98013176
+                dc.l $F0D020, $E4008C21, $B8019800, $3F6000F0, $A4010801
+                dc.l $981A420, $8409801, $314A00F0, $A0027C02, $D022E400
+                dc.l $7D02D481, $E4009803, $341A00F0, $7CC2D481, $E4009803
+                dc.l $33E400F0, $7CE2D481, $E4009803, $33AE00F0, $7C62D481
+                dc.l $E4009803, $322E00F0, $7C42D481, $E4009803, $318E00F0
+                dc.l $7CA2D481, $E4009803, $34AC00F0, $7C22D481, $E4009803
+                dc.l $351200F0, $CC1ED060, $8DE9800, $3F6000F0, $A4010801
+                dc.l $981A420, $8402C21, $B8019800, $3F6000F0, $A4010801
+                dc.l $981A420, $A0017C01, $D4C2E400, $980030BE, $F0D000
+                dc.l $E400980E, $3F8000F0, $AEA0D000, $E4007C23, $D702E400
+                dc.l $2C639801, $211400F0, $A4203C00, $BC20D7E0, $E4002EB5
+                dc.l $980E3F80, $F0AFC0, $A4040880, $A4050880, $A4060880
+                dc.l $8649C89, $824A080, $84463C0, $A4880006, $890A2CE7
+                dc.l $642A34E9, $D4423CE9, $8C279800, $31DC00F0, $7C49D002
+                dc.l $E40040A8, $66089800, $321600F0, $D000E400, $90BF8C1B
+                dc.l $8B7C5808, $79B5805, $79B88BC, $411C891D, $661C661D
+                dc.l $40BD6605, $3BC88BD, $411D6608, $3BC40A8, $62080388
+                dc.l $341BD442, $97E52008, $7C15D461, $E4007C27, $D441E400
+                dc.l $11487C15, $D462E400, $A6A00008, $BCC8D3C0, $E400980E
+                dc.l $3F8000F0, $AFC0A401, $8809803, $220000F0, $A402BC61
+                dc.l $A0490842, $A04A0842, $A04B0842, $A04C0842, $A0539814
+                dc.l $223800F0, $9816220C, $F09815, $223C00F0, $98004420
+                dc.l $39801, $220400F0, $BC20981C, $32E400F0, $CC1FD380
+                dc.l $8DF8A60, $62002A60, $980332E0, $F088FC, $3E1C7C1C
+                dc.l $D062E400, $98012268, $F0BC20, $881BC20, $98012220
+                dc.l $F0BC28, $9801221C, $F0BC25, $BEC68C00, $98012218
+                dc.l $F0BC20, $88E08801, $980201FF, $2441, $3A01BEA1, $98000000
+                dc.l $1BE80, $A69C341C, $D7A2E400, $D3C0E400, $112B114C
+                dc.l $89466206, $29268960, $89815800, $58017801, $D4D8E400
+                dc.l $98003354, $F0D000, $E400981C, $33A800F0, $7C00D382
+                dc.l $E400620C, $8C03786C, $D474E400, $3803580C, $540C8807
+                dc.l $8273A07, $3403E400, $D442E400, $200C8988, $62089803
+                dc.l $FFFF, $89852465, $8C207C0B, $D494E400, $9800FFFF
+                dc.l $2805, $D3E0E400, $981C33A8, $F07C01, $D382E400, $620B8C03
+                dc.l $786BD474, $E4003803, $580B542B, $88270827, $3A073403
+                dc.l $E400D442, $E400200B, $89689803, $FFFF0000, $24688965
+                dc.l $66059800, 1, $7C0CE400, $D494E400, $98000000, $FFFF2805
+                dc.l $D3E0E400, $8C07D3E0, $E4009801, $345C00F0, $CC1FD020
+                dc.l $8DF9813, $33DA00F0, $981433C8, $F088D1, $89C0082E
+                dc.l $256088F2, $1009C01, $1032D180, $E4001824, $D2940831
+                dc.l $D3C0E400, $9801345C, $F0CC1F, $D02008DF, $98133410
+                dc.l $F09814, $33FE00F0, $88F289C0, $82E2560, $88D10100
+                dc.l $9C010031, $D180E400, $1824D294, $1832D3C0, $E4009801
+                dc.l $345C00F0, $CC1FD020, $8DF9813, $345200F0, $98143438
+                dc.l $F0981A, $400000, $89C0082E, $256088D1, $10088F2
+                dc.l $9C010340, $319C01, $1032D180, $E4001824, $D294E400
+                dc.l $D3C0E400, $980E3F80, $F0AFC0, $A4170880, $A4080880
+                dc.l $A4070880, $88E66607, $980DFFFF, $980B, $3F0000, $25A6A40E
+                dc.l $89C5256E, $6605980A, $3000000, $980F017F, $981B
+                dc.l $FFFF0000, $9804003F, $980C, $362600F0, $D3E0E400
+                dc.l $9801345C, $F0CC1F, $D02008DF, $A50E0888, $A51C0888
+                dc.l $A5089813, $350600F0, $981434DC, $F0980B, $FF0000
+                dc.l $98058800, $88D1, $89C0038E, $66002560, $88F20100
+                dc.l $9C016441, $10329231, $98183F60, $F0A719, $899A738
+                dc.l $A3195F31, $5F32D180, $E4009631, $1824D294, $831D3C0
+                dc.l $E4009800, $3F4000F0, $A4179806, 0
+                dc.l $980700C0, $9805, 0
+                dc.l $981BFFFF, $980A, $3000000, $980F017F, $9808, $4000000
+                dc.l $980E3F80, $F0AFC0, $2F9CA408, $A1169804, $FFFF0000
+                dc.l $6456980C, $350E00F0, $981333AA, $F09800, $360A00F0
+                dc.l $CC1FD000, $8DF02DC, $8267B84, $D4D8E400, $98003566
+                dc.l $F0D000, $E4009805, $F0000000, $848889C, $A1160848
+                dc.l $6456A104, $9800360A, $F0CC1F, $D00008DF, $12DC0826
+                dc.l $7B84D4D4, $E4009800, $359800F0, $D000E400, $889C8E09
+                dc.l $98058F00, $9800, $360A00F0, $CC1FD000, $8DF0886
+                dc.l $1829D4D8, $E4009800, $35C200F0, $D000E400, $848A116
+                dc.l $98058000, $6456, $9800360A, $F0CC1F, $D00008DF, $82612DC
+                dc.l $D198E400, $980035EC, $F0D000, $E40078C8, $D19888D1
+                dc.l $98000040, $6431, $981200E0, $11, $8B816541, $103279F1
+                dc.l $D27479F2, $D2747C11, $D2787C12, $D2788A21, $8A4263E1
+                dc.l $41420022, $2E28B60, $650028A0, $B8400842, $B8400142
+                dc.l $B8401842, $B840D260, $E4009800, $3F6000F0, $A4010B81
+                dc.l $A4240901, $A4290881, $A42A9813, $2000000, $8C8B980C
+                dc.l $369000F0, $980D36AA, $F09800, $3F3C00F0, $A4142E31
+                dc.l $65148C3C, $A1252CE7, $849A126, $88C80849, $10A8D474
+                dc.l $E4002008, $88C563C5, $85A4A0, $78E0D458, $8858807
+                dc.l $1828D734, $E40063E7, $8407A152, $127278F2, $D454E400
+                dc.l $88F2B952, $981D0300, $A120, $849A121, $2C4278E0
+                dc.l $D4B4E400, $2B8288E0, $D4C0E400, $2C4213A0, $D454E400
+                dc.l $2C0078E1, $D458E400, $2C422851, $2C541849, $B9200889
+                dc.l $63FC182B, $D194084A, $63149800, $3F3C00F0, $2A91BC11
+                dc.l $D3C0E400, 0
+dword_1A8FE8:   dc.l $F03000, $530, $98000098, $60, $A4028C64, $98003F60
+                                        ; DATA XREF: ROM:001A69D0↑o
+                dc.l $F06602, $A4012482, $A42063C2, $40A418, $980E3F80
+                dc.l $F09800, $3F5C00F0, $A4017C61, $D4C1E400, $98003380
+                dc.l $F0D000, $E400A310, $980A0300, $858, $98003F40, $F0A313
+                dc.l $980F017E, $858, $A4179800, $240000, $60A411, $98000028
+                dc.l $60, $A4126611, $66128A00, $8A616380, $64211011, $10329800
+                dc.l $540000, $60A41B, $980000B8, $60, $A409651B, $980000BC
+                dc.l $60, $A40B9800, $D80000, $60A40C, $980000DC, $60
+                dc.l $A40D9800, $E00000, $60A407, $980000E4, $60, $A4088A54
+                dc.l $8A214154, $63E102F4, $349294, $90E79108, $92108FF6
+                dc.l $A71A9800, $3F5C00F0, $A4017C01, $D4C1E400, $9800312C
+                dc.l $F0D000, $E4007C41, $D4C1E400, $98003284, $F0D000
+                dc.l $E4007C81, $D4C1E400, $9800341E, $F0D000, $E4009819
+                dc.l $324E00F0, $9815322E, $F09800, $31E200F0, $D000E400
+                dc.l $980000F0, $60, $A4019800, $F40000, $60A402, $980031DC
+                dc.l $F07C02, $D4822441, $7841D001, $E4006C8C, $6C8D6C49
+                dc.l $6C4B981C, $400000, $981DFFFF, $1F9819, $31AC00F0
+                dc.l $98153172, $F037FA, $D32288E2, $89018840, $8BBE881F
+                dc.l $882527DF, $27C5643E, $13DFD454, $E400201F, $13C5D454
+                dc.l $E4002005, $88BB661F, $6605639F, $2BE565BB, $6305039B
+                dc.l $2B65BA85, $85463FA, $1271836, $D2B40168, $8FF60898
+                dc.l $A71A1830, $D2B4E400, $94E79508, $96949610, $18701A8
+                dc.l $15490E7, $91081833, $D2B49294, $AEA0D000, $E4006C4B
+                dc.l $6C8D88E2, $89018840, $8FDE881F, $8825661F, $660527DF
+                dc.l $27C5643E, $13DFD454, $E400201F, $13C5D454, $E4002005
+                dc.l $639F2BE5, $63059800, $540000, $60A41C, $631C981D
+                dc.l $FFFE01FF, $981F0040, $939C, $912937FA, $D3228B82
+                dc.l $88408BBE, $881B27DB, $643E13DB, $D454E400, $201B663B
+                dc.l $3FB28BB, $BA9B0854, $16963FA, $13C1836, $D2B4E400
+                dc.l $8FF60898, $A71A1830, $D2B4E400, $9529979C, $969401AC
+                dc.l $9610019C, $154939C, $1833D2B4, $9294AEA0, $D000E400
+                dc.l $98153310, $F09800, $240000, $60A411, $98000028, $60
+                dc.l $A4126611, $66129800, $840000, $60A410, $98000088
+                dc.l $60, $A4136510, $65138A00, $8A616420, $64211011, $10328A54
+                dc.l $8A214154, $63E102F4, $349294, $92106C8C, $6C8D6C49
+                dc.l $6C4B981C, $400000, $981DFFFF, $1F9800, $F00000, $60A401
+                dc.l $980000F4, $60, $A4026501, $980031DC, $F07C02, $D442E400
+                dc.l $24229042, $88E28901, $88408BBE, $881F8825, $27DF27C5
+                dc.l $643E13DF, $D454E400, $201F13C5, $D454E400, $200588BB
+                dc.l $661F6605, $639F2BE5, $65BB9801, $FF0000, $94427C02
+                dc.l $D442E400, $2C256305, $39B2B65, $BA850854, $1270168
+                dc.l $1830D2B4, $E40094E7, $95089694, $96100187, $1A80154
+                dc.l $90E79108, $1833D2B4, $9294AEA0, $D000E400, $98003F60
+                dc.l $F0A401, $901A422, $980000C0, 2, $98000024, $60, $A4049800
+                dc.l $280000, $60A405, $63E5BC44, $882BC45, $9029800, $50000
+                dc.l $B8409800, $540000, $60A41B, $651B9800, $E00000, $60A407
+                dc.l $980000E4, $60, $A408981D, $FFFF001F, $890188E0, $8BBE881F
+                dc.l $882527DF, $27C5643E, $13DFD454, $E400201F, $13C5D454
+                dc.l $E4002005, $661F6605, $639F2BE5, $63059800, $3F6000F0
+                dc.l $2B65A401, $1881B825, $AEA0D000, $E4006C8C, $6C8D6C49
+                dc.l $6C4B981C, $400000, $981DFFFF, $1F9815, $34B400F0
+                dc.l $980000A4, $60, $A4169800, $240000, $60A411, $98000028
+                dc.l $60, $A4126611, $66129800, $840000, $60A410, $98000088
+                dc.l $60, $A41364F0, $65138A00, $8A616420, $64211011, $10328A54
+                dc.l $8A214154, $63E102F4, $349294, $92109800, $F00000
+                dc.l $60A401, $980000F4, $60, $A4026501, $980031DC, $F07C02
+                dc.l $D442E400, $24229042, $88E28901, $88408BBE, $881F8825
+                dc.l $27DF27C5, $643E13DF, $D454E400, $201F13C5, $D454E400
+                dc.l $200588BB, $659F6585, $2DF02C5, $9FE09CA1, $64806481
+                dc.l $63802801, $980000FF, $9442, $7C02D442, $E4002C01
+                dc.l $65BB6301, $39B2B61, $BA810854, $1270168, $1830D2B4
+                dc.l $E40094E7, $95089694, $96100187, $1A80154, $90E79108
+                dc.l $1833D2B4, $9294AEA0, $D000E400
+dword_1A9520:   dc.l $F03000, $9E0, $98003F5C, $F0980E, $3F8000F0, $A4019800
+                                        ; DATA XREF: ROM:001A69D4↑o
+                dc.l $480000, $60A401, $9800004C, $60, $A402BDC1, $C4229800
+                dc.l $500000, $60A401, $980000A4, $60, $A402C441, $C4622C21
+                dc.l $C4819800, 0
+                dc.l $60A417, $980000A0, $60, $A416980A, $3000000, $980F017E
+                dc.l $980D, $FF0000, $980000E8, $60, $A40163C1, $980039C0
+                dc.l $F00020, $A401C621, $E4009800, $E00000, $60A401, $980000E4
+                dc.l $60, $A4028840, $981EFFFF, $1F881F, $882527DF, $27C5643E
+                dc.l $13DFD454, $E400201F, $13C5D454, $E4002005, $661F6605
+                dc.l $639F2BE5, $63059800, $7C0000, $60A414, $98090000
+                dc.l $40AC62, $8A80981D, $800000, $660025A0, $409C1E, $8209C1A
+                dc.l $13DA8A82, $13BE6502, $631E25A2, $445A03DA, $93540134
+                dc.l $AC628A80, $981D0080, $6600, $25A00040, $9C1E0820
+                dc.l $9C1A13DA, $8A8213BE, $6502631E, $25A2445A, $3DA9355
+                dc.l $98000074, $60, $A4146394, $AC628A80, $981D0080, $6600
+                dc.l $25A00040, $9C1E0820, $9C1A13DA, $8A8213BE, $6502631E
+                dc.l $25A2445A, $3DA9352, $134AC62, $8A80981D, $800000
+                dc.l $660025A0, $409C1E, $8209C1A, $13DA8A82, $13BE6502
+                dc.l $631E25A2, $445A03DA, $93539800, $700000, $60A414
+                dc.l $AC628A80, $981D0080, $6600, $25A00040, $9C1E0820
+                dc.l $9C1A13DA, $8A8213BE, $6502631E, $25A2445A, $3DA8B55
+                dc.l $134AC62, $8A80981D, $800000, $660025A0, $409C1E
+                dc.l $8209C1A, $13DA8A82, $13BE6502, $631E25A2, $445A03DA
+                dc.l $8B5A9800, $980000, $60A402, $8C216602, $98003F60
+                dc.l $F02422, $A40163C2, $981A420, $40A40B, $A1689800
+                dc.l $357800F0, $84B2800, $C5E09800, $240000, $60A406
+                dc.l $98000028, $60, $A4079800, $340000, $60A418, $980000EC
+                dc.l $60, $A4016601, $2821C761, $98000000, $C01006, $10079813
+                dc.l $327E00F0, $98000054, $60, $A41B9800, $9C0000, $60A41C
+                dc.l $98000084, $60, $A4099800, $880000, $60A414, $9800006C
+                dc.l $60, $A404184B, $A5689811, $358400F0, $88B7C08, $D238E400
+                dc.l $A171088B, $A172088B, $A179088B, $45314499, $46926311
+                dc.l $63126319, $A165084B, $A17B0A4B, $7C1BD4C1, $E4000828
+                dc.l $98003578, $F0D000, $8B5C8AA0, $8ABE8B5F, $92208C01
+                dc.l $8822581C, $4415811, $4418A22, $43828B9D, $6602661D
+                dc.l $423D6611, $3A28A3D, $439D661C, $3A2423C, $621C005C
+                dc.l $3401D442, $9411201C, $92408C01, $8822581E, $4415812
+                dc.l $4418A42, $43C28BDD, $6602661D, $425D6612, $3A28A5D
+                dc.l $43DD661E, $3A2425E, $621E005E, $3401D442, $9412201E
+                dc.l $92208C01, $88225800, $4415811, $4418A22, $4002881D
+                dc.l $6602661D, $423D6611, $3A28A3D, $401D6600, $3A24220
+                dc.l $62000040, $3401D442, $94112000, $92408C01, $8822581F
+                dc.l $4415812, $4418A42, $43E28BFD, $6602661D, $425D6612
+                dc.l $3A28A5D, $43FD661F, $3A2425F, $621F005F, $3401D442
+                dc.l $9412201F, $13DC03E0, $8B918812, $96BC9680, $969E96BF
+                dc.l $93208C01, $8822581C, $4415819, $4418B22, $43828B9D
+                dc.l $6602661D, $433D6619, $3A28B3D, $439D661C, $3A2433C
+                dc.l $621C005C, $3401D442, $9419201C, $92408C01, $8822581E
+                dc.l $4415812, $4418A42, $43C28BDD, $6602661D, $425D6612
+                dc.l $3A28A5D, $43DD661E, $3A2425E, $621E005E, $3401D442
+                dc.l $9412201E, $93208C01, $88225800, $4415819, $4418B22
+                dc.l $4002881D, $6602661D, $433D6619, $3A28B3D, $401D6600
+                dc.l $3A24320, $62000040, $3401D442, $94192000, $92408C01
+                dc.l $8822581F, $4415812, $4418A42, $43E28BFD, $6602661D
+                dc.l $425D6612, $3A28A5D, $43FD661F, $3A2425F, $621F005F
+                dc.l $3401D442, $9412201F, $13DC03E0, $8B998812, $967C9640
+                dc.l $965E967F, $92208C01, $8822581C, $4415811, $4418A22
+                dc.l $43828B9D, $6602661D, $423D6611, $3A28A3D, $439D661C
+                dc.l $3A2423C, $621C005C, $3401D442, $9411201C, $93208C01
+                dc.l $8822581E, $4415819, $4418B22, $43C28BDD, $6602661D
+                dc.l $433D6619, $3A28B3D, $43DD661E, $3A2433E, $621E005E
+                dc.l $3401D442, $9419201E, $92208C01, $88225800, $4415811
+                dc.l $4418A22, $4002881D, $6602661D, $423D6611, $3A28A3D
+                dc.l $401D6600, $3A24220, $62000040, $3401D442, $94112000
+                dc.l $93208C01, $8822581F, $4415819, $4418B22, $43E28BFD
+                dc.l $6602661D, $433D6619, $3A28B3D, $43FD661F, $3A2433F
+                dc.l $621F005F, $3401D442, $9419201F, $13DC03E0, $8B918819
+                dc.l $88C088E1, $8B020011, $320059, $ADF3980C, $396C00F0
+                dc.l $D180E400, $98003290, $F01828, $D014E400, $AEA09801
+                dc.l $3F5800F0, $A4223402, $D002E400, $98000038, $60, $A4019800
+                dc.l $940000, $60A415, $98000040, $60, $A4026D81, $6D826D95
+                dc.l $290054, $2A49800, $840000, $60BC09, $98000088, $60
+                dc.l $BC149800, $6C0000, $60BC04, $98000058, $60, $A4016201
+                dc.l $6E61003B, $98000054, $60, $BC1BAEA0, $D000E400, $981F37BE
+                dc.l $F03616, $D481E400, $ADF3D3E0, $E400C545, $65059801
+                dc.l $F0000, $88A06485, $24206205, $6200C565, $C5809800
+                dc.l $480000, $60A401, $9800004C, $60, $A402BDC1, $C4229800
+                dc.l $500000, $60A401, $980000A4, $60, $A402C441, $C4629800
+                dc.l $780000, $60A401, $C481981D, $800000, $980000A8, $60
+                dc.l $A4019800, $AC0000, $60A402, $C5A1C5C2, $6E016E02
+                dc.l $10311052, $C4B1C4D2, $AC20AC81, $AC420001, $40C420
+                dc.l $AC62C481, $660125A1, $88200801, $400801, $9C1E0820
+                dc.l $9C1313D3, $AC9F13BE, $651F631E, $25BF47F3, $27E25A1
+                dc.l $8BC00041, $46409C22, $8219C33, $105313A2, $630247F3
+                dc.l $262463E, $44514452, $101103D2, $6DF16DF2, $980000B0
+                dc.l $60, $A4014431, $44326D91, $6D92ADA1, $ADC26E01, $6E020031
+                dc.l $52AD60, $AD818FDE, $881F8825, $661F6605, $27DF27C5
+                dc.l $643E13DF, $D454E400, $201F13C5, $D454E400, $2005639F
+                dc.l $2BE56305, $881F9800, $B80000, $60A41E, $3DFC57F
+                dc.l $980000BC, $60, $A41E03C1, $C581981F, $37BE00F0, $9813375A
+                dc.l $F0D3E0, $E400ACB1, $ACD29800, $B40000, $60A401, $980000C0
+                dc.l $60, $A402981E, $10000000, $3C103C2, $44314452, $6D916D92
+                dc.l $ADA1ADC2, $980000C4, $60, $A41E03C1, $C5A19800, $C80000
+                dc.l $60A41E, $3C2C5C2, $A5C09801, $368800F0, $1820D478
+                dc.l $BDC0D020, $E400ADF3, $AD45D260, $E400981F, $384400F0
+                dc.l $C4F3C536, $3416D4C2, $E4009813, $37D800F0, $D3E0E400
+                dc.l $89E0981F, $384400F0, $12208811, $3436D4C2, $E4009813
+                dc.l $37F400F0, $D3E0E400, $89E01240, $88123456, $D4C2E400
+                dc.l $9813380A, $F0D3E0, $E40089E0, $12209813, $382000F0
+                dc.l $88113476, $D462E400, $D3E0E400, $89E01220, $64968A51
+                dc.l $88123496, $D4A2E400, $ACF3AD36, $D260E400, $39169800
+                dc.l $37C800F0, $D000E400, $AE20D000
+                dc.l $E40079F1, $D27479F2, $D2747C11, $D2787C12, $D2788A21
+                dc.l $8A4263E1, $41420022, $2E28B60, $650028A0, $B840D260
+                dc.l $E40079F1, $D27479F2, $D2747C11, $D2787C12, $D2788A21
+                dc.l $8A4263E1, $41420022, $2E28B60, $650028A0, $B8400842
+                dc.l $B8400142, $B8401842, $B840D260, $E4009800, $EC0000
+                dc.l $60A401, $9800384A, $F06601, $98023872, $F00821, $7C21D002
+                dc.l $E4007C41, $D042E400, $98002238, $F0A402, $3402D7A2
+                dc.l $E4009800, $220000F0, $BC179802, $44200001, $880BC02
+                dc.l $89F01030, $8A3C8822, $6422105C, $7C1CD278, $7B90D278
+                dc.l $8B808A5C, $6200105C, $7C1CD278, $7B90D278, $6600621C
+                dc.l $281C9800, $220C00F0, $BC1C8822, $20020880, $62026602
+                dc.l $3A028B7C, $BC02651C, $9800226C, $F028BC, $8B82621C
+                dc.l $285CBC1C, $1880BC1C, $88229800, $223C00F0, $62012841
+                dc.l $BC019802, $2000001, $1880BC02, $A4013401, $D7A2E400
+                dc.l $D260E400, $62516252, $6DD97C39, $D2788A3D, $58115731
+                dc.l $37FDD442, $E4002011, $8A5D5812, $573237FD, $D442E400
+                dc.l $20126CF1, $6CF29800, $C00000, $110012, $980035FC
+                dc.l $F0D000, $E400AF60, $8B614001, $98000000, $7F2401
+                dc.l $980038B0, $F0D000, $E4000000
+                dcb.l 2,$F03872
+                dc.l $F038A6, $F039A6
+                dcb.l 4,0
+dword_1A9F08:   dc.l $F03000, $224, $980E3F80, $F09800, $3F6000F0, $A4010981
+                                        ; DATA XREF: ROM:001A69D8↑o
+                dc.l $A422A444, $A486888B, $98000024, $60, $A4109800, $280000
+                dc.l $60A411, $98010000, $C09800, $340000, $60A412, $10301031
+                dc.l $98000038, $60, $A4139800, $400000, $60A414, $98000094
+                dc.l $60, $A4156C93, $6C946C95, $980000B8, $60, $A4169800
+                dc.l $BC0000, $60A417, $980000CC, $60, $A41863F6, $63F76C38
+                dc.l $2D302F4, $3159801, $80000000, $9800005C, $60, $A4169800
+                dc.l $600000, $60A417, $98000064, $60, $A4181036, $10371038
+                dc.l $98000054, $60, $A41A381A, $7C1AD441, $E4008C3A, $980000E4
+                dc.l $60, $A4019800, $E00000, $60A402, $981DFFFF, $1F8840
+                dc.l $8BBE881F, $883927DF, $27D9643E, $13DFD454, $E400201F
+                dc.l $13D9D454, $E4002019, $661F6619, $639F2BF9, $63199800
+                dc.l $580000, $60A405, $8846485, $98073206, $F02D8C, $980131AE
+                dc.l $F09800, $40000, $60A402, $18229800, $40000, $60BC02
+                dc.l $7C02D034, $E4009800, $800000, $60A402, $66029800
+                dc.l $40000, $60BC02, $981E01F4, $10DE, $D038E400, $826BD66
+                dc.l $8889980A, $317400F0, $9C9A120, $7C00D462, $E400D140
+                dc.l $A498921, $9800FFFF, $19C1, $B920BC30, $881BC31, $881BC32
+                dc.l $881B839, $841B83A, $841BC33, $881BC34, $881BC35
+                dc.l $A49981E, $1FF0000, $9C4A088, $7C08D0E2, $E4008880
+                dc.l $888119C0, $841A434, $A4150295, $BC1502D4, $880BC34
+                dc.l $881A434, $A4150295, $BC1502F4, $880BC34, $881A434
+                dc.l $A4150295, $BC150314, $880BC34, $88110A8, $7C28D474
+                dc.l $E4002D08, $82CB888, $18269800, $31B400F0, $A44183E
+                dc.l $D4787C06, $D014E400, $A5601180, $BD60AEA0, $D000E400
+                dc.l 0
+dword_1AA138:   dc.l $F03000, $9F8, $98003F5C, $F0980E, $3F8000F0, $A4019800
+                                        ; DATA XREF: ROM:001A69DC↑o
+                dc.l $480000, $60A401, $9800004C, $60, $A402BDC1, $C4229800
+                dc.l $500000, $60A401, $980000A4, $60, $A402C441, $C4622C21
+                dc.l $C4819800, 0
+                dc.l $60A417, $980000A0, $60, $A416980A, $3000000, $980F017E
+                dc.l $980D, $FF0000, $980000E8, $60, $A40163C1, $980039D8
+                dc.l $F00020, $A401C621, $E4009800, $E00000, $60A401, $980000E4
+                dc.l $60, $A4028840, $981EFFFF, $1F881F, $882527DF, $27C5643E
+                dc.l $13DFD454, $E400201F, $13C5D454, $E4002005, $661F6605
+                dc.l $639F2BE5, $63059800, $7C0000, $60A414, $98090000
+                dc.l $40AC62, $8A80981D, $800000, $660025A0, $409C1E, $8209C1A
+                dc.l $13DA8A82, $13BE6502, $631E25A2, $445A03DA, $93540134
+                dc.l $AC628A80, $981D0080, $6600, $25A00040, $9C1E0820
+                dc.l $9C1A13DA, $8A8213BE, $6502631E, $25A2445A, $3DA9355
+                dc.l $98000074, $60, $A4146394, $AC628A80, $981D0080, $6600
+                dc.l $25A00040, $9C1E0820, $9C1A13DA, $8A8213BE, $6502631E
+                dc.l $25A2445A, $3DA9352, $134AC62, $8A80981D, $800000
+                dc.l $660025A0, $409C1E, $8209C1A, $13DA8A82, $13BE6502
+                dc.l $631E25A2, $445A03DA, $93539800, $700000, $60A414
+                dc.l $AC628A80, $981D0080, $6600, $25A00040, $9C1E0820
+                dc.l $9C1A13DA, $8A8213BE, $6502631E, $25A2445A, $3DA8B55
+                dc.l $134AC62, $8A80981D, $800000, $660025A0, $409C1E
+                dc.l $8209C1A, $13DA8A82, $13BE6502, $631E25A2, $445A03DA
+                dc.l $8B5A9800, $980000, $60A402, $8C216602, $98003F60
+                dc.l $F02422, $A40163C2, $A01A420, $40A40B, $A1689800
+                dc.l $354E00F0, $84B2800, $C5E09800, $240000, $60A406
+                dc.l $98000028, $60, $A4079800, $340000, $60A418, $980000EC
+                dc.l $60, $A4016601, $2821C761, $98000000, $C01006, $10079813
+                dc.l $354E00F0, $98000054, $60, $A41B9800, $9C0000, $60A41C
+                dc.l $98000084, $60, $A4099800, $880000, $60A414, $9800006C
+                dc.l $60, $A404A171, $84BA172, $84BA179, $84B4531, $44994692
+                dc.l $63116312, $63198B5C, $8AA08ABE, $8B5F9220, $8C018822
+                dc.l $581C0441, $58110441, $8A224382, $8B9D6602, $661D423D
+                dc.l $661103A2, $8A3D439D, $661C03A2, $423C621C, $5C3401
+                dc.l $D4429411, $201C9240, $8C018822, $581E0441, $58120441
+                dc.l $8A4243C2, $8BDD6602, $661D425D, $661203A2, $8A5D43DD
+                dc.l $661E03A2, $425E621E, $5E3401, $D4429412, $201E9220
+                dc.l $8C018822, $58000441, $58110441, $8A224002, $881D6602
+                dc.l $661D423D, $661103A2, $8A3D401D, $660003A2, $42206200
+                dc.l $403401, $D4429411, $20009240, $8C018822, $581F0441
+                dc.l $58120441, $8A4243E2, $8BFD6602, $661D425D, $661203A2
+                dc.l $8A5D43FD, $661F03A2, $425F621F, $5F3401, $D4429412
+                dc.l $201F13DC, $3E08B91, $881296BC, $9680969E, $96BF9320
+                dc.l $8C018822, $581C0441, $58190441, $8B224382, $8B9D6602
+                dc.l $661D433D, $661903A2, $8B3D439D, $661C03A2, $433C621C
+                dc.l $5C3401, $D4429419, $201C9240, $8C018822, $581E0441
+                dc.l $58120441, $8A4243C2, $8BDD6602, $661D425D, $661203A2
+                dc.l $8A5D43DD, $661E03A2, $425E621E, $5E3401, $D4429412
+                dc.l $201E9320, $8C018822, $58000441, $58190441, $8B224002
+                dc.l $881D6602, $661D433D, $661903A2, $8B3D401D, $660003A2
+                dc.l $43206200, $403401, $D4429419, $20009240, $8C018822
+                dc.l $581F0441, $58120441, $8A4243E2, $8BFD6602, $661D425D
+                dc.l $661203A2, $8A5D43FD, $661F03A2, $425F621F, $5F3401
+                dc.l $D4429412, $201F13DC, $3E08B99, $8812967C, $9640965E
+                dc.l $967F9320, $8C018822, $581C0441, $58190441, $8B224382
+                dc.l $8B9D6602, $661D433D, $661903A2, $8B3D439D, $661C03A2
+                dc.l $433C621C, $5C3401, $D4429419, $201C9220, $8C018822
+                dc.l $581E0441, $58110441, $8A2243C2, $8BDD6602, $661D423D
+                dc.l $661103A2, $8A3D43DD, $661E03A2, $423E621E, $5E3401
+                dc.l $D4429411, $201E9320, $8C018822, $58000441, $58190441
+                dc.l $8B224002, $881D6602, $661D433D, $661903A2, $8B3D401D
+                dc.l $660003A2, $43206200, $403401, $D4429419, $20009220
+                dc.l $8C018822, $581F0441, $58110441, $8A2243E2, $8BFD6602
+                dc.l $661D423D, $661103A2, $8A3D43FD, $661F03A2, $423F621F
+                dc.l $5F3401, $D4429411, $201F13DC, $3E08B99, $881188C0
+                dc.l $88E18B02, $110032, $59ADF3, $980C3982, $F0D180, $E4009800
+                dc.l $327E00F0, $1828D014, $E400AEA0, $98013F58, $F0A422
+                dc.l $3402D002, $E4009800, $380000, $60A401, $98000094
+                dc.l $60, $A4159800, $400000, $60A402, $6D816D82, $6D950029
+                dc.l $5402A4, $98000084, $60, $BC099800, $880000, $60BC14
+                dc.l $9800006C, $60, $BC049800, $E00000, $60A401, $980000E4
+                dc.l $60, $A4029800, $B80000, $60A414, $980000BC, $60
+                dc.l $A4150281, $2A29800, $E00000, $60BC01, $980000E4
+                dc.l $60, $BC029800, $580000, $60A401, $62016E61, $3B9800
+                dc.l $540000, $60BC1B, $AEA0D000, $E400981F, $37D400F0
+                dc.l $3616D481, $E400ADF3, $D3E0E400, $C5456505, $9801000F
+                dc.l $88A0, $64852420, $62056200, $C565C580, $98000048
+                dc.l $60, $A4019800, $4C0000, $60A402, $BDC1C422, $98000050
+                dc.l $60, $A4019800, $A40000, $60A402, $C441C462, $98000078
+                dc.l $60, $A401C481, $981D0080, $9800, $A80000, $60A401
+                dc.l $980000AC, $60, $A402C5A1, $C5C26E01, $6E021031, $1052C4B1
+                dc.l $C4D2AC20, $AC81AC42, $10040, $C420AC62, $C4816601
+                dc.l $25A18820, $8010040, $8019C1E, $8209C13, $13D3AC9F
+                dc.l $13BE651F, $631E25BF, $47F3027E, $25A18BC0, $414640
+                dc.l $9C220821, $9C331053, $13A26302, $47F30262, $463E4451
+                dc.l $44521011, $3D26DF1, $6DF29800, $B00000, $60A401
+                dc.l $44314432, $6D916D92, $ADA1ADC2, $6E016E02, $310052
+                dc.l $AD60AD81, $8FDE881F, $8825661F, $660527DF, $27C5643E
+                dc.l $13DFD454, $E400201F, $13C5D454, $E4002005, $639F2BE5
+                dc.l $6305881F, $980000B8, $60, $A41E03DF, $C57F9800, $BC0000
+                dc.l $60A41E, $3C1C581, $981F37D4, $F09813, $377000F0
+                dc.l $D3E0E400, $ACB1ACD2, $980000B4, $60, $A4019800, $C00000
+                dc.l $60A402, $981E1000, $3C1, $3C24431, $44526D91, $6D92ADA1
+                dc.l $ADC29800, $C40000, $60A41E, $3C1C5A1, $980000C8
+                dc.l $60, $A41E03C2, $C5C2A5C0, $9801369E, $F01820, $D478BDC0
+                dc.l $D020E400, $ADF3AD45, $D260E400, $981F385A, $F0C4F3
+                dc.l $C5363416, $D4C2E400, $981337EE, $F0D3E0, $E40089E0
+                dc.l $981F385A, $F01220, $88113436, $D4C2E400, $9813380A
+                dc.l $F0D3E0, $E40089E0, $12408812, $3456D4C2, $E4009813
+                dc.l $382000F0, $D3E0E400, $89E01220, $98133836, $F08811
+                dc.l $3476D462, $E400D3E0, $E40089E0, $12206496, $8A518812
+                dc.l $3496D4A2, $E400ACF3
+                dc.l $AD36D260, $E4003916, $980037DE, $F0D000, $E400AE20
+                dc.l $D000E400, $79F1D274, $79F2D274, $7C11D278, $7C12D278
+                dc.l $8A218A42, $63E14142, $2202E2, $8B606500, $28A0B840
+                dc.l $D260E400, $79F1D274, $79F2D274, $7C11D278, $7C12D278
+                dc.l $8A218A42, $63E14142, $2202E2, $8B606500, $28A0B840
+                dc.l $842B840, $142B840, $1842B840, $D260E400, $980000EC
+                dc.l $60, $A4019800, $386000F0, $66019802, $388800F0, $8217C21
+                dc.l $D002E400, $7C41D042, $E4009800, $223800F0, $A4023402
+                dc.l $D7A2E400, $98002200, $F0BC17, $98024420, $10880
+                dc.l $BC0289F0, $10308A3C, $88226422, $105C7C1C, $D2787B90
+                dc.l $D2788B80, $8A5C6200, $105C7C1C, $D2787B90, $D2786600
+                dc.l $621C281C, $9800220C, $F0BC1C, $88222002, $8806202
+                dc.l $66023A02, $8B7CBC02, $651C9800, $226C00F0, $28BC8B82
+                dc.l $621C285C, $BC1C1880, $BC1C8822, $9800223C, $F06201
+                dc.l $2841BC01, $98020200, $11880, $BC02A401, $3401D7A2
+                dc.l $E400D260, $E4006251, $62527C39, $D27865D9, $8A3D5811
+                dc.l $573137FD, $D442E400, $20118A5D, $58125732, $37FDD442
+                dc.l $E4002012, $6CF16CF2, $980000C0, $11, $129800, $361200F0
+                dc.l $D000E400, $AF608B61, $40019800, $7F, $24019800, $38C600F0
+                dc.l $D000E400, 0
+                dcb.l 2,$F03888
+                dc.l $F038BC, $F039BC
+                dcb.l 4,0
+dword_1AAB38:   dc.l $F03000, $888, $98003F5C, $F0980E, $3F8000F0, $A4019800
+                                        ; DATA XREF: ROM:001A69E0↑o
+                dc.l $A40000, $60A402, $C4622C21, $C4819800, 0
+                dc.l $60A417, $980A0300, $980F, $17E0000, $980D00FF, $E400
+                dc.l $98000098, $60, $A4046604, $98000003, $2404, $98003F60
+                dc.l $F0A401, $A8163C4, $A4200080, $A41C9382, $98003076
+                dc.l $F09801, $369C00F0, $C5E0D020, $E4009800, $33F800F0
+                dc.l $2800C5E0, $981333F8, $F09800, $380000, $60A40B, $98000040
+                dc.l $60, $A4089800, $940000, $60A416, $9800FFFF, $1F240B
+                dc.l $24082416, $660B6608, $66169164, $910592C6, $89718912
+                dc.l $8AD96431, $64326439, $20112012, $2019922A, $924B932C
+                dc.l $8901897E, $945C259E, $258163BE, $3C03DC, $9F908A00
+                dc.l $63002A00, $88106200, $28103410, $D4A17430, $980033F8
+                dc.l $F0D000, $AFA1AF80, $1600101, $981E001E, $881F, $882527DF
+                dc.l $27C5643E, $13DFD454, $E400201F, $8BFB13C5, $D454E400
+                dc.l $2005639F, $62BB2BE5, $39FB6305, $45314499, $46926311
+                dc.l $63126319, $8B5C8AA0, $8ABE8B5F, $92208C01, $8822581C
+                dc.l $4415811, $4418A22, $43828B9D, $6602661D, $423D6611
+                dc.l $3A28A3D, $439D661C, $3A2423C, $621C005C, $3401D442
+                dc.l $9411201C, $92408C01, $8822581E, $4415812, $4418A42
+                dc.l $43C28BDD, $6602661D, $425D6612, $3A28A5D, $43DD661E
+                dc.l $3A2425E, $621E005E, $3401D442, $9412201E, $92208C01
+                dc.l $88225800, $4415811, $4418A22, $4002881D, $6602661D
+                dc.l $423D6611, $3A28A3D, $401D6600, $3A24220, $62000040
+                dc.l $3401D442, $94112000, $92408C01, $8822581F, $4415812
+                dc.l $4418A42, $43E28BFD, $6602661D, $425D6612, $3A28A5D
+                dc.l $43FD661F, $3A2425F, $621F005F, $3401D442, $9412201F
+                dc.l $13DC03E0, $8B918812, $96BC9680, $969E96BF, $93208C01
+                dc.l $8822581C, $4415819, $4418B22, $43828B9D, $6602661D
+                dc.l $433D6619, $3A28B3D, $439D661C, $3A2433C, $621C005C
+                dc.l $3401D442, $9419201C, $92408C01, $8822581E, $4415812
+                dc.l $4418A42, $43C28BDD, $6602661D, $425D6612, $3A28A5D
+                dc.l $43DD661E, $3A2425E, $621E005E, $3401D442, $9412201E
+                dc.l $93208C01, $88225800, $4415819, $4418B22, $4002881D
+                dc.l $6602661D, $433D6619, $3A28B3D, $401D6600, $3A24320
+                dc.l $62000040, $3401D442, $94192000, $92408C01, $8822581F
+                dc.l $4415812, $4418A42, $43E28BFD, $6602661D, $425D6612
+                dc.l $3A28A5D, $43FD661F, $3A2425F, $621F005F, $3401D442
+                dc.l $9412201F, $13DC03E0, $8B998812, $967C9640, $965E967F
+                dc.l $92208C01, $8822581C, $4415811, $4418A22, $43828B9D
+                dc.l $6602661D, $423D6611, $3A28A3D, $439D661C, $3A2423C
+                dc.l $621C005C, $3401D442, $9411201C, $93208C01, $8822581E
+                dc.l $4415819, $4418B22, $43C28BDD, $6602661D, $433D6619
+                dc.l $3A28B3D, $43DD661E, $3A2433E, $621E005E, $3401D442
+                dc.l $9419201E, $92208C01, $88225800, $4415811, $4418A22
+                dc.l $4002881D, $6602661D, $423D6611, $3A28A3D, $401D6600
+                dc.l $3A24220, $62000040, $3401D442, $94112000, $93208C01
+                dc.l $8822581F, $4415819, $4418B22, $43E28BFD, $6602661D
+                dc.l $433D6619, $3A28B3D, $43FD661F, $3A2433F, $621F005F
+                dc.l $3401D442, $9419201F, $13DC03E0, $8B918819, $88C088E1
+                dc.l $8B020011, $320059, $ADF39800, $365400F0, $D000E400
+                dc.l $95519572, $95999800, $30F200F0, $8391836, $D014932C
+                dc.l $18288901, $897E945C, $259E2581, $63BE003C, $3DC9F90
+                dc.l $8A016301, $2A018830, $62012830, $94D61839, $12D9932C
+                dc.l $8327C08, $D014924B, $94A81832, $1112924B, $831182B
+                dc.l $D014922A, $AEA0D000, $E4009800, $346400F0, $9801369C
+                dc.l $F0C5E0, $D020E400, $980034D6, $F02800, $C5E09813
+                dc.l $34D600F0, $98000098, $60, $A41E981F, $30000, $661E27FE
+                dc.l $98003F60, $F063DE, $A401A420, $3C0A41C, $A38B085C
+                dc.l $A388085C, $2F398971, $89126431, $64322011, $20088A36
+                dc.l $922A924B, $916CA790, $3410D4A1, $74309800, $34D600F0
+                dc.l $D000AFA1, $AF80ADF3, $98003654, $F0D000, $E4009551
+                dc.l $95729800, $34B800F0, $8311836, $D014932C, $18288901
+                dc.l $897E945C, $259E2581, $63BE003C, $3DC9F90, $8A016301
+                dc.l $2A018830, $62012830, $94D61839, $12D9932C, $8327C08
+                dc.l $D014924B, $94A81832, $1112924B, $831182B, $D014922A
+                dc.l $AEA0D000, $E400AE20, $D000E400, $79F1D274, $79F2D274
+                dc.l $7C11D278, $7C12D278, $8A218A42, $63E14142, $2202E2
+                dc.l $8B606500, $28A0B840, $D260E400, $79F1D274, $79F2D274
+                dc.l $7C11D278, $7C12D278, $8A218A42, $63E14142, $2202E2
+                dc.l $8B606500, $28A0B840, $842B840, $142B840, $1842B840
+                dc.l $D260E400, $980000EC, $60, $A4019800, $353400F0, $66019802
+                dc.l $355C00F0, $8217C21, $D002E400, $7C41D042, $E4009800
+                dc.l $223800F0, $A4023402, $D7A2E400, $98002200, $F0BC17
+                dc.l $98024420, $10880, $BC0289F9, $10398822, $64221051
+                dc.l $7C11D278, $7A39D278, $8A208A51, $62001051, $7C11D278
+                dc.l $7A39D278, $66006211, $28119800, $220C00F0, $BC118822
+                dc.l $20020880, $62026602, $3A028B71, $BC026511, $9800226C
+                dc.l $F028B1, $8A226211, $2851BC11, $1880BC11, $88229800
+                dc.l $223C00F0, $62012841, $BC019802, $2000001, $1880BC02
+                dc.l $A4013401, $D7A2E400, $D260E400, $62516252, $7C39D278
+                dc.l $65D98A3D, $58115731, $37FDD442, $E4002011, $8A5D5812
+                dc.l $573237FD, $D442E400, $20126CF1, $6CF29800, $C00000
+                dc.l $110012, $AF608B61, $40019800, $7F, $24019800, $359A00F0
+                dc.l $D000E400, $980000E0, $60, $A4019800, $E40000, $60A402
+                dc.l $66016602, $C781C7A2, $8840981E, $1F0000, $881F8825
+                dc.l $27DF27C5, $643E13DF, $D454E400, $201F13C5, $D454E400
+                dc.l $2005661F, $6605639F, $2BE56305, $9800007C, $60, $A4148CEC
+                dc.l $98090000, $40AC62, $8A80981D, $800000, $660025A0
+                dc.l $409C1E, $8209C1A, $13DA8A82, $13BE6502, $631E25A2
+                dc.l $445A03DA, $93540134, $AC628A80, $981D0080, $6600
+                dc.l $25A00040, $9C1E0820, $9C1A13DA, $8A8213BE, $6502631E
+                dc.l $25A2445A, $3DA9355, $98000074, $60, $A4146394, $AC628A80
+                dc.l $981D0080, $6600, $25A00040, $9C1E0820, $9C1A13DA
+                dc.l $8A8213BE, $6502631E, $25A2445A, $3DA9352, $134AC62
+                dc.l $8A80981D, $800000, $660025A0, $409C1E, $8209C1A
+                dc.l $13DA8A82, $13BE6502, $631E25A2, $445A03DA, $93539800
+                dc.l $700000, $60A414, $AC628A80, $981D0080, $6600, $25A00040
+                dc.l $9C1E0820, $9C1A13DA, $8A8213BE, $6502631E, $25A2445A
+                dc.l $3DA8B55, $134AC62, $8A80981D, $800000, $660025A0
+                dc.l $409C1E, $8209C1A, $13DA8A82, $13BE6502, $631E25A2
+                dc.l $445A03DA, $8B5A9800, $540000, $60A41B, $98000084
+                dc.l $60, $A4099800, $880000, $60A414, $9800006C
+                dc.l $60, $A4049800, $240000, $60A406, $98000028, $60
+                dc.l $A4079800, $340000, $60A418, $980000EC, $60, $A4016601
+                dc.l $2821C761, $98000000, $C01006, $1007ADE0, $D000E400
+                dcb.l 2,$F0355C
+                dc.l $F03590, $F03684
+                dcb.l 4,0
+dword_1AB3C8:   dc.l $F03000, $5F0, $98003F5C, $F0980E, $3F8000F0, $A4019800
+                                        ; DATA XREF: ROM:001A69E4↑o
+                dc.l $480000, $60A401, $9800004C, $60, $A402BDC1, $C4229800
+                dc.l $180000, $60A401, $9800001C, $60, $A4029800, $C00000
+                dc.l $66016602, $10011002, $C7C1C7E2, $98000050, $60, $A4019800
+                dc.l $A40000, $60A402, $C441C462, $2C21C481, $98000000
+                dc.l $60, $A4179800, $A00000, $60A416, $980A0300, $980F
+                dc.l $17E0000, $980D00FF, $9800, $E80000, $60A401, $63C19800
+                dc.l $35D000F0, $20A401, $C6219800, $E00000, $60A402, $980000E4
+                dc.l $60, $A4019049, $902A9800, $31E000F0, $2800C5E0, $9804003F
+                dc.l $9800, $3F6000F0, $A4010B81, $A4269800, $D80000, $60A401
+                dc.l $980000DC, $60, $A4026C81, $6C829024, $90459800, $780000
+                dc.l $60A401, $90269800, $240000, $60A401, $98000028, $60
+                dc.l $A4026601, $66029800, $EC0000, $60A41D, $661D8BBE
+                dc.l $637E643D, $13C113A2, $90309051, $98000088, $60, $A4016501
+                dc.l $38019032, $980000EC, $60, $A4016601, $2821C761, $981BFFFF
+                dc.l $9813, $31E000F0, $9814316C, $F09804, $3F0000, $9632A4DB
+                dc.l $63DB841B, $8B7E63FB, $637E8B60, $65601012, $94C103C1
+                dc.l $98000078, $60, $BC019522, $95418840, $8FDE881F, $8825661F
+                dc.l $660527DF, $27C5643E, $13DFD454, $E400201F, $13C5D454
+                dc.l $E4002005, $639F2BE5, $6305949E, $63DB94BF, $841B03C1
+                dc.l $3E2902A, $90490886, $AF608891, $40119600, $11980C
+                dc.l $31F800F0, $D180E400, $1824D294, $E40094C1, $98000078
+                dc.l $60, $BC01AEA0, $D000E400, $981F33BA, $F03616, $D481E400
+                dc.l $ADF3D3E0, $E400C545, $65059801, $F0000, $88A06485
+                dc.l $24206205, $6200C565, $C5809800, $480000, $60A401
+                dc.l $9800004C, $60, $A402BDC1, $C4229800, $500000, $60A401
+                dc.l $980000A4, $60, $A402C441, $C4629800, $780000, $60A401
+                dc.l $C481981D, $800000, $980000A8, $60, $A4019800, $AC0000
+                dc.l $60A402, $C5A1C5C2, $6E016E02, $10311052, $C4B1C4D2
+                dc.l $AC20AC81, $AC420001, $40C420, $AC62C481, $660125A1
+                dc.l $88200801, $400801, $9C1E0820, $9C1313D3, $AC9F13BE
+                dc.l $651F631E, $25BF47F3, $27E25A1, $8BC00041, $46409C22
+                dc.l $8219C33, $105313A2, $630247F3, $262463E, $44514452
+                dc.l $101103D2, $6DF16DF2, $980000B0, $60, $A4014431, $44326D91
+                dc.l $6D92ADA1, $ADC26E01, $6E020031, $52AD60, $AD818FDE
+                dc.l $881F8825, $661F6605, $27DF27C5, $643E13DF, $D454E400
+                dc.l $201F13C5, $D454E400, $2005639F, $2BE56305, $881F9800
+                dc.l $B80000, $60A41E, $3DFC57F, $980000BC, $60, $A41E03C1
+                dc.l $C581981F, $33BA00F0, $98133356, $F0D3E0, $E400ACB1
+                dc.l $ACD29800, $B40000, $60A401, $980000C0, $60, $A402981E
+                dc.l $10000000, $3C103C2, $44314452, $6D916D92, $ADA1ADC2
+                dc.l $980000C4, $60, $A41E03C1, $C5A19800, $C80000, $60A41E
+                dc.l $3C2C5C2, $A5C09801, $328400F0, $1820D478, $BDC0D020
+                dc.l $E400ADF3, $AD45D260, $E400981F, $344E00F0, $C4F3C536
+                dc.l $C651C672, $3416D4C2, $E4009813, $33D800F0, $D3E0E400
+                dc.l $89E0AE51, $AE721220, $88113436, $D4C2E400, $981333F2
+                dc.l $F0D3E0, $E40089E0, $AE51AE72, $12408812, $3456D4C2
+                dc.l $E4009813, $340C00F0, $D3E0E400, $89E0AE51, $AE721220
+                dc.l $98133426, $F08811, $3476D462, $E400D3E0, $E40089E0
+                dc.l $AE51AE72, $12206496, $8A518812, $3496D4A2, $E400ACF3
+                dc.l $AD36D260, $E4003916, $980033C8, $F0D000, $E400C651
+                dc.l $C672AFC0, $AFE10011, $32AE20, $D000E400, $79F1D274
+                dc.l $79F2D274, $7C11D278, $7C12D278, $8A218A42, $63E14142
+                dc.l $2202E2, $8B606500, $28A0B840, $D260E400, $79F1D274
+                dc.l $79F2D274, $7C11D278, $7C12D278, $8A218A42, $63E14142
+                dc.l $2202E2, $8B606500, $28A0B840, $842B840, $142B840
+                dc.l $1842B840, $D260E400, $980000EC, $60, $A4019800, $346000F0
+                dc.l $96419802, $348800F0, $7C01D002, $E4007C21, $D042E400
+                dc.l $98002238, $F0A402, $3402D7A2, $E4009800, $220000F0
+                dc.l $BC179802, $44200001, $880BC02, $89F01030, $8A3C8822
+                dc.l $6422105C, $7C1CD278, $7B90D278, $8B808A5C, $6200105C
+                dc.l $7C1CD278, $7B90D278, $6600621C, $281C9800, $220C00F0
+                dc.l $BC1C8822, $20020880, $62026602, $3A028B7C, $BC02651C
+                dc.l $9800226C, $F028BC, $8B82621C, $285CBC1C, $1880BC1C
+                dc.l $88229800, $223C00F0, $62012841, $BC019802, $2000001
+                dc.l $1880BC02, $A4013401, $D7A2E400, $D260E400, $62516252
+                dc.l $981B01FF, $2779, $133B63D9, $633B8A3D, $58115731
+                dc.l $37FDD442, $E4002011, $8A5D5812, $573237FD, $D442E400
+                dc.l $20126CB1, $6CB29800, $C00000, $110012, $980031F8
+                dc.l $F0D000, $E400AF61, $62019800, $34C600F0, $D000E400
+                dc.l $F03460, $F03488, $F034BC, $F035C2
+                dcb.l 4,0
+dword_1AB9C0:   dc.l $F03000, $13C, $98003F74, $F0A41D, $93BDA3BB, $980030AC
+                                        ; DATA XREF: ROM:001A69E8↑o
+                dc.l $F07C1B, $D018E400, $9800304E, $F0AF02, $8CA11041
+                dc.l $783BD002, $E4009800, $3F6000F0, $A4010801, $A43D93BD
+                dc.l $A3BB9800, $30AC00F0, $7C1BD018, $E4008CA1, $1041783B
+                dc.l $D001085D, $9800003F, $A3BC, $241C8B9A, $98000600
+                dc.l $85D, $401AA7A1, $3A9802, $3000000, $88608B41, $981430BA
+                dc.l $F09815, $308800F0, $2AB5C7F5, $D280E400, $89DA3BA
+                dc.l $85D8B59, $A3B8431A, $201A039A, $18DDA7BB, $98003F58
+                dc.l $F08C21, $BC018C21, $D440E400, $2C21980E, $3F8000F0
+                dc.l $AEA0D000, $E4009814, $223800F0, $A6953415, $D7A2E400
+                dc.l $98142200, $F09815, $222400F0, $8839981A, $FFF8FFFF
+                dc.l $8B382759, $1338BE99, $8949816, $40200000, $BE960914
+                dc.l $6438BE98, $88198817, $27591337, $BEB90895, $BEB60915
+                dc.l $6437BEB7, $64229819, $223C00F0, $3A02BF22, $98160001
+                dc.l $1802AF8, $D482E400, $98160005, $1809814, $223800F0
+                dc.l $BE96A695, $3415D7A2, $E400AFF4, $D280E400, 0
+off_1ABB08:     dc.l word_1ABCC6        ; DATA XREF: sub_192088+D80↑o
+                dc.l dword_1ABB94
+                dc.l dword_1ABB28
+                dc.l dword_1ABC6C
+                dc.l word_1ABBCA
+                dc.l dword_1ABC00
+                dc.l word_1ABC36
+                dc.l word_1ABB5E
+dword_1ABB28:   dc.l $20050, $600048, 0 ; DATA XREF: ROM:001ABB10↑o
+                dc.l $10004, $20008, $49, $30000, $10004, $20008, 0
+                dc.l $C00050, $50, $8000A0
+                dc.b 0, $C0
+word_1ABB5E:    dc.w 2                  ; DATA XREF: ROM:001ABB24↑o
+                dc.l $500060, $FE0000, 1, $40002, $80000, $FD0003, 1, $40002
+                dc.l $80000, $C0, $500000, $500080, $A000C0
+dword_1ABB94:   dc.l $20050, $6000F1, 0 ; DATA XREF: ROM:001ABB0C↑o
+                dc.l $10004, $20008, $F2, $30000, $10004, $20008, 0
+                dc.l $C00050, $50, $8000A0
+                dc.b 0, $C0
+word_1ABBCA:    dc.w 2                  ; DATA XREF: ROM:001ABB18↑o
+                dc.l $500060, $810000, 1, $40002, $80000, $820003, 1, $40002
+                dc.l $80000, $C0, $500000, $500080, $A000C0
+dword_1ABC00:   dc.l $20050, $60008F, 0 ; DATA XREF: ROM:001ABB1C↑o
+                dc.l $10004, $20008, $8E, $30000, $10004, $20008, 0
+                dc.l $C00050, $50, $8000A0
+                dc.b 0, $C0
+word_1ABC36:    dc.w 2                  ; DATA XREF: ROM:001ABB20↑o
+                dc.l $500060, $120000, 1, $40002, $80000, $130003, 1, $40002
+                dc.l $80000, $C0, $500000, $500080, $A000C0
+dword_1ABC6C:   dc.l $40100, $1000004, $10000, $20004, $10, 4, $20004
+                                        ; DATA XREF: ROM:001ABB14↑o
+                dc.l $40008, $10, 4, $40008, $3000C, $10, 4, $3000C, $10000
+                dc.l $10, $100, $1000000, $200, 0
+                dc.l $2000200
+                dc.b 2, 0
+word_1ABCC6:    dc.w 8                  ; DATA XREF: ROM:off_1ABB08↑o
+                dc.l $E00040, $F00000, $100001, $C0002, $140000, $8F0003
+                dc.l $80004, $C0005, $100000, $8F0004, $C0006, $140005
+                dc.l $100000, $8F0006, $140007, $C0005, $100000, $8F0007
+                dc.l $C0008, $140005, $100000, 9, $14000A, $8000C, $C0000
+                dc.l $A, $8000D, $10000C, $C0000, $B, $14000A, $8000D
+                dc.l $100000, 0
+                dc.l $800000, $400080, $A00000, $E00000, $A00080, $E00040
+                dc.l $1200040, $1200080, $1400000, $1800040, $1C00000
+                dc.l $1400080, $1C00080, 0
+                dc.l $80008, $39803F8, $4000408, $4100118
+                dcb.l $D,$1180118
+                dc.l $1180130, $1380140, $1480150, $1580160, $1680170
+                dc.l $1780180, $1880190, $19801A0, $1A801B0, $1B801C0
+                dc.l $1C801D0, $1D801E0, $1E801F0, $3A00118, $1280118
+                dc.l $1200118, $11802C8, $2D002D8, $2E002E8, $2F002F8
+                dc.l $3000308, $3100318, $3200328, $3300338, $3400348
+                dc.l $3500358, $3600368, $3700378, $3800388, $3900118
+                dcb.l 2,$1180118
+                dc.l $11801F8, $2000208, $2100218, $2200228, $2300238
+                dc.l $2400248, $2500258, $2600268, $2700278, $2800288
+                dc.l $2900298, $2A002A8, $2B002B8, $2C00118
+                dcb.l 2,$1180118
+                dc.l $3A803B0, $3B803C0, $3C803D0, $3D803E0, $3E803F0
+                dcb.l 2,0
+                dc.l $20100804
+                dcb.l 2,$4081020
+                dc.l $20100804, $20202020, $20000020, $50505000, 0
+                dc.l $4848FE48, $48FE4848, $107E9070, $1014FE20, $60620408
+                dc.l $10204C8C, $20508870, $64989A64, $102040, 0
+                dc.l $10204040, $40402010, $20100808, $8081020, $925438
+                dc.l $38549200, $101010FE, $10101000, 0
+                dc.l $101020, $FE
+                dcb.l 2,0
+                dc.l $606000, $20408, $10204080, $7C82868A, $92A2C27C
+                dc.l $10305010, $101010FE, $78840408, $102040FE, $7C820204
+                dc.l $7C02827C, $40C1424, $4484FE04, $FE8080FC, $202827C
+                dc.l $384080FC, $8282827C, $FE020408, $10204080, $7C82827C
+                dc.l $8282827C, $7C828282, $7E02827C, $7C, $27E827E, $808080FC
+                dc.l $828282FC, $7E, $8080807E, $202027E, $8282827E, $7C
+                dc.l $82FC807C, $3E4040, $FE404040, $7E, $827E027C, $808080FC
+                dc.l $82828282, $100030, $10101038, $100010, $101010E0
+                dc.l $80808088, $90F08884, $60202020, $20202070, $7C, $92929282
+                dc.l $78, $84848484, $7C, $8282827C, $FC, $82FC8080, $7E
+                dc.l $827E0202, $FC, $82808080, $7E, $403804FC, $10FE
+                dc.l $1010100C, $82, $8282867A, $82, $82442810, $82, $8292AAC6
+                dc.l $84, $48304884, $82, $827E02FC, $FE, $41040FE, $10284482
+                dc.l $FE828282, $FC8284FC, $828282FC, $7EC08080, $8080C07E
+                dc.l $FC868282, $828286FC, $FE8080FE, $808080FE, $FE8080FE
+                dc.l $80808080, $7EC08080, $8086C27C, $828282FE, $82828282
+                dc.l $FE101010, $101010FE, $FE080808, $8888870, $848890E0
+                dc.l $90888482, $80808080, $808080FE, $82C6AA92, $82828282
+                dc.l $82C2A292, $8A868282, $7CC68282, $8282C67C, $FC828282
+                dc.l $FC808080, $7CC68282, $828AC67A, $FC828282, $FC888482
+                dc.l $7E80C030, $1C0602FC, $FE101010, $10101010, $82828282
+                dc.l $8282827C, $82828244, $44282810, $82828282, $8292AAC6
+                dc.l $82824438, $28448282, $82828244, $28101010, $FE020408
+                dc.l $102040FE, $C0F0FCFE, $FEFCF0C0, $3000, $300000, $3C6666
+                dc.l $66663C00, $381818, $18183C00, $386C0C, $18307C00
+                dc.l $7E060C, $6663C00, $1C3C6C, $7E0C0C00, $7E607C, $6067C00
+                dc.l $3C607C, $66663C00, $3E060C, $18181800, $3C663C, $66663C00
+                dc.l $3C663E, $6063C00
+                dcb.l 2,$FFFFFFFF
+                dc.l $FF8F8F8F, $8F8F8FFF, $FFF1F1F1, $F1F1F1FF, $FF818181
+                dc.l $818181FF
 ; ians.gas
 
 ; =============== S U B R O U T I N E =======================================
