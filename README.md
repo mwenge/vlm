@@ -18,6 +18,7 @@ The source code can be compiled into an executable that you can run in `t2k.exe`
   * [Build the Virtual Light Machine](#build-the-virtual-light-machine)
 * [Play the Virtual Light Machine](#play-the-virtual-light-machine)
   * [Getting to know the controls of the Virtual Light Machine](#getting-to-know-the-controls-of-the-virtual-light-machine)
+* [Notes on the Source Code](#notes-on-the-source-code)
 
 <!-- vim-markdown-toc -->
 ## Build Instructions
@@ -107,4 +108,17 @@ You can find the original manual for the Jaguar CD (and the VLM) in the [docs fo
 For convenience, here is the short section covering use of the VLM:
 ![vlm1](https://user-images.githubusercontent.com/58846/122687733-dc761280-d20f-11eb-89e7-63c1f729cf41.png)
 ![vlm2](https://user-images.githubusercontent.com/58846/122687737-e0a23000-d20f-11eb-9c08-601d58d1f3fa.png)
+
+## Notes on the Source Code
+
+The content of this repository was originally retrieved from https://github.com/jaguar64/samples/tree/master/VLM.
+
+Not all of the files in that dump are needed to build VLM and the core of the VLM itself is available only as an
+executable `vlm.abs` file. In order to reconstruct the source of the VLM core I reversed engineered 'vlm.abs` with the help
+of the symbols file 'vlm.syms' - an extremely useful thing to have as it means the routine and variable names can be retained from
+the original. The reconstructed VLM source and accompanying images and binary objects are available in the [VLM folder](src/vlm).
+
+It was possible to get everything to build with only minor modifications. Most of these were to make the source
+comaptible with `rmac` since most of the code would originally have been written for the native jaguar assembler
+`gasm`.
 
