@@ -1,5 +1,5 @@
 # Virtual Light Machine (1995) by Jeff Minter
-<img src="https://user-images.githubusercontent.com/58846/122686598-c82f1700-d209-11eb-89b5-7f965b1cbec6.jpg" height=200><img src="https://user-images.githubusercontent.com/58846/122686679-6622e180-d20a-11eb-93db-3bb82dfb53a0.gif" height=200>
+<img src="https://user-images.githubusercontent.com/58846/122686598-c82f1700-d209-11eb-89b5-7f965b1cbec6.jpg" height=250><img src="https://user-images.githubusercontent.com/58846/122686679-6622e180-d20a-11eb-93db-3bb82dfb53a0.gif" height=250>
 
 [<img src="https://img.shields.io/badge/Lastest%20Release-Jaguar-blue.svg">](https://github.com/mwenge/vlm/releases/download/v0.1/VirtualLightMachine.jag)
 
