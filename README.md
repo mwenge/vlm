@@ -1,5 +1,5 @@
 # Virtual Light Machine (1995) by Jeff Minter
-<img src="https://user-images.githubusercontent.com/58846/122686598-c82f1700-d209-11eb-89b5-7f965b1cbec6.jpg" height=300><img src="https://user-images.githubusercontent.com/58846/122686679-6622e180-d20a-11eb-93db-3bb82dfb53a0.gif" height=300>
+<img src="https://user-images.githubusercontent.com/58846/122686598-c82f1700-d209-11eb-89b5-7f965b1cbec6.jpg" height=200><img src="https://user-images.githubusercontent.com/58846/122686679-6622e180-d20a-11eb-93db-3bb82dfb53a0.gif" height=200>
 
 [<img src="https://img.shields.io/badge/Lastest%20Release-Jaguar-blue.svg">](https://github.com/mwenge/vlm/releases/download/v0.1/VirtualLightMachine.jag)
 
@@ -79,6 +79,7 @@ With the VLM activated, play some music on your computer and press `F3` to start
 
 Here are some of the useful keys for playing with the VLM:
 
+```
 F1 - Fullscreen toggle
 F3 - Enable Music device capture
 F4 - Show Music Input
@@ -95,6 +96,7 @@ Arrow keys
 Numeric keypad (. is #)
 Q - three-fingered salute (used on the flashing CD with ?) to engage VLM
 Esc - Quit
+```
 
 VLM: press Z (button A) twice to enter program mode, press O to engage
 user programmable mode, then the numeric pad or numbers: first press is
