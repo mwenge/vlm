@@ -1,5 +1,5 @@
 # Virtual Light Machine (1995) by Jeff Minter
-<img src="https://user-images.githubusercontent.com/58846/122686598-c82f1700-d209-11eb-89b5-7f965b1cbec6.jpg" height=300><img src="https://user-images.githubusercontent.com/58846/122686679-6622e180-d20a-11eb-93db-3bb82dfb53a0.gif" height=300>
+<img src="https://user-images.githubusercontent.com/58846/122686598-c82f1700-d209-11eb-89b5-7f965b1cbec6.jpg" height=200><img src="https://user-images.githubusercontent.com/58846/122686679-6622e180-d20a-11eb-93db-3bb82dfb53a0.gif" height=200>
 
 This is the reconstructed source code for the Virtual Light Machine by Jeff Minter originally published in 1995 for the ill-fated Atari Jaguar.
 
@@ -49,6 +49,7 @@ wine ./utils/t2k.exe
 ```
 
 Now open `VirtualLightMachine.jag` as follows:
+
 <img src="https://user-images.githubusercontent.com/58846/122686992-fd3c6900-d20b-11eb-8513-6357e686d609.png" height=300>
 
 <img src="https://user-images.githubusercontent.com/58846/122687003-0f1e0c00-d20c-11eb-8383-6ac3226e7698.png" height=300>
