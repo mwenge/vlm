@@ -16,11 +16,10 @@ rom = open(romname, 'wb')
 
 args = len(sys.argv)
 
-for fn in sys.argv[1:]:
-    if not os.path.isfile(fn):
-        print(fn + " does not exist")
-        exit()
-    f = open(fn, 'rb')
-    rom.write(f.read())
+f = open(sys.argv[2], 'rb')
+rom.write(f.read())
+
+f = open(sys.argv[3], 'rb')
+rom.write(f.read()[0xa8:0x2d268])
 
 

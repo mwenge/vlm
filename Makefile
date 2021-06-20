@@ -2,7 +2,7 @@
 
 DIRS=src/bin
 
-all: clean cartridge
+all: clean virtuallightmachine.jag
 
 virtuallightmachine.jag: cdfront.abs vlm.abs
 	$(shell mkdir -p $(DIRS))
@@ -25,8 +25,7 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 		-i src/incbin/cdbios.txt cd_bios\
 		-i src/bin/cdfront.abs cdfront\
 		-i src/bin/vlm.abs vlm
-	wine ./utils/filefix src/bin/cdboot1.abs
-	./utils/CreateCart.py VirtualLightMachine.jag  src/incbin/romheader.bin src/bin/CDBOOT1.TX src/bin/CDBOOT1.DTA
+	./utils/CreateCart.py VirtualLightMachine.jag  src/incbin/romheader.bin src/bin/cdboot1.abs
 	echo "0c29604b11b8bf2f98548f8f423f8f8f  VirtualLightMachine.jag" | md5sum -c
 
 vlm.abs: 
@@ -51,9 +50,6 @@ cdfront.abs:
 
 clean:
 	-rm src/bin/*.o
-	-rm src/bin/*.DB
-	-rm src/bin/*.DTA
-	-rm src/bin/*.TX
 	-rm src/bin/*.abs
 	-rm src/bin/*.cof
 	-rm VirtualLightMachine.jag
