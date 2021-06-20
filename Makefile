@@ -31,7 +31,7 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 vlm.abs: 
 	$(shell mkdir -p $(DIRS))
 	./rmac/rmac ~o1 -fb -isrc -isrc/vlm src/vlm/vlm.s -o src/bin/vlm.cof
-	./rln/rln -e -rw -a 192000 x x -o src/bin/vlm-temp.abs src/bin/vlm.cof
+	./rln/rln -z -e -rw -a 192000 x x -o src/bin/vlm-temp.abs src/bin/vlm.cof
 	./utils/StripCDFrontHeader.py src/bin/vlm-temp.abs src/bin/vlm.abs
 
 cdfront.abs: 
@@ -40,7 +40,7 @@ cdfront.abs:
 	./rmac/rmac -fr -mtom -isrc src/gpudave.gas -o src/bin/gpudave.o
 	./rmac/rmac -fr -rw -u -isrc src/gpudave.s -o src/bin/gpudave.cof
 	./rmac/rmac -fb -rw -u -isrc src/cdfront.s -o src/bin/cdfront.cof
-	./rln/rln -e -rw -a 80000 x x -o src/bin/cdfront-temp.abs src/bin/cdfront.cof src/bin/pack.cof\
+	./rln/rln -z -e -rw -a 80000 x x -o src/bin/cdfront-temp.abs src/bin/cdfront.cof src/bin/pack.cof\
 		-i src/images/onepage8.cry onepage3\
 		-i src/rgb.pal rgbpal\
 		-i src/bin/gpudave.cof gpuend\
