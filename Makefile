@@ -30,8 +30,10 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 
 vlm.abs: 
 	$(shell mkdir -p $(DIRS))
-	./rmac/rmac ~o1 -fb -isrc -isrc/vlm src/vlm/vlm.s -o src/bin/vlm.cof
+	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vlm.s -o src/bin/vlm.cof
+	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/images.s -o src/bin/images.cof
 	./rln/rln -z -e -rw -a 192000 x x -o src/bin/vlm-temp.abs src/bin/vlm.cof\
+		src/bin/images.cof\
 		-i src/vlm/incbin/ians.bin iansdoit
 	./utils/StripAbsHeader.py src/bin/vlm-temp.abs src/bin/vlm.abs
 
