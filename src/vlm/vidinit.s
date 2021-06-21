@@ -23,7 +23,6 @@ _ein_buf:   dc.l 0                  ; DATA XREF: sub_1934AA+28↑w
 dword_1A6810:   dcb.l $A,0              ; DATA XREF: ROM:001938B0↑w
                                         ; ROM:001938EC↑w ...
 ; ---------------------------------------------------------------------------
-;vidinit.s
 
 
 VideoIni:                             ; CODE XREF: sub_19324E↑p

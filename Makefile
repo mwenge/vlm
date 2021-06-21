@@ -33,8 +33,10 @@ vlm.abs:
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vlm.s -o src/bin/vlm.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/images.s -o src/bin/images.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vidinit.s -o src/bin/vidinit.cof
+	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/avbank.s -o src/bin/avbank.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vlmgpu.s -o src/bin/vlmgpu.cof
 	./rln/rln -z -e -rw -a 192000 x x -o src/bin/vlm-temp.abs src/bin/vlm.cof\
+		src/bin/avbank.cof\
 		src/bin/vidinit.cof\
 		src/bin/vlmgpu.cof\
 		src/bin/images.cof\
