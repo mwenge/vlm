@@ -15,9 +15,9 @@ serial	equ	113		;serial # of this software revision
 ;
 ;
 	.nlist
-	.include	"jaguar.inc"
-	.include	"blitter.inc"
-	.include	"cd.inc"
+	.include	"../jaguar.inc"
+	.include	"../blitter.inc"
+	.include	"../cd.inc"
 	.list
 ; 
 ;
