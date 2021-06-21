@@ -10137,7 +10137,7 @@ dbeast:   dc.l G_RAM, $13C, $98003F74, $F0A41D, $93BDA3BB, $980030AC
                 dc.l $6437BEB7, $64229819, $223C00F0, $3A02BF22, $98160001
                 dc.l $1802AF8, $D482E400, $98160005, $1809814, $223800F0
                 dc.l $BE96A695, $3415D7A2, $E400AFF4, $D280E400, 0
-polyos:     dc.l vlmlogo2        ; DATA XREF: sub_192088+D80↑o
+polyos:         dc.l vlmlogo2        ; DATA XREF: sub_192088+D80↑o
                 dc.l chev1
                 dc.l chev
                 dc.l square
@@ -10237,13 +10237,5 @@ vlmlogo2:       dc.w $08                  ; DATA XREF: ROM:polyos↑o
                 dcb.l 2,$FFFFFFFF
                 dc.l $FF8F8F8F, $8F8F8FFF, $FFF1F1F1, $F1F1F1FF, $FF818181
                 dc.l $818181FF
-; ians.gas
-
-; =============== S U B R O U T I N E =======================================
-
-;dc.w $303a, $005c, $6702, $4e75, $33fc, $ffff, $001a, $c1fe
-
-iansdoit:                             ; CODE XREF: sub_192088+E↑p
-.incbin "incbin/ians.bin"
 
                 END

@@ -306,6 +306,7 @@ width EQU $180
 width2 EQU $1FD428
 wsedit EQU $193F86
 stack	EQU $1AEFA8
+iansdoit EQU $1AC1A0
 wts EQU $197D26
 x_end EQU $1AE4EA
 zamp EQU $6C
