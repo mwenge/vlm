@@ -19,23 +19,23 @@
 .include "../blitter.inc"
 .include "vlm.inc"
 
-sub_192000:                             ; DATA XREF: sub_195E3A+2A↓o
+LaunchVLM:                             ; DATA XREF: sub_195E3A+2A↓o
                                         ; sub_195F78+2A↓o
                 move.w  #5,(skid).l
-                movea.l #$1AEFA8,sp
-                move.l  #locret_1962CC,(off_199994).l
+                movea.l #stack,sp
+                move.l  #rrts,(davesvec).l
                 move.w  #0,(started).l
                 move.w  #1,(freerun).l
                 move.w  #9,(imatrix).l
                 bsr.w   everythi
                 lea     (davesobj).l,a0
                 rts
-; End of function sub_192000
+; End of function LaunchVLM
 
 ; ---------------------------------------------------------------------------
                 nop
-                movea.l #$1AEFA8,sp
-                move.l  #locret_1962CC,(off_199994).l
+                movea.l #stack,sp
+                move.l  #rrts,(davesvec).l
                 move.w  #4,(skid).l
                 move.w  #0,(imatrix).l
                 move.w  #0,(started).l
@@ -52,7 +52,7 @@ goag:                             ; CODE XREF: ROM:00192084↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-everythi:                             ; CODE XREF: sub_192000+30↑p
+everythi:                             ; CODE XREF: LaunchVLM+30↑p
                                         ; ROM:00192080↑p
 
 ; FUNCTION CHUNK AT 00192D4A SIZE 00000138 BYTES
@@ -253,7 +253,7 @@ ggg:                             ; CODE XREF: ROM:00192400↓j
 
 gogo:                             ; CODE XREF: sub_192088↑p
                 tst.w   (started).l
-                bne.w   locret_1962CC
+                bne.w   rrts
                 move.w  #1,(started).l
                 move.l  #$70007,(G_END).l
                 move.l  #$70007,(D_END).l
@@ -559,7 +559,7 @@ symadj:                             ; DATA XREF: sub_192088+2E2↑o
                 lea     (pad_now).l,a1
                 bsr.w   doadsr
                 tst.w   (vlm_mode).l
-                beq.w   locret_1962CC
+                beq.w   rrts
                 lea     (pad_now).l,a1
                 tst.w   (editing).l
                 beq.w   shoop
@@ -636,7 +636,7 @@ adsrvex:                             ; DATA XREF: sub_1927F4+4↑o
                 ;ori.b   #$90,(a1)+
                 ;ori.b   #$9E,(a1)+
                 tst.l   d0
-                beq.w   locret_1962CC
+                beq.w   rrts
 
 setatac:                             ; CODE XREF: ROM:001928A0↓j
                 move.w  #1,$08(a0)
@@ -677,7 +677,7 @@ setay:                             ; CODE XREF: ROM:00192848↑j
                 bra.s   setay
 ; ---------------------------------------------------------------------------
                 tst.l   d0
-                bne.w   locret_1962CC
+                bne.w   rrts
 
 srel:                             ; CODE XREF: ROM:0019282A↑j
                                         ; ROM:0019285E↑j
@@ -747,7 +747,7 @@ gnana:                             ; CODE XREF: sub_1928D4+C↑j
                 movea.l (fx).l,a6
                 lsl.w   #2,d0
                 move.l  (a6,d0.w),d1
-                beq.w   locret_1962CC
+                beq.w   rrts
                 movea.l d1,a6
                 move.l  d1,(i_fxobj).l
                 move.w  (a1),d6
@@ -867,11 +867,11 @@ npright:                             ; CODE XREF: sub_1928D4+17C↑j
 npup:                             ; CODE XREF: sub_1928D4+18E↑j
                 move.l  (a1),d0
                 and.l   #$200000,d0
-                beq.w   locret_192A7E
+                beq.w   npdn
                 movea.l vfb_xsca(a3),a4
                 jsr     (a4)
 
-locret_192A7E:                          ; CODE XREF: sub_1928D4+1A0↑j
+npdn:                          ; CODE XREF: sub_1928D4+1A0↑j
                 rts
 ; ---------------------------------------------------------------------------
                 move.w  #1,(symed).l
@@ -898,7 +898,7 @@ exec1:                             ; CODE XREF: sub_1928D4+1CE↑j
                 jsr     (a2)
                 movea.l (sp)+,a3
                 tst.w   (editing).l
-                beq.w   locret_1962CC
+                beq.w   rrts
                 cmpi.w  #2,(antelope).l
                 bne.w   anteclr
                 clr.w   2(a3)
@@ -907,7 +907,7 @@ exec1:                             ; CODE XREF: sub_1928D4+1CE↑j
 
 anteclr:                             ; CODE XREF: sub_1928D4+200↑j
                 cmpi.l  #keydb,(routine).l
-                beq.w   locret_1962CC
+                beq.w   rrts
                 move.l  (routine).l,(ov).l
                 move.l  #keydb,(routine).l
                 rts
@@ -921,7 +921,7 @@ keydb:                             ; DATA XREF: gkp:loc_192AEA↑o
                                         ; sub_1928D4+22E↑o
                 move.l  (pad_now).l,d1
                 and.l   #$E00FF,d1
-                bne.w   locret_1962CC
+                bne.w   rrts
                 move.l  (ov).l,(routine).l
                 rts
 ; End of function keydb
@@ -960,7 +960,7 @@ idli:                             ; CODE XREF: sub_192B2A+60↓j
 
 setedit:                             ; CODE XREF: Frame+2E6↓p
                 tst.w   (vedit).l
-                bne.w   locret_1962CC
+                bne.w   rrts
                 move.w  (vlm_mode).l,(ovlm_mod).l
                 move.w  #1,(vedit).l
                 move.w  #3,(vlm_mode).l
@@ -1039,15 +1039,15 @@ setstat:                             ; CODE XREF: sub_192BC8+8↑j
 ; ---------------------------------------------------------------------------
                 move.w  (fframes).l,d2
                 and.w   #7,d2
-                bne.w   locret_1962CC
+                bne.w   rrts
                 addi.w  #1,$4A(a6)
                 rts
 ; ---------------------------------------------------------------------------
                 move.w  (fframes).l,d2
                 and.w   #7,d2
-                bne.w   locret_1962CC
+                bne.w   rrts
                 cmpi.w  #0,$4A(a6)
-                beq.w   locret_1962CC
+                beq.w   rrts
                 subi.w  #1,$4A(a6)
                 rts
 ; ---------------------------------------------------------------------------
@@ -1144,14 +1144,14 @@ titlescr:                             ; CODE XREF: sub_192088+2F2↑j
                 move.l  (draw_scr).l,(a0)+
                 move.l  a6,(a0)+
                 move.l  #$1E8274,($F03F7C).l
-                move.l  #off_198C28,(in_buf).l
+                move.l  #lol,(in_buf).l
                 move.l  #$1E8094,($F03F64).l
                 move.l  (fx).l,($F03F68).l
                 move.l  #$1E81F4,($F03F6C).l
                 move.l  #pbinfo,($F03F70).l ; "Parameter not yet defined    "
                 move.l  #delayf,($F03F74).l
-                move.l  #off_1ABB08,($F03F78).l
-                move.l  #off_1A69C0,(mods).l
+                move.l  #polyos,($F03F78).l
+                move.l  #gpumods,(mods).l
                 move.l  #1,(screen_r).l
                 moveq   #$A,d0
                 lea     (omega).l,a0
@@ -1171,7 +1171,7 @@ eloop:                             ; CODE XREF: sub_192088+DB8↑j
                 move.w  #1,(moomoomo).l
                 bsr.w   yakedit
                 move.w  #2,(moomoomo).l
-                movea.l (off_199994).l,a0
+                movea.l (davesvec).l,a0
                 jsr     (a0)
                 move.w  #3,(moomoomo).l
                 clr.w   (_fsync).l
@@ -1446,8 +1446,8 @@ cram:                             ; CODE XREF: sub_19324E+38↓j
                 jsr     InitBeas
                 move.w  #$FFFF,(db_on).l
                 clr.l   (screen_r).l
-                move.l  #locret_1962CC,(routine).l
-                move.l  #locret_1962CC,(_fx).l
+                move.l  #rrts,(routine).l
+                move.l  #rrts,(_fx).l
                 move.l  #Frame,(UPDA1F).w
                 move.w  (n_vde).l,d0
                 or.w    #1,d0
@@ -1519,11 +1519,11 @@ gsqu2:                             ; CODE XREF: sub_19324E+150↑j
                 clr.w   (palside).l
                 clr.w   (paltop).l
                 tst.w   (pal).l
-                beq.w   locret_1933DC
+                beq.w   notpal1
                 move.w  #6,(palside).l
                 move.w  #$1E,(paltop).l
 
-locret_1933DC:                          ; CODE XREF: sub_19324E+17A↑j
+notpal1:                          ; CODE XREF: sub_19324E+17A↑j
                 rts
 ; End of function startup
 
@@ -1650,11 +1650,11 @@ wfm:                             ; CODE XREF: ROM:001937AE↓j
                 lea     (a0,d2.w),a0
                 cmpi.w  #7,$E(a0)
                 bge.w   joyxy
-                move.l  a0,(dword_1A6808).l
+                move.l  a0,(_ein_buf+4).l
                 add.w   #$40,d1 ; '@'
                 swap    d1
                 move.w  d0,d1
-                move.l  d1,(dword_1A680C).l
+                move.l  d1,(_ein_buf+8).l
                 move.w  #5,(_fmode).l
                 bra.w   fmodewai
 ; End of function wfm
@@ -1732,7 +1732,7 @@ isgrn:                             ; CODE XREF: ROM:0019359A↑j
                 move.w  (mony).l,d1
                 add.w   #$10,d1
                 sub.w   d6,d1
-                bmi.w   locret_1962CC
+                bmi.w   rrts
                 jsr     sblitblo
                 move.w  #$3C,d0 ; '<'
                 move.w  #$100,d2
@@ -1742,7 +1742,7 @@ isgrn:                             ; CODE XREF: ROM:0019359A↑j
                 move.w  (mony).l,d1
                 add.w   #$10,d1
                 sub.w   d6,d1
-                bmi.w   locret_1962CC
+                bmi.w   rrts
                 move.w  #$88FF,d4
                 jsr     sblitblo
                 move.w  6(a4),d6
@@ -1750,7 +1750,7 @@ isgrn:                             ; CODE XREF: ROM:0019359A↑j
                 move.w  (mony).l,d1
                 add.w   #$10,d1
                 sub.w   d6,d1
-                bmi.w   locret_1962CC
+                bmi.w   rrts
                 move.w  #$4480,d4
                 jsr     sblitblo
                 move.w  #$96,d0
@@ -1775,7 +1775,7 @@ nggn:                             ; CODE XREF: ROM:00193678↑j
                 rts
 ; ---------------------------------------------------------------------------
                 move.l  #avbank,(_ein_buf).l
-                move.l  #$1E80B4,(dword_1A6808).l
+                move.l  #$1E80B4,(_ein_buf+4).l
                 move.w  #9,(_fmode).l
                 bsr.w   fmodewai
                 rts
@@ -1808,7 +1808,7 @@ shar:                             ; CODE XREF: ROM:001936FA↓j
 
 shad:                             ; CODE XREF: sub_192E82+9E↑p
                 tst.l   (aded).l
-                beq.w   locret_1962CC
+                beq.w   rrts
                 move.l  (aded).l,(_ein_buf).l
                 move.w  #1,(_fmode).l
                 bsr.w   fmodewai
@@ -1869,13 +1869,13 @@ joyy:                             ; CODE XREF: wfm:loc_193762↑j
 ; END OF FUNCTION CHUNK FOR wfm
 ; ---------------------------------------------------------------------------
                 tst.w   (_m).l
-                beq.w   locret_1962CC
+                beq.w   rrts
                 bmi.w   wfm
                 move.l  (mon1).l,d1
                 move.l  (mon2).l,d2
                 bpl.w   a_1
                 cmp.l   d1,d2
-                beq.w   locret_1962CC
+                beq.w   rrts
 
 a_1:                             ; CODE XREF: ROM:001937BE↑j
                 move.w  (monx).l,d0
@@ -1929,11 +1929,11 @@ nox1:                             ; CODE XREF: ROM:001937F6↑j
                 move.w  (sp)+,d1
                 add.w   #$40,d1 ; '@'
                 move.l  (draw_scr).l,(_ein_buf).l
-                move.l  #$1E80F4,(dword_1A6808).l
+                move.l  #$1E80F4,(_ein_buf+4).l
                 swap    d1
                 move.w  d0,d1
                 move.l  d1,-(sp)
-                move.l  d1,(dword_1A680C).l
+                move.l  d1,(_ein_buf+8).l
                 move.w  #$FF00,d0
                 swap    d0
                 move.w  (monptr).l,d0
@@ -1941,9 +1941,9 @@ nox1:                             ; CODE XREF: ROM:001937F6↑j
                 move.w  #8,(_fmode).l
                 jsr     fmodewai
                 move.l  (draw_scr).l,(_ein_buf).l
-                move.l  #$1E8134,(dword_1A6808).l
+                move.l  #$1E8134,(_ein_buf+4).l
                 move.l  (sp)+,d1
-                move.l  d1,(dword_1A680C).l
+                move.l  d1,(_ein_buf+8).l
                 move.w  #$8800,d0
                 swap    d0
                 move.w  (monptr).l,d0
@@ -1951,7 +1951,7 @@ nox1:                             ; CODE XREF: ROM:001937F6↑j
                 move.w  #7,(_fmode).l
                 bsr.w   fmodewai
                 move.l  #$F03F54,(_ein_buf).l
-                move.l  #$1E80F4,(dword_1A6808).l
+                move.l  #$1E80F4,(_ein_buf+4).l
                 bra.w   w2sngl
 
 ; =============== S U B R O U T I N E =======================================
@@ -1969,14 +1969,14 @@ fmodewai:                             ; CODE XREF: sub_1934AA+6A↑j
 w2nope:                             ; CODE XREF: ROM:0019383C↑j
                 add.w   #$40,d1 ; '@'
                 move.l  (draw_scr).l,(_ein_buf).l
-                move.l  #$1E80F4,(dword_1A6808).l
+                move.l  #$1E80F4,(_ein_buf+4).l
                 swap    d1
                 move.w  d0,d1
 
 w2sngl:                             ; CODE XREF: ROM:00193912↑j
-                move.l  d1,(dword_1A680C).l
+                move.l  d1,(_ein_buf+8).l
                 tst.l   (mon1).l
-                bmi.w   locret_1962CC
+                bmi.w   rrts
                 move.w  #$8800,d0
                 swap    d0
                 move.w  (monptr).l,d0
@@ -2022,7 +2022,7 @@ edvex:                             ; DATA XREF: sub_192E82+88↑o
                 move.w  #$C0,(Y_1).l
                 move.w  #$88FF,(LINCOL).l
                 move.l  (draw_scr).l,(_ein_buf).l
-                move.l  #$1AEFB0,(dword_1A6808).l
+                move.l  #$1AEFB0,(_ein_buf+4).l
                 move.w  #3,(_fmode).l
                 jsr     fmodewai
                 movem.w (sp)+,d0-d1
@@ -2189,8 +2189,8 @@ avx:                             ; CODE XREF: ROM:00193B20↑p
                 move.l  (iixcon).l,d1
                 lsr.l   #8,d1
                 and.l   #$FFFF,d1
-                move.l  d1,(dword_1A6808).l
-                move.l  a3,(dword_1A680C).l
+                move.l  d1,(_ein_buf+4).l
+                move.l  a3,(_ein_buf+8).l
                 move.w  #2,(_fmode).l
                 jmp     fmodewai
 ; End of function avx
@@ -2217,8 +2217,8 @@ avxy:                             ; CODE XREF: ROM:0019399C↑p
                 lsr.l   #8,d1
                 and.l   #$FFFF,d1
                 move.w  d1,-(sp)
-                move.l  d1,(dword_1A6808).l
-                move.l  a3,(dword_1A680C).l
+                move.l  d1,(_ein_buf+4).l
+                move.l  a3,(_ein_buf+8).l
                 move.w  #2,(_fmode).l
                 jsr     fmodewai
                 movea.l (fxobj).l,a3
@@ -2227,8 +2227,8 @@ avxy:                             ; CODE XREF: ROM:0019399C↑p
                 move.l  (iiycon).l,d1
                 lsr.l   #8,d1
                 and.l   #$FFFF,d1
-                move.l  d1,(dword_1A6808).l
-                move.l  a3,(dword_1A680C).l
+                move.l  d1,(_ein_buf+4).l
+                move.l  a3,(_ein_buf+8).l
                 move.w  #2,(_fmode).l
                 jsr     fmodewai
                 move.w  (sp)+,d0
@@ -2256,7 +2256,7 @@ lnkch:                             ; CODE XREF: sub_193CF2+4↑j
                 lsl.w   #2,d5
                 lea     UPDA1F(a3),a4
                 tst.w   (a4,d5.w)
-                beq.w   locret_1962CC
+                beq.w   rrts
                 lea     optionbu(a3),a3
                 rts
 ; End of function lnkchk
@@ -2284,9 +2284,9 @@ lnkch:                             ; CODE XREF: sub_193CF2+4↑j
 novrt:                             ; CODE XREF: ROM:00193D2E↑j
                                         ; ROM:00193D36↑j
                 move.w  (sp)+,d1
-                bmi.w   locret_193D80
+                bmi.w   nohrz
                 cmp.w   #$180,d1
-                bge.w   locret_193D80
+                bge.w   nohrz
                 move.w  #0,d0
                 move.w  #$180,d2
                 move.w  #1,d3
@@ -2294,7 +2294,7 @@ novrt:                             ; CODE XREF: ROM:00193D2E↑j
                 movea.l (draw_scr).l,a0
                 jsr     blitbloc
 
-locret_193D80:                          ; CODE XREF: ROM:00193D58↑j
+nohrz:                          ; CODE XREF: ROM:00193D58↑j
                                         ; ROM:00193D60↑j
                 rts
 ; ---------------------------------------------------------------------------
@@ -2322,7 +2322,7 @@ listit:                             ; CODE XREF: ROM:00193DB4↑j
                 movea.l d0,a2
                 move.l  info(a2),d6
                 sub.w   #1,d6
-                lea     (off_198838).l,a3 ; "Draw a polygon object        "
+                lea     (vars).l,a3 ; "Draw a polygon object        "
                 lsl.w   #2,d6
                 movea.l (a3,d6.w),a3
                 move.l  a3,(a0)+
@@ -2347,7 +2347,7 @@ fored:                             ; DATA XREF: ROM:00193E00↑o
                 lsl.w   #2,d0
                 movea.l (a0,d0.w),a0
                 move.l  info(a0),d6
-                lea     (off_198838).l,a1 ; "Draw a polygon object        "
+                lea     (vars).l,a1 ; "Draw a polygon object        "
                 sub.w   #1,d6
                 lsl.w   #2,d6
                 movea.l (a1,d6.w),a1
@@ -3015,7 +3015,7 @@ primexy:                             ; CODE XREF: reedit+138↑p
                 bsr.w   s16
                 movea.l (fxobj).l,a3
                 btst    #0,(a0)
-                beq.w   locret_1962CC
+                beq.w   rrts
                 move.b  SRCEN(a0),d0
                 and.w   #$FF,d0
                 lsl.w   #3,d0
@@ -3270,7 +3270,7 @@ gnum:                             ; CODE XREF: sub_19484E+BC↑p
 gnuml:                             ; CODE XREF: sub_1949BC+1C↓j
                 move.b  (a4)+,d3
                 cmp.b   #$3A,d3 ; ':'
-                beq.w   locret_1962CC
+                beq.w   rrts
                 move.l  d2,d4
                 lsl.l   #3,d2
                 lsl.l   #1,d4
@@ -3291,7 +3291,7 @@ gog:                             ; CODE XREF: ROM:001949FC↓j
                 bsr.w   thangg
                 tst.w   (meltim).l
                 bpl.s   gog
-                move.l  #locret_1962CC,(routine).l
+                move.l  #rrts,(routine).l
                 rts
 
 ; =============== S U B R O U T I N E =======================================
@@ -3719,7 +3719,7 @@ exxit:                             ; CODE XREF: Frame+31C↑j
                 rts
 ; ---------------------------------------------------------------------------
                 cmp.w   #7,d0
-                bgt.w   locret_1962CC
+                bgt.w   rrts
                 move.l  #getmatri,(action).l
                 move.w  d0,(imatrix).l
                 rts
@@ -4081,7 +4081,7 @@ wset:                             ; CODE XREF: ROM:00195522↑j
                 bsr.w   gkp
                 move.l  (a1),d0
                 and.l   #$22002000,d0
-                beq.w   locret_1962CC
+                beq.w   rrts
                 movea.l (eddie).l,a2
                 btst    #0,(a2)
                 beq.w   soxx
@@ -4206,7 +4206,7 @@ spn_butt:                             ; CODE XREF: ROM:00195688↑j
 pn_butte:                             ; CODE XREF: ROM:001928CA↑j
                                         ; ROM:001956BE↑j
                 tst.l   (action).l
-                bne.w   locret_1962CC
+                bne.w   rrts
                 lea     (pad_now).l,a1
                 move.l  (a1),d0
                 move.l  #$2000000,d1
@@ -4216,7 +4216,7 @@ pn_butte:                             ; CODE XREF: ROM:001928CA↑j
                 and.l   d0,d1
                 bne.w   prevexit
                 and.l   #$2000,d0
-                beq.w   locret_1962CC
+                beq.w   rrts
                 move.w  (selected).l,d0
                 add.w   #1,d0
                 cmp.w   (selectab).l,d0
@@ -4238,7 +4238,7 @@ prevexit:                             ; CODE XREF: ROM:001956FC↑j
 ; ---------------------------------------------------------------------------
                 move.l  (a1),d0
                 and.l   #$22002000,d0
-                beq.w   locret_1962CC
+                beq.w   rrts
 
 bexit:                             ; CODE XREF: ROM:00195A6E↓j
                 move.l  #editquit,(action).l
@@ -4414,7 +4414,7 @@ _bodb2:                             ; CODE XREF: ROM:0019592A↑j
                 dbf     d7,_gk2
                 move.l  (pad_now).l,d1
                 and.l   #$22002000,d1
-                beq.w   locret_1962CC
+                beq.w   rrts
                 move.w  (selected).l,d2
                 movea.l (edwave).l,a0
                 lsl.w   #4,d2
@@ -4537,7 +4537,7 @@ selector:                             ; CODE XREF: ROM:00195286↑j
                 and.l   #$200000,d0
                 bne.w   seldn
                 and.l   #$22002000,d1
-                beq.w   locret_1962CC
+                beq.w   rrts
                 and.l   #$2000,d1
                 beq.w   seuss
                 tst.w   (cbuttf).l
@@ -4632,7 +4632,7 @@ ibeasts:                             ; CODE XREF: sub_195B0E+1A↓j
 ; ---------------------------------------------------------------------------
                 addi.w  #1,(snoop).l
                 tst.l   ($804850).l
-                bne.w   locret_1962CC
+                bne.w   rrts
 
 cow:                             ; CODE XREF: ROM:loc_195B48↓j
                 bra.s   cow
@@ -4721,7 +4721,7 @@ stoptop:
                 lsl.w   #1,d0
                 add.w   d4,d0
                 move.w  d0,$04(a2)
-                bmi.w   locret_1962CC
+                bmi.w   rrts
                 bra.w   clip1
 ; ---------------------------------------------------------------------------
 clip0:
@@ -4789,7 +4789,7 @@ ponscr:                             ; CODE XREF: ROM:00195CAA↑j
 nohang:                             ; CODE XREF: ROM:00195CEC↑j
                 bsr.w   MakeUnSc
                 move.w  vfb_angl(a2),d0
-                bmi.w   locret_1962CC
+                bmi.w   rrts
                 lea     (postfixu).l,a3
                 asl.w   #2,d0
                 movea.l (a3,d0.w),a3
@@ -4837,7 +4837,7 @@ sponscr:                             ; CODE XREF: ROM:00195D26↑j
 snohang:                             ; CODE XREF: ROM:00195D72↑j
                 bsr.w   MakeScal
                 move.w  vfb_angl(a2),d0
-                bmi.w   locret_1962CC
+                bmi.w   rrts
                 lea     (postfixu).l,a3
                 asl.w   #2,d0
                 movea.l (a3,d0.w),a3
@@ -4914,7 +4914,7 @@ MakeScal:                             ; CODE XREF: ROM:loc_195D86↑p
                 move.w  #1,d3
                 move.w  #$180,d4
                 move.w  #3,d5
-                movea.l #sub_192000,a1
+                movea.l #LaunchVLM,a1
                 clr.w   (bo).l
                 bsr.w   nmulto
                 move.w  #1,(bo).l
@@ -5029,7 +5029,7 @@ MakeUnSc:                             ; CODE XREF: ROM:loc_195D00↑p
                 move.w  #1,d3
                 move.w  #$180,d4
                 move.w  #3,d5
-                movea.l #sub_192000,a1
+                movea.l #LaunchVLM,a1
                 clr.w   (bo).l
                 bsr.w   nmulto
                 move.w  #1,(bo).l
@@ -5315,7 +5315,7 @@ WaitBlit:                             ; CODE XREF: ROM:00194A4E↑p
                 beq.s   WaitBlit
 ; END OF FUNCTION CHUNK FOR blitcopy
 
-locret_1962CC:                          ; CODE XREF: sub_192402+6↑j
+rrts:                          ; CODE XREF: sub_192402+6↑j
                                         ; symadj+10↑j ...
                 rts
 ; ---------------------------------------------------------------------------
@@ -5407,7 +5407,7 @@ dcode:                             ; CODE XREF: Frame+256↑p
 dco:                             ; CODE XREF: sub_19640C+12↓j
                 move.b  (a3)+,d2
                 btst    d1,d0
-                bne.w   locret_1962CC
+                bne.w   rrts
                 dbf     d1,dco
                 clr.w   d2
                 rts
@@ -5636,7 +5636,7 @@ inmove:                             ; CODE XREF: sub_196634+3C↑j
                 move.l  $04(a0),d0
                 add.l   d0,(a0)
                 tst.w   d3
-                beq.w   locret_1962CC
+                beq.w   rrts
                 move.l  (a0),d0
                 move.l  vfb_angl(a0),d2
                 cmp.l   d2,d0
@@ -6538,7 +6538,7 @@ word_197E3E:    dc.w 0                  ; DATA XREF: sub_193968+E↑o
                 .dphrase
                 dc.l $111E1213, $142A2B2C, $2D302E2F, $313206FF
 dvfvars:   dc.l $1030506, $80B38FF ; DATA XREF: ROM:dvfed↑o
-off_198838:     dc.l polyvars         ; DATA XREF: ROM:00193DD2↑o
+vars:     dc.l polyvars         ; DATA XREF: ROM:00193DD2↑o
                                         ; ROM:00193E32↑o
                                         ; "Draw a polygon object        "
                 dc.l sfvars         ; "Draw 3D starfield            "
@@ -6555,7 +6555,7 @@ off_198838:     dc.l polyvars         ; DATA XREF: ROM:00193DD2↑o
                 dc.l pmvars         ; "Do particle motion           "
                 dc.l shuuvars         ; "Spectrum as intensities      "
 polyvars:     dc.b 'Draw a polygon object        ',0
-                                        ; DATA XREF: ROM:off_198838↑o
+                                        ; DATA XREF: ROM:vars↑o
                 dc.w $921
                 dc.l $221C1516, $1718191A
                 dc.b $26, $3D, $FF
@@ -6658,10 +6658,10 @@ option8:   dc.l star, bline1, op81, ispec3, op82, ispec4
                 dc.l swf2
 clut_sha:    dcb.w 2,0               ; DATA XREF: Frame+1C↑r
                                         ; Frame+26↑r ...
-off_198C28:     dc.l off_198C5C         ; DATA XREF: sub_192088+D44↑o
+lol:     dc.l bmobj         ; DATA XREF: sub_192088+D44↑o
                 dc.l skale, beasties, pobjs, mpobjs, mmasks, maxes
                 dc.l absdelta, zerstart, avbank, envvals, _fsync, freerun
-off_198C5C:     dc.l jlogo2       ; DATA XREF: ROM:off_198C28↑o
+bmobj:     dc.l jlogo2       ; DATA XREF: ROM:lol↑o
                 dc.l jaglogo
                 dc.l blokk
                 dc.l blokk
@@ -6673,7 +6673,7 @@ off_198C5C:     dc.l jlogo2       ; DATA XREF: ROM:off_198C28↑o
                 dc.l $FFFEFFFE
                 dcb.l 2,0
                 dc.l $20001, $04, $30001
-freerun:    dcb.w 2,0               ; DATA XREF: sub_192000+20↑w
+freerun:    dcb.w 2,0               ; DATA XREF: LaunchVLM+20↑w
                                         ; ROM:loc_19207A↑w ...
 ; font.bin
 .include "font.dat"
@@ -6683,7 +6683,7 @@ jlogo2:
 
 blokk:   dc.l $1003F             ; DATA XREF: ROM:00198C64↑o
                                         ; ROM:00198C68↑o
-off_199994:     dc.l locret_1962CC      ; DATA XREF: sub_192000+E↑w
+davesvec:     dc.l rrts      ; DATA XREF: LaunchVLM+E↑w
                                         ; ROM:00192044↑w ...
                 dcb.l $20,0
                 dc.l $18000000, 0
@@ -6776,19 +6776,19 @@ dlset:    dc.b 0, 6               ; DATA XREF: ROM:0019437A↑o
 word_19B08A:    dc.w 0                  ; DATA XREF: ROM:loc_194374↑w
                 dc.l bline5         ; "~g1:$18:Hold down b and use up,down to//"...
                 dc.l dlo1         ; "Off"
-                dc.l locret_1962CC
+                dc.l rrts
                 dc.l dlo2         ; "channel 1"
-                dc.l locret_1962CC
+                dc.l rrts
                 dc.l dlo3         ; "channel 2"
-                dc.l locret_1962CC
+                dc.l rrts
                 dc.l dlo4         ; "channel 3"
-                dc.l locret_1962CC
+                dc.l rrts
                 dc.l dlo5         ; "channel 4"
-                dc.l locret_1962CC
+                dc.l rrts
                 dc.l dlo6         ; "channel 5"
-                dc.l locret_1962CC
+                dc.l rrts
                 dc.l dlo7         ; "channel 6"
-                dc.l locret_1962CC
+                dc.l rrts
 
 avbank:   dc.l $10006, $70001000, $7000A, $60001000, $B0018, $50001000
                                         ; DATA XREF: ROM:00193548↑o
@@ -8976,9 +8976,9 @@ _fmode:    dc.w 0                  ; DATA XREF: sub_1934AA+62↑w
                                         ; ROM:001936A8↑w ...
 _ein_buf:   dc.l 0                  ; DATA XREF: sub_1934AA+28↑w
                                         ; ROM:00193694↑w ...
-dword_1A6808:   dc.l 0                  ; DATA XREF: sub_1934AA+4E↑w
+            dc.l 0                  ; DATA XREF: sub_1934AA+4E↑w
                                         ; ROM:0019369E↑w ...
-dword_1A680C:   dc.l 0                  ; DATA XREF: sub_1934AA+5C↑w
+            dc.l 0                  ; DATA XREF: sub_1934AA+5C↑w
                                         ; ROM:0019389E↑w ...
 dword_1A6810:   dcb.l $A,0              ; DATA XREF: ROM:001938B0↑w
                                         ; ROM:001938EC↑w ...
@@ -9103,7 +9103,7 @@ gpurun:                             ; CODE XREF: sub_192088+DA6↑p
                 rts
 ; ---------------------------------------------------------------------------
                 .dphrase
-off_1A69C0:     dc.l alpha       ; DATA XREF: sub_192088+D8A↑o
+gpumods:     dc.l alpha       ; DATA XREF: sub_192088+D8A↑o
                 dc.l beta
                 dc.l gamma
                 dc.l psi
@@ -9116,7 +9116,7 @@ off_1A69C0:     dc.l alpha       ; DATA XREF: sub_192088+D8A↑o
                 dc.l dbeast
                 .dphrase
 alpha:   dc.l G_RAM, $9D0, $98003F5C, $F0980E, $3F8000F0, $A4019800
-                                        ; DATA XREF: ROM:off_1A69C0↑o
+                                        ; DATA XREF: ROM:gpumods↑o
                 dc.l $480000, $60A401, $9800004C, _i4, $A402BDC1, $C4229800
                 dc.l $500000, $60A401, $980000A4, _i4, $A402C441, $C4622C21
                 dc.l $C4819800, $3F4000F0, $A4179800, $A00000, $60A416
@@ -10137,7 +10137,7 @@ dbeast:   dc.l G_RAM, $13C, $98003F74, $F0A41D, $93BDA3BB, $980030AC
                 dc.l $6437BEB7, $64229819, $223C00F0, $3A02BF22, $98160001
                 dc.l $1802AF8, $D482E400, $98160005, $1809814, $223800F0
                 dc.l $BE96A695, $3415D7A2, $E400AFF4, $D280E400, 0
-off_1ABB08:     dc.l vlmlogo2        ; DATA XREF: sub_192088+D80↑o
+polyos:     dc.l vlmlogo2        ; DATA XREF: sub_192088+D80↑o
                 dc.l chev1
                 dc.l chev
                 dc.l square
@@ -10172,7 +10172,7 @@ square:   dc.l $40100, $1000004, star, $20004, vfb_ysca, $04, $20004
                 dc.l vfb_ysca, UPDA1F, LFU_A, optionbu, 0
                 dc.l $2000200
                 dc.b 2, 0
-vlmlogo2:       dc.w $08                  ; DATA XREF: ROM:off_1ABB08↑o
+vlmlogo2:       dc.w $08                  ; DATA XREF: ROM:polyos↑o
                 dc.l $E00040, allpad, $100001, $C0002, $140000, $8F0003
                 dc.l $80004, $C0005, screen1, $8F0004, $C0006, $140005
                 dc.l screen1, $8F0006, $140007, $C0005, screen1, $8F0007

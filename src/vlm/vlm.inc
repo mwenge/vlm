@@ -259,7 +259,6 @@ roscale EQU $B0
 roscal2 EQU $B4
 roscalei EQU $C0
 routine EQU $1AE4C0
-rrts EQU $1962CC
 rsym_ist EQU $50
 rsym_ord EQU $48
 rsym_ste EQU $4C
@@ -306,6 +305,7 @@ wfpad EQU $198BF4
 width EQU $180
 width2 EQU $1FD428
 wsedit EQU $193F86
+stack	EQU $1AEFA8
 wts EQU $197D26
 x_end EQU $1AE4EA
 zamp EQU $6C
