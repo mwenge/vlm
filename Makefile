@@ -29,7 +29,10 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 	./utils/CreateCart.py VirtualLightMachine.jag  src/incbin/romheader.bin src/bin/cdboot1.abs
 	echo "f3144937d9f65fe7a1cf7f652d99a71d  VirtualLightMachine.jag" | md5sum -c
 
-vlm.abs: 
+vlm.gpu:
+	./rmac/rmac -fr -mtom -isrc src/vlm/gpu/dbeast.gas -o src/bin/dbeast.o
+
+vlm.abs: vlm.gpu
 	$(shell mkdir -p $(DIRS))
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vlm.s -o src/bin/vlm.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/images.s -o src/bin/images.cof

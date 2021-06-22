@@ -121,4 +121,5 @@ tau:
 shu:
 .incbin 'gpu/shu.bin'
 dbeast:   
-.incbin 'gpu/dbeast.bin'
+dc.w $00f0, $3000, $0000, $013c
+.incbin '../bin/dbeast.o'
