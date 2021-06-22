@@ -11,6 +11,7 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 	./rmac/rmac -fa -mjerry -isrc src/readrsa.das -o src/bin/readrsa.o
 	./rmac/rmac -fb -mjerry -isrc src/gettoc.das -o src/bin/gettoc.o
 	./rmac/rmac -fr -mtom -isrc src/testgpu.gas -o src/bin/testgpu.o
+	./rmac/rmac -fr -rw -isrc src/cdbios.s -o src/bin/cdbios.cof
 	./rmac/rmac -fb -rw -u -isrc src/cdboot1.s -o src/bin/cdboot1.cof\
 	 	-dRDRSA_S=8404434 -dRDRSA_E=8405662\
 	 	-dMD5_S=8403110 -dMD5_E=8404434\
@@ -22,11 +23,11 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 		-i src/images/quest.cry quest\
 		-i src/images/cdback.cry cdback\
 		-i src/images/arrow.cry arrow\
-		-i src/incbin/cdbios.txt cd_bios\
+		-i src/bin/cdbios.cof cd_bios\
 		-i src/bin/cdfront.abs cdfront\
 		-i src/bin/vlm.abs vlm
 	./utils/CreateCart.py VirtualLightMachine.jag  src/incbin/romheader.bin src/bin/cdboot1.abs
-	echo "0c29604b11b8bf2f98548f8f423f8f8f  VirtualLightMachine.jag" | md5sum -c
+	echo "f3144937d9f65fe7a1cf7f652d99a71d  VirtualLightMachine.jag" | md5sum -c
 
 vlm.abs: 
 	$(shell mkdir -p $(DIRS))
