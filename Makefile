@@ -30,7 +30,7 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 	echo "f3144937d9f65fe7a1cf7f652d99a71d  VirtualLightMachine.jag" | md5sum -c
 
 vlm.gpu:
-	./rmac/rmac -fr -mtom -isrc src/vlm/gpu/dbeast.gas -o src/bin/dbeast.o
+	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/dbeast.gas -o src/bin/dbeast.o
 
 vlm.abs: vlm.gpu
 	$(shell mkdir -p $(DIRS))
