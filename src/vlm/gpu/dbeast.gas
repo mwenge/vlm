@@ -1,5 +1,6 @@
 .include "../../jaguar.inc"
 .include "../../blitter.inc"
+.include "../vlm.inc"
 .org $1b9c0
 
       movei   #$f03f74, r0
@@ -17,7 +18,7 @@
       cmp     r1, r27
       jump    z,(r0)
       nop
-      movei   #$f03f60, r0
+      movei   #in_buf, r0
       load    (r0), r1
       addq    #PIXEL16, r1
       load    (r1), r29
