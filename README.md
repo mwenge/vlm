@@ -25,7 +25,7 @@ The source code can be compiled into an executable that you can run in `t2k.exe`
 
 ### Build Requirements
 ```sh
-sudo apt install build-essentials wine
+sudo apt install build-essentials wine python3
 ```
 
 ### Build the assembler toolchain

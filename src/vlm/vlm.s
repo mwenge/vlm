@@ -19,8 +19,7 @@
 .include "../blitter.inc"
 .include "vlm.inc"
 
-LaunchVLM:                             ; DATA XREF: sub_195E3A+2A↓o
-                                        ; sub_195F78+2A↓o
+LaunchVLM:
                 move.w  #5,(skid).l
                 movea.l #stack,sp
                 move.l  #rrts,(davesvec).l
@@ -42,7 +41,7 @@ LaunchVLM:                             ; DATA XREF: sub_195E3A+2A↓o
                 move.l  #$FFFFFFFF,(CLUT).l
                 move.l  #$FFFFFFFF,($F00404).l
 
-goag:                             ; CODE XREF: ROM:00192084↓j
+goag:
                 clr.w   (freerun).l
                 bsr.w   everythi
                 bra.s   goag
@@ -52,7 +51,7 @@ goag:                             ; CODE XREF: ROM:00192084↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-everythi:                             ; CODE XREF: LaunchVLM+30↑p
+everythi:
                                         ; ROM:00192080↑p
 
 ; FUNCTION CHUNK AT 00192D4A SIZE 00000138 BYTES
@@ -62,14 +61,14 @@ everythi:                             ; CODE XREF: LaunchVLM+30↑p
                 bne.w   nodoit
                 jsr     iansdoit
 
-nodoit:                             ; CODE XREF: sub_192088+A↑j
+nodoit:
                 clr.l   (udud).l
                 clr.l   (aded).l
                 clr.l   (cskr).l
                 lea     (refblock).l,a6
                 move.w  #5,d7
 
-irb:                             ; CODE XREF: sub_192088+38↓j
+irb:
                 bsr.w   ifxobj
                 lea     UPDA2(a6),a6
                 dbf     d7,irb
@@ -123,7 +122,7 @@ irb:                             ; CODE XREF: sub_192088+38↓j
                 move.w  #$FFFF,($1AE0D4).l
                 lea     ($1AE088).l,a0
 
-zippo:                             ; CODE XREF: sub_192088+FA↑j
+zippo:
                 lea     ($1AE108).l,a0
                 move.w  #$64,d0 ; 'd'
                 move.w  #$104,d1
@@ -180,7 +179,7 @@ zippo:                             ; CODE XREF: sub_192088+FA↑j
                 lea     (envvals).l,a0
                 move.w  #7,d0
 
-xx:                             ; CODE XREF: sub_192088+254↓j
+xx:
                 clr.l   (a0)+
                 dbf     d0,xx
                 clr.w   (XLO).l
@@ -194,7 +193,7 @@ xx:                             ; CODE XREF: sub_192088+254↓j
                 lea     ($1B67F8).l,a6
                 move.w  #4,d7
 
-iprep:                             ; CODE XREF: sub_192088+2B4↓j
+iprep:
                 movem.l d7/a5-a6,-(sp)
                 bsr.w   ifxobj
                 movem.l (sp)+,d7/a5-a6
@@ -217,7 +216,7 @@ iprep:                             ; CODE XREF: sub_192088+2B4↓j
 ;   ADDITIONAL PARENT FUNCTION makestar
 ;   ADDITIONAL PARENT FUNCTION makemono
 
-ggg:                             ; CODE XREF: ROM:00192400↓j
+ggg:
                                         ; sub_1924DA+12↓j ...
                 move.l  a6,(fxedbase).l
                 move.l  a6,(fxobj).l
@@ -251,7 +250,7 @@ ggg:                             ; CODE XREF: ROM:00192400↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-gogo:                             ; CODE XREF: sub_192088↑p
+gogo:
                 tst.w   (started).l
                 bne.w   rrts
                 move.w  #1,(started).l
@@ -270,10 +269,10 @@ gogo:                             ; CODE XREF: sub_192088↑p
                 lea     (WID256).w,a0
                 move.w  #$7F,d0
 
-tdo:                             ; CODE XREF: ROM:00192470↓j
+tdo:
                 move.w  #$FF,d1
 
-tdo2:                             ; CODE XREF: ROM:0019246C↓j
+tdo2:
                 move.w  d0,d2
                 add.w   d1,d2
                 move.b  d2,(a0)+
@@ -281,6 +280,7 @@ tdo2:                             ; CODE XREF: ROM:0019246C↓j
                 dbf     d0,tdo
                 rts
 ; ---------------------------------------------------------------------------
+mdvf2:
                 bsr.w   makecfb
                 move.w  #1,thang(a6)
                 move.w  #$60,($18).w ; '`'
@@ -290,6 +290,7 @@ tdo2:                             ; CODE XREF: ROM:0019246C↓j
                 move.w  #$78,($08).w ; 'x'
                 rts
 ; ---------------------------------------------------------------------------
+mdvf4:
                 bsr.w   makecfb
                 move.w  #2,thang(a6)
                 move.w  #$30,($18).w ; '0'
@@ -299,6 +300,7 @@ tdo2:                             ; CODE XREF: ROM:0019246C↓j
                 move.w  #$38,($08).w ; '8'
                 rts
 ; ---------------------------------------------------------------------------
+makefb:
                 bsr.w   gadd
                 move.l  #1,$8C(a6)
                 bra.w   fnop
@@ -306,17 +308,11 @@ tdo2:                             ; CODE XREF: ROM:0019246C↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-makecfb:                             ; CODE XREF: ROM:00192476↑p
-                                        ; ROM:001924A0↑p
-
-; FUNCTION CHUNK AT 00192386 SIZE 0000001C BYTES
-; FUNCTION CHUNK AT 00193EB2 SIZE 0000003E BYTES
-; FUNCTION CHUNK AT 0019443E SIZE 00000026 BYTES
-
+makecfb:
                 bsr.w   gadd
                 move.l  #0,$8C(a6)
 
-fnop:                             ; CODE XREF: ROM:001924D6↑j
+fnop:
                 bsr.w   initdvf
                 move.l  a6,(a0)
                 bra.w   ggg
@@ -351,7 +347,7 @@ fnop:                             ; CODE XREF: ROM:001924D6↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-mpo:                             ; CODE XREF: ROM:0019251E↑p
+mpo:
                                         ; ROM:00192544↑p
                 bsr.w   makestar
                 move.l  #$C,info(a6)
@@ -368,7 +364,7 @@ mpo:                             ; CODE XREF: ROM:0019251E↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-makestar:                             ; CODE XREF: sub_192552↑p
+makestar:
                                         ; ROM:00192568↑p
 
 ; FUNCTION CHUNK AT 00192386 SIZE 0000001C BYTES
@@ -388,7 +384,7 @@ makestar:                             ; CODE XREF: sub_192552↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-makemono:                             ; CODE XREF: sub_1925B6↓p
+makemono:
                                         ; ROM:001925DA↓p ...
 
 ; FUNCTION CHUNK AT 00192386 SIZE 0000001C BYTES
@@ -407,7 +403,7 @@ makemono:                             ; CODE XREF: sub_1925B6↓p
 ; =============== S U B R O U T I N E =======================================
 
 
-mplaz1:                             ; CODE XREF: ROM:001925A8↑p
+mplaz1:
                 bsr.s   makemono
                 move.l  #$40002,gpu(a6)
                 move.l  #$2000,j(a6)
@@ -429,7 +425,7 @@ mplaz1:                             ; CODE XREF: ROM:001925A8↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-gadd:                             ; CODE XREF: ROM:00192380↑p
+gadd:
                                         ; ROM:001923A2↑p ...
                 movea.l (fx).l,a0
                 move.w  (og).l,d0
@@ -442,7 +438,7 @@ gadd:                             ; CODE XREF: ROM:00192380↑p
                 bra.w   ifxobj
 ; ---------------------------------------------------------------------------
 
-zzzero:                             ; CODE XREF: sub_1925FA+14↑j
+zzzero:
                 movea.l (fx).l,a6
                 movea.l (a6),a6
                 move.w  (og).l,d0
@@ -455,7 +451,7 @@ zzzero:                             ; CODE XREF: sub_1925FA+14↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-initmono:                             ; CODE XREF: sub_19259A+4↑p
+initmono:
                 move.l  #6,info(a6)
                 move.l  #$40000,gpu(a6)
                 rts
@@ -465,7 +461,7 @@ initmono:                             ; CODE XREF: sub_19259A+4↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-initwsur:                             ; CODE XREF: ROM:00192590↑p
+initwsur:
                 bsr.w   initpsf
                 move.l  #$800000,dstoffz(a6)
                 move.l  #0,phase1(a6)
@@ -484,7 +480,7 @@ initwsur:                             ; CODE XREF: ROM:00192590↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-initpsf:                             ; CODE XREF: sub_19257E+4↑p
+initpsf:
                                         ; sub_192644↑p
                 move.l  #3,plot_mod(a6)
                 move.l  #0,gpu(a6)
@@ -496,7 +492,7 @@ initpsf:                             ; CODE XREF: sub_19257E+4↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-initwave:                             ; CODE XREF: ROM:001923A6↑p
+initwave:
                 move.l  #$20000,gpu(a6)
                 move.l  #1,info(a6)
                 rts
@@ -506,7 +502,7 @@ initwave:                             ; CODE XREF: ROM:001923A6↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-initdvf:                             ; CODE XREF: makecfb:loc_1924E6↑p
+initdvf:
                 move.l  #4,info(a6)
                 move.l  #$10000,gpu(a6)
                 move.l  #$1AF078,i(a6)
@@ -518,7 +514,7 @@ initdvf:                             ; CODE XREF: makecfb:loc_1924E6↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-initring:                             ; CODE XREF: ROM:001924F6↑p
+initring:
                 clr.l   _i1(a6)
                 clr.l   _i2(a6)
                 move.l  #9,gpu(a6)
@@ -531,7 +527,7 @@ initring:                             ; CODE XREF: ROM:001924F6↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-wavelink:                             ; CODE XREF: sub_1943FC+EB8↓p
+wavelink:
                                         ; ROM:00195508↓p
                 movea.l (fxobj).l,a6
 ; End of function wavelink
@@ -540,7 +536,7 @@ wavelink:                             ; CODE XREF: sub_1943FC+EB8↓p
 ; =============== S U B R O U T I N E =======================================
 
 
-wlink:                             ; CODE XREF: ROM:001923B4↑p
+wlink:
                                         ; ROM:001923C2↑p ...
                 lsl.w   #2,d1
                 lea     optionbu(a6),a5
@@ -555,7 +551,7 @@ wlink:                             ; CODE XREF: ROM:001923B4↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-symadj:                             ; DATA XREF: sub_192088+2E2↑o
+symadj:
                 lea     (pad_now).l,a1
                 bsr.w   doadsr
                 tst.w   (vlm_mode).l
@@ -565,7 +561,7 @@ symadj:                             ; DATA XREF: sub_192088+2E2↑o
                 beq.w   shoop
                 lea     ($1AE010).l,a1
 
-shoop:                             ; CODE XREF: symadj+20↑j
+shoop:
                 move.b  SRCEN(a1),d0
                 rol.b   #2,d0
                 lea     (pixcon).l,a0
@@ -589,12 +585,12 @@ shoop:                             ; CODE XREF: symadj+20↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-doadsr:                             ; CODE XREF: symadj+6↑p
+doadsr:
                 tst.w   (vlm_mode).l
                 bne.w   ago
                 lea     (zero).l,a1
 
-ago:                             ; CODE XREF: sub_19279E+6↑j
+ago:
                 movea.l a1,a3
                 lea     (envvals).l,a1
                 lea     $A(a1),a1
@@ -617,7 +613,7 @@ ago:                             ; CODE XREF: sub_19279E+6↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-do_adsr:                             ; CODE XREF: sub_19279E+2A↑p
+do_adsr:
                                         ; sub_19279E+40↑p
                 move.w  $08(a0),d1
                 lea     (adsrvex).l,a4
@@ -628,7 +624,7 @@ do_adsr:                             ; CODE XREF: sub_19279E+2A↑p
 
 ; ---------------------------------------------------------------------------
 
-adsrvex:                             ; DATA XREF: sub_1927F4+4↑o
+adsrvex:
                 dc.l trigwait, attack, decay, sustain, release
                 ;ori.b   #$1A,(a1)+
                 ;ori.b   #$28,(a1)+ ; '('
@@ -638,7 +634,7 @@ adsrvex:                             ; DATA XREF: sub_1927F4+4↑o
                 tst.l   d0
                 beq.w   rrts
 
-setatac:                             ; CODE XREF: ROM:001928A0↓j
+setatac:
                 move.w  #1,$08(a0)
                 rts
 ; ---------------------------------------------------------------------------
@@ -655,7 +651,7 @@ setatac:                             ; CODE XREF: ROM:001928A0↓j
                 move.l  #$FFFF,d1
                 move.w  #2,$08(a0)
 
-setay:                             ; CODE XREF: ROM:00192848↑j
+setay:
                                         ; ROM:00192884↓j ...
                 move.w  d1,(a1)
                 rts
@@ -679,7 +675,7 @@ setay:                             ; CODE XREF: ROM:00192848↑j
                 tst.l   d0
                 bne.w   rrts
 
-srel:                             ; CODE XREF: ROM:0019282A↑j
+srel:
                                         ; ROM:0019285E↑j
                 move.w  #4,$08(a0)
                 rts
@@ -703,7 +699,7 @@ srel:                             ; CODE XREF: ROM:0019282A↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-gkpad:                             ; CODE XREF: ROM:001928C6↑p
+gkpad:
                 lea     (ud_butts).l,a0
 ; End of function gkpad
 
@@ -711,7 +707,7 @@ gkpad:                             ; CODE XREF: ROM:001928C6↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-gkp:                             ; CODE XREF: ROM:0019555C↓p
+gkp:
 
 ; FUNCTION CHUNK AT 00192D2C SIZE 0000001E BYTES
 
@@ -721,7 +717,7 @@ gkp:                             ; CODE XREF: ROM:0019555C↓p
                 movea.l ($1AF056).l,a3
                 move.w  #$B,d0
 
-flashem:                             ; CODE XREF: sub_1928D4+4A↓j
+flashem:
                 tst.b   (a3)
                 bmi.w   nxtk
                 tst.b   3(a3)
@@ -733,12 +729,12 @@ flashem:                             ; CODE XREF: sub_1928D4+4A↓j
                 move.l  a0,(action).l
                 bchg    #7,2(a3)
 
-nxtk:                             ; CODE XREF: sub_1928D4+1C↑j
+nxtk:
                                         ; sub_1928D4+24↑j ...
                 lea     $04(a3),a3
                 dbf     d0,flashem
 
-gnana:                             ; CODE XREF: sub_1928D4+C↑j
+gnana:
                 lea     (cpad).l,a0
                 movea.l $04(a0),a3
                 movea.l (a0),a0
@@ -753,7 +749,7 @@ gnana:                             ; CODE XREF: sub_1928D4+C↑j
                 move.w  (a1),d6
                 move.w  #3,d7
 
-gk1:                             ; CODE XREF: sub_1928D4+A0↓j
+gk1:
                 movea.l (a0)+,a2
                 btst    #0,d6
                 beq.w   bodb
@@ -762,7 +758,7 @@ gk1:                             ; CODE XREF: sub_1928D4+A0↓j
                 bra.w   execute
 ; ---------------------------------------------------------------------------
 
-bodb:                             ; CODE XREF: sub_1928D4+8A↑j
+bodb:
                                         ; sub_1928D4+92↑j
                 lsr.w   #1,d6
                 lea     $04(a3),a3
@@ -770,7 +766,7 @@ bodb:                             ; CODE XREF: sub_1928D4+8A↑j
                 move.w  2(a1),d6
                 move.w  #7,d7
 
-gk2:                             ; CODE XREF: sub_1928D4+C8↓j
+gk2:
                 movea.l (a0)+,a2
                 btst    #0,d6
                 beq.w   bodb2
@@ -779,7 +775,7 @@ gk2:                             ; CODE XREF: sub_1928D4+C8↓j
                 bra.w   execute
 ; ---------------------------------------------------------------------------
 
-bodb2:                             ; CODE XREF: sub_1928D4+B2↑j
+bodb2:
                                         ; sub_1928D4+BA↑j
                 lsr.w   #1,d6
                 lea     $04(a3),a3
@@ -793,14 +789,14 @@ bodb2:                             ; CODE XREF: sub_1928D4+B2↑j
                 rts
 ; ---------------------------------------------------------------------------
 
-somebutt:                             ; CODE XREF: sub_1928D4+D6↑j
+somebutt:
                 move.l  d0,-(sp)
                 movea.l (a0)+,a2
                 cmp.l   #$2000,d0
                 bne.w   notc
                 jsr     (a2)
 
-notc:                             ; CODE XREF: sub_1928D4+EC↑j
+notc:
                 move.l  (sp)+,d0
                 move.l  d0,-(sp)
                 movea.l (a0)+,a2
@@ -808,7 +804,7 @@ notc:                             ; CODE XREF: sub_1928D4+EC↑j
                 bne.w   notb
                 jsr     (a2)
 
-notb:                             ; CODE XREF: sub_1928D4+FE↑j
+notb:
                 move.l  (sp)+,d0
                 move.l  d0,-(sp)
                 movea.l (a0)+,a2
@@ -816,7 +812,7 @@ notb:                             ; CODE XREF: sub_1928D4+FE↑j
                 bne.w   nota
                 jsr     (a2)
 
-nota:                             ; CODE XREF: sub_1928D4+110↑j
+nota:
                 move.l  (sp)+,d0
                 move.l  d0,-(sp)
                 movea.l (a0)+,a2
@@ -824,7 +820,7 @@ nota:                             ; CODE XREF: sub_1928D4+110↑j
                 bne.w   notab
                 jsr     (a2)
 
-notab:                             ; CODE XREF: sub_1928D4+122↑j
+notab:
                 move.l  (sp)+,d0
                 rts
 ; ---------------------------------------------------------------------------
@@ -841,7 +837,7 @@ notab:                             ; CODE XREF: sub_1928D4+122↑j
                 bra.w   *+4
 ; ---------------------------------------------------------------------------
 
-gjoy:                             ; CODE XREF: sub_1928D4+13A↑j
+gjoy:
                                         ; sub_1928D4+14C↑j ...
                 move.l  (a1),d0
                 move.l  d0,d1
@@ -850,28 +846,28 @@ gjoy:                             ; CODE XREF: sub_1928D4+13A↑j
                 movea.l (a3),a4
                 jsr     (a4)
 
-npleft:                             ; CODE XREF: sub_1928D4+16C↑j
+npleft:
                 move.l  (a1),d0
                 and.l   #$800000,d0
                 beq.w   npright
                 movea.l $04(a3),a4
                 jsr     (a4)
 
-npright:                             ; CODE XREF: sub_1928D4+17C↑j
+npright:
                 move.l  (a1),d0
                 and.l   #$100000,d0
                 beq.w   npup
                 movea.l $08(a3),a4
                 jsr     (a4)
 
-npup:                             ; CODE XREF: sub_1928D4+18E↑j
+npup:
                 move.l  (a1),d0
                 and.l   #$200000,d0
                 beq.w   npdn
                 movea.l vfb_xsca(a3),a4
                 jsr     (a4)
 
-npdn:                          ; CODE XREF: sub_1928D4+1A0↑j
+npdn:
                 rts
 ; ---------------------------------------------------------------------------
                 move.w  #1,(symed).l
@@ -883,7 +879,7 @@ npdn:                          ; CODE XREF: sub_1928D4+1A0↑j
                 bra.w   rys
 ; ---------------------------------------------------------------------------
 
-execute:                             ; CODE XREF: sub_1928D4+96↑j
+execute:
                                         ; sub_1928D4+BE↑j
                 tst.w   (editing).l
                 beq.w   exec1
@@ -892,7 +888,7 @@ execute:                             ; CODE XREF: sub_1928D4+96↑j
                 beq.w   exec1
                 move.b  #$20,3(a3) ; ' '
 
-exec1:                             ; CODE XREF: sub_1928D4+1CE↑j
+exec1:
                                         ; sub_1928D4+1DE↑j
                 move.l  a3,-(sp)
                 jsr     (a2)
@@ -905,7 +901,7 @@ exec1:                             ; CODE XREF: sub_1928D4+1CE↑j
                 clr.w   (antelope).l
                 move.w  #1,(seldb).l
 
-anteclr:                             ; CODE XREF: sub_1928D4+200↑j
+anteclr:
                 cmpi.l  #keydb,(routine).l
                 beq.w   rrts
                 move.l  (routine).l,(ov).l
@@ -917,7 +913,7 @@ anteclr:                             ; CODE XREF: sub_1928D4+200↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-keydb:                             ; DATA XREF: gkp:loc_192AEA↑o
+keydb:
                                         ; sub_1928D4+22E↑o
                 move.l  (pad_now).l,d1
                 and.l   #$E00FF,d1
@@ -930,7 +926,7 @@ keydb:                             ; DATA XREF: gkp:loc_192AEA↑o
 ; =============== S U B R O U T I N E =======================================
 
 
-zapdel:                             ; CODE XREF: sub_192088+5E↑p
+zapdel:
                                         ; skidoo+7E↓p
                 move.w  #2,(delayf).l
                 clr.w   (delayp).l
@@ -947,7 +943,7 @@ zapdel:                             ; CODE XREF: sub_192088+5E↑p
                 move.l  a1,(d2line).l
                 move.w  #$7F,d0
 
-idli:                             ; CODE XREF: sub_192B2A+60↓j
+idli:
                 clr.l   info(a0)
                 lea     $300(a0),a0
                 dbf     d0,idli
@@ -958,7 +954,7 @@ idli:                             ; CODE XREF: sub_192B2A+60↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-setedit:                             ; CODE XREF: Frame+2E6↓p
+setedit:
                 tst.w   (vedit).l
                 bne.w   rrts
                 move.w  (vlm_mode).l,(ovlm_mod).l
@@ -979,7 +975,7 @@ symclr:
 ; ---------------------------------------------------------------------------
                 eori.l  #$100FF,asym_fla(a6)
 
-setstat:                             ; CODE XREF: sub_192BC8+8↑j
+setstat:
                 bsr.w   isymbut
                 move.l  #ud_butts,(action).l
                 rts
@@ -1084,7 +1080,7 @@ setstat:                             ; CODE XREF: sub_192BC8+8↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-rxs:                             ; CODE XREF: sub_1928D4+1BA↑p
+rxs:
                 lea     (ixcon).l,a0
                 jsr     inertcon
                 move.w  (a0),d0
@@ -1098,7 +1094,7 @@ rxs:                             ; CODE XREF: sub_1928D4+1BA↑p
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR gkp
 
-rys:                             ; CODE XREF: sub_1928D4+1C4↑j
+rys:
                 lea     (iycon).l,a0
                 jsr     inertcon
                 move.w  (a0),d0
@@ -1111,7 +1107,7 @@ rys:                             ; CODE XREF: sub_1928D4+1C4↑j
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR everythi
 
-titlescr:                             ; CODE XREF: sub_192088+2F2↑j
+titlescr:
                 movea.l (draw_scr).l,a0
                 move.w  #1,(db_on).l
                 movea.l (fx).l,a6
@@ -1157,7 +1153,7 @@ titlescr:                             ; CODE XREF: sub_192088+2F2↑j
                 lea     (omega).l,a0
                 jsr     gpurun
 
-editloop:                             ; CODE XREF: sub_192088+DC4↓j
+editloop:
                                         ; sub_192088+DF8↓j
                 clr.w   (moomoomo).l
                 tst.w   (freerun).l
@@ -1165,7 +1161,7 @@ editloop:                             ; CODE XREF: sub_192088+DC4↓j
                 rts
 ; ---------------------------------------------------------------------------
 
-eloop:                             ; CODE XREF: sub_192088+DB8↑j
+eloop:
                 tst.w   (_fsync).l
                 beq.s   editloop
                 move.w  #1,(moomoomo).l
@@ -1182,7 +1178,7 @@ eloop:                             ; CODE XREF: sub_192088+DB8↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-yakedit:                             ; CODE XREF: sub_192088+DCE↑p
+yakedit:
                 tst.w   (actime).l
                 bmi.w   no_ac
                 subi.w  #1,(actime).l
@@ -1190,7 +1186,7 @@ yakedit:                             ; CODE XREF: sub_192088+DCE↑p
                 lea     (clearstr).l,a0 ; "@"
                 bsr.w   print
 
-no_ac:                             ; CODE XREF: sub_192E82+6↑j
+no_ac:
                                         ; sub_192E82+12↑j
                 movea.l (fx).l,a6
                 move.w  (fxed).l,d0
@@ -1204,14 +1200,14 @@ no_ac:                             ; CODE XREF: sub_192E82+6↑j
                 jsr     (a0)
                 clr.l   (action).l
 
-noact:                             ; CODE XREF: sub_192E82+3E↑j
+noact:
                                         ; sub_192E82+62↓j
                 move.l  (ixcon).l,d0
                 cmp.l   (ixcon).l,d0
                 bne.s   noact
                 move.l  d0,(iixcon).l
 
-noact2:                             ; CODE XREF: sub_192E82+76↓j
+noact2:
                 move.l  (iycon).l,d0
                 cmp.l   (iycon).l,d0
                 bne.s   noact2
@@ -1224,7 +1220,7 @@ noact2:                             ; CODE XREF: sub_192E82+76↓j
                 movea.l (a0,d0.w),a0
                 jsr     (a0)
 
-blib:                             ; CODE XREF: sub_192E82+84↑j
+blib:
                 movea.l (fxedbase).l,a6
                 bsr.w   shad
                 rts
@@ -1234,7 +1230,7 @@ blib:                             ; CODE XREF: sub_192E82+84↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-elcon:                             ; CODE XREF: ROM:00193E58↓p
+elcon:
                                         ; ROM:00194010↓p ...
                 move.l  a0,-(sp)
                 lea     $08(a0),a0
@@ -1244,13 +1240,13 @@ elcon:                             ; CODE XREF: ROM:00193E58↓p
                 move.l  #$1E8054,(elvp).l
                 move.w  #$3F,d1 ; '?'
 
-elc1:                             ; CODE XREF: sub_192F26+28↓j
+elc1:
                 clr.l   (a3)+
                 dbf     d1,elc1
                 lea     (elinx).l,a3
                 move.w  #1,d4
 
-elc:                             ; CODE XREF: sub_192F26+46↓j
+elc:
                                         ; sub_192F26+F8↓j
                 move.b  (a1)+,d2
                 bmi.w   elcend
@@ -1269,7 +1265,7 @@ elc:                             ; CODE XREF: sub_192F26+46↓j
                 bne.w   ucan
                 move.l  #unquit,d7
 
-ucan:                             ; CODE XREF: sub_192F26+60↑j
+ucan:
                 move.l  d7,(a0)+
                 movem.l a0-a1,-(sp)
                 movea.l (elvp).l,a0
@@ -1281,7 +1277,7 @@ ucan:                             ; CODE XREF: sub_192F26+60↑j
                 beq.w   nolbit
                 move.l  a5,-8(a0)
 
-spect:                             ; CODE XREF: sub_192F26+9C↓j
+spect:
                 move.b  (a4)+,d5
                 move.b  d5,(a5)+
                 cmp.b   #$3A,d5 ; ':'
@@ -1292,7 +1288,7 @@ spect:                             ; CODE XREF: sub_192F26+9C↓j
                 move.b  d4,(a3,d7.w)
                 lea     (a2,d2.w),a4
 
-llink:                             ; CODE XREF: sub_192F26+E4↓j
+llink:
                 move.b  $1F(a4),d5
                 and.w   #$FF,d5
                 move.b  d4,(a3,d5.w)
@@ -1303,7 +1299,7 @@ llink:                             ; CODE XREF: sub_192F26+E4↓j
                 lea     (a2,d5.w),a4
                 move.l  a4,-(sp)
 
-lcolon:                             ; CODE XREF: sub_192F26+D2↓j
+lcolon:
                 move.b  (a4)+,d5
                 cmp.b   #$3A,d5 ; ':'
                 bne.s   lcolon
@@ -1316,12 +1312,12 @@ lcolon:                             ; CODE XREF: sub_192F26+D2↓j
                 move.b  #0,(a5)+
                 add.w   #1,d4
 
-nolbit:                             ; CODE XREF: sub_192F26+8C↑j
+nolbit:
                 add.w   #1,d1
                 cmp.w   d0,d1
                 bne.w   elc
 
-elcend:                             ; CODE XREF: sub_192F26+38↑j
+elcend:
                 movea.l (sp)+,a0
                 move.w  d1,(a0)
                 move.w  #0,2(a0)
@@ -1333,12 +1329,12 @@ elcend:                             ; CODE XREF: sub_192F26+38↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-ifxobj:                             ; CODE XREF: everythi:loc_1920B8↑p
+ifxobj:
                                         ; sub_192088+5A↑p ...
                 movea.l a6,a1
                 move.l  #$FF,d0
 
-xxxa:                             ; CODE XREF: sub_193036+A↓j
+xxxa:
                 clr.l   (a1)+
                 dbf     d0,xxxa
                 move.l  #$8000,col1(a6)
@@ -1402,7 +1398,7 @@ xxxa:                             ; CODE XREF: sub_193036+A↓j
                 lea     optionbu(a6),a3
                 move.w  #$3F,d0 ; '?'
 
-zlop:                             ; CODE XREF: sub_193036+1E0↓j
+zlop:
                 move.l  #$FFFF,(a5)+
                 move.w  #0,(a4)+
                 move.l  #0,(a3)+
@@ -1411,7 +1407,7 @@ zlop:                             ; CODE XREF: sub_193036+1E0↓j
                 lea     (oscbank).l,a4
                 move.w  #$1F,d0
 
-gbsb:                             ; CODE XREF: sub_193036+1F4↓j
+gbsb:
                 move.l  (a4)+,(a3)+
                 dbf     d0,gbsb
                 movem.l a0-a1,-(sp)
@@ -1427,7 +1423,7 @@ gbsb:                             ; CODE XREF: sub_193036+1F4↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-startup:                             ; CODE XREF: sub_192402+48↑p
+startup:
                 jsr     VideoIni
                 jsr     InitList
                 move.l  (ddlist).l,d0
@@ -1438,7 +1434,7 @@ startup:                             ; CODE XREF: sub_192402+48↑p
                 move.l  #$794,d0
                 lsr.l   #2,d0
 
-cram:                             ; CODE XREF: sub_19324E+38↓j
+cram:
                 clr.l   (a0)+
                 sub.l   #1,d0
                 bpl.s   cram
@@ -1471,14 +1467,14 @@ cram:                             ; CODE XREF: sub_19324E+38↓j
                 lea     (p_rect).l,a2
                 move.w  #$100,d0
 
-mpsines:                             ; CODE XREF: sub_19324E+106↓j
+mpsines:
                 move.b  (a0)+,d1
                 ext.w   d1
                 move.w  d1,d2
                 bpl.w   mrect1
                 neg.w   d2
 
-mrect1:                             ; CODE XREF: sub_19324E+F6↑j
+mrect1:
                 lsl.w   #1,d2
                 move.b  d2,(a2)+
                 add.w   #$80,d1
@@ -1488,7 +1484,7 @@ mrect1:                             ; CODE XREF: sub_19324E+F6↑j
                 lea     (p_ramp).l,a1
                 clr.w   d0
 
-gsaw:                             ; CODE XREF: sub_19324E+134↓j
+gsaw:
                 move.w  d0,d1
                 move.w  d0,d2
                 lsr.w   #1,d2
@@ -1497,7 +1493,7 @@ gsaw:                             ; CODE XREF: sub_19324E+134↓j
                 bpl.w   gsaw1
                 neg.w   d1
 
-gsaw1:                             ; CODE XREF: sub_19324E+124↑j
+gsaw1:
                 move.b  d1,(a0)+
                 add.w   #2,d0
                 cmp.w   #$200,d0
@@ -1506,13 +1502,13 @@ gsaw1:                             ; CODE XREF: sub_19324E+124↑j
                 lea     (p_square).l,a0
                 move.w  #$FF,d0
 
-gsqu:                             ; CODE XREF: sub_19324E+15A↓j
+gsqu:
                 clr.w   d1
                 cmp.w   #$80,d0
                 blt.w   gsqu2
                 move.w  #$FF,d1
 
-gsqu2:                             ; CODE XREF: sub_19324E+150↑j
+gsqu2:
                 move.b  d1,(a0)+
                 dbf     d0,gsqu
                 move.b  (p_square).l,($1E7848).l
@@ -1523,7 +1519,7 @@ gsqu2:                             ; CODE XREF: sub_19324E+150↑j
                 move.w  #6,(palside).l
                 move.w  #$1E,(paltop).l
 
-notpal1:                          ; CODE XREF: sub_19324E+17A↑j
+notpal1:
                 rts
 ; End of function startup
 
@@ -1531,7 +1527,7 @@ notpal1:                          ; CODE XREF: sub_19324E+17A↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-dumint:                             ; DATA XREF: sub_192402+36↑o
+dumint:
                 move.w  #$101,(INT1).l
                 move.w  #$101,(INT2).l
                 rte
@@ -1540,7 +1536,7 @@ dumint:                             ; DATA XREF: sub_192402+36↑o
 ; ---------------------------------------------------------------------------
                 move.w  (frames).l,d7
 
-wsnc:                             ; CODE XREF: ROM:001933FC↓j
+wsnc:
                 cmp.w   (frames).l,d7
                 beq.s   wsnc
                 rts
@@ -1548,7 +1544,7 @@ wsnc:                             ; CODE XREF: ROM:001933FC↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-clrscree:                             ; CODE XREF: sub_19324E+A4↑p
+clrscree:
                                         ; sub_19324E+B0↑p
                 clr.w   d0
                 clr.w   d1
@@ -1566,7 +1562,7 @@ clrscree:                             ; CODE XREF: sub_19324E+A4↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-makeit_t:                             ; CODE XREF: sub_192088+12E↑p
+makeit_t:
                                         ; sub_192088+15A↑p ...
                 bsr.w   makeit
                 move.w  #1,vfb_angl(a0)
@@ -1577,7 +1573,7 @@ makeit_t:                             ; CODE XREF: sub_192088+12E↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-makeit:                             ; CODE XREF: sub_192088+EE↑p
+makeit:
                                         ; ROM:00193414↑p ...
                 move.w  d5,$E(a0)
                 move.l  d0,(a0)
@@ -1601,11 +1597,11 @@ makeit:                             ; CODE XREF: sub_192088+EE↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-copybloc:                             ; CODE XREF: sub_193036+20C↑p
+copybloc:
                                         ; sub_19510A+18↓p ...
                 movem.l d0/a0-a1,-(sp)
 
-copb:                             ; CODE XREF: sub_193470+6↓j
+copb:
                 move.b  (a0)+,(a1)+
                 dbf     d0,copb
                 movem.l (sp)+,d0/a0-a1
@@ -1617,7 +1613,7 @@ copb:                             ; CODE XREF: sub_193470+6↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-thangg:                             ; CODE XREF: ROM:loc_1949F2↓p
+thangg:
                 bsr.w   db
                 movea.l (draw_rou).l,a0
                 jsr     (a0)
@@ -1630,7 +1626,7 @@ thangg:                             ; CODE XREF: ROM:loc_1949F2↓p
 ; =============== S U B R O U T I N E =======================================
 
 
-wfm:                             ; CODE XREF: ROM:001937AE↓j
+wfm:
                                         ; ROM:00193C18↓p
 
 ; FUNCTION CHUNK AT 00193762 SIZE 00000042 BYTES
@@ -1680,13 +1676,13 @@ wfm:                             ; CODE XREF: ROM:001937AE↓j
                 bpl.w   shfr1
                 exg     d3,d6
 
-shfr1:                             ; CODE XREF: ROM:00193562↑j
+shfr1:
                 move.w  d3,(bandl).l
                 move.w  d6,(bandh).l
                 swap    d6
                 move.w  d3,d6
 
-shfr:                             ; CODE XREF: ROM:001935B6↓j
+shfr:
                 move.l  (a1)+,d3
                 and.l   #$FFFF,d3
                 lsr.l   #8,d3
@@ -1705,10 +1701,10 @@ shfr:                             ; CODE XREF: ROM:001935B6↓j
                 bgt.w   isgrn0
                 move.w  #$F0C0,d4
 
-isgrn0:                             ; CODE XREF: ROM:001935A2↑j
+isgrn0:
                 swap    d6
 
-isgrn:                             ; CODE XREF: ROM:0019359A↑j
+isgrn:
                 jsr     sblitblo
                 add.w   #4,d0
                 dbf     d5,shfr
@@ -1759,14 +1755,14 @@ isgrn:                             ; CODE XREF: ROM:0019359A↑j
                 move.w  #$A,d3
                 move.w  #0,d5
 
-zizz:                             ; CODE XREF: ROM:00193690↓j
+zizz:
                 move.w  #$F0F0,d4
                 move.l  (trig).l,d6
                 btst    d5,d6
                 beq.w   nggn
                 move.w  #$8FF0,d4
 
-nggn:                             ; CODE XREF: ROM:00193678↑j
+nggn:
                 bsr.w   sblitblo
                 add.w   #$10,d0
                 add.w   #1,d5
@@ -1790,7 +1786,7 @@ nggn:                             ; CODE XREF: ROM:00193678↑j
                 lea     (envvals).l,a1
                 move.w  #7,d5
 
-shar:                             ; CODE XREF: ROM:001936FA↓j
+shar:
                 move.w  (a1)+,d3
                 lsr.w   #8,d3
                 lsr.w   #2,d3
@@ -1806,7 +1802,7 @@ shar:                             ; CODE XREF: ROM:001936FA↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-shad:                             ; CODE XREF: sub_192E82+9E↑p
+shad:
                 tst.l   (aded).l
                 beq.w   rrts
                 move.l  (aded).l,(_ein_buf).l
@@ -1820,7 +1816,7 @@ shad:                             ; CODE XREF: sub_192E82+9E↑p
                 move.w  #7,d3
                 move.w  #3,d5
 
-shadsr:                             ; CODE XREF: sub_1936FE+56↓j
+shadsr:
                 move.w  (a1)+,d2
                 lsr.w   #8,d2
                 add.w   #1,d2
@@ -1832,7 +1828,7 @@ shadsr:                             ; CODE XREF: sub_1936FE+56↓j
 ; End of function shad
 
 ; ---------------------------------------------------------------------------
-unk_19375A:     dc.b   0                ; DATA XREF: sub_1936FE+2C↑o
+unk_19375A:     dc.b   0
                 dc.b $FF
                 dc.b $F0
                 dc.b $FF
@@ -1843,7 +1839,7 @@ unk_19375A:     dc.b   0                ; DATA XREF: sub_1936FE+2C↑o
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR wfm
 
-joyxy:                             ; CODE XREF: sub_1934AA+4A↑j
+joyxy:
                 bne.w   joyy
                 move.w  (pixcon).l,d2
                 lsr.w   #2,d2
@@ -1851,13 +1847,13 @@ joyxy:                             ; CODE XREF: sub_1934AA+4A↑j
                 add.w   d2,d0
                 move.w  #1,d2
 
-zeb:                             ; CODE XREF: sub_1934AA+2F8↓j
+zeb:
                 move.w  #$88FF,d4
                 movea.l (draw_scr).l,a0
                 jmp     sblitblo
 ; ---------------------------------------------------------------------------
 
-joyy:                             ; CODE XREF: wfm:loc_193762↑j
+joyy:
                 move.w  (piycon).l,d3
                 lsr.w   #2,d3
                 and.w   #$3F,d3 ; '?'
@@ -1877,7 +1873,7 @@ joyy:                             ; CODE XREF: wfm:loc_193762↑j
                 cmp.l   d1,d2
                 beq.w   rrts
 
-a_1:                             ; CODE XREF: ROM:001937BE↑j
+a_1:
                 move.w  (monx).l,d0
                 move.w  (mony).l,d1
                 movea.l (draw_scr).l,a0
@@ -1906,7 +1902,7 @@ a_1:                             ; CODE XREF: ROM:001937BE↑j
                 jsr     sblitblo
                 move.w  (sp)+,d0
 
-nox1:                             ; CODE XREF: ROM:001937F6↑j
+nox1:
                 move.l  (mon2).l,d6
                 bmi.w   w2nope
                 move.w  #$40,d2 ; '@'
@@ -1957,7 +1953,7 @@ nox1:                             ; CODE XREF: ROM:001937F6↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-fmodewai:                             ; CODE XREF: sub_1934AA+6A↑j
+fmodewai:
                                         ; ROM:001936B0↑p ...
                 tst.w   (_fmode).l
                 bne.s   fmodewai
@@ -1966,14 +1962,14 @@ fmodewai:                             ; CODE XREF: sub_1934AA+6A↑j
 
 ; ---------------------------------------------------------------------------
 
-w2nope:                             ; CODE XREF: ROM:0019383C↑j
+w2nope:
                 add.w   #$40,d1 ; '@'
                 move.l  (draw_scr).l,(_ein_buf).l
                 move.l  #$1E80F4,(_ein_buf+4).l
                 swap    d1
                 move.w  d0,d1
 
-w2sngl:                             ; CODE XREF: ROM:00193912↑j
+w2sngl:
                 move.l  d1,(_ein_buf+8).l
                 tst.l   (mon1).l
                 bmi.w   rrts
@@ -1987,7 +1983,7 @@ w2sngl:                             ; CODE XREF: ROM:00193912↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-varadd:                             ; CODE XREF: sub_19546E+42↓p
+varadd:
                 lsl.w   #3,d0
                 move.w  d0,d2
                 lsl.w   #2,d0
@@ -1999,7 +1995,7 @@ varadd:                             ; CODE XREF: sub_19546E+42↓p
 
 ; ---------------------------------------------------------------------------
 
-edvex:                             ; DATA XREF: sub_192E82+88↑o
+edvex:
                 dc.l crot, snglx, sisnglx, sidbl, dvect, rrts, wsshow, shspec
 
                 bsr.w   avxy
@@ -2083,7 +2079,7 @@ edvex:                             ; DATA XREF: sub_192E82+88↑o
                 add.w   d5,d0
                 neg.w   d5
 
-n1add5:                             ; CODE XREF: ROM:00193AE0↑j
+n1add5:
                 add.w   #1,d5
                 move.w  d5,d2
                 jsr     sblitblo
@@ -2098,7 +2094,7 @@ n1add5:                             ; CODE XREF: ROM:00193AE0↑j
                 add.w   d5,d1
                 neg.w   d5
 
-n2add5:                             ; CODE XREF: ROM:00193B0C↑j
+n2add5:
                 add.w   #1,d5
                 move.w  d5,d3
                 jmp     sblitblo
@@ -2123,7 +2119,7 @@ n2add5:                             ; CODE XREF: ROM:00193B0C↑j
                 add.w   d5,d0
                 neg.w   d5
 
-nadd5:                             ; CODE XREF: ROM:00193B5E↑j
+nadd5:
                 or.w    d5,d4
                 add.w   #1,d5
                 move.w  d5,d2
@@ -2155,7 +2151,7 @@ nadd5:                             ; CODE XREF: ROM:00193B5E↑j
                 move.w  #$71,d1 ; 'q'
                 move.w  #7,d5
 
-wssh:                             ; CODE XREF: ROM:00193C14↓j
+wssh:
                 move.l  $04(a1),d2
                 move.w  #$58FF,d4
                 move.w  #3,d3
@@ -2180,7 +2176,7 @@ wssh:                             ; CODE XREF: ROM:00193C14↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-avx:                             ; CODE XREF: ROM:00193B20↑p
+avx:
                                         ; ROM:00193B74↑p
                 movea.l (eddie).l,a2
                 movea.l (fxobj).l,a3
@@ -2199,7 +2195,7 @@ avx:                             ; CODE XREF: ROM:00193B20↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-avxy:                             ; CODE XREF: ROM:0019399C↑p
+avxy:
                                         ; ROM:00193A80↑p ...
                 movea.l (eddie).l,a2
                 move.b  SRCEN(a2),d0
@@ -2239,7 +2235,7 @@ avxy:                             ; CODE XREF: ROM:0019399C↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-lnkchk2:                             ; CODE XREF: sub_193C5C+60↑p
+lnkchk2:
                 move.w  $04(a1),d5
                 bra.w   lnkch
 ; End of function lnkchk2
@@ -2248,11 +2244,11 @@ lnkchk2:                             ; CODE XREF: sub_193C5C+60↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-lnkchk:                             ; CODE XREF: sub_193C1E+C↑p
+lnkchk:
                                         ; sub_193C5C+26↑p
                 move.w  $04(a2),d5
 
-lnkch:                             ; CODE XREF: sub_193CF2+4↑j
+lnkch:
                 lsl.w   #2,d5
                 lea     UPDA1F(a3),a4
                 tst.w   (a4,d5.w)
@@ -2281,7 +2277,7 @@ lnkch:                             ; CODE XREF: sub_193CF2+4↑j
                 movea.l (draw_scr).l,a0
                 jsr     blitbloc
 
-novrt:                             ; CODE XREF: ROM:00193D2E↑j
+novrt:
                                         ; ROM:00193D36↑j
                 move.w  (sp)+,d1
                 bmi.w   nohrz
@@ -2294,7 +2290,7 @@ novrt:                             ; CODE XREF: ROM:00193D2E↑j
                 movea.l (draw_scr).l,a0
                 jsr     blitbloc
 
-nohrz:                          ; CODE XREF: ROM:00193D58↑j
+nohrz:
                                         ; ROM:00193D60↑j
                 rts
 ; ---------------------------------------------------------------------------
@@ -2302,7 +2298,7 @@ nohrz:                          ; CODE XREF: ROM:00193D58↑j
                 move.l  #_thisfx,-(a0)
                 move.l  a0,(esp).l
 
-_thisfx:                             ; DATA XREF: ROM:00193D88↑o
+_thisfx:
                 lea     (elspace).l,a0
                 move.w  #5,(a0)+
                 move.w  #0,(a0)+
@@ -2310,7 +2306,7 @@ _thisfx:                             ; DATA XREF: ROM:00193D88↑o
                 movea.l (fx).l,a1
                 move.w  #5,d7
 
-lfx:                             ; CODE XREF: ROM:loc_193DE6↓j
+lfx:
                 move.l  (a1)+,d0
                 bne.w   listit
                 move.l  #empt,(a0)+ ; "<Empty>"
@@ -2318,7 +2314,7 @@ lfx:                             ; CODE XREF: ROM:loc_193DE6↓j
                 bra.w   lfx2
 ; ---------------------------------------------------------------------------
 
-listit:                             ; CODE XREF: ROM:00193DB4↑j
+listit:
                 movea.l d0,a2
                 move.l  info(a2),d6
                 sub.w   #1,d6
@@ -2328,7 +2324,7 @@ listit:                             ; CODE XREF: ROM:00193DB4↑j
                 move.l  a3,(a0)+
                 move.l  #edit2,(a0)+
 
-lfx2:                             ; CODE XREF: ROM:00193DC4↑j
+lfx2:
                 dbf     d7,lfx
                 lea     (elspace).l,a1
                 lea     (subfxhea).l,a0 ; "@~g1:SRCEN:Choose a subeffect slot to edit~"...
@@ -2338,7 +2334,7 @@ lfx2:                             ; CODE XREF: ROM:00193DC4↑j
                 move.l  #fored,-(a0)
                 move.l  a0,(esp).l
 
-fored:                             ; DATA XREF: ROM:00193E00↑o
+fored:
                                         ; ROM:fored↓o
                 move.l  #fored,(ledit).l
                 clr.w   (_m).l
@@ -2365,7 +2361,7 @@ fored:                             ; DATA XREF: ROM:00193E00↑o
                 move.l  #_ded2,-(a0)
                 move.l  a0,(esp).l
 
-_ded2:                             ; DATA XREF: ROM:00193E6E↑o
+_ded2:
                 lea     (adsra).l,a0
                 move.w  (selected).l,d0
                 move.w  d0,d1
@@ -2382,13 +2378,13 @@ _ded2:                             ; DATA XREF: ROM:00193E6E↑o
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR makecfb
 
-ispec:                             ; CODE XREF: sub_1924DA+1F86↓j
+ispec:
                 move.l  #isp1,(ledit).l
                 movea.l (esp).l,a0
                 move.l  #isp1,-(a0)
                 move.l  a0,(esp).l
 
-isp1:                             ; DATA XREF: makecfb:loc_193EB2↑o
+isp1:
                                         ; sub_1924DA+19E8↑o
                 move.w  #8,(symed).l
                 movea.l #isphead1,a0  ; "@~g1:SRCEN:Spectrum and Triggers~e3:3:"
@@ -2403,7 +2399,7 @@ isp1:                             ; DATA XREF: makecfb:loc_193EB2↑o
                 move.l  #isp2,-(a0)
                 move.l  a0,(esp).l
 
-isp2:                             ; DATA XREF: ROM:00193EF0↑o
+isp2:
                                         ; ROM:00193F00↑o
                 move.w  #8,(symed).l
                 movea.l #isphead2,a0  ; "@~g1:SRCEN:Trigger Settings~e3:3:"
@@ -2416,7 +2412,7 @@ isp2:                             ; DATA XREF: ROM:00193EF0↑o
                 move.l  #isp3,-(a0)
                 move.l  a0,(esp).l
 
-isp3:                             ; DATA XREF: ROM:00193F26↑o
+isp3:
                                         ; ROM:00193F36↑o
                 lea     (isphead3).l,a0 ; "@~g1:SRCEN:Adjust width using joypad"
                 bsr.w   print
@@ -2428,7 +2424,7 @@ isp3:                             ; DATA XREF: ROM:00193F26↑o
                 move.l  #isp4,-(a0)
                 move.l  a0,(esp).l
 
-isp4:                             ; DATA XREF: ROM:00193F56↑o
+isp4:
                                         ; ROM:00193F66↑o
                 lea     (isphead4).l,a0
                 bsr.w   print
@@ -2440,7 +2436,7 @@ isp4:                             ; DATA XREF: ROM:00193F56↑o
                 move.l  #wsed,-(a0)
                 move.l  a0,(esp).l
 
-wsed:                             ; DATA XREF: ROM:00193F86↑o
+wsed:
                                         ; ROM:00193F96↑o
                 movea.l (fxedbase).l,a0
                 lea     $300(a0),a0
@@ -2458,7 +2454,7 @@ wsed:                             ; DATA XREF: ROM:00193F86↑o
                 move.l  #dvfed,-(a0)
                 move.l  a0,(esp).l
 
-dvfed:                             ; DATA XREF: ROM:00193FDE↑o
+dvfed:
                                         ; ROM:00193FEE↑o
                 lea     (dvfvars).l,a1
                 clr.w   (_m).l
@@ -2473,13 +2469,13 @@ dvfed:                             ; DATA XREF: ROM:00193FDE↑o
                 bra.w   *+4
 ; ---------------------------------------------------------------------------
 
-inogg:                             ; CODE XREF: ROM:0019402E↑j
+inogg:
                 move.l  #iogo,(ledit).l
                 movea.l (esp).l,a0
                 move.l  #iogo,-(a0)
                 move.l  a0,(esp).l
 
-iogo:                             ; DATA XREF: ROM:loc_194032↑o
+iogo:
                                         ; ROM:00194042↑o
                 lea     (fxphead).l,a0 ; "@~g1:SRCEN:Choose fx page~e3:3:"
                 lea     (fxopt).l,a1
@@ -2490,7 +2486,7 @@ iogo:                             ; DATA XREF: ROM:loc_194032↑o
                 move.l  #ssp1,-(a0)
                 move.l  a0,(esp).l
 
-ssp1:                             ; DATA XREF: ROM:0019405E↑o
+ssp1:
                                         ; ROM:0019406E↑o
                 lea     (availobj).l,a1
                 bra.w   doggo
@@ -2500,11 +2496,11 @@ ssp1:                             ; DATA XREF: ROM:0019405E↑o
                 move.l  #ssp2,-(a0)
                 move.l  a0,(esp).l
 
-ssp2:                             ; DATA XREF: ROM:00194084↑o
+ssp2:
                                         ; ROM:00194094↑o
                 lea     (avail2).l,a1
 
-doggo:                             ; CODE XREF: ROM:00194080↑j
+doggo:
                 lea     (ogohead).l,a0 ; "@~g1:SRCEN:Object Giver Outer~e3:3:"
                 bra.w   giedit
 ; ---------------------------------------------------------------------------
@@ -2513,7 +2509,7 @@ doggo:                             ; CODE XREF: ROM:00194080↑j
                 move.l  #simedit,-(a0)
                 move.l  a0,(esp).l
 
-simedit:                             ; DATA XREF: ROM:001940B0↑o
+simedit:
                                         ; ROM:001940C0↑o
                 clr.w   (_m).l
                 lea     (symvars).l,a1
@@ -2525,7 +2521,7 @@ simedit:                             ; DATA XREF: ROM:001940B0↑o
                 bra.w   giedit
 ; ---------------------------------------------------------------------------
 
-edit2:                             ; DATA XREF: ROM:00193DE0↑o
+edit2:
                 movea.l (esp).l,a0
                 move.l  #_edit2,-(a0)
                 move.l  a0,(esp).l
@@ -2533,7 +2529,7 @@ edit2:                             ; DATA XREF: ROM:00193DE0↑o
                 move.w  d0,(fxed).l
                 move.w  d0,(og).l
 
-_edit2:                             ; DATA XREF: ROM:001940FC↑o
+_edit2:
                 move.w  (fxed).l,d0
                 lsl.w   #2,d0
                 movea.l (fx).l,a0
@@ -2546,7 +2542,7 @@ _edit2:                             ; DATA XREF: ROM:001940FC↑o
                 move.l  #_ah1,-(a0)
                 move.l  a0,(esp).l
 
-_ah1:                             ; DATA XREF: ROM:00194146↑o
+_ah1:
                 lea     (adedhead).l,a0
                 clr.l   (aded).l
                 lea     (option5).l,a1
@@ -2556,7 +2552,7 @@ _ah1:                             ; DATA XREF: ROM:00194146↑o
                 move.l  #_cmp1,-(a0)
                 move.l  a0,(esp).l
 
-_cmp1:                             ; DATA XREF: ROM:0019416E↑o
+_cmp1:
                 lea     (stashhea).l,a0
                 jsr     print
                 bsr.w   dostash
@@ -2567,7 +2563,7 @@ _cmp1:                             ; DATA XREF: ROM:0019416E↑o
                 move.l  #_rset,-(a0)
                 move.l  a0,(esp).l
 
-_rset:                             ; DATA XREF: ROM:0019419A↑o
+_rset:
                 lea     (rsethead).l,a0 ; "@~g1:SRCEN:Reset ROM save pointers//Press a"...
                 jsr     print
                 move.l  #0,(datn).l
@@ -2580,7 +2576,7 @@ _rset:                             ; DATA XREF: ROM:0019419A↑o
                 move.l  #_mset,-(a0)
                 move.l  a0,(esp).l
 
-_mset:                             ; DATA XREF: ROM:001941E0↑o
+_mset:
                 bsr.w   getmatri
                 move.w  #$D,(editing).l
                 rts
@@ -2588,7 +2584,7 @@ _mset:                             ; DATA XREF: ROM:001941E0↑o
 ; =============== S U B R O U T I N E =======================================
 
 
-dostash:                             ; CODE XREF: ROM:00194186↑p
+dostash:
                 lea     ((asc_197BE8+2)).l,a0 ; "~g1:6:"
                 jsr     print
                 movea.l (dattp).l,a0
@@ -2619,7 +2615,7 @@ dostash:                             ; CODE XREF: ROM:00194186↑p
                 move.w  #7,d7
                 move.l  #$1D9BF8,($1AE78C).l
 
-remblox:                             ; CODE XREF: sub_1941FA+11C↓j
+remblox:
                 move.w  d7,-(sp)
                 move.w  #1,(cursx).l
                 lea     (tp1).l,a0
@@ -2661,24 +2657,24 @@ remblox:                             ; CODE XREF: sub_1941FA+11C↓j
                 move.l  #_edl,-(a0)
                 move.l  a0,(esp).l
 
-_edl:                             ; DATA XREF: ROM:0019435C↑o
+_edl:
                 move.w  (delayf).l,d0
                 bpl.w   eddd
                 clr.w   d0
 
-eddd:                             ; CODE XREF: ROM:0019436E↑j
+eddd:
                 move.w  d0,(word_19B08A).l
                 move.l  #dlset,(editlist).l
                 lea     (edlhead).l,a0
                 jsr     print
                 move.w  #$C,(editing).l
 
-udedg:                             ; DATA XREF: ROM:00195828↓o
+udedg:
                 lea     ($199C14).l,a0
                 lea     asc_199C14+6-asc_199C14(a0),a1 ; "~g3:5:                                 "
                 move.w  #$1F,d0
 
-udedg1:                             ; CODE XREF: ROM:001943AA↓j
+udedg1:
                 move.b  #1,(a1)+
                 dbf     d0,udedg1
                 lea     6(a0),a1
@@ -2686,7 +2682,7 @@ udedg1:                             ; CODE XREF: ROM:001943AA↓j
                 move.w  (delayn).l,d2
                 clr.w   d0
 
-shado:                             ; CODE XREF: ROM:001943C6↓j
+shado:
                 add.w   d1,d0
                 bsr.w   setblok
                 dbf     d2,shado
@@ -2695,7 +2691,7 @@ shado:                             ; CODE XREF: ROM:001943C6↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-setblok:                             ; CODE XREF: ROM:001943C2↑p
+setblok:
                 and.w   #$3F,d0 ; '?'
                 move.w  d0,d3
                 lsr.w   #1,d3
@@ -2706,7 +2702,7 @@ setblok:                             ; CODE XREF: ROM:001943C2↑p
                 beq.w   d0notodd
                 add.w   #4,d4
 
-d0notodd:                             ; CODE XREF: sub_1943CE+16↑j
+d0notodd:
                 lea     (evens).l,a3
                 and.w   #7,d4
                 move.b  (a3,d4.w),(a2)
@@ -2717,7 +2713,7 @@ d0notodd:                             ; CODE XREF: sub_1943CE+16↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-evens:                             ; DATA XREF: setblok:loc_1943EC↑o
+evens:
 
 ; FUNCTION CHUNK AT 0019528A SIZE 0000008C BYTES
 ; FUNCTION CHUNK AT 001960AA SIZE 0000001A BYTES
@@ -2726,7 +2722,7 @@ evens:                             ; DATA XREF: setblok:loc_1943EC↑o
                 btst    d1,d4
                 btst    d1,d4
 
-wfa:                             ; DATA XREF: ROM:001956C2↓o
+wfa:
                 bsr.w   estack
                 movea.l (eddie).l,a2
                 btst    #0,(a2)
@@ -2735,8 +2731,8 @@ wfa:                             ; DATA XREF: ROM:001956C2↓o
                 bra.w   iawfx
 ; ---------------------------------------------------------------------------
 
-rwfa:                             ; CODE XREF: sub_1943FC+16↑j
-                                        ; DATA XREF: ROM:0019557A↓o
+rwfa:
+
                 lea     (wfahead).l,a0
                 lea     (option3).l,a1
                 clr.w   (symed).l
@@ -2747,8 +2743,8 @@ rwfa:                             ; CODE XREF: sub_1943FC+16↑j
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR makecfb
 
-initedit:                             ; CODE XREF: sub_1924DA-13E↑j
-                                        ; DATA XREF: sub_192B90+2C↑o ...
+initedit:
+
                 move.l  #$1E5CFC,(esp).l
                 move.l  #0,(e_stac).l
                 clr.w   (sec_cnt).l
@@ -2759,7 +2755,7 @@ initedit:                             ; CODE XREF: sub_1924DA-13E↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-old_edit:                             ; DATA XREF: sub_195AC6+3C↓o
+old_edit:
                 move.l  #$1E5CFC,(esp).l
                 move.l  #0,(e_stac).l
                 clr.w   (sec_en).l
@@ -2767,7 +2763,7 @@ old_edit:                             ; DATA XREF: sub_195AC6+3C↓o
                 move.l  #_iied,-(a0)
                 move.l  a0,(esp).l
 
-_iied:                             ; DATA XREF: old_edit+20↑o
+_iied:
                 lea     (edithead).l,a0 ; "@~g1:SRCEN:Edit Mode~e3:$04:"
                 lea     (option1).l,a1
                 clr.w   (symed).l
@@ -2777,11 +2773,11 @@ _iied:                             ; DATA XREF: old_edit+20↑o
 ; =============== S U B R O U T I N E =======================================
 
 
-giedit:                             ; CODE XREF: ROM:00193DF6↑j
+giedit:
                                         ; ROM:00193E64↑j ...
                 clr.w   (cbuttf).l
 
-ogiedit:                             ; CODE XREF: sub_1943FC+3E↑j
+ogiedit:
                 move.w  #$FFFF,(actime).l
                 move.l  a1,(editlist).l
                 bsr.w   print
@@ -2793,7 +2789,7 @@ ogiedit:                             ; CODE XREF: sub_1943FC+3E↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-wtud:                             ; DATA XREF: ROM:00193FCA↑o
+wtud:
                                         ; ROM:00195774↓o ...
                 lea     (wt).l,a0 ; "~g2:12:"
                 jsr     print
@@ -2809,10 +2805,10 @@ wtud:                             ; DATA XREF: ROM:00193FCA↑o
                 beq.w   grint
                 move.l  $24(a2,d0.w),$08(a1)
 
-grint:                             ; CODE XREF: wtud+32↑j
+grint:
                 jsr     print
 
-ud_selcu:                             ; DATA XREF: selup:loc_195AB2↓o
+ud_selcu:
                 move.w  (cursorx).l,d0
                 move.w  (cursory).l,d1
                 move.b  #$20,d2 ; ' '
@@ -2832,7 +2828,7 @@ ud_selcu:                             ; DATA XREF: selup:loc_195AB2↓o
 ; =============== S U B R O U T I N E =======================================
 
 
-reedit:                             ; DATA XREF: ROM:loc_195A4E↓o
+reedit:
 
 ; FUNCTION CHUNK AT 00194594 SIZE 000000B4 BYTES
 ; FUNCTION CHUNK AT 0019466E SIZE 0000003A BYTES
@@ -2845,7 +2841,7 @@ reedit:                             ; DATA XREF: ROM:loc_195A4E↓o
 ; =============== S U B R O U T I N E =======================================
 
 
-eunstack:                             ; CODE XREF: reedit↑p
+eunstack:
                 movea.l (esp).l,a0
                 move.l  (a0)+,(editlist).l
                 move.w  (a0)+,(selected).l
@@ -2858,7 +2854,7 @@ eunstack:                             ; CODE XREF: reedit↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-estack:                             ; CODE XREF: evens:wfa↑p
+estack:
                 movea.l (esp).l,a0
                 move.w  (selectab).l,-(a0)
                 move.w  (selected).l,-(a0)
@@ -2870,8 +2866,8 @@ estack:                             ; CODE XREF: evens:wfa↑p
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR reedit
 
-eparam:                             ; CODE XREF: reedit+4↑j
-                                        ; DATA XREF: sub_192F26+56↑o
+eparam:
+
                 clr.l   (dword_19B054).l
                 clr.l   (dword_19B070).l
                 move.w  (selected).l,d0
@@ -2889,13 +2885,13 @@ eparam:                             ; CODE XREF: reedit+4↑j
                 jmp     (a1)
 ; ---------------------------------------------------------------------------
 
-init_byt:                             ; CODE XREF: reedit+78↑j
+init_byt:
                 lea     (awfb2).l,a0
                 lea     (padbits).l,a1
                 move.l  _mtrig(a6),d2
                 move.w  #7,d7
 
-imabit:                             ; CODE XREF: reedit+C6↓j
+imabit:
                 move.b  (a1)+,d1
                 and.w   #$FF,d1
                 lsl.w   #2,d1
@@ -2905,7 +2901,7 @@ imabit:                             ; CODE XREF: reedit+C6↓j
                 beq.w   imooff
                 bset    #7,2(a2)
 
-imooff:                             ; CODE XREF: reedit+B4↑j
+imooff:
                 move.b  #0,3(a2)
                 lsr.w   #1,d2
                 dbf     d7,imabit
@@ -2921,7 +2917,7 @@ imooff:                             ; CODE XREF: reedit+B4↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-init_sym:                             ; DATA XREF: ROM:001980EC↓o
+init_sym:
                                         ; ROM:00198754↓o
                 bsr.w   isymbut
                 move.w  d0,(symed).l
@@ -2936,7 +2932,7 @@ init_sym:                             ; DATA XREF: ROM:001980EC↓o
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR reedit
 
-crunt:                             ; CODE XREF: reedit+80↑j
+crunt:
                 move.w  d0,(symed).l
                 move.w  d0,d1
                 sub.w   #1,d1
@@ -2956,7 +2952,7 @@ crunt:                             ; CODE XREF: reedit+80↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-ppmes:                             ; CODE XREF: sub_194648+1E↑p
+ppmes:
                                         ; ROM:0019533E↓p
                 movea.l #eparm1,a0  ; "~g1:$20:<A> Prev   <B> Menu   <C> Next"
                 bra.w   print
@@ -2966,14 +2962,14 @@ ppmes:                             ; CODE XREF: sub_194648+1E↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-isymbut:                             ; CODE XREF: symclr:loc_192BDC↑p
+isymbut:
                                         ; sub_194648↑p
                 lea     (symbutts).l,a0
                 lea     (padbits).l,a1
                 move.l  asym_fla(a6),d2
                 move.w  #7,d7
 
-isybit:                             ; CODE XREF: sub_1946B2+3C↓j
+isybit:
                 move.b  (a1)+,d1
                 and.w   #$FF,d1
                 lsl.w   #2,d1
@@ -2983,7 +2979,7 @@ isybit:                             ; CODE XREF: sub_1946B2+3C↓j
                 beq.w   isooff
                 bset    #7,2(a2)
 
-isooff:                             ; CODE XREF: sub_1946B2+2A↑j
+isooff:
                 move.b  #0,3(a2)
                 lsr.w   #1,d2
                 dbf     d7,isybit
@@ -2993,7 +2989,7 @@ isooff:                             ; CODE XREF: sub_1946B2+2A↑j
                 beq.w   idun
                 bset    #7,2(a2)
 
-idun:                             ; CODE XREF: sub_1946B2+4E↑j
+idun:
                 move.l  #sympad,(cpad).l
                 move.l  #symbutts,($1AF056).l
                 rts
@@ -3003,7 +2999,7 @@ idun:                             ; CODE XREF: sub_1946B2+4E↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-primexy:                             ; CODE XREF: reedit+138↑p
+primexy:
                 move.w  (selected).l,(lselecte).l
                 movea.l (fxobj).l,a3
                 move.w  $04(a0),d2
@@ -3033,7 +3029,7 @@ primexy:                             ; CODE XREF: reedit+138↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-s16:                             ; CODE XREF: sub_194720+34↑p
+s16:
                 move.w  $04(a0),d0
                 lsl.w   #2,d0
                 lea     UPDA1F(a3),a4
@@ -3042,7 +3038,7 @@ s16:                             ; CODE XREF: sub_194720+34↑p
                 beq.w   shall
                 lea     optionbu(a3),a3
 
-shall:                             ; CODE XREF: sub_19478E+12↑j
+shall:
                 move.l  (a3),d7
                 move.b  3(a0),d0
                 btst    #7,d0
@@ -3051,7 +3047,7 @@ shall:                             ; CODE XREF: sub_19478E+12↑j
                 lsr.l   #1,d4
                 add.l   d4,d7
 
-nsiggn:                             ; CODE XREF: sub_19478E+24↑j
+nsiggn:
                 and.w   #$7F,d0
                 lsl.w   #2,d0
                 lea     (vtypes).l,a3
@@ -3061,7 +3057,7 @@ nsiggn:                             ; CODE XREF: sub_19478E+24↑j
 
 ; ---------------------------------------------------------------------------
 
-vtypes:                             ; DATA XREF: sub_19478E+34↑o
+vtypes:
                 dc.l $1947da, $1947dc, $1947ec 
                 rts
 ; ---------------------------------------------------------------------------
@@ -3084,16 +3080,16 @@ vtypes:                             ; DATA XREF: sub_19478E+34↑o
 ; =============== S U B R O U T I N E =======================================
 
 
-unquit:                             ; DATA XREF: sub_192F26+64↑o
+unquit:
                 lea     (unimp).l,a0 ; "This function not yet implemented~c30:"
                 bra.w   eq
 ; ---------------------------------------------------------------------------
 
-editquit:                             ; CODE XREF: dofass+44↓j
-                                        ; DATA XREF: ROM:loc_19574A↓o
+editquit:
+
                 lea     (normal).l,a0
 
-eq:                             ; CODE XREF: unquit+6↑j
+eq:
                 bsr.w   cprint
                 clr.w   (editing).l
                 clr.l   (star_on).l
@@ -3105,7 +3101,7 @@ eq:                             ; CODE XREF: unquit+6↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-cprint:                             ; CODE XREF: reedit+F4↑p
+cprint:
                                         ; sub_194648+1A↑p ...
                 move.l  a0,-(sp)
                 lea     (clearhom).l,a0
@@ -3117,7 +3113,7 @@ cprint:                             ; CODE XREF: reedit+F4↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-print:                             ; CODE XREF: sub_192088+B6↑p
+print:
                                         ; sub_192E82+1C↑p ...
                 movea.l a0,a4
                 movea.l #$1B00F8,a0
@@ -3129,7 +3125,7 @@ print:                             ; CODE XREF: sub_192088+B6↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-prnt:                             ; CODE XREF: sub_19484E+18↓j
+prnt:
                                         ; sub_19484E+36↓j ...
                 move.b  (a4)+,d2
                 beq.w   strngend
@@ -3140,7 +3136,7 @@ prnt:                             ; CODE XREF: sub_19484E+18↓j
                 bra.s   prnt
 ; ---------------------------------------------------------------------------
 
-pcmd1:                             ; CODE XREF: sub_19484E+A↑j
+pcmd1:
                 cmp.b   #$40,d2 ; '@'
                 bne.w   pcmd2
                 lea     (board).l,a0
@@ -3150,14 +3146,14 @@ pcmd1:                             ; CODE XREF: sub_19484E+A↑j
                 bra.s   prnt
 ; ---------------------------------------------------------------------------
 
-pcmd2:                             ; CODE XREF: sub_19484E+1E↑j
+pcmd2:
                 cmp.b   #$5E,d2 ; '^'
                 bne.w   pcmd3
                 jsr     cleol
                 bra.s   prnt
 ; ---------------------------------------------------------------------------
 
-pcmd3:                             ; CODE XREF: sub_19484E+3C↑j
+pcmd3:
                 cmp.b   #$60,d2 ; '`'
                 bne.w   pcmd4
                 sub.w   #1,d1
@@ -3165,7 +3161,7 @@ pcmd3:                             ; CODE XREF: sub_19484E+3C↑j
                 bra.s   prnt
 ; ---------------------------------------------------------------------------
 
-pcmd4:                             ; CODE XREF: sub_19484E+4C↑j
+pcmd4:
                 cmp.b   #$7E,d2 ; '~'
                 bne.w   pcmd5
                 move.b  (a4)+,d2
@@ -3180,7 +3176,7 @@ pcmd4:                             ; CODE XREF: sub_19484E+4C↑j
                 bra.w   prnt
 ; ---------------------------------------------------------------------------
 
-setinv:                             ; CODE XREF: sub_19484E+82↑j
+setinv:
                 move.b  (a4)+,d2
                 cmp.b   #$2B,d2 ; '+'
                 beq.w   invon
@@ -3188,12 +3184,12 @@ setinv:                             ; CODE XREF: sub_19484E+82↑j
                 bra.w   prnt
 ; ---------------------------------------------------------------------------
 
-invon:                             ; CODE XREF: sub_19484E+90↑j
+invon:
                 move.w  #1,(inverse).l
                 bra.w   prnt
 ; ---------------------------------------------------------------------------
 
-edtable:                             ; CODE XREF: sub_19484E+7A↑j
+edtable:
                 movea.l (editlist).l,a5
                 move.l  a4,-(sp)
                 movea.l $04(a5),a4
@@ -3212,7 +3208,7 @@ edtable:                             ; CODE XREF: sub_19484E+7A↑j
                 move.w  (a5)+,(selected).l
                 lea     $04(a5),a5
 
-dedtab:                             ; CODE XREF: sub_19484E+106↓j
+dedtab:
                 movea.l (a5)+,a4
                 lea     $04(a5),a5
                 move.w  d3,-(sp)
@@ -3232,7 +3228,7 @@ dedtab:                             ; CODE XREF: sub_19484E+106↓j
                 bra.w   prnt
 ; ---------------------------------------------------------------------------
 
-goto:                             ; CODE XREF: sub_19484E+72↑j
+goto:
                 bsr.w   gnum
                 move.w  d2,d0
                 bsr.w   gnum
@@ -3240,19 +3236,19 @@ goto:                             ; CODE XREF: sub_19484E+72↑j
                 bra.w   prnt
 ; ---------------------------------------------------------------------------
 
-aclear:                             ; CODE XREF: sub_19484E+6A↑j
+aclear:
                 bsr.w   gnum
                 move.w  d2,(actime).l
                 bra.w   prnt
 ; ---------------------------------------------------------------------------
 
-pcmd5:                             ; CODE XREF: sub_19484E+60↑j
+pcmd5:
                 jsr     charblit
                 add.w   #1,d0
                 bra.w   prnt
 ; ---------------------------------------------------------------------------
 
-strngend:                             ; CODE XREF: sub_19484E+2↑j
+strngend:
                 move.w  d0,(cursx).l
                 move.w  d1,(cursy).l
                 rts
@@ -3262,12 +3258,12 @@ strngend:                             ; CODE XREF: sub_19484E+2↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-gnum:                             ; CODE XREF: sub_19484E+BC↑p
+gnum:
                                         ; sub_19484E+C8↑p ...
                 clr.l   d2
                 clr.l   d3
 
-gnuml:                             ; CODE XREF: sub_1949BC+1C↓j
+gnuml:
                 move.b  (a4)+,d3
                 cmp.b   #$3A,d3 ; ':'
                 beq.w   rrts
@@ -3282,12 +3278,12 @@ gnuml:                             ; CODE XREF: sub_1949BC+1C↓j
 
 ; ---------------------------------------------------------------------------
 
-dodraw:                             ; CODE XREF: ROM:00194A44↓j
+dodraw:
                 move.l  #1,(screen_r).l
                 move.w  #1,(db_on).l
                 clr.w   (x_end).l
 
-gog:                             ; CODE XREF: ROM:001949FC↓j
+gog:
                 bsr.w   thangg
                 tst.w   (meltim).l
                 bpl.s   gog
@@ -3297,10 +3293,10 @@ gog:                             ; CODE XREF: ROM:001949FC↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-db:                             ; CODE XREF: sub_193488↑p
+db:
                 move.l  #1,(sync).l
 
-dboo:                             ; CODE XREF: sub_194A0A+10↓j
+dboo:
                 tst.l   (sync).l
                 bne.s   dboo
                 move.l  (dscreen).l,(draw_scr).l
@@ -3316,7 +3312,7 @@ dboo:                             ; CODE XREF: sub_194A0A+10↓j
                 bra.s   dodraw
 ; ---------------------------------------------------------------------------
 
-mymelt:                             ; DATA XREF: ROM:00194A28↑o
+mymelt:
                 subi.w  #1,(meltim).l
                 bsr.w   WaitBlit
                 movea.l (cscreen).l,a0
@@ -3359,7 +3355,7 @@ mymelt:                             ; DATA XREF: ROM:00194A28↑o
                 bra.w   WaitBlit
 ; ---------------------------------------------------------------------------
 
-lilmelt:                             ; CODE XREF: ROM:00194A64↑j
+lilmelt:
                 cmpi.w  #2,(skale).l
                 beq.w   justfade
                 move.l  a1,(A2_BASE).l
@@ -3399,7 +3395,7 @@ lilmelt:                             ; CODE XREF: ROM:00194A64↑j
                 bra.w   WaitBlit
 ; ---------------------------------------------------------------------------
 
-justfade:                             ; CODE XREF: ROM:00194B2A↑j
+justfade:
                 move.l  a1,(A2_BASE).l
                 move.l  #$4420,(A2_FLAGS).l
                 move.w  #0,d0
@@ -3437,7 +3433,7 @@ justfade:                             ; CODE XREF: ROM:00194B2A↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-Frame:                             ; DATA XREF: sub_19324E+6A↑o
+Frame:
                 movem.l d0-d5/a0-a2,-(sp)
                 move.w  (INT1).l,d0
                 move.w  d0,-(sp)
@@ -3449,13 +3445,13 @@ Frame:                             ; DATA XREF: sub_19324E+6A↑o
                 move.w  (clut_sha).l,($F00482).l
                 clr.w   (clut_sha).l
 
-ncc:                             ; CODE XREF: Frame+22↑j
+ncc:
                 movem.l d6-d7/a3-a6,-(sp)
                 movea.l (blist).l,a0
                 movea.l (dlist).l,a1
                 moveq   #$40,d0 ; '@'
 
-xlst:                             ; CODE XREF: Frame+4A↓j
+xlst:
                 move.l  (a0)+,(a1)+
                 dbf     d0,xlst
                 bsr.w   RunBeast
@@ -3470,7 +3466,7 @@ xlst:                             ; CODE XREF: Frame+4A↓j
                 clr.l   (screen_r).l
                 clr.l   (sync).l
 
-no_new_s:                             ; CODE XREF: Frame+58↑j
+no_new_s:
                                         ; Frame+62↑j
                 move.l  (cscreen).l,d5
                 movea.l (dlist).l,a0
@@ -3483,7 +3479,7 @@ no_new_s:                             ; CODE XREF: Frame+58↑j
                 bra.w   no_db
 ; ---------------------------------------------------------------------------
 
-stdb:                             ; CODE XREF: Frame+AA↑j
+stdb:
                                         ; Frame+E2↓j
                 move.l  d5,d6
                 add.l   (hango).l,d6
@@ -3497,7 +3493,7 @@ stdb:                             ; CODE XREF: Frame+AA↑j
                 add.l   (dbadj).l,d5
                 dbf     d7,stdb
 
-no_db:                             ; CODE XREF: Frame+A0↑j
+no_db:
                                         ; Frame+AE↑j ...
                 tst.w   (flash).l
                 beq.w   cflash
@@ -3513,7 +3509,7 @@ no_db:                             ; CODE XREF: Frame+A0↑j
                 bne.w   cflash
                 move.w  #$FFFF,(scron).l
 
-cflash:                             ; CODE XREF: Frame+EC↑j
+cflash:
                                         ; Frame+11A↑j
                 cmpi.w  #1,(vlm_mode).l
                 bne.w   dflash
@@ -3528,11 +3524,11 @@ cflash:                             ; CODE XREF: Frame+EC↑j
                 bra.w   eflash
 ; ---------------------------------------------------------------------------
 
-dflash:                             ; CODE XREF: Frame+12E↑j
+dflash:
                                         ; Frame+13E↑j
                 clr.w   (flash_db).l
 
-eflash:                             ; CODE XREF: Frame+148↑j
+eflash:
                                         ; Frame+164↑j
                 tst.w   (vlmtim).l
                 bmi.w   ncanc
@@ -3540,7 +3536,7 @@ eflash:                             ; CODE XREF: Frame+148↑j
                 bpl.w   ncanc
                 move.w  #$FFFF,($1AE214).l
 
-ncanc:                             ; CODE XREF: Frame+174↑j
+ncanc:
                                         ; Frame+180↑j
                 jsr     byte_196442+4
                 tst.w   (seldb).l
@@ -3551,7 +3547,7 @@ ncanc:                             ; CODE XREF: Frame+174↑j
                 bne.w   no_ksel
                 clr.w   (seldb).l
 
-do_ed:                             ; CODE XREF: Frame+198↑j
+do_ed:
                 tst.w   (vlm_mode).l
                 beq.w   no_ed
                 move.w  (editing).l,d0
@@ -3566,7 +3562,7 @@ do_ed:                             ; CODE XREF: Frame+198↑j
                 bra.w   no_ksel
 ; ---------------------------------------------------------------------------
 
-no_ed:                             ; CODE XREF: Frame+1BE↑j
+no_ed:
                                         ; Frame+1C8↑j
                 tst.l   (action).l
                 bne.w   no_ksel
@@ -3580,7 +3576,7 @@ no_ed:                             ; CODE XREF: Frame+1BE↑j
                 move.w  #7,($1AE214).l
                 move.w  #$1F4,(vlmtim).l
 
-nothash:                             ; CODE XREF: Frame+200↑j
+nothash:
                 tst.w   (editing).l
                 bne.w   no_ksel
                 move.l  (pad_now).l,d0
@@ -3598,14 +3594,14 @@ nothash:                             ; CODE XREF: Frame+200↑j
                 bra.w   no_ksel
 ; ---------------------------------------------------------------------------
 
-pharty:                             ; CODE XREF: Frame+262↑j
+pharty:
                 move.w  ($1AE026).l,(star_on).l
                 move.w  d2,($1AE026).l
                 move.w  #1,(seldb).l
                 bra.w   no_ksel
 ; ---------------------------------------------------------------------------
 
-knobby:                             ; CODE XREF: Frame+246↑j
+knobby:
                 tst.l   (star_on).l
                 beq.w   no_ksel
                 move.w  (star_on).l,d0
@@ -3615,16 +3611,16 @@ knobby:                             ; CODE XREF: Frame+246↑j
                 bra.w   n_ks
 ; ---------------------------------------------------------------------------
 
-setbth:                             ; CODE XREF: Frame+296↑j
+setbth:
                 sub.w   #1,d0
                 move.w  d0,(imatrix).l
                 move.w  ($1AE026).l,(skid).l
                 move.l  #gm,(action).l
 
-n_ks:                             ; CODE XREF: Frame+2AE↑j
+n_ks:
                 clr.l   (star_on).l
 
-no_ksel:                             ; CODE XREF: Frame+1AE↑j
+no_ksel:
                                         ; Frame+1D2↑j ...
                 move.l  (pad_now).l,d0
                 cmp.l   #$90018,d0
@@ -3633,10 +3629,10 @@ no_ksel:                             ; CODE XREF: Frame+1AE↑j
                 bra.w   nse2
 ; ---------------------------------------------------------------------------
 
-nse1:                             ; CODE XREF: Frame+2E2↑j
+nse1:
                 clr.w   (vedit).l
 
-nse2:                             ; CODE XREF: Frame+2EC↑j
+nse2:
                 movea.l (_fx).l,a0
                 jsr     (a0)
                 tst.l   (action).l
@@ -3644,16 +3640,16 @@ nse2:                             ; CODE XREF: Frame+2EC↑j
                 movea.l (routine).l,a0
                 jsr     (a0)
 
-gharbaj:                             ; CODE XREF: Frame+304↑j
+gharbaj:
                 movem.l (sp)+,d6-d7/a3-a6
 
-CheckTim:                             ; CODE XREF: Frame+10↑j
+CheckTim:
                 move.w  (sp)+,d0
                 move.w  d0,-(sp)
                 btst    #3,d0
                 beq.w   *+4
 
-exxit:                             ; CODE XREF: Frame+31C↑j
+exxit:
                 move.w  (sp)+,d0
                 lsl.w   #8,d0
                 move.b  (intmask).l,d0
@@ -3725,7 +3721,7 @@ exxit:                             ; CODE XREF: Frame+31C↑j
                 rts
 ; ---------------------------------------------------------------------------
 
-selett:                             ; CODE XREF: ROM:00194FD0↑j
+selett:
                                         ; ROM:00194FD8↑j ...
                 move.l  #skidoo,(action).l
                 move.w  d0,(skid).l
@@ -3734,8 +3730,8 @@ selett:                             ; CODE XREF: ROM:00194FD0↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-skidoo:                             ; CODE XREF: gm+BC↓p
-                                        ; DATA XREF: Frame+2A4↑o ...
+skidoo:
+
                 movea.l #$1AE550,a0
                 move.w  (skid).l,d0
                 sub.w   #1,d0
@@ -3744,7 +3740,7 @@ skidoo:                             ; CODE XREF: gm+BC↓p
                 adda.l  d0,a1
                 move.w  #5,d0
 
-slett:                             ; CODE XREF: skidoo+5E↓j
+slett:
                 clr.l   (a0)
                 tst.l   info(a1)
                 beq.w   sletto
@@ -3753,18 +3749,18 @@ slett:                             ; CODE XREF: skidoo+5E↓j
                 move.w  #7,d2
                 lea     (word_197D4A).l,a3
 
-yuz:                             ; CODE XREF: skidoo+52↓j
+yuz:
                 move.w  $E(a2),d3
                 lsl.w   #2,d3
                 cmp.w   #$18,d3
                 beq.w   yuz2
                 move.l  (a3,d3.w),$08(a2)
 
-yuz2:                             ; CODE XREF: skidoo+44↑j
+yuz2:
                 lea     vfb_ysca(a2),a2
                 dbf     d2,yuz
 
-sletto:                             ; CODE XREF: skidoo+26↑j
+sletto:
                 lea     UPDA2(a1),a1
                 lea     $04(a0),a0
                 dbf     d0,slett
@@ -3785,7 +3781,7 @@ sletto:                             ; CODE XREF: skidoo+26↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-dcopyblo:                             ; CODE XREF: skidoo+78↑p
+dcopyblo:
                 move.w  (delayp).l,-(sp)
                 move.l  (dline).l,-(sp)
                 move.w  (d2elayp).l,-(sp)
@@ -3800,7 +3796,7 @@ dcopyblo:                             ; CODE XREF: skidoo+78↑p
 
 ; ---------------------------------------------------------------------------
 
-editvex:                             ; DATA XREF: Frame+1D8↑o
+editvex:
                 dc.l selector, xy1, $00195670
                 dc.l $00195670, $0019568c, $0019568c, $001928c6
                 dc.l $00195526, $00195510, $001958c0, $0019585a
@@ -3819,7 +3815,7 @@ editvex:                             ; DATA XREF: Frame+1D8↑o
                 bra.w   padex
 ; ---------------------------------------------------------------------------
 
-fobb:                             ; CODE XREF: ROM:001951A0↑j
+fobb:
                 and.l   #$200000,d1
                 beq.w   padex
                 subi.w  #$100,6(a0)
@@ -3840,14 +3836,14 @@ fobb:                             ; CODE XREF: ROM:001951A0↑j
                 beq.w   wied1
                 subi.w  #1,(a0)
 
-wied1:                             ; CODE XREF: ROM:001951F6↑j
+wied1:
                 cmpi.w  #$3F,2(a0) ; '?'
                 bge.w   padex
                 addi.w  #1,2(a0)
                 bra.w   padex
 ; ---------------------------------------------------------------------------
 
-speced2a:                             ; CODE XREF: ROM:001951F0↑j
+speced2a:
                 move.l  d1,d0
                 and.l   #$200000,d0
                 beq.w   speced2b
@@ -3860,7 +3856,7 @@ speced2a:                             ; CODE XREF: ROM:001951F0↑j
                 bra.w   padex
 ; ---------------------------------------------------------------------------
 
-speced2b:                             ; CODE XREF: ROM:0019521A↑j
+speced2b:
                 move.l  d1,d0
                 and.l   #$400000,d0
                 beq.w   speced2c
@@ -3871,7 +3867,7 @@ speced2b:                             ; CODE XREF: ROM:0019521A↑j
                 bra.w   padex
 ; ---------------------------------------------------------------------------
 
-speced2c:                             ; CODE XREF: ROM:00195242↑j
+speced2c:
                 and.l   #$800000,d1
                 beq.w   padex
                 cmpi.w  #$3F,2(a0) ; '?'
@@ -3885,7 +3881,7 @@ speced2c:                             ; CODE XREF: ROM:00195242↑j
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR evens
 
-iawfx:                             ; CODE XREF: sub_1943FC+20↑j
+iawfx:
                 bsr.w   iwf
                 move.w  #8,(editing).l
                 movea.l (cwed1).l,a0
@@ -3896,7 +3892,7 @@ iawfx:                             ; CODE XREF: sub_1943FC+20↑j
                 move.l  #$8000,d0
                 bsr.w   wavelink
 
-istat:                             ; CODE XREF: sub_1943FC+EA4↑j
+istat:
                                         ; ROM:001954F8↓j ...
                 lea     (awfbutts).l,a1
                 lea     (awfb2).l,a4
@@ -3904,7 +3900,7 @@ istat:                             ; CODE XREF: sub_1943FC+EA4↑j
                 move.w  #7,d0
                 move.w  UPDA1F(a0),d1
 
-issi:                             ; CODE XREF: sub_1943FC+F04↓j
+issi:
                 move.b  (a2)+,d2
                 and.w   #$FF,d2
                 lsl.w   #2,d2
@@ -3916,12 +3912,12 @@ issi:                             ; CODE XREF: sub_1943FC+F04↓j
                 beq.w   issi2
                 bset    #7,(a3)
 
-issi2:                             ; CODE XREF: sub_1943FC+EEE↑j
+issi2:
                 btst    #8,d1
                 beq.w   issi3
                 bset    #7,(a5)
 
-issi3:                             ; CODE XREF: sub_1943FC+EFA↑j
+issi3:
                 lsr.w   #1,d1
                 dbf     d0,issi
                 clr.l   d0
@@ -3978,7 +3974,7 @@ issi3:                             ; CODE XREF: sub_1943FC+EFA↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-dofass:                             ; DATA XREF: ROM:0019534E↑o
+dofass:
                                         ; ROM:00195362↑o ...
                 movea.l (fx).l,a5
                 movea.l (a5),a1
@@ -4000,20 +3996,20 @@ dofass:                             ; DATA XREF: ROM:0019534E↑o
 
 ; ---------------------------------------------------------------------------
 
-dfass:                             ; CODE XREF: ROM:00195468↓j
+dfass:
                 move.l  (a5)+,d0
                 bne.w   copyit
                 move.l  #0,info(a4)
                 bra.w   nxfass
 ; ---------------------------------------------------------------------------
 
-copyit:                             ; CODE XREF: ROM:00195444↑j
+copyit:
                 movea.l d0,a0
                 movea.l a4,a1
                 move.l  #$400,d0
                 jsr     blitcopy
 
-nxfass:                             ; CODE XREF: ROM:00195450↑j
+nxfass:
                 lea     UPDA2(a4),a4
                 dbf     d5,dfass
                 rts
@@ -4021,7 +4017,7 @@ nxfass:                             ; CODE XREF: ROM:00195450↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-iwf:                             ; CODE XREF: evens:loc_19528A↑p
+iwf:
                                         ; ROM:001954E4↓p
                 movea.l #awhead,a0  ; "Attach and Adjust Waveforms//Press keys"...
                 clr.w   (antelope).l
@@ -4070,7 +4066,7 @@ iwf:                             ; CODE XREF: evens:loc_19528A↑p
                 rol.b   #2,d0
                 movea.l (cwed1).l,a4
 
-wset:                             ; CODE XREF: ROM:00195522↑j
+wset:
                 lea     (ixcon).l,a0
                 jsr     inertcon
                 move.l  (ixcon).l,d1
@@ -4132,47 +4128,47 @@ wset:                             ; CODE XREF: ROM:00195522↑j
                 rts
 ; ---------------------------------------------------------------------------
 
-ant1:                             ; CODE XREF: ROM:00195598↑j
+ant1:
                 bchg    #0,UPDA1F(a4)
 
-clant:                             ; CODE XREF: ROM:0019563E↓j
+clant:
                                         ; ROM:00195646↓j ...
                 move.w  #2,(antelope).l
                 clr.w   (word_199A6A).l
                 rts
 ; ---------------------------------------------------------------------------
 
-ant2:                             ; CODE XREF: ROM:001955AA↑j
+ant2:
                 bchg    #1,UPDA1F(a4)
                 bra.s   clant
 ; ---------------------------------------------------------------------------
 
-ant3:                             ; CODE XREF: ROM:001955BC↑j
+ant3:
                 bchg    #2,UPDA1F(a4)
                 bra.s   clant
 ; ---------------------------------------------------------------------------
 
-ant4:                             ; CODE XREF: ROM:001955CE↑j
+ant4:
                 bchg    #3,UPDA1F(a4)
                 bra.s   clant
 ; ---------------------------------------------------------------------------
 
-ant5:                             ; CODE XREF: ROM:001955E0↑j
+ant5:
                 bchg    #4,UPDA1F(a4)
                 bra.s   clant
 ; ---------------------------------------------------------------------------
 
-ant6:                             ; CODE XREF: ROM:001955F2↑j
+ant6:
                 bchg    #5,UPDA1F(a4)
                 bra.s   clant
 ; ---------------------------------------------------------------------------
 
-ant7:                             ; CODE XREF: ROM:00195604↑j
+ant7:
                 bchg    #6,UPDA1F(a4)
                 bra.s   clant
 ; ---------------------------------------------------------------------------
 
-ant8:                             ; CODE XREF: ROM:00195616↑j
+ant8:
                 bchg    #7,UPDA1F(a4)
                 bra.s   clant
 ; ---------------------------------------------------------------------------
@@ -4194,7 +4190,7 @@ xy1:
                 lea     (iycon).l,a0
                 jsr     inertcon
 
-spn_butt:                             ; CODE XREF: ROM:00195688↑j
+spn_butt:
                 move.l  (a1),d0
                 and.l   #$10000,d0
                 beq.w   pn_butte
@@ -4203,7 +4199,7 @@ spn_butt:                             ; CODE XREF: ROM:00195688↑j
                 bra.w   sdb
 ; ---------------------------------------------------------------------------
 
-pn_butte:                             ; CODE XREF: ROM:001928CA↑j
+pn_butte:
                                         ; ROM:001956BE↑j
                 tst.l   (action).l
                 bne.w   rrts
@@ -4223,13 +4219,13 @@ pn_butte:                             ; CODE XREF: ROM:001928CA↑j
                 ble.w   slecset
                 clr.w   d0
 
-slecset:                             ; CODE XREF: ROM:0019571A↑j
+slecset:
                                         ; ROM:00195734↓j ...
                 move.w  d0,(selected).l
                 bra.w   sted
 ; ---------------------------------------------------------------------------
 
-prevexit:                             ; CODE XREF: ROM:001956FC↑j
+prevexit:
                 move.w  (selected).l,d0
                 sub.w   #1,d0
                 bpl.s   slecset
@@ -4240,25 +4236,25 @@ prevexit:                             ; CODE XREF: ROM:001956FC↑j
                 and.l   #$22002000,d0
                 beq.w   rrts
 
-bexit:                             ; CODE XREF: ROM:00195A6E↓j
+bexit:
                 move.l  #editquit,(action).l
                 clr.w   (symed).l
                 rts
 ; ---------------------------------------------------------------------------
 
-bbexit:                             ; CODE XREF: ROM:001956F0↑j
+bbexit:
                 move.l  (ledit).l,(action).l
                 clr.w   (symed).l
                 bra.w   sdb
 ; ---------------------------------------------------------------------------
 
-xselup:                             ; CODE XREF: ROM:001958CE↓j
+xselup:
                 bsr.w   selup
                 move.l  #wtud,(action).l
                 rts
 ; ---------------------------------------------------------------------------
 
-xseldn:                             ; CODE XREF: ROM:001958DA↓j
+xseldn:
                 bsr.w   seldn
                 move.l  #wtud,(action).l
                 rts
@@ -4289,44 +4285,44 @@ xseldn:                             ; CODE XREF: ROM:001958DA↓j
                 and.l   #$200000,d0
                 bsr.w   seldn
 
-gnek:                             ; CODE XREF: ROM:001957E4↑j
+gnek:
                 move.w  (selected).l,d0
                 cmp.w   #1,d0
                 bne.w   gnek2
                 clr.w   d0
 
-gnek2:                             ; CODE XREF: ROM:001957FE↑j
+gnek2:
                 sub.w   #1,d0
                 move.w  d0,(delayf).l
                 rts
 ; ---------------------------------------------------------------------------
 
-spinc:                             ; CODE XREF: ROM:001957C2↑j
+spinc:
                 addi.w  #1,(delayt).l
 
-sic:                             ; CODE XREF: ROM:0019583C↓j
+sic:
                 andi.w  #$3F,(delayt).l ; '?'
 
-spex:                             ; CODE XREF: ROM:0019584E↓j
+spex:
                 move.w  #1,(seldb).l
                 move.l  #udedg,(action).l
                 rts
 ; ---------------------------------------------------------------------------
 
-spdec:                             ; CODE XREF: ROM:001957B6↑j
+spdec:
                 subi.w  #1,(delayt).l
                 bra.s   sic
 ; ---------------------------------------------------------------------------
 
-sninc:                             ; CODE XREF: ROM:0019579E↑j
+sninc:
                 addi.w  #1,(delayn).l
 
-snc:                             ; CODE XREF: ROM:00195858↓j
+snc:
                 andi.w  #$3F,(delayn).l ; '?'
                 bra.s   spex
 ; ---------------------------------------------------------------------------
 
-sndec:                             ; CODE XREF: ROM:001957AA↑j
+sndec:
                 subi.w  #1,(delayn).l
                 bra.s   snc
 ; ---------------------------------------------------------------------------
@@ -4348,7 +4344,7 @@ sndec:                             ; CODE XREF: ROM:001957AA↑j
                 and.l   #$800000,d0
                 bne.w   intinc
 
-padex:                             ; CODE XREF: ROM:001951AA↑j
+padex:
                                         ; ROM:001951B4↑j ...
                 move.l  (pad_now).l,d1
                 and.l   #$22002000,d1
@@ -4356,12 +4352,12 @@ padex:                             ; CODE XREF: ROM:001951AA↑j
                 rts
 ; ---------------------------------------------------------------------------
 
-intdec:                             ; CODE XREF: ROM:00195892↑j
+intdec:
                 subi.w  #$80,(a0)
                 rts
 ; ---------------------------------------------------------------------------
 
-intinc:                             ; CODE XREF: ROM:0019589E↑j
+intinc:
                 addi.w  #$80,(a0)
                 rts
 ; ---------------------------------------------------------------------------
@@ -4383,7 +4379,7 @@ intinc:                             ; CODE XREF: ROM:0019589E↑j
                 move.w  (a1),d6
                 move.w  #3,d7
 
-_gk1:                             ; CODE XREF: ROM:0019591C↓j
+_gk1:
                 move.l  (a0)+,d0
                 beq.w   _bodb
                 btst    #0,d6
@@ -4392,14 +4388,14 @@ _gk1:                             ; CODE XREF: ROM:0019591C↓j
                 jmp     (a2)
 ; ---------------------------------------------------------------------------
 
-_bodb:                             ; CODE XREF: ROM:0019590A↑j
+_bodb:
                                         ; ROM:00195912↑j
                 lsr.w   #1,d6
                 dbf     d7,_gk1
                 move.w  2(a1),d6
                 move.w  #7,d7
 
-_gk2:                             ; CODE XREF: ROM:0019593C↓j
+_gk2:
                 move.l  (a0)+,d0
                 beq.w   _bodb2
                 movea.l d0,a2
@@ -4408,7 +4404,7 @@ _gk2:                             ; CODE XREF: ROM:0019593C↓j
                 jmp     (a2)
 ; ---------------------------------------------------------------------------
 
-_bodb2:                             ; CODE XREF: ROM:0019592A↑j
+_bodb2:
                                         ; ROM:00195934↑j
                 lsr.w   #1,d6
                 dbf     d7,_gk2
@@ -4422,32 +4418,32 @@ _bodb2:                             ; CODE XREF: ROM:0019592A↑j
                 cmp.l   #$2000000,d1
                 bne.w   zinc
 
-owwt:                             ; CODE XREF: ROM:001958AE↑j
+owwt:
                 move.w  #1,(editing).l
                 clr.w   (symed).l
                 bra.w   onstak
 ; ---------------------------------------------------------------------------
 
-zinc:                             ; CODE XREF: ROM:00195968↑j
+zinc:
                 cmp.l   #$2000,d1
                 bne.w   stinc
                 subi.l  #$1000,(a0)
 
-stanc:                             ; CODE XREF: ROM:0019599C↓j
+stanc:
                 andi.l  #$1FFFFF,(a0)
                 rts
 ; ---------------------------------------------------------------------------
 
-stinc:                             ; CODE XREF: ROM:00195984↑j
+stinc:
                 addi.l  #$1000,(a0)
                 bra.s   stanc
 ; ---------------------------------------------------------------------------
 
-swf1:                             ; DATA XREF: ROM:00198C00↓o
+swf1:
                 move.w  #0,d0
 ; START OF FUNCTION CHUNK FOR swf2
 
-swfe:                             ; CODE XREF: sub_1959B6+4↓j
+swfe:
                                         ; ROM:001959C0↓j ...
                 bsr.w   git
                 move.w  d0,$E(a0)
@@ -4458,7 +4454,7 @@ swfe:                             ; CODE XREF: sub_1959B6+4↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-swf2:                             ; DATA XREF: ROM:00198C20↓o
+swf2:
 
 ; FUNCTION CHUNK AT 001959A2 SIZE 00000014 BYTES
 
@@ -4468,48 +4464,48 @@ swf2:                             ; DATA XREF: ROM:00198C20↓o
 
 ; ---------------------------------------------------------------------------
 
-swf3:                             ; DATA XREF: ROM:00198C10↓o
+swf3:
                 move.w  #2,d0
                 bra.s   swfe
 ; ---------------------------------------------------------------------------
 
-swf4:                             ; DATA XREF: ROM:00198BFC↓o
+swf4:
                 move.w  #3,d0
                 bra.s   swfe
 ; ---------------------------------------------------------------------------
 
-swf5:                             ; DATA XREF: ROM:00198C1C↓o
+swf5:
                 move.w  #4,d0
                 bra.s   swfe
 ; ---------------------------------------------------------------------------
 
-swf6:                             ; DATA XREF: ROM:00198C0C↓o
+swf6:
                 move.w  #5,d0
                 bra.s   swfe
 ; ---------------------------------------------------------------------------
 
-swf7:                             ; DATA XREF: ROM:00198C18↓o
+swf7:
                 move.w  #7,d0
                 bra.s   swfe
 ; ---------------------------------------------------------------------------
 
-swf8:                             ; DATA XREF: ROM:00198C08↓o
+swf8:
                 move.w  #8,d0
                 bra.s   swfe
 ; ---------------------------------------------------------------------------
 
-swf9:                             ; DATA XREF: ROM:00198BF8↓o
+swf9:
                 move.w  #6,d0
                 bra.s   swfe
 ; ---------------------------------------------------------------------------
 
-ph_inc:                             ; CODE XREF: ROM:001958F2↑j
+ph_inc:
                 bsr.w   git
                 addi.l  #$10000,(a0)
                 rts
 ; ---------------------------------------------------------------------------
 
-ph_dec:                             ; CODE XREF: ROM:001958E6↑j
+ph_dec:
                 bsr.w   git
                 subi.l  #$10000,(a0)
                 rts
@@ -4517,7 +4513,7 @@ ph_dec:                             ; CODE XREF: ROM:001958E6↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-git:                             ; CODE XREF: swf2:loc_1959A2↑p
+git:
                                         ; ROM:loc_1959E6↑p ...
                 move.w  (selected).l,d2
                 movea.l (edwave).l,a0
@@ -4528,7 +4524,7 @@ git:                             ; CODE XREF: swf2:loc_1959A2↑p
 
 ; ---------------------------------------------------------------------------
 
-selector:                             ; CODE XREF: ROM:00195286↑j
+selector:
                 move.l  (pad_now).l,d0
                 move.l  d0,d1
                 and.l   #$100000,d0
@@ -4543,12 +4539,12 @@ selector:                             ; CODE XREF: ROM:00195286↑j
                 tst.w   (cbuttf).l
                 beq.w   onstak
 
-soxx:                             ; CODE XREF: ROM:00195576↑j
+soxx:
                 move.l  #reedit,(action).l
                 bra.w   sdb
 ; ---------------------------------------------------------------------------
 
-onstak:                             ; CODE XREF: ROM:0019597A↑j
+onstak:
                                         ; ROM:00195A4A↑j
                 movea.l (esp).l,a0
                 move.l  (a0)+,d0
@@ -4560,10 +4556,10 @@ onstak:                             ; CODE XREF: ROM:0019597A↑j
                 bra.w   sdb
 ; ---------------------------------------------------------------------------
 
-seuss:                             ; CODE XREF: ROM:00195A40↑j
+seuss:
                 move.w  (selected).l,d0
 
-sted:                             ; CODE XREF: ROM:00195726↑j
+sted:
                 lsl.w   #3,d0
                 movea.l (editlist).l,a0
                 move.l  $0C(a0,d0.w),(action).l
@@ -4573,17 +4569,17 @@ sted:                             ; CODE XREF: ROM:00195726↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-selup:                             ; CODE XREF: ROM:loc_195770↑p
+selup:
                                         ; ROM:001957E0↑p ...
                 subi.w  #1,(selected).l
                 bpl.w   sud
                 move.w  (selectab).l,(selected).l
 
-sud:                             ; CODE XREF: sub_195A9C+8↑j
+sud:
                                         ; sub_195AC6+14↓j ...
                 move.l  #ud_selcu,(action).l
 
-sdb:                             ; CODE XREF: ROM:00195584↑j
+sdb:
                                         ; ROM:001956D2↑j ...
                 move.w  #1,(seldb).l
                 rts
@@ -4593,7 +4589,7 @@ sdb:                             ; CODE XREF: ROM:00195584↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-seldn:                             ; CODE XREF: ROM:loc_195780↑p
+seldn:
                                         ; ROM:001957F0↑p ...
                 addi.w  #1,(selected).l
                 move.w  (selectab).l,d0
@@ -4614,12 +4610,12 @@ seldn:                             ; CODE XREF: ROM:loc_195780↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-InitBeas:                             ; CODE XREF: sub_19324E+42↑p
+InitBeas:
                 lea     (beasties).l,a0
                 move.w  #$C,d7
                 move.w  d7,(nbeastie).l
 
-ibeasts:                             ; CODE XREF: sub_195B0E+1A↓j
+ibeasts:
                 move.w  #$FFFF,vfb_xsca(a0)
                 lea     d_z(a0),a0
                 dbf     d7,ibeasts
@@ -4634,7 +4630,7 @@ ibeasts:                             ; CODE XREF: sub_195B0E+1A↓j
                 tst.l   ($804850).l
                 bne.w   rrts
 
-cow:                             ; CODE XREF: ROM:loc_195B48↓j
+cow:
                 bra.s   cow
 ; ---------------------------------------------------------------------------
                 rts
@@ -4642,7 +4638,7 @@ cow:                             ; CODE XREF: ROM:loc_195B48↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-RunBeast:                             ; CODE XREF: Frame+4E↑p
+RunBeast:
                 movea.l (blist).l,a0
                 movea.l (dlist).l,a4
                 lea     (beasties).l,a2
@@ -4653,7 +4649,7 @@ RunBeast:                             ; CODE XREF: Frame+4E↑p
                 sub.w   #1,d7
                 lea     d_z(a2),a2
 
-RBeasts:                             ; CODE XREF: sub_195B4C+1E↑j
+RBeasts:
                                         ; sub_195B4C+22↑j ...
                 move.w  d7,-(sp)
                 move.w  vfb_xsca(a2),d0
@@ -4663,7 +4659,7 @@ RBeasts:                             ; CODE XREF: sub_195B4C+1E↑j
                 movea.l (a3,d0.w),a3
                 jsr     (a3)
 
-nxbeast:                             ; CODE XREF: sub_195B4C+34↑j
+nxbeast:
                 move.w  (sp)+,d7
                 lea     d_z(a2),a2
                 dbf     d7,RBeasts
@@ -4672,7 +4668,7 @@ nxbeast:                             ; CODE XREF: sub_195B4C+34↑j
 
 ; ---------------------------------------------------------------------------
 
-postfixu:                             ; DATA XREF: ROM:00195D0C↓o
+postfixu:
                                         ; ROM:00195D92↓o
                 dc.l  make_rmw, make_tra
 make_rmw:
@@ -4680,14 +4676,14 @@ make_rmw:
                 bset    #6,$A(a3)
                 bset    #7,$A(a3)
 
-setref:                             ; CODE XREF: ROM:00195BDA↓j
+setref:
                 tst.w   $1E(a2)
                 bne.w   setrf
                 bclr    #0,9(a3)
                 rts
 ; ---------------------------------------------------------------------------
 
-setrf:                             ; CODE XREF: ROM:00195BBC↑j
+setrf:
                 bset    #0,9(a3)
                 rts
 ; ---------------------------------------------------------------------------
@@ -4697,7 +4693,7 @@ make_tra:
                 bra.s   setref
 ; ---------------------------------------------------------------------------
 
-ModeVex:                             ; DATA XREF: sub_195B4C+38↑o
+ModeVex:
                 dc.l clip0, clip1, stoptop, clip2
                 dc.l clip1, clip1, clip1, clip1
 
@@ -4733,17 +4729,17 @@ clip0:
                 bra.w   clip2
 ; ---------------------------------------------------------------------------
 
-clip00:                             ; CODE XREF: ROM:00195C58↑j
+clip00:
                 clr.w   $E(a2)
                 move.w  #1,(bo).l
                 bra.w   clipc
 ; ---------------------------------------------------------------------------
 
-clip1:                             ; CODE XREF: ROM:00195C26↑j
+clip1:
                                         ; ROM:00195C4E↑j
                 clr.w   (bo).l
 
-clipc:                             ; CODE XREF: ROM:00195C7C↑j
+clipc:
                 move.w  (a2),d0
                 move.w  $04(a2),d1
                 cmpi.w  #5,$E(a2)
@@ -4751,7 +4747,7 @@ clipc:                             ; CODE XREF: ROM:00195C7C↑j
                 sub.w   (palside).l,d0
                 add.w   (paltop).l,d1
 
-fixpal:                             ; CODE XREF: ROM:00195C92↑j
+fixpal:
                 and.w   #$FFF,d0
                 clr.w   d6
                 tst.w   d1
@@ -4760,7 +4756,7 @@ fixpal:                             ; CODE XREF: ROM:00195C92↑j
                 neg.w   d6
                 lsr.w   #1,d6
 
-ponscr:                             ; CODE XREF: ROM:00195CAA↑j
+ponscr:
                 bclr    #0,d1
                 swap    d6
                 move.w  $08(a2),d6
@@ -4786,7 +4782,7 @@ ponscr:                             ; CODE XREF: ROM:00195CAA↑j
                 adda.l  d7,a1
                 clr.w   d1
 
-nohang:                             ; CODE XREF: ROM:00195CEC↑j
+nohang:
                 bsr.w   MakeUnSc
                 move.w  vfb_angl(a2),d0
                 bmi.w   rrts
@@ -4796,7 +4792,7 @@ nohang:                             ; CODE XREF: ROM:00195CEC↑j
                 jmp     (a3)
 ; ---------------------------------------------------------------------------
 
-clip2:                             ; CODE XREF: ROM:00195C6C↑j
+clip2:
                 move.w  (a2),d0
                 and.w   #$FFF,d0
                 clr.w   d6
@@ -4808,7 +4804,7 @@ clip2:                             ; CODE XREF: ROM:00195C6C↑j
                 add.w   #1,d3
                 lsr.w   d3,d6
 
-sponscr:                             ; CODE XREF: ROM:00195D26↑j
+sponscr:
                 bclr    #0,d1
                 swap    d6
                 move.w  $08(a2),d6
@@ -4834,7 +4830,7 @@ sponscr:                             ; CODE XREF: ROM:00195D26↑j
                 adda.l  d7,a1
                 clr.w   d1
 
-snohang:                             ; CODE XREF: ROM:00195D72↑j
+snohang:
                 bsr.w   MakeScal
                 move.w  vfb_angl(a2),d0
                 bmi.w   rrts
@@ -4846,7 +4842,7 @@ snohang:                             ; CODE XREF: ROM:00195D72↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-InitList:                             ; CODE XREF: sub_19324E+6↑p
+InitList:
                 move.l  #$1AE81C,d0
                 and.l   #$FFFFFFE0,d0
                 movea.l d0,a0
@@ -4888,11 +4884,11 @@ InitList:                             ; CODE XREF: sub_19324E+6↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-StopList:                             ; CODE XREF: sub_195B4C+50↑j
+StopList:
                                         ; sub_195DA0+68↑p ...
                 move.w  #$F,d0
 
-sl:                             ; CODE XREF: sub_195E24+10↓j
+sl:
                 move.l  #0,(a0)+
                 move.l  #4,(a0)+
                 dbf     d0,sl
@@ -4903,7 +4899,7 @@ sl:                             ; CODE XREF: sub_195E24+10↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-MakeScal:                             ; CODE XREF: ROM:loc_195D86↑p
+MakeScal:
                 tst.w   (bo).l
                 beq.w   nmulto2
                 movem.l d0-d5/a1,-(sp)
@@ -4943,7 +4939,7 @@ MakeScal:                             ; CODE XREF: ROM:loc_195D86↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-nmulto2:                             ; CODE XREF: sub_195E3A+6↑j
+nmulto2:
                                         ; sub_195E3A+E↑p ...
                 move.w  d0,-(sp)
                 move.l  a0,d6
@@ -4954,7 +4950,7 @@ nmulto2:                             ; CODE XREF: sub_195E3A+6↑j
                 movea.l d6,a0
                 lea     $20(a0),a0
 
-muso:                             ; CODE XREF: sub_195EC2+8↑j
+muso:
                 move.l  a1,d6
                 and.l   #$FFFFFFF8,d6
                 lsl.l   #8,d6
@@ -5007,7 +5003,7 @@ muso:                             ; CODE XREF: sub_195EC2+8↑j
                 bne.w   khluj
                 move.l  #$18080,d0
 
-khluj:                             ; CODE XREF: sub_195EC2+A0↑j
+khluj:
                 move.l  d0,(a0)+
                 lea     $08(a0),a0
                 lea     $20(a4),a4
@@ -5018,7 +5014,7 @@ khluj:                             ; CODE XREF: sub_195EC2+A0↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-MakeUnSc:                             ; CODE XREF: ROM:loc_195D00↑p
+MakeUnSc:
                 tst.w   (bo).l
                 beq.w   nmulto
                 movem.l d0-d5/a1,-(sp)
@@ -5058,7 +5054,7 @@ MakeUnSc:                             ; CODE XREF: ROM:loc_195D00↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-nmulto:                             ; CODE XREF: sub_195E3A+36↑p
+nmulto:
                                         ; sub_195F78+6↑j ...
                 move.l  a0,d6
                 and.w   #$1F,d6
@@ -5068,7 +5064,7 @@ nmulto:                             ; CODE XREF: sub_195E3A+36↑p
                 movea.l d6,a0
                 lea     $20(a0),a0
 
-mumuso:                             ; CODE XREF: sub_196000+6↑j
+mumuso:
                 move.l  a1,d6
                 and.l   #$FFFFFFF8,d6
                 lsl.l   #8,d6
@@ -5103,7 +5099,7 @@ mumuso:                             ; CODE XREF: sub_196000+6↑j
                 lsr.w   d0,d6
                 move.w  (sp)+,d0
 
-snoke:                             ; CODE XREF: sub_196000+5C↑j
+snoke:
                 and.w   #$FFF,d0
                 ror.l   #4,d6
                 bclr    #$F,d6
@@ -5128,7 +5124,7 @@ snoke:                             ; CODE XREF: sub_196000+5C↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-udud_but:                             ; DATA XREF: ROM:00195556↑o
+udud_but:
                 movea.l (udud).l,a0
                 bra.w   istat
 ; End of function udud_but
@@ -5136,7 +5132,7 @@ udud_but:                             ; DATA XREF: ROM:00195556↑o
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR evens
 
-dud_butt:                             ; CODE XREF: sub_1943FC+F16↑j
+dud_butt:
                 move.l  ($1AF056).l,-(sp)
                 move.l  #awfb2,($1AF056).l
                 bsr.w   ud_butts
@@ -5146,7 +5142,7 @@ dud_butt:                             ; CODE XREF: sub_1943FC+F16↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-ud_butts:                             ; CODE XREF: reedit+F8↑j
+ud_butts:
                                         ; sub_194648+22↑j ...
                 move.w  (inverse).l,-(sp)
                 movea.l ($1AF056).l,a3
@@ -5154,7 +5150,7 @@ ud_butts:                             ; CODE XREF: reedit+F8↑j
                 lea     (padchars).l,a4
                 lea     (board).l,a0
 
-ud_b:                             ; CODE XREF: ud_butts+52↓j
+ud_b:
                 move.b  (a4)+,d2
                 tst.b   (a3)
                 bmi.w   nud
@@ -5163,14 +5159,14 @@ ud_b:                             ; CODE XREF: ud_butts+52↓j
                 beq.w   ud_i
                 move.w  #1,(inverse).l
 
-ud_i:                             ; CODE XREF: ud_butts+30↑j
+ud_i:
                 move.b  (a3),d0
                 move.b  SRCEN(a3),d1
                 and.w   #$FF,d0
                 and.w   #$FF,d1
                 bsr.w   charblit
 
-nud:                             ; CODE XREF: ud_butts+20↑j
+nud:
                 lea     $04(a3),a3
                 dbf     d3,ud_b
                 move.w  (sp)+,(inverse).l
@@ -5181,7 +5177,7 @@ nud:                             ; CODE XREF: ud_butts+20↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-charblit:                             ; CODE XREF: wtud+58↑p
+charblit:
                                         ; wtud+82↑j ...
                 movem.w d0-d2,-(sp)
                 and.w   #$FF,d2
@@ -5211,7 +5207,7 @@ charblit:                             ; CODE XREF: wtud+58↑p
                 beq.w   notinv
                 move.l  #$600609,d7
 
-notinv:                             ; CODE XREF: sub_196122+96↑j
+notinv:
                 move.l  d7,(B_CMD).l
                 bsr.w   WaitBlit
                 movem.w (sp)+,d0-d2
@@ -5222,7 +5218,7 @@ notinv:                             ; CODE XREF: sub_196122+96↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-cleol:                             ; CODE XREF: sub_192088+92↑p
+cleol:
                                         ; sub_19484E+2C↑p ...
                 clr.w   d0
                 clr.w   d1
@@ -5239,7 +5235,7 @@ cleol:                             ; CODE XREF: sub_192088+92↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-sblitblo:                             ; CODE XREF: sub_1934AA+22↑p
+sblitblo:
                                         ; ROM:loc_1935AC↑p ...
                 movem.w d0-d3,-(sp)
                 move.w  (skale).l,d7
@@ -5249,12 +5245,12 @@ sblitblo:                             ; CODE XREF: sub_1934AA+22↑p
                 bne.w   slogg
                 move.w  #1,d2
 
-slogg:                             ; CODE XREF: sub_1961F8+10↑j
+slogg:
                 lsr.w   d7,d3
                 bne.w   slogg2
                 move.w  #1,d3
 
-slogg2:                             ; CODE XREF: sub_1961F8+1A↑j
+slogg2:
                 bsr.w   blitbloc
                 movem.w (sp)+,d0-d3
                 rts
@@ -5264,13 +5260,13 @@ slogg2:                             ; CODE XREF: sub_1961F8+1A↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-blitbloc:                             ; CODE XREF: sub_193400+10↑j
+blitbloc:
                                         ; ROM:00193D50↑p ...
                 clr.w   (nphrase).l
                 move.l  #$4420,d7
                 move.l  #$10200,-(sp)
 
-bblo:                             ; CODE XREF: sub_1961D2+22↑j
+bblo:
                 move.l  d7,(A1_FLAGS).l
                 move.l  a0,d7
                 move.l  d7,(A1_BASE).l
@@ -5289,7 +5285,7 @@ bblo:                             ; CODE XREF: sub_1961D2+22↑j
                 bne.w   nnphr
                 move.l  #$14420,(A1_FLAGS).l
 
-nnphr:                             ; CODE XREF: sub_196224+56↑j
+nnphr:
                 neg.w   d7
                 move.l  d7,(A1_STEP).l
                 move.l  #0,(A1_FSTEP).l
@@ -5308,14 +5304,14 @@ nnphr:                             ; CODE XREF: sub_196224+56↑j
 
 ; START OF FUNCTION CHUNK FOR blitcopy
 
-WaitBlit:                             ; CODE XREF: ROM:00194A4E↑p
+WaitBlit:
                                         ; ROM:00194B1E↑j ...
                 move.l  (B_CMD).l,d7
                 btst    #0,d7
                 beq.s   WaitBlit
 ; END OF FUNCTION CHUNK FOR blitcopy
 
-rrts:                          ; CODE XREF: sub_192402+6↑j
+rrts:
                                         ; symadj+10↑j ...
                 rts
 ; ---------------------------------------------------------------------------
@@ -5329,7 +5325,7 @@ rrts:                          ; CODE XREF: sub_192402+6↑j
 ; ---------------------------------------------------------------------------
                 move.l  #$34220,d7
 
-eec:                             ; CODE XREF: ROM:001962D4↑j
+eec:
                 move.l  d7,(A1_FLAGS).l
                 move.l  #$54420,d7
                 move.l  d7,(A2_FLAGS).l
@@ -5400,11 +5396,11 @@ eec:                             ; CODE XREF: ROM:001962D4↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-dcode:                             ; CODE XREF: Frame+256↑p
+dcode:
                 lea     (codez).l,a3
                 move.w  #$1F,d1
 
-dco:                             ; CODE XREF: sub_19640C+12↓j
+dco:
                 move.b  (a3)+,d2
                 btst    d1,d0
                 bne.w   rrts
@@ -5415,7 +5411,7 @@ dco:                             ; CODE XREF: sub_19640C+12↓j
 
 ; ---------------------------------------------------------------------------
 
-codez:                             ; DATA XREF: sub_19640C↑o
+codez:
                 moveq   #$78,d4 ; 'x'
 ; ---------------------------------------------------------------------------
                 dc.b $41 ; A
@@ -5441,7 +5437,7 @@ codez:                             ; DATA XREF: sub_19640C↑o
                 move.w  $30(a5,d3.l),d1
 ; ---------------------------------------------------------------------------
 byte_196442:    dc.b  $33, $36, $39, $23, $48, $E7, $E0,   0
-                                        ; CODE XREF: Frame:loc_194E1C↑p
+
                 dc.b  $22, $3C, $F0, $FF, $FF, $FC
 ; ---------------------------------------------------------------------------
                 moveq   #$FFFFFFFF,d2
@@ -5517,7 +5513,7 @@ byte_196442:    dc.b  $33, $36, $39, $23, $48, $E7, $E0,   0
                 move.l  a0,(freeobje).l
                 movea.l #$FFFFFFFF,a1
 
-IniA:                             ; CODE XREF: ROM:00196572↓j
+IniA:
                 move.l  a1,(a0)
                 movea.l a0,a1
                 lea     d_z(a0),a0
@@ -5539,29 +5535,29 @@ IniA:                             ; CODE XREF: ROM:00196572↓j
                 lea     (freeobje).l,a3
                 lea     (activeob).l,a4
 
-mlink:                             ; CODE XREF: ROM:0019659C↑j
+mlink:
                 cmpa.l  #$FFFFFFFF,a1
                 bne.w   ML1
                 move.l  a2,(a4)
                 cmpa.l  a1,a2
                 beq.w   NewLink
 
-ML1:                             ; CODE XREF: ROM:001965C2↑j
+ML1:
                 cmpa.l  #$FFFFFFFF,a2
                 bne.w   ML2
                 move.l  a2,$04(a1)
                 bra.w   NewLink
 ; ---------------------------------------------------------------------------
 
-ML2:                             ; CODE XREF: ROM:001965D4↑j
+ML2:
                 cmpa.l  #$FFFFFFFF,a1
                 beq.w   ml3
                 move.l  a2,$04(a1)
 
-ml3:                             ; CODE XREF: ROM:001965E6↑j
+ml3:
                 move.l  a1,(a2)
 
-NewLink:                             ; CODE XREF: ROM:001965CA↑j
+NewLink:
                                         ; ROM:001965DC↑j
                 movea.l (a3),a4
                 cmpa.l  #$FFFFFFFF,a4
@@ -5573,7 +5569,7 @@ NewLink:                             ; CODE XREF: ROM:001965CA↑j
                 rts
 ; ---------------------------------------------------------------------------
 
-NL1:                             ; CODE XREF: ROM:001965F8↑j
+NL1:
                 move.l  #$FFFFFFFF,(a0)
                 move.l  a0,(a4)
                 move.l  a4,$04(a0)
@@ -5584,7 +5580,7 @@ NL1:                             ; CODE XREF: ROM:001965F8↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-pinertco:                             ; CODE XREF: symadj+36↑p
+pinertco:
                                         ; symadj+48↑p
 
 ; FUNCTION CHUNK AT 001966D8 SIZE 0000002E BYTES
@@ -5600,14 +5596,14 @@ pinertco:                             ; CODE XREF: symadj+36↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-inertcon:                             ; CODE XREF: sub_192D0E+6↑p
+inertcon:
                                         ; sub_1928D4+45E↑p ...
                 move.w  #1,d3
                 move.w  d0,d1
                 and.w   #3,d1
                 beq.w   iinstop
 
-uuu:                             ; CODE XREF: sub_196622+E↑j
+uuu:
                 btst    #0,d1
                 beq.w   ininc
                 move.l  (a0),d1
@@ -5619,10 +5615,10 @@ uuu:                             ; CODE XREF: sub_196622+E↑j
                 bra.w   nolim1
 ; ---------------------------------------------------------------------------
 
-nolim0:                             ; CODE XREF: sub_196634+20↑j
+nolim0:
                 clr.w   d3
 
-nolim1:                             ; CODE XREF: sub_196634+2A↑j
+nolim1:
                 move.l  $04(a0),d0
                 move.l  $18(a0),d2
                 neg.l   d2
@@ -5631,7 +5627,7 @@ nolim1:                             ; CODE XREF: sub_196634+2A↑j
                 move.l  $08(a0),d0
                 sub.l   d0,$04(a0)
 
-inmove:                             ; CODE XREF: sub_196634+3C↑j
+inmove:
                                         ; sub_196634+90↓j ...
                 move.l  $04(a0),d0
                 add.l   d0,(a0)
@@ -5647,7 +5643,7 @@ inmove:                             ; CODE XREF: sub_196634+3C↑j
                 rts
 ; ---------------------------------------------------------------------------
 
-ininc:                             ; CODE XREF: sub_196634+12↑j
+ininc:
                 move.l  (a0),d1
                 move.l  vfb_ysca(a0),d2
                 cmp.l   vfb_angl(a0),d2
@@ -5657,10 +5653,10 @@ ininc:                             ; CODE XREF: sub_196634+12↑j
                 bra.w   nolim2
 ; ---------------------------------------------------------------------------
 
-nolim3:                             ; CODE XREF: sub_196634+76↑j
+nolim3:
                 clr.w   d3
 
-nolim2:                             ; CODE XREF: sub_196634+80↑j
+nolim2:
                 move.l  $04(a0),d0
                 move.l  $18(a0),d2
                 cmp.l   d2,d0
@@ -5670,11 +5666,11 @@ nolim2:                             ; CODE XREF: sub_196634+80↑j
                 bra.s   inmove
 ; ---------------------------------------------------------------------------
 
-instop:                             ; CODE XREF: sub_196634+26↑j
+instop:
                                         ; sub_196634+5C↑j ...
                 move.l  d2,(a0)
 
-iinstop:                             ; CODE XREF: sub_196634+A↑j
+iinstop:
                                         ; sub_196622+DA↓j
                 clr.l   $04(a0)
                 rts
@@ -5683,13 +5679,13 @@ iinstop:                             ; CODE XREF: sub_196634+A↑j
 ; ---------------------------------------------------------------------------
 ; START OF FUNCTION CHUNK FOR pinertco
 
-friction:                             ; CODE XREF: sub_196622+A↑j
+friction:
                 move.l  vfb_ysca(a0),d0
                 cmp.l   vfb_angl(a0),d0
                 bne.w   derange
                 clr.w   d3
 
-derange:                             ; CODE XREF: sub_196622+BE↑j
+derange:
                 move.l  $04(a0),d0
                 move.l  vfb_xsca(a0),d1
                 move.l  d1,d4
@@ -5698,7 +5694,7 @@ derange:                             ; CODE XREF: sub_196622+BE↑j
                 neg.l   d2
                 neg.l   d4
 
-sposk:                             ; CODE XREF: sub_196622+D0↑j
+sposk:
                 cmp.l   d1,d2
                 bmi.s   iinstop
                 sub.l   d4,$04(a0)
@@ -5711,7 +5707,7 @@ sposk:                             ; CODE XREF: sub_196622+D0↑j
                 move.w  #1,d1
                 move.w  #3,d7
 
-s2n:                             ; CODE XREF: ROM:00196724↓j
+s2n:
                 move.b  -(a0),d2
                 and.w   #$F,d2
                 mulu.w  d1,d2
@@ -5721,7 +5717,7 @@ s2n:                             ; CODE XREF: ROM:00196724↓j
                 move.w  #1,d1
                 move.w  #3,d7
 
-s3n:                             ; CODE XREF: ROM:0019673E↓j
+s3n:
                 move.b  -(a0),d2
                 and.w   #$F,d2
                 mulu.w  d1,d2
@@ -5735,7 +5731,7 @@ s3n:                             ; CODE XREF: ROM:0019673E↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-xxnum:                             ; CODE XREF: sub_1941FA+7A↑p
+xxnum:
                                         ; sub_1941FA+100↑p ...
                 move.l  d0,d2
                 divu.w  #$2710,d2
@@ -5745,7 +5741,7 @@ xxnum:                             ; CODE XREF: sub_1941FA+7A↑p
                 sub.l   d3,d0
                 move.w  #3,d3
 
-xscr:                             ; CODE XREF: sub_19674A+28↓j
+xscr:
                 divu.w  #$A,d0
                 swap    d0
                 add.b   #$30,d0 ; '0'
@@ -5754,7 +5750,7 @@ xscr:                             ; CODE XREF: sub_19674A+28↓j
                 swap    d0
                 dbf     d3,xscr
 
-xscr2:                             ; CODE XREF: sub_19674A+3E↓j
+xscr2:
                 divu.w  #$A,d2
                 swap    d2
                 add.b   #$30,d2 ; '0'
@@ -5771,11 +5767,11 @@ xscr2:                             ; CODE XREF: sub_19674A+3E↓j
                 move.l  a2,d4
                 lea     $20(a2),a3
 
-gennett:                             ; CODE XREF: ROM:001967BA↓j
+gennett:
                 move.w  #$1F,d1
                 clr.l   d3
 
-gnet:                             ; CODE XREF: ROM:loc_1967AA↓j
+gnet:
                 move.b  (a1)+,d2
                 bclr    d1,d3
                 cmp.b   (a0)+,d2
@@ -5783,11 +5779,11 @@ gnet:                             ; CODE XREF: ROM:loc_1967AA↓j
                 bset    d1,d3
                 move.b  d2,(a3)+
 
-gnet2:                             ; CODE XREF: ROM:001967A2↑j
+gnet2:
                 dbf     d1,gnet
                 move.w  #3,d2
 
-wbm:                             ; CODE XREF: ROM:001967B6↓j
+wbm:
                 rol.l   #8,d3
                 move.b  d3,(a2)+
                 dbf     d2,wbm
@@ -5800,7 +5796,7 @@ wbm:                             ; CODE XREF: ROM:001967B6↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-deltablo:                             ; CODE XREF: sub_1941FA+60↑p
+deltablo:
                                         ; sub_1941FA+D2↑p
                 move.w  d5,-(sp)
                 move.w  #7,d0
@@ -5808,7 +5804,7 @@ deltablo:                             ; CODE XREF: sub_1941FA+60↑p
                 clr.w   d5
                 move.w  #$17FF,d1
 
-dblo2:                             ; CODE XREF: sub_1967C6+3A↓j
+dblo2:
                 move.b  (a1)+,d2
                 cmp.b   #$FF,d5
                 beq.w   fwrite2
@@ -5817,7 +5813,7 @@ dblo2:                             ; CODE XREF: sub_1967C6+3A↓j
                 cmp.b   (a0),d2
                 beq.w   dblo3
 
-fwrite2:                             ; CODE XREF: sub_1967C6+14↑j
+fwrite2:
                                         ; sub_1967C6+1C↑j
                 move.b  d5,d3
                 lsl.w   #8,d3
@@ -5825,7 +5821,7 @@ fwrite2:                             ; CODE XREF: sub_1967C6+14↑j
                 move.w  d3,(a2)+
                 move.b  #$FF,d5
 
-dblo3:                             ; CODE XREF: sub_1967C6+22↑j
+dblo3:
                 lea     SRCEN(a0),a0
                 add.b   #1,d5
                 dbf     d1,dblo2
@@ -5839,8 +5835,8 @@ dblo3:                             ; CODE XREF: sub_1967C6+22↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-getmatri:                             ; CODE XREF: ROM:_mset↑p
-                                        ; DATA XREF: ROM:00195052↑o
+getmatri:
+
                 move.w  #1,(skid).l
 ; End of function getmatri
 
@@ -5848,12 +5844,12 @@ getmatri:                             ; CODE XREF: ROM:_mset↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-gm:                             ; CODE XREF: sub_192088+62↑p
-                                        ; DATA XREF: Frame+2C6↑o
+gm:
+
                 lea     (matrix).l,a1
                 move.w  #$35FF,d0
 
-ivtb:                             ; CODE XREF: gm+10↓j
+ivtb:
                 move.l  #$FFFFFFFF,(a1)+
                 dbf     d0,ivtb
                 movea.l (byte_196DEF+$361).l,a0
@@ -5874,7 +5870,7 @@ ivtb:                             ; CODE XREF: gm+10↓j
                 clr.w   d0
                 clr.w   d1
 
-unp:                             ; CODE XREF: gm+76↓j
+unp:
                 move.b  (a0)+,d1
                 move.b  (a0)+,d2
                 cmp.w   #$1800,d0
@@ -5887,11 +5883,11 @@ unp:                             ; CODE XREF: gm+76↓j
                 bra.s   unp
 ; ---------------------------------------------------------------------------
 
-taiga:                             ; CODE XREF: gm+60↑j
+taiga:
                                         ; gm+6A↑j
                 move.w  #7,d5
 
-rrest:                             ; CODE XREF: gm:loc_1968CC↓j
+rrest:
                 move.l  a0,-(sp)
                 movea.l a1,a0
                 lea     WID8(a1),a1
@@ -5902,7 +5898,7 @@ rrest:                             ; CODE XREF: gm:loc_1968CC↓j
                 clr.w   d0
                 clr.w   d1
 
-unpk2:                             ; CODE XREF: gm+B6↓j
+unpk2:
                 move.b  (a0)+,d1
                 move.b  (a0)+,d2
                 cmp.w   #$1800,d0
@@ -5915,7 +5911,7 @@ unpk2:                             ; CODE XREF: gm+B6↓j
                 bra.s   unpk2
 ; ---------------------------------------------------------------------------
 
-taiga2:                             ; CODE XREF: gm+A0↑j
+taiga2:
                                         ; gm+AA↑j
                 dbf     d5,rrest
                 bsr.w   skidoo
@@ -5937,7 +5933,7 @@ taiga2:                             ; CODE XREF: gm+A0↑j
 ; =============== S U B R O U T I N E =======================================
 
 
-blitcopy:                             ; CODE XREF: dofass+3E↑p
+blitcopy:
                                         ; ROM:0019545E↑p ...
 
 ; FUNCTION CHUNK AT 001962C0 SIZE 0000000C BYTES
@@ -5968,10 +5964,10 @@ blitcopy:                             ; CODE XREF: dofass+3E↑p
                 bra.s   .blit_go
 ; ---------------------------------------------------------------------------
 
-.aligned:                             ; CODE XREF: sub_196900+56↑j
+.aligned:
                 move.l  #$1800001,d0
 
-.blit_go:                             ; CODE XREF: sub_196900+5E↑j
+.blit_go:
                 move.l  d0,(B_CMD).l
                 bra.w   WaitBlit
 ; End of function blitcopy
@@ -5980,19 +5976,19 @@ blitcopy:                             ; CODE XREF: dofass+3E↑p
 ; =============== S U B R O U T I N E =======================================
 
 
-monovert:                             ; CODE XREF: sub_192088+86↑p
+monovert:
                 movea.l a0,a1
                 lea     2(a0),a0
                 move.w  #$FFFF,d7
                 move.w  #1,d0
 
-icu:                             ; CODE XREF: sub_196970+40↓j
+icu:
                 move.w  #1,d1
 
-icu2:                             ; CODE XREF: sub_196970+3C↓j
+icu2:
                 move.w  #1,d2
 
-icu3:                             ; CODE XREF: sub_196970+38↓j
+icu3:
                 move.w  d2,d3
                 lsl.w   #2,d3
                 sub.w   #2,d3
@@ -6016,7 +6012,7 @@ icu3:                             ; CODE XREF: sub_196970+38↓j
                 move.w  #$F,d0
                 clr.w   d1
 ; ---------------------------------------------------------------------------
-gsphr:    dc.b $14                ; CODE XREF: sub_196970+82↓j
+gsphr:    dc.b $14
                 dc.b $31 ; 1
                 dc.b $10
                 dc.b   0
@@ -6043,11 +6039,11 @@ gsphr:    dc.b $14                ; CODE XREF: sub_196970+82↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-makeclea:                             ; CODE XREF: sub_192088+6E↑p
+makeclea:
                 move.l  #$FFFFFFFF,(a0)+
                 move.w  #$1FF,d0
 
-macle:                             ; CODE XREF: sub_1969F8+1A↓j
+macle:
                 clr.l   (a0)+
                 clr.l   (a0)+
                 clr.l   (a0)+
@@ -6064,22 +6060,22 @@ macle:                             ; CODE XREF: sub_1969F8+1A↓j
 ; =============== S U B R O U T I N E =======================================
 
 
-makecube:                             ; CODE XREF: sub_192088+7A↑p
+makecube:
                 lea     (cmask1).l,a3
                 movea.l a0,a2
                 lea     $04(a0),a0
                 moveq   #$FFFFFFFF,d7
                 move.w  #7,d0
 
-iccu:                             ; CODE XREF: sub_196A18+78↓j
+iccu:
                 move.w  #7,d1
                 movea.l a3,a1
 
-iccu2:                             ; CODE XREF: sub_196A18+74↓j
+iccu2:
                 move.w  #7,d2
                 move.b  (a1)+,d6
 
-iccu3:                             ; CODE XREF: makecube:loc_196A88↓j
+iccu3:
                 btst    d2,d6
                 beq.w   nomatey
                 move.w  d2,d3
@@ -6115,7 +6111,7 @@ iccu3:                             ; CODE XREF: makecube:loc_196A88↓j
                 clr.l   (a0)+
                 add.l   #1,d7
 
-nexx:                             ; CODE XREF: sub_196A18+8A↓j
+nexx:
                 dbf     d2,iccu3
                 dbf     d1,iccu2
                 dbf     d0,iccu
@@ -6123,7 +6119,7 @@ nexx:                             ; CODE XREF: sub_196A18+8A↓j
                 rts
 ; ---------------------------------------------------------------------------
 
-nomatey:                             ; CODE XREF: sub_196A18+20↑j
+nomatey:
                 move.w  #0,$E(a0)
                 lea     $20(a0),a0
                 bra.s   nexx
@@ -6133,7 +6129,7 @@ nomatey:                             ; CODE XREF: sub_196A18+20↑j
                 dc.b $00,$01,$03,$02
 ; ---------------------------------------------------------------------------
 ObTypes:    dc.b   0,$60,  1,$80,  0,  4,  0,  0
-                                        ; DATA XREF: sub_19342C+26↑o
+
                                         ; ROM:00195CCE↑o ...
                 dc.b   0,  5,  0,$F0,  0,  0,  0,  0
                 dc.b   0,  1,  0,  8,  0,  0,  0,  0
@@ -6148,52 +6144,52 @@ ObTypes:    dc.b   0,$60,  1,$80,  0,  4,  0,  0
 .include "sympad.dat"
 
 versionp:     dc.b 'Virtual Light Machine v0.9//(c) 1994 Virtual Light Company Ltd.'
-                                        ; DATA XREF: sub_192088+A0↑o
+
                 dc.b '/Jaguar CD-ROM version/(c) 1994 Atari Corporation//FFT code by '
                 dc.b 'ib2/Grafix code by Yak/~c100:',0
-clearstr:     dc.b '@',0              ; DATA XREF: sub_192E82+16↑o
-banset:     dc.b '~g1:20:Bank>',0   ; DATA XREF: ROM:001968F6↑o
-banclr:     dc.b '~g1:20:     ',0   ; DATA XREF: gm+C6↑o
+clearstr:     dc.b '@',0
+banset:     dc.b '~g1:20:Bank>',0
+banclr:     dc.b '~g1:20:     ',0
 edithead:     dc.b '@~g1:1:Edit Mode~e3:4:',0
-                                        ; DATA XREF: old_edit:_iied↑o
+
                 dc.b '@~g1:1:Editing: Effect~e3:4:',0
 symedhea:     dc.b '@~g1:1:Editing: Symmetry Generator~e3:3:',0
-                                        ; DATA XREF: ROM:001940EC↑o
+
                 dc.b '@~g1:1:Editing: Digital Video Feedback~e3:3:',0
 wavedhea:     dc.b '@~g1:1:Editing: Wave Plotter~e3:3:',0
-                                        ; DATA XREF: ROM:00193E46↑o
+
 isphead1:     dc.b '@~g1:1:Spectrum and Triggers~e3:3:',0
-                                        ; DATA XREF: sub_1924DA+19FC↑o
+
 isphead2:     dc.b '@~g1:1:Trigger Settings~e3:3:',0
-                                        ; DATA XREF: ROM:00193F14↑o
+
 isphead3:     dc.b '@~g1:1:Adjust width using joypad',0
-                                        ; DATA XREF: ROM:isp3↑o
+
                 dc.b '@~g1:1:Adjust trigger minimum with pad',0
 kpasshea:     dc.b '@~g1:1:Assign effect to keypad//Press the number key 1-9 to whi'
-                                        ; DATA XREF: ROM:00195316↑o
+
                 dc.b 'ch//you want this effect attached',0
 ogohead:     dc.b '@~g1:1:Object Giver Outer~e3:3:',0
-                                        ; DATA XREF: ROM:loc_1940A6↑o
+
 adedhead:
                 dc.b '@~g1:1:Edit ADSR channel settings~e3:3:',0
 adedhead2:
                 dc.b '@~g1:1:Edit ADSR envelope shape~e3:3:',0
                 dc.b '@~g1:1:Attach and Adjust Waveforms~e3:3:',0
 subfxhea:     dc.b '@~g1:1:Choose a subeffect slot to edit~e3:3:',0
-                                        ; DATA XREF: ROM:00193DF0↑o
+
 awhead:     dc.b 'Attach and Adjust Waveforms//Press keys 1 to 8 to link waveform'
-                                        ; DATA XREF: sub_19546E↑o
+
                 dc.b 's//Use the joypad to change amplitude~g1:20:Press any FIRE butt'
                 dc.b 'on to exit',0
 wshead:     dc.b '@~g1:1:Edit basic waveforms~e3:3:',0
-                                        ; DATA XREF: ROM:00193FC0↑o
+
 fxphead:     dc.b '@~g1:1:Choose fx page~e3:3:',0
-                                        ; DATA XREF: ROM:iogo↑o
+
                 dc.b '~g1:20:<A> ADD    <B> EXIT   <C> SUB',0
                 dc.b '@~g1:1:',0
                 dc.b 'Standard Mode~c30:',0
 unimp:     dc.b 'This function not yet implemented~c30:',0
-                                        ; DATA XREF: unquit↑o
+
                 dc.b 'Edit this effect',0
                 dc.b 'Assign this effect to keypad',0
                 dc.b 'Change system settings',0
@@ -6218,25 +6214,25 @@ unimp:     dc.b 'This function not yet implemented~c30:',0
                 dc.b 'Set Trigger Minimum',0
                 dc.b '~g1:20:<A> Edit   <B> Edit   <C> Back',0
 bline2:     dc.b '~g1:20:Joypad to select, any FIRE to edit',0
-                                        ; DATA XREF: sub_192F26+106↑o
+
                                         ; ROM:00193DA2↑o
                 dc.b '~g1:20:Up,Down to choose, L,R to change',0
 bline5:     dc.b '~g1:18:Hold down b and use up,down to//change channel',0
-                                        ; DATA XREF: ROM:0019B08C↓o
+
                 dc.b '@~g1:1:Delay line settings//U,D changes number L,R changes spac'
                 dc.b 'ing~e3:7:',0
                 dc.b '@~g1:1:Compressing matrix to ROM//Press any fire to exit',0
 rsethead:     dc.b '@~g1:1:Reset ROM save pointers//Press any fire to exit',0
-                                        ; DATA XREF: ROM:_rset↑o
+
                 dc.b 'Edit: ',0
 eparm1:     dc.b '~g1:20:<A> Prev   <B> Menu   <C> Next',0
-                                        ; DATA XREF: sub_1946A8↑o
+
                                         ; ROM:00198A98↓o
 eparm2:     dc.b '~g1:18:Press ~i+*~i- to attach waveforms',0
-                                        ; DATA XREF: reedit+152↑o
-empt:     dc.b '<Empty>',0        ; DATA XREF: ROM:00193DB8↑o
+
+empt:     dc.b '<Empty>',0
 symplane:     dc.b 'Editing: Symmetry Planes and Types//Press number keys to turn o'
-                                        ; DATA XREF: sub_194648+14↑o
+
                 dc.b 'ff or on~g9:8:----- Rotational symmetry~g12:14:- Clear~g12:16:-'
                 dc.b ' Invert',0
                 dc.b 'Byte bitmap.  Press buttons to//change a bit.',0
@@ -6259,20 +6255,20 @@ symplane:     dc.b 'Editing: Symmetry Planes and Types//Press number keys to tur
                 dc.b 'Matrix',0
                 dc.b 'Spectrum as intensities',0
                 dc.b 'Jaguar Logo',0
-dlo1:     dc.b 'Off',0            ; DATA XREF: ROM:0019B090↓o
-dlo2:     dc.b 'channel 1',0      ; DATA XREF: ROM:0019B098↓o
-dlo3:     dc.b 'channel 2',0      ; DATA XREF: ROM:0019B0A0↓o
-dlo4:     dc.b 'channel 3',0      ; DATA XREF: ROM:0019B0A8↓o
-dlo5:     dc.b 'channel 4',0      ; DATA XREF: ROM:0019B0B0↓o
-dlo6:     dc.b 'channel 5',0      ; DATA XREF: ROM:0019B0B8↓o
-dlo7:     dc.b 'channel 6',0      ; DATA XREF: ROM:0019B0C0↓o
+dlo1:     dc.b 'Off',0
+dlo2:     dc.b 'channel 1',0
+dlo3:     dc.b 'channel 2',0
+dlo4:     dc.b 'channel 3',0
+dlo5:     dc.b 'channel 4',0
+dlo6:     dc.b 'channel 5',0
+dlo7:     dc.b 'channel 6',0
                 dc.b 'FX page 1',0
                 dc.b 'FX page 2',0
                 .even
-fxopt:    dc.w SRCEN                  ; DATA XREF: ROM:00194054↑o
+fxopt:    dc.w SRCEN
                 dc.l $19, $775A0019, $7B0D0019, $405E0019, $7B170019
                 dc.b $40, $84
-availobj:    dc.w vfb_ysca                ; DATA XREF: ROM:ssp1↑o
+availobj:    dc.w vfb_ysca
                 dc.l $19, $775A0019, $79AD0019, $23800019, $79B50019, $23A20019
                 dc.l $79C10019, $24DA0019, $79D50019, $24CA0019, $79E70019
                 dc.l $24F20019, $79F60019, $257E0019, $7A030019, $258C0019
@@ -6282,9 +6278,9 @@ availobj:    dc.w vfb_ysca                ; DATA XREF: ROM:ssp1↑o
                 dc.l $25520019, $7A7D0019, $25000019, $7AA20019, $251E0019
                 dc.l $7A8D0019
                 dc.b $25, $44
-avail2:    dc.w SRCEN                  ; DATA XREF: ROM:ssp2↑o
+avail2:    dc.w SRCEN
                 dc.l $19, $775A0019, $7AA20019, $251E0019, $7AA90019
-asc_197BE8:     dc.b '%h~g1:6:',0       ; DATA XREF: sub_1941FA↑o
+asc_197BE8:     dc.b '%h~g1:6:',0
                 dc.b 'DELTABLOCK generated ',0
                 dc.b ' bytes/',0
                 dc.b '55296 bytes ---> ',0
@@ -6312,18 +6308,18 @@ asc_197BE8:     dc.b '%h~g1:6:',0       ; DATA XREF: sub_1941FA↑o
                 dc.b 'Constant           ',0
                 dc.b 'User control Y     ',0
                 dc.b 'User control X     ',0
-wt:     dc.b '~g2:12:',0        ; DATA XREF: wtud↑o
+wt:     dc.b '~g2:12:',0
                 dcb.b 2,0
                 dc.b $19
                 dc.l $7C690019, $7C7D0019, $7C910019, $7CA50019, $7CB90019
                 dc.l $7CCD0019, $7CE10019, $7CF50019
                 dc.b $7D, 9
-word_197D4A:    dc.w $1E                ; DATA XREF: skidoo+34↑o
+word_197D4A:    dc.w $1E
                 dc.l $7540001E, $7644001E, $7748001E, $784C001E, $79500019
                 dc.l $6F4C001E
                 dcb.l 2,$7540001E
                 dc.b $75, $40
-padchars:    dc.w $2A87              ; DATA XREF: ud_butts+10↑o
+padchars:    dc.w $2A87
                 dc.b $84
                 dc.b $81, $23, $89
                 dc.b $86
@@ -6347,9 +6343,9 @@ padchars:    dc.w $2A87              ; DATA XREF: ud_butts+10↑o
                 dcb.l 2,0
                 dc.l $FF000000, 0
 pbinfo:     dc.b 'Parameter not yet defined    ',0
-                                        ; DATA XREF: sub_192088+D6C↑o
+
                                         ; sub_192F26+6↑o ...
-word_197E3E:    dc.w 0                  ; DATA XREF: sub_193968+E↑o
+word_197E3E:    dc.w 0
                                         ; sub_193C5C+1C↑o ...
                 dcb.l 2,0
                 dc.b 'DVF window size: X           ',0
@@ -6537,8 +6533,8 @@ word_197E3E:    dc.w 0                  ; DATA XREF: sub_193968+E↑o
                 dc.b 'Parameter not yet defined    ',0
                 .dphrase
                 dc.l $111E1213, $142A2B2C, $2D302E2F, $313206FF
-dvfvars:   dc.l $1030506, $80B38FF ; DATA XREF: ROM:dvfed↑o
-vars:     dc.l polyvars         ; DATA XREF: ROM:00193DD2↑o
+dvfvars:   dc.l $1030506, $80B38FF
+vars:     dc.l polyvars
                                         ; ROM:00193E32↑o
                                         ; "Draw a polygon object        "
                 dc.l sfvars         ; "Draw 3D starfield            "
@@ -6555,58 +6551,58 @@ vars:     dc.l polyvars         ; DATA XREF: ROM:00193DD2↑o
                 dc.l pmvars         ; "Do particle motion           "
                 dc.l shuuvars         ; "Spectrum as intensities      "
 polyvars:     dc.b 'Draw a polygon object        ',0
-                                        ; DATA XREF: ROM:vars↑o
+
                 dc.w $921
                 dc.l $221C1516, $1718191A
                 dc.b $26, $3D, $FF
 sfvars:     dc.b 'Draw 3D starfield            ',0
-                                        ; DATA XREF: ROM:0019883C↑o
+
                 dc.b 9, $D, $20
                 dc.l $3B3839FF
 obvars:     dc.b 'Draw particle object         ',0
-                                        ; DATA XREF: ROM:00198864↑o
+
                 dc.w $90D
                 dc.l $3B0E2122, $38392E2F, $1C1D1F15, $161B2526
                 dc.b $FF
 pmvars:     dc.b 'Do particle motion           ',0
-                                        ; DATA XREF: ROM:00198868↑o
+
                 dc.b $16
                 dc.l $2023090D, $E251718, $1938152E
                 dc.b $33, $FF
 ringvars:     dc.b 'Draw a ring of pixels        ',0
-                                        ; DATA XREF: ROM:00198840↑o
+
                 dc.l $91C1F20, $3536383B, $E1516FF
 dvf_vars:     dc.b 'Digital Video Feedback area  ',0
-                                        ; DATA XREF: ROM:00198844↑o
+
                                         ; ROM:00198854↑o ...
                 dc.w $103
                 dc.l $506080B
                 dc.b $38, $FF
 wsu_vars:     dc.b 'Wave Surface Thang           ',0
-                                        ; DATA XREF: ROM:00198848↑o
+
                 dc.l $90D1C1D, $33202322, $E3B3638
                 dc.b $FF
 monomapv:     dc.b 'Draw mono bitmap coloured    ',0
-                                        ; DATA XREF: ROM:0019884C↑o
+
                 dc.b 9
                 dc.l $2E363815
                 dc.b $26, $3D, $FF
 monomapv2:      dc.b 'Draw mono bitmap i-shaded    ',0
-                                        ; DATA XREF: ROM:00198850↑o
+
                 dc.b 9, $2E, $36
                 dc.l $3815263D
                 dc.b $FF
 plas1var:     dc.b 'Colour plasma area type 1    ',0
-                                        ; DATA XREF: ROM:0019885C↑o
+
                 dc.b 9
                 dc.l $2E363821
                 dc.b $22, $3D, $FF
 logovars:     dc.b 'Big Jaguar hardware sprite   ',0
-                                        ; DATA XREF: ROM:00198860↑o
+
                 dc.b 9, $38, $15
                 dc.b $FF
 shuuvars:     dc.b 'Spectrum as intensities      ',0
-                                        ; DATA XREF: ROM:0019886C↑o
+
                 dc.b 9
 ; other.bin
 
@@ -6621,27 +6617,27 @@ shuuvars:     dc.b 'Spectrum as intensities      ',0
                 dc.l $FFFFFFFF, 0
                 dc.l eparm1         ; "~g1:$20:<A> Prev   <B> Menu   <C> Next"
 option1:   dc.l star, bline1, op11, thisfx, op19, ispec
-                                        ; DATA XREF: old_edit+32↑o
+
 option2:   dc.l $20000, bline1, op21, foredit, op22, symedit
-                                        ; DATA XREF: ROM:00194136↑o
+
                 dc.l op23, wsedit
 option3:   dc.l star, bline1, op31, iawfx, op32, iawfy
-                                        ; DATA XREF: sub_1943FC+2A↑o
+
 option4:   dc.l $70000, bline3, op41, rrts, op42, rrts
-                                        ; DATA XREF: ROM:00193FBA↑o
+
                 dc.l op43, rrts, op44, rrts, op45, rrts
                 dc.l op46, rrts, op47, rrts, op48, rrts
 option5:   dc.l $20000, bline1, op51, ahead2, op52, ahead2
-                                        ; DATA XREF: ROM:0019415E↑o
+
                 dc.l op53, ahead2
 option6:   dc.l XADDINC, bline4, op61, rrts, op62, rrts
-                                        ; DATA XREF: ROM:00193E98↑o
+
                 dc.l op63, rrts, op64, rrts
 option7:   dc.l YADD1, bline1, op71, ispec2, op72, ispec2
-                                        ; DATA XREF: sub_1924DA+1A02↑o
+
                 dc.l op73, ispec2, op74, ispec2, op75, ispec2
 option8:   dc.l star, bline1, op81, ispec3, op82, ispec4
-                                        ; DATA XREF: ROM:00193F1A↑o
+
                 dc.l $FF000000, $10070000, $A070000, $4070000, $FF070000
                 dc.l $70000, $E070000, $8070000, $FF070000, $12070000
                 dc.l $C070000, $6070000, 0
@@ -6656,12 +6652,12 @@ option8:   dc.l star, bline1, op81, ispec3, op82, ispec4
                 dc.l swf7
                 dc.l swf5
                 dc.l swf2
-clut_sha:    dcb.w 2,0               ; DATA XREF: Frame+1C↑r
+clut_sha:    dcb.w 2,0
                                         ; Frame+26↑r ...
-lol:     dc.l bmobj         ; DATA XREF: sub_192088+D44↑o
+lol:     dc.l bmobj
                 dc.l skale, beasties, pobjs, mpobjs, mmasks, maxes
                 dc.l absdelta, zerstart, avbank, envvals, _fsync, freerun
-bmobj:     dc.l jlogo2       ; DATA XREF: ROM:lol↑o
+bmobj:     dc.l jlogo2
                 dc.l jaglogo
                 dc.l blokk
                 dc.l blokk
@@ -6673,7 +6669,7 @@ bmobj:     dc.l jlogo2       ; DATA XREF: ROM:lol↑o
                 dc.l $FFFEFFFE
                 dcb.l 2,0
                 dc.l $20001, $04, $30001
-freerun:    dcb.w 2,0               ; DATA XREF: LaunchVLM+20↑w
+freerun:    dcb.w 2,0
                                         ; ROM:loc_19207A↑w ...
 ; font.bin
 .include "font.dat"
@@ -6681,9 +6677,9 @@ freerun:    dcb.w 2,0               ; DATA XREF: LaunchVLM+20↑w
 jlogo2:
 .incbin "images/jlogo2.cry"
 
-blokk:   dc.l $1003F             ; DATA XREF: ROM:00198C64↑o
+blokk:   dc.l $1003F
                                         ; ROM:00198C68↑o
-davesvec:     dc.l rrts      ; DATA XREF: LaunchVLM+E↑w
+davesvec:     dc.l rrts
                                         ; ROM:00192044↑w ...
                 dcb.l $20,0
                 dc.l $18000000, 0
@@ -6695,23 +6691,23 @@ davesvec:     dc.l rrts      ; DATA XREF: LaunchVLM+E↑w
                 dc.l $18000000, 0
                 dc.l $18000000, 0
 awfbutts:   dc.l $FF000000, $10070000, $A070000, $4070000
-                                        ; DATA XREF: sub_19546E+6A↑o
+
                 dc.b $19, 9
-word_199A6A:    dc.w 0                  ; DATA XREF: ROM:00195630↑w
+word_199A6A:    dc.w 0
                 dc.l $FF070000, $E070000, $8070000, $FF070000, $12070000
                 dc.l $C070000, $6070000
 awfb2:   dc.l $FF000000, $10090000, $A090000, $4090000
-                                        ; DATA XREF: reedit+D4↑o
+
                                         ; sub_1943FC+1CB4↑o
                 dcb.l 2,$FF070000
                 dc.l $E090000, $8090000, $FF070000, $12090000, $C090000
                 dc.l $6090000
 kpassbut:   dc.l $FF000000, $70C0000, $70A0000, $7080000, $FF0C0000
-                                        ; DATA XREF: ROM:00195334↑o
+
                 dc.l $B0C0000, $B0A0000, $B080000, $FF070000, $90C0000
                 dc.l $90A0000, $9080000
 symbutts:   dc.l $80E0100, $5090000, $B090000, $7050000, $8100100
-                                        ; DATA XREF: sub_1946B2+62↑o
+
                 dc.l $8080000, $70B0000, $B070000, $FF000000, $5070000
                 dc.l $90B0000, $9050000, padleft, $11100, p_sines
                 dcb.l 2,0
@@ -6728,32 +6724,32 @@ symbutts:   dc.l $80E0100, $5090000, $B090000, $7050000, $8100100
                 dc.l $C300, p_sines
                 dcb.l 2,0
                 dc.l $F310, p_sines, 0
-pixcon:   dc.l padright, 0         ; DATA XREF: symadj+30↑o
+pixcon:   dc.l padright, 0
                                         ; symadj+4E↑r ...
                 dc.l $1600, CD_init, $FFFF00, 0
                 dc.l YADD1
-piycon:   dc.l padright, 0         ; DATA XREF: symadj+42↑o
+piycon:   dc.l padright, 0
                                         ; symadj+62↑r ...
                 dc.l $1600, CD_init, $FFFF00, 0
                 dc.l YADD1
 adsra:   dc.l $A000100, $C0000500, $40B00, $100C000, $5000004, $C000200
-                                        ; DATA XREF: sub_19279E+48↑o
+
                                         ; ROM:_ded2↑o
                 dc.l $C0000500, YADD1
-py:   dc.l 0                  ; DATA XREF: symadj+70↑w
-px:   dc.l 0                  ; DATA XREF: symadj+5C↑w
-delayf:    dc.w 0                  ; DATA XREF: sub_192B2A↑w
+py:   dc.l 0
+px:   dc.l 0
+delayf:    dc.w 0
                                         ; sub_192088+D76↑o ...
-delayp:    dc.w 0                  ; DATA XREF: sub_192B2A+8↑w
+delayp:    dc.w 0
                                         ; sub_19510A↑r ...
-dline:   dc.l 0                  ; DATA XREF: sub_192B2A+42↑w
+dline:   dc.l 0
                                         ; sub_19510A+6↑r ...
-delayt:    dc.w 0                  ; DATA XREF: sub_192B2A+E↑w
+delayt:    dc.w 0
                                         ; ROM:001943B2↑r ...
-delayn:    dcb.w 9,0               ; DATA XREF: sub_192B2A+16↑w
+delayn:    dcb.w 9,0
                                         ; ROM:001943B8↑r ...
 asc_199C14:     dc.b '~g3:5:                                 ',0
-                                        ; DATA XREF: ROM:0019439E↑o
+
                                         ; ROM:0019439E↑o
                 dcb.l 2,0
 jaglogo:
@@ -6761,19 +6757,19 @@ jaglogo:
 ; vlm-grafix.cry
 vlmlogo:
 .incbin "images/vlmlogo.cry"
-ixcon:   dc.l padright            ; DATA XREF: sub_192D0E↑o
+ixcon:   dc.l padright
                                         ; yakedit:loc_192ED8↑r ...
-dword_19B054:   dc.l 0                  ; DATA XREF: reedit:eparam↑w
+dword_19B054:   dc.l 0
                                         ; sub_19546E+18↑w
                 dc.l UPDA2, $20000, $FFFF00, 0
                 dc.l $20000
-iycon:   dc.l padright            ; DATA XREF: gkp:loc_192D2C↑o
+iycon:   dc.l padright
                                         ; yakedit:loc_192EEC↑r ...
-dword_19B070:   dc.l 0                  ; DATA XREF: reedit+4E↑w
+dword_19B070:   dc.l 0
                 dc.l UPDA2, $20000, $FFFF00, 0
                 dc.l $20000
-dlset:    dc.b 0, 6               ; DATA XREF: ROM:0019437A↑o
-word_19B08A:    dc.w 0                  ; DATA XREF: ROM:loc_194374↑w
+dlset:    dc.b 0, 6
+word_19B08A:    dc.w 0
                 dc.l bline5         ; "~g1:$18:Hold down b and use up,down to//"...
                 dc.l dlo1         ; "Off"
                 dc.l rrts
