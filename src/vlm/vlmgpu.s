@@ -113,7 +113,8 @@ delta:
 epsilon: 
 .incbin 'gpu/epsilon.bin'
 theta: 
-.incbin 'gpu/theta.bin'
+dc.w $00f0, $3000, $0000, $0224
+.incbin '../bin/theta.o'
 sigma: 
 .incbin 'gpu/sigma.bin'
 tau:
