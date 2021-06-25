@@ -45,7 +45,6 @@ action EQU $1AE524
 activeob EQU $1AE4E2
 adsrb EQU $199BDA
 adsrc EQU $199BE4
-ahead2 EQU $193E68
 allpad EQU $F00000
 antelope EQU $1AF00C
 asym_fla EQU $A0
@@ -108,13 +107,7 @@ attack EQU $192828
 decay EQU $19285C
 sustain EQU $192890
 release EQU $19289E
-crot EQU $193D12
 sisnglx EQU $193B20
-snglx EQU $193B74
-sidbl EQU $193A80
-dvect EQU $19399C
-wsshow EQU $193BBC
-shspec EQU $193518
 drxcen EQU $C4
 drycen EQU $C8
 dscreen EQU $F03F40
@@ -144,7 +137,6 @@ fframes EQU $1AE4D4
 fft_on EQU $F1B020
 flash EQU $1AE032
 flash_db EQU $1FD41C
-foredit EQU $193DFA
 frames EQU $1AE4D2
 freeobje EQU $1AE4E6
 fx EQU $1AE536
@@ -159,16 +151,12 @@ height EQU $F0
 height2 EQU $1FD420
 i EQU $80
 i_fxobj EQU $1AEFEA
-iawfy EQU $1954E4
 iixcon EQU $1AF04A
 iiycon EQU $1AF04E
 in_buf EQU $F03F60
 info EQU $F8
 intmask EQU $1AE4DC
 inverse EQU $1AE528
-ispec2 EQU $193EF0
-ispec3 EQU $193F26
-ispec4 EQU $193F56
 isphead4 EQU $19731B
 j EQU $84
 k EQU $88
@@ -282,7 +270,6 @@ star EQU $10000
 star_on EQU $1AE024
 stashhea EQU $19782B
 symed EQU $1AE4F6
-symedit EQU $1940B0
 symvars EQU $198820
 sync EQU $F03F4C
 thang EQU $98
@@ -304,7 +291,6 @@ wfahead EQU $197411
 wfpad EQU $198BF4
 width EQU $180
 width2 EQU $1FD428
-wsedit EQU $193F86
 stack	EQU $1AEFA8
 iansdoit EQU $1AC1A0
 wts EQU $197D26
