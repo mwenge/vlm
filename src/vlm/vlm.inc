@@ -43,8 +43,6 @@ abutton EQU $20000000
 actime EQU $1AF038
 action EQU $1AE524
 activeob EQU $1AE4E2
-adsrb EQU $199BDA
-adsrc EQU $199BE4
 allpad EQU $F00000
 antelope EQU $1AF00C
 asym_fla EQU $A0
@@ -57,10 +55,8 @@ beasties EQU $1AE048
 blist EQU $1AEC7C
 bo EQU $1FD418
 board EQU $1B00F8
-bytemask EQU $19797F
 cbuttf EQU $1AE568
 cbutton EQU $2000
-clearhom EQU $197553
 col1 EQU $90
 colx EQU $E0
 coly EQU $E4
@@ -98,12 +94,6 @@ deltaz EQU $94
 dlist EQU $1AEC80
 draw_rou EQU $1AE4C8
 draw_scr EQU $F03F54
-trigwait EQU $19281A
-attack EQU $192828
-decay EQU $19285C
-sustain EQU $192890
-release EQU $19289E
-sisnglx EQU $193B20
 drxcen EQU $C4
 drycen EQU $C8
 dscreen EQU $F03F40
@@ -111,7 +101,6 @@ dstoffx EQU $24
 dstoffy EQU $28
 dstoffz EQU $34
 dvf_buf EQU $1AF078
-dvfedhea EQU $197269
 dy EQU $3C
 e_stac EQU $1E5CFC
 eddie EQU $1AF046
@@ -159,7 +148,6 @@ lselecte EQU $1AF00A
 matrix EQU $1D83F8
 maxes EQU $1FD314
 meltim EQU $1AF074
-mmasks EQU $198C7C
 mods EQU $F03F48
 mon1 EQU $1AE52E
 mon2 EQU $1AE52A
@@ -170,7 +158,6 @@ monptr EQU $1AE4F0
 monx EQU $1AE4F2
 mony EQU $1AE4F4
 moomoomo EQU $1E80D4
-mpobjs EQU $198C74
 n_vdb EQU $1FD422
 n_vde EQU $1FD424
 nbeastie EQU $1AE042
@@ -204,7 +191,6 @@ phase4 EQU $7C
 phase5 EQU $CC
 pixsize EQU $EC
 plot_mod EQU $E8
-pobjs EQU $198C6C
 radius EQU $D4
 refblock EQU $1B4BF8
 results EQU $1E81F4

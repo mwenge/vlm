@@ -633,6 +633,7 @@ do_adsr:
 
 adsrvex:
                 dc.l trigwait, attack, decay, sustain, release
+trigwait:
                 tst.l   d0
                 beq.w   rrts
 
@@ -640,6 +641,7 @@ setatac:
                 move.w  #1,$08(a0)
                 rts
 ; ---------------------------------------------------------------------------
+attack:
                 tst.l   d0
                 beq.w   srel
                 move.w  (a1),d1
@@ -658,6 +660,7 @@ setay:
                 move.w  d1,(a1)
                 rts
 ; ---------------------------------------------------------------------------
+decay:
                 tst.l   d0
                 beq.w   srel
                 move.w  (a1),d1
@@ -674,6 +677,7 @@ setay:
                 move.w  #3,$08(a0)
                 bra.s   setay
 ; ---------------------------------------------------------------------------
+sustain:
                 tst.l   d0
                 bne.w   rrts
 
@@ -682,6 +686,7 @@ srel:
                 move.w  #4,$08(a0)
                 rts
 ; ---------------------------------------------------------------------------
+release:
                 tst.l   d0
                 bne.w   setatac
                 move.w  (a1),d1
@@ -2139,6 +2144,7 @@ n2add5:
                 move.w  d5,d3
                 jmp     sblitblo
 ; ---------------------------------------------------------------------------
+sisnglx:
                 bsr.w   avx
                 move.l  d1,-(sp)
                 move.w  #$3E,d0 ; '>'
@@ -6239,7 +6245,7 @@ edit2hea:     dc.b '@~g1:1:Editing: Effect~e3:4:',0
                                         ; DATA XREF: sub_1940F6+3A↑o
 symedhea:     dc.b '@~g1:1:Editing: Symmetry Generator~e3:3:',0
                                         ; DATA XREF: ROM:001940EC↑o
-                dc.b '@~g1:1:Editing: Digital Video Feedback~e3:3:',0
+dvfedhea:       dc.b '@~g1:1:Editing: Digital Video Feedback~e3:3:',0
 wavedhea:     dc.b '@~g1:1:Editing: Wave Plotter~e3:3:',0
                                         ; DATA XREF: sub_193DFA+4C↑o
 isphead1:     dc.b '@~g1:1:Spectrum and Triggers~e3:3:',0
@@ -6271,6 +6277,7 @@ fxphead:     dc.b '@~g1:1:Choose fx page~e3:3:',0
                                         ; DATA XREF: ROM:loc_19404E↑o
 bline3:     dc.b '~g1:20:<A> ADD    <B> EXIT   <C> SUB',0
                                         ; DATA XREF: ROM:off_198AEC↓o
+clearhom:
                 dc.b '@~g1:1:',0
                 dc.b 'Standard Mode~c30:',0
 unimp:     dc.b 'This function not yet implemented~c30:',0
@@ -6331,6 +6338,7 @@ symplane:     dc.b 'Editing: Symmetry Planes and Types//Press number keys to tur
                                         ; DATA XREF: sub_194648+14↑o
                 dc.b 'ff or on~g9:8:----- Rotational symmetry~g12:14:- Clear~g12:16:-'
                 dc.b ' Invert',0
+bytemask:
                 dc.b 'Byte bitmap.  Press buttons to//change a bit.',0
                 dc.b 'Nothing',0
                 dc.b 'Poly object',0
@@ -6436,7 +6444,9 @@ padchars:    dc.w $2A87              ; DATA XREF: sub_1960C4+10↑o
                 dc.b 'Activating slot 1//',0
                 dc.b 'Done~c50:',0
 cmask1:    dc.b $FF                ; DATA XREF: ROM:off_198C6C↓o
-                dcb.l 2,0
+cmask2:    dcb.l 2,0
+cmask3:
+cmask4:
                 dc.l $FF000000, 0
 pbinfo:     dc.b 'Parameter not yet defined    ',0
                                         ; DATA XREF: sub_192088+D6C↑o
@@ -6749,24 +6759,31 @@ option8:   dc.l star, bline1, op81, ispec3, op82, ispec4
                 dc.l swf7
                 dc.l swf5
                 dc.l swf2
-clut_sha:    dcb.w 2,0
-                                        ; Frame+26↑r ...
-lol:     dc.l bmobj
-                dc.l skale, beasties, pobjs, mpobjs, mmasks, maxes
-                dc.l absdelta, zerstart, avbank, envvals, _fsync, freerun
-bmobj:     dc.l jlogo2
+clut_sha:    dcb.w 2,0               ; DATA XREF: sub_194C90+1C↑r
+                                        ; sub_194C90+26↑r ...
+lol:     dc.l bmobj         ; DATA XREF: sub_192088+D44↑o
+                dc.l skale, beasties, pobjs, mpobjs, mmasks
+                dc.l maxes, absdelta, zerstart, avbank, envvals
+                dc.l _fsync, freerun
+bmobj:     dc.l jlogo2       ; DATA XREF: ROM:off_198C28↑o
                 dc.l jaglogo
                 dc.l blokk
                 dc.l blokk
-                dc.l cubeobj, genobj, monoobj, spherobj, cmask1
-                dc.b 0, $19
-                dc.w $7E10, $19, $7E18, $19, $7E18, $04
-                dcb.w 2,$FFFC
-                dc.w 0
+pobjs:   dc.l cubeobj            ; DATA XREF: ROM:00198C2C↑o
+                dc.l genobj
+mpobjs:   dc.l monoobj            ; DATA XREF: ROM:00198C2C↑o
+                dc.l spherobj
+mmasks:     dc.l cmask1        ; DATA XREF: ROM:00198C2C↑o
+                dc.l cmask2
+                dc.l cmask4
+                dc.l cmask4
+                dc.l $4FFFC
+                dc.l $FFFC0000
                 dc.l $FFFEFFFE
-                dcb.l 2,0
+                dc.l 0
+                dc.l 0
                 dc.l $20001, $04, $30001
-freerun:    dcb.w 2,0
+freerun:    dcb.w 2,0               ; DATA XREF: sub_192000+20↑w
                                         ; ROM:loc_19207A↑w ...
 ; font.bin
 .include "font.dat"
@@ -6829,10 +6846,12 @@ piycon:   dc.l $800000, 0
                                         ; symadj+62↑r ...
                 dc.l $1600, $3000, $FFFF00, 0
                 dc.l $40000
-adsra:   dc.l $A000100, $C0000500, $40B00, $100C000, $5000004, $C000200
-
-                                        ; ROM:_ded2↑o
-                dc.l $C0000500, $40000
+adsra:    dc.b   $A,   0,   1,   0, $C0,   0,   5,   0
+                dc.b    0,   4
+adsrb:          dc.b   $B,   0,   1,   0, $C0,   0,   5,   0
+                dc.b    0,   4
+adsrc:          dc.b   $C,   0,   2,   0, $C0,   0,   5,   0
+                dc.b    0,   4,   0,   0
 py:   dc.l 0
 px:   dc.l 0
 delayf:    dc.w 0
