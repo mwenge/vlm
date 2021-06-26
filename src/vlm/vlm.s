@@ -3114,7 +3114,7 @@ nsiggn:
 ; ---------------------------------------------------------------------------
 
 vtypes:
-                dc.l $1947da, $1947dc, $1947ec 
+                dc.l $1947da, $1947dc, $1947ec
                 rts
 ; ---------------------------------------------------------------------------
 xword:
@@ -6274,7 +6274,7 @@ fxphead:     dc.b '@~g1:1:Choose fx page~e3:3:',0
 unimp:     dc.b 'This function not yet implemented~c30:',0
 
 
-asc_197595:     dc.b 'Edit this effect',0
+op11:     dc.b 'Edit this effect',0
                                         ; DATA XREF: ROM:off_198A9C↓o
                 dc.b 'Assign this effect to keypad',0
                 dc.b 'Change system settings',0
@@ -6283,28 +6283,28 @@ asc_197595:     dc.b 'Edit this effect',0
                 dc.b 'Compress and store matrix',0
                 dc.b 'Reset save pointers in ROMulator',0
                 dc.b 'Test matrix retrieve',0
-asc_197659:     dc.b 'Spectrum and triggers',0
+op19:     dc.b 'Spectrum and triggers',0
                                         ; DATA XREF: ROM:off_198A9C↓o
-asc_19766F:     dc.b 'Edit source function',0
+op21:     dc.b 'Edit source function',0
                                         ; DATA XREF: ROM:off_198AB4↓o
-asc_197684:     dc.b 'Edit symmetry generator',0
+op22:     dc.b 'Edit symmetry generator',0
                                         ; DATA XREF: ROM:off_198AB4↓o
-asc_19769C:     dc.b 'Edit source waves',0
+op23:     dc.b 'Edit source waves',0
                                         ; DATA XREF: ROM:off_198AB4↓o
                 dc.b 'Change effect',0
-asc_1976BC:     dc.b 'Waveform attach (x)',0
+op31:     dc.b 'Waveform attach (x)',0
                                         ; DATA XREF: ROM:off_198AD4↓o
-asc_1976D0:     dc.b 'Waveform attach (y)',0
+op32:     dc.b 'Waveform attach (y)',0
                                         ; DATA XREF: ROM:off_198AD4↓o
-asc_1976E4:     dc.b 'Trigger 1',0      ; DATA XREF: ROM:off_198B7C↓o
-asc_1976EE:     dc.b 'Trigger 2',0      ; DATA XREF: ROM:off_198B7C↓o
-asc_1976F8:     dc.b 'Trigger 3',0      ; DATA XREF: ROM:off_198B7C↓o
-asc_197702:     dc.b 'Trigger 4',0      ; DATA XREF: ROM:off_198B7C↓o
-asc_19770C:     dc.b 'Trigger 5',0      ; DATA XREF: ROM:off_198B7C↓o
-asc_197716:     dc.b 'Set Width',0      ; DATA XREF: ROM:off_198BAC↓o
-asc_197720:     dc.b 'Set Trigger Minimum',0
+op71:     dc.b 'Trigger 1',0      ; DATA XREF: ROM:off_198B7C↓o
+op72:     dc.b 'Trigger 2',0      ; DATA XREF: ROM:off_198B7C↓o
+op73:     dc.b 'Trigger 3',0      ; DATA XREF: ROM:off_198B7C↓o
+op74:     dc.b 'Trigger 4',0      ; DATA XREF: ROM:off_198B7C↓o
+op75:     dc.b 'Trigger 5',0      ; DATA XREF: ROM:off_198B7C↓o
+op81:     dc.b 'Set Width',0      ; DATA XREF: ROM:off_198BAC↓o
+op82:     dc.b 'Set Trigger Minimum',0
                                         ; DATA XREF: ROM:off_198BAC↓o
-asc_197734:     dc.b '~g1:20:<A> Edit   <B> Edit   <C> Back',0
+bline1:     dc.b '~g1:20:<A> Edit   <B> Edit   <C> Back',0
                                         ; DATA XREF: ROM:off_198A9C↓o
                                         ; ROM:off_198AB4↓o ...
 bline2:     dc.b '~g1:20:Joypad to select, any FIRE to edit',0
@@ -6378,21 +6378,21 @@ asc_197BE8:     dc.b '%h~g1:6:',0
                 dc.b 'DELTABLOCK generated ',0
                 dc.b ' bytes/',0
                 dc.b '55296 bytes ---> ',0
-asc_197C21:     dc.b 'Edit ADSR a',0    ; DATA XREF: ROM:off_198B34↓o
-asc_197C2D:     dc.b 'Edit ADSR b',0    ; DATA XREF: ROM:off_198B34↓o
-asc_197C39:     dc.b 'Edit ADSR c',0    ; DATA XREF: ROM:off_198B34↓o
-asc_197C45:     dc.b 'A:',0             ; DATA XREF: ROM:off_198B54↓o
-asc_197C48:     dc.b 'D:',0             ; DATA XREF: ROM:off_198B54↓o
-asc_197C4B:     dc.b 'S:',0             ; DATA XREF: ROM:off_198B54↓o
-asc_197C4E:     dc.b 'R:',0             ; DATA XREF: ROM:off_198B54↓o
-asc_197C51:     dc.b '1:',0             ; DATA XREF: ROM:off_198AEC↓o
-asc_197C54:     dc.b '2:',0             ; DATA XREF: ROM:off_198AEC↓o
-asc_197C57:     dc.b '3:',0             ; DATA XREF: ROM:off_198AEC↓o
-asc_197C5A:     dc.b '4:',0             ; DATA XREF: ROM:off_198AEC↓o
-asc_197C5D:     dc.b '5:',0             ; DATA XREF: ROM:off_198AEC↓o
-asc_197C60:     dc.b '6:',0             ; DATA XREF: ROM:off_198AEC↓o
-asc_197C63:     dc.b '7:',0             ; DATA XREF: ROM:off_198AEC↓o
-asc_197C66:     dc.b '8:',0             ; DATA XREF: ROM:off_198AEC↓o
+op51:     dc.b 'Edit ADSR a',0    ; DATA XREF: ROM:off_198B34↓o
+op52:     dc.b 'Edit ADSR b',0    ; DATA XREF: ROM:off_198B34↓o
+op53:     dc.b 'Edit ADSR c',0    ; DATA XREF: ROM:off_198B34↓o
+op61:     dc.b 'A:',0             ; DATA XREF: ROM:off_198B54↓o
+op62:     dc.b 'D:',0             ; DATA XREF: ROM:off_198B54↓o
+op63:     dc.b 'S:',0             ; DATA XREF: ROM:off_198B54↓o
+op64:     dc.b 'R:',0             ; DATA XREF: ROM:off_198B54↓o
+op41:     dc.b '1:',0             ; DATA XREF: ROM:off_198AEC↓o
+op42:     dc.b '2:',0             ; DATA XREF: ROM:off_198AEC↓o
+op43:     dc.b '3:',0             ; DATA XREF: ROM:off_198AEC↓o
+op44:     dc.b '4:',0             ; DATA XREF: ROM:off_198AEC↓o
+op45:     dc.b '5:',0             ; DATA XREF: ROM:off_198AEC↓o
+op46:     dc.b '6:',0             ; DATA XREF: ROM:off_198AEC↓o
+op47:     dc.b '7:',0             ; DATA XREF: ROM:off_198AEC↓o
+op48:     dc.b '8:',0             ; DATA XREF: ROM:off_198AEC↓o
                 dc.b 'Sine wave          ',0
                 dc.b 'Sawtooth wave      ',0
                 dc.b 'Square wave        ',0
