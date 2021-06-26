@@ -6273,7 +6273,9 @@ fxphead:     dc.b '@~g1:1:Choose fx page~e3:3:',0
                 dc.b 'Standard Mode~c30:',0
 unimp:     dc.b 'This function not yet implemented~c30:',0
 
-                dc.b 'Edit this effect',0
+
+asc_197595:     dc.b 'Edit this effect',0
+                                        ; DATA XREF: ROM:off_198A9C↓o
                 dc.b 'Assign this effect to keypad',0
                 dc.b 'Change system settings',0
                 dc.b 'Edit envelopes and triggers',0
@@ -6281,21 +6283,30 @@ unimp:     dc.b 'This function not yet implemented~c30:',0
                 dc.b 'Compress and store matrix',0
                 dc.b 'Reset save pointers in ROMulator',0
                 dc.b 'Test matrix retrieve',0
-                dc.b 'Spectrum and triggers',0
-                dc.b 'Edit source function',0
-                dc.b 'Edit symmetry generator',0
-                dc.b 'Edit source waves',0
+asc_197659:     dc.b 'Spectrum and triggers',0
+                                        ; DATA XREF: ROM:off_198A9C↓o
+asc_19766F:     dc.b 'Edit source function',0
+                                        ; DATA XREF: ROM:off_198AB4↓o
+asc_197684:     dc.b 'Edit symmetry generator',0
+                                        ; DATA XREF: ROM:off_198AB4↓o
+asc_19769C:     dc.b 'Edit source waves',0
+                                        ; DATA XREF: ROM:off_198AB4↓o
                 dc.b 'Change effect',0
-                dc.b 'Waveform attach (x)',0
-                dc.b 'Waveform attach (y)',0
-                dc.b 'Trigger 1',0
-                dc.b 'Trigger 2',0
-                dc.b 'Trigger 3',0
-                dc.b 'Trigger 4',0
-                dc.b 'Trigger 5',0
-                dc.b 'Set Width',0
-                dc.b 'Set Trigger Minimum',0
-                dc.b '~g1:20:<A> Edit   <B> Edit   <C> Back',0
+asc_1976BC:     dc.b 'Waveform attach (x)',0
+                                        ; DATA XREF: ROM:off_198AD4↓o
+asc_1976D0:     dc.b 'Waveform attach (y)',0
+                                        ; DATA XREF: ROM:off_198AD4↓o
+asc_1976E4:     dc.b 'Trigger 1',0      ; DATA XREF: ROM:off_198B7C↓o
+asc_1976EE:     dc.b 'Trigger 2',0      ; DATA XREF: ROM:off_198B7C↓o
+asc_1976F8:     dc.b 'Trigger 3',0      ; DATA XREF: ROM:off_198B7C↓o
+asc_197702:     dc.b 'Trigger 4',0      ; DATA XREF: ROM:off_198B7C↓o
+asc_19770C:     dc.b 'Trigger 5',0      ; DATA XREF: ROM:off_198B7C↓o
+asc_197716:     dc.b 'Set Width',0      ; DATA XREF: ROM:off_198BAC↓o
+asc_197720:     dc.b 'Set Trigger Minimum',0
+                                        ; DATA XREF: ROM:off_198BAC↓o
+asc_197734:     dc.b '~g1:20:<A> Edit   <B> Edit   <C> Back',0
+                                        ; DATA XREF: ROM:off_198A9C↓o
+                                        ; ROM:off_198AB4↓o ...
 bline2:     dc.b '~g1:20:Joypad to select, any FIRE to edit',0
 
                                         ; ROM:00193DA2↑o
@@ -6367,21 +6378,21 @@ asc_197BE8:     dc.b '%h~g1:6:',0
                 dc.b 'DELTABLOCK generated ',0
                 dc.b ' bytes/',0
                 dc.b '55296 bytes ---> ',0
-                dc.b 'Edit ADSR a',0
-                dc.b 'Edit ADSR b',0
-                dc.b 'Edit ADSR c',0
-                dc.b 'A:',0
-                dc.b 'D:',0
-                dc.b 'S:',0
-                dc.b 'R:',0
-                dc.b '1:',0
-                dc.b '2:',0
-                dc.b '3:',0
-                dc.b '4:',0
-                dc.b '5:',0
-                dc.b '6:',0
-                dc.b '7:',0
-                dc.b '8:',0
+asc_197C21:     dc.b 'Edit ADSR a',0    ; DATA XREF: ROM:off_198B34↓o
+asc_197C2D:     dc.b 'Edit ADSR b',0    ; DATA XREF: ROM:off_198B34↓o
+asc_197C39:     dc.b 'Edit ADSR c',0    ; DATA XREF: ROM:off_198B34↓o
+asc_197C45:     dc.b 'A:',0             ; DATA XREF: ROM:off_198B54↓o
+asc_197C48:     dc.b 'D:',0             ; DATA XREF: ROM:off_198B54↓o
+asc_197C4B:     dc.b 'S:',0             ; DATA XREF: ROM:off_198B54↓o
+asc_197C4E:     dc.b 'R:',0             ; DATA XREF: ROM:off_198B54↓o
+asc_197C51:     dc.b '1:',0             ; DATA XREF: ROM:off_198AEC↓o
+asc_197C54:     dc.b '2:',0             ; DATA XREF: ROM:off_198AEC↓o
+asc_197C57:     dc.b '3:',0             ; DATA XREF: ROM:off_198AEC↓o
+asc_197C5A:     dc.b '4:',0             ; DATA XREF: ROM:off_198AEC↓o
+asc_197C5D:     dc.b '5:',0             ; DATA XREF: ROM:off_198AEC↓o
+asc_197C60:     dc.b '6:',0             ; DATA XREF: ROM:off_198AEC↓o
+asc_197C63:     dc.b '7:',0             ; DATA XREF: ROM:off_198AEC↓o
+asc_197C66:     dc.b '8:',0             ; DATA XREF: ROM:off_198AEC↓o
                 dc.b 'Sine wave          ',0
                 dc.b 'Sawtooth wave      ',0
                 dc.b 'Square wave        ',0
@@ -6716,7 +6727,7 @@ option5:   dc.l $20000, bline1, op51, ahead2, op52, ahead2
 option6:   dc.l XADDINC, bline4, op61, rrts, op62, rrts
 
                 dc.l op63, rrts, op64, rrts
-option7:   dc.l YADD1, bline1, op71, ispec2, op72, ispec2
+option7:   dc.l $40000, bline1, op71, ispec2, op72, ispec2
 
                 dc.l op73, ispec2, op74, ispec2, op75, ispec2
 option8:   dc.l star, bline1, op81, ispec3, op82, ispec4
@@ -6792,33 +6803,33 @@ kpassbut:   dc.l $FF000000, $70C0000, $70A0000, $7080000, $FF0C0000
 symbutts:   dc.l $80E0100, $5090000, $B090000, $7050000, $8100100
 
                 dc.l $8080000, $70B0000, $B070000, $FF000000, $5070000
-                dc.l $90B0000, $9050000, padleft, $11100, p_sines
+                dc.l $90B0000, $9050000, $400000, $11100, $1E7540
                 dcb.l 2,0
-                dc.l $16300, p_sines
+                dc.l $16300, $1E7540
                 dcb.l 2,0
-                dc.l CD_init, p_sines
+                dc.l $3000, $1E7540
                 dcb.l 2,0
-                dc.l $C000, p_sines
+                dc.l $C000, $1E7540
                 dcb.l 2,0
-                dc.l star, p_sines
+                dc.l star, $1E7540
                 dcb.l 2,0
-                dc.l $E000, p_sines
+                dc.l $E000, $1E7540
                 dcb.l 2,0
-                dc.l $C300, p_sines
+                dc.l $C300, $1E7540
                 dcb.l 2,0
-                dc.l $F310, p_sines, 0
-pixcon:   dc.l padright, 0
+                dc.l $F310, $1E7540, 0
+pixcon:   dc.l $800000, 0
                                         ; symadj+4E↑r ...
-                dc.l $1600, CD_init, $FFFF00, 0
-                dc.l YADD1
-piycon:   dc.l padright, 0
+                dc.l $1600, $3000, $FFFF00, 0
+                dc.l $40000
+piycon:   dc.l $800000, 0
                                         ; symadj+62↑r ...
-                dc.l $1600, CD_init, $FFFF00, 0
-                dc.l YADD1
+                dc.l $1600, $3000, $FFFF00, 0
+                dc.l $40000
 adsra:   dc.l $A000100, $C0000500, $40B00, $100C000, $5000004, $C000200
 
                                         ; ROM:_ded2↑o
-                dc.l $C0000500, YADD1
+                dc.l $C0000500, $40000
 py:   dc.l 0
 px:   dc.l 0
 delayf:    dc.w 0
@@ -6840,13 +6851,13 @@ jaglogo:
 ; vlm-grafix.cry
 vlmlogo:
 .incbin "images/vlmlogo.cry"
-ixcon:   dc.l padright
+ixcon:   dc.l $800000
                                         ; yakedit:loc_192ED8↑r ...
 dword_19B054:   dc.l 0
                                         ; sub_19546E+18↑w
                 dc.l UPDA2, $20000, $FFFF00, 0
                 dc.l $20000
-iycon:   dc.l padright
+iycon:   dc.l $800000
                                         ; yakedit:loc_192EEC↑r ...
 dword_19B070:   dc.l 0
                 dc.l UPDA2, $20000, $FFFF00, 0
