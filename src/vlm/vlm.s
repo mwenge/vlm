@@ -2343,6 +2343,7 @@ nohrz:
                                         ; ROM:00193D60↑j
                 rts
 ; ---------------------------------------------------------------------------
+thisfx:
                 movea.l (esp).l,a0
                 move.l  #_thisfx,-(a0)
                 move.l  a0,(esp).l
@@ -6264,7 +6265,7 @@ ogohead:     dc.b '@~g1:1:Object Giver Outer~e3:3:',0
 adedhead:       dc.b '@~g1:1:Edit ADSR channel settings~e3:3:',0
 adedhead2:     dc.b '@~g1:1:Edit ADSR envelope shape~e3:3:',0
                                         ; DATA XREF: sub_193E68+36↑o
-                dc.b '@~g1:1:Attach and Adjust Waveforms~e3:3:',0
+wfahead:        dc.b '@~g1:1:Attach and Adjust Waveforms~e3:3:',0
 subfxhea:     dc.b '@~g1:1:Choose a subeffect slot to edit~e3:3:',0
                                         ; DATA XREF: sub_193D82+6E↑o
 awhead:     dc.b 'Attach and Adjust Waveforms//Press keys 1 to 8 to link waveform'
@@ -6279,7 +6280,7 @@ bline3:     dc.b '~g1:20:<A> ADD    <B> EXIT   <C> SUB',0
                                         ; DATA XREF: ROM:off_198AEC↓o
 clearhom:
                 dc.b '@~g1:1:',0
-                dc.b 'Standard Mode~c30:',0
+normal:         dc.b 'Standard Mode~c30:',0
 unimp:     dc.b 'This function not yet implemented~c30:',0
                                         ; DATA XREF: sub_194800↑o
 op11:     dc.b 'Edit this effect',0
@@ -6322,12 +6323,12 @@ bline4:     dc.b '~g1:20:Up,Down to choose, L,R to change',0
                                         ; DATA XREF: ROM:off_198B54↓o
 bline5:     dc.b '~g1:18:Hold down b and use up,down to//change channel',0
                                         ; DATA XREF: ROM:0019B08C↓o
-                dc.b '@~g1:1:Delay line settings//U,D changes number L,R changes spac'
+edlhead:        dc.b '@~g1:1:Delay line settings//U,D changes number L,R changes spac'
                 dc.b 'ing~e3:7:',0
-                dc.b '@~g1:1:Compressing matrix to ROM//Press any fire to exit',0
+stashhea:       dc.b '@~g1:1:Compressing matrix to ROM//Press any fire to exit',0
 rsethead:     dc.b '@~g1:1:Reset ROM save pointers//Press any fire to exit',0
                                         ; DATA XREF: ROM:loc_1941A6↑o
-                dc.b 'Edit: ',0
+eparm0:         dc.b 'Edit: ',0
 eparm1:     dc.b '~g1:20:<A> Prev   <B> Menu   <C> Next',0
                                         ; DATA XREF: sub_1946A8↑o
                                         ; ROM:00198A98↓o
@@ -6385,9 +6386,9 @@ availobj:    dc.w $10                ; DATA XREF: ROM:loc_19407A↑o
 avail2:    dc.w 1                  ; DATA XREF: ROM:loc_1940A0↑o
                 dc.l $19, $775A0019, $7AA20019, $251E0019, $7AA90019
 asc_197BE8:     dc.b '%h~g1:6:',0       ; DATA XREF: sub_1941FA↑o
-                dc.b 'DELTABLOCK generated ',0
-                dc.b ' bytes/',0
-                dc.b '55296 bytes ---> ',0
+tp1:            dc.b 'DELTABLOCK generated ',0
+tp2:            dc.b ' bytes/',0
+tp3:            dc.b '55296 bytes ---> ',0
 op51:     dc.b 'Edit ADSR a',0    ; DATA XREF: ROM:off_198B34↓o
 op52:     dc.b 'Edit ADSR b',0    ; DATA XREF: ROM:off_198B34↓o
 op53:     dc.b 'Edit ADSR c',0    ; DATA XREF: ROM:off_198B34↓o
@@ -6413,7 +6414,8 @@ op48:     dc.b '8:',0             ; DATA XREF: ROM:off_198AEC↓o
                 dc.b 'User control Y     ',0
                 dc.b 'User control X     ',0
 wt:     dc.b '~g2:12:',0        ; DATA XREF: sub_1944C4↑o
-                dcb.b 2,0
+                dc.b 0
+wts:            dc.b 0
                 dc.b $19
                 dc.l $7C690019, $7C7D0019, $7C910019, $7CA50019, $7CB90019
                 dc.l $7CCD0019, $7CE10019, $7CF50019
@@ -6429,11 +6431,13 @@ padchars:    dc.w $2A87              ; DATA XREF: sub_1960C4+10↑o
                 dc.b $86
                 dc.b $83, $80, $88
                 dc.b $85
-                dc.b $82, 3, $B
+                dc.b $82
+padbits:        dc.b 3, $B
                 dc.b  $A
                 dc.b 6, 9, 7
                 dc.b   2
-                dc.b 1, 3, $B
+                dc.b 1
+pad8bits:       dc.b 3, $B
                 dc.b   7
                 dc.b 2, $A, 6
                 dc.b   1
@@ -6639,7 +6643,7 @@ word_197E3E:    dc.w 0
                 dcb.l 2,0
                 dc.b 'Parameter not yet defined    ',0
                 .dphrase
-                dc.l $111E1213, $142A2B2C, $2D302E2F, $313206FF
+symvars:        dc.l $111E1213, $142A2B2C, $2D302E2F, $313206FF
 dvfvars:   dc.l $1030506, $80B38FF
 vars:     dc.l polyvars
                                         ; ROM:00193E32↑o
@@ -6747,7 +6751,8 @@ option8:   dc.l star, bline1, op81, ispec3, op82, ispec4
 
                 dc.l $FF000000, $10070000, $A070000, $4070000, $FF070000
                 dc.l $70000, $E070000, $8070000, $FF070000, $12070000
-                dc.l $C070000, $6070000, 0
+                dc.l $C070000, $6070000
+wfpad:          dc.l  0
                 dc.l swf9
                 dc.l swf4
                 dc.l swf1
@@ -6823,7 +6828,8 @@ kpassbut:   dc.l $FF000000, $70C0000, $70A0000, $7080000, $FF0C0000
 symbutts:   dc.l $80E0100, $5090000, $B090000, $7050000, $8100100
 
                 dc.l $8080000, $70B0000, $B070000, $FF000000, $5070000
-                dc.l $90B0000, $9050000, $400000, $11100, $1E7540
+                dc.l $90B0000, $9050000
+oscbank:        dc.l $400000, $11100, $1E7540
                 dcb.l 2,0
                 dc.l $16300, $1E7540
                 dcb.l 2,0
