@@ -6227,53 +6227,54 @@ ObTypes:    dc.b   0,$60,  1,$80,  0,  4,  0,  0
 .include "sympad.dat"
 
 versionp:     dc.b 'Virtual Light Machine v0.9//(c) 1994 Virtual Light Company Ltd.'
-
+                                        ; DATA XREF: sub_192088+A0↑o
                 dc.b '/Jaguar CD-ROM version/(c) 1994 Atari Corporation//FFT code by '
                 dc.b 'ib2/Grafix code by Yak/~c100:',0
-clearstr:     dc.b '@',0
-banset:     dc.b '~g1:20:Bank>',0
-banclr:     dc.b '~g1:20:     ',0
+clearstr:     dc.b '@',0              ; DATA XREF: sub_192E82+16↑o
+banset:     dc.b '~g1:20:Bank>',0   ; DATA XREF: ROM:001968F6↑o
+banclr:     dc.b '~g1:20:     ',0   ; DATA XREF: sub_196814+C6↑o
 edithead:     dc.b '@~g1:1:Edit Mode~e3:4:',0
-
-                dc.b '@~g1:1:Editing: Effect~e3:4:',0
+                                        ; DATA XREF: old_edit:loc_194490↑o
+edit2hea:     dc.b '@~g1:1:Editing: Effect~e3:4:',0
+                                        ; DATA XREF: sub_1940F6+3A↑o
 symedhea:     dc.b '@~g1:1:Editing: Symmetry Generator~e3:3:',0
-
+                                        ; DATA XREF: ROM:001940EC↑o
                 dc.b '@~g1:1:Editing: Digital Video Feedback~e3:3:',0
 wavedhea:     dc.b '@~g1:1:Editing: Wave Plotter~e3:3:',0
-
+                                        ; DATA XREF: sub_193DFA+4C↑o
 isphead1:     dc.b '@~g1:1:Spectrum and Triggers~e3:3:',0
-
+                                        ; DATA XREF: sub_1924DA+19FC↑o
 isphead2:     dc.b '@~g1:1:Trigger Settings~e3:3:',0
-
+                                        ; DATA XREF: sub_193EF0+24↑o
 isphead3:     dc.b '@~g1:1:Adjust width using joypad',0
-
-                dc.b '@~g1:1:Adjust trigger minimum with pad',0
+                                        ; DATA XREF: ispec3:loc_193F42↑o
+isphead4:     dc.b '@~g1:1:Adjust trigger minimum with pad',0
+                                        ; DATA XREF: ispec4:loc_193F72↑o
 kpasshea:     dc.b '@~g1:1:Assign effect to keypad//Press the number key 1-9 to whi'
-
+                                        ; DATA XREF: ROM:00195316↑o
                 dc.b 'ch//you want this effect attached',0
 ogohead:     dc.b '@~g1:1:Object Giver Outer~e3:3:',0
-
-adedhead:
-                dc.b '@~g1:1:Edit ADSR channel settings~e3:3:',0
-adedhead2:
-                dc.b '@~g1:1:Edit ADSR envelope shape~e3:3:',0
+                                        ; DATA XREF: ROM:loc_1940A6↑o
+adedhead:       dc.b '@~g1:1:Edit ADSR channel settings~e3:3:',0
+adedhead2:     dc.b '@~g1:1:Edit ADSR envelope shape~e3:3:',0
+                                        ; DATA XREF: sub_193E68+36↑o
                 dc.b '@~g1:1:Attach and Adjust Waveforms~e3:3:',0
 subfxhea:     dc.b '@~g1:1:Choose a subeffect slot to edit~e3:3:',0
-
+                                        ; DATA XREF: sub_193D82+6E↑o
 awhead:     dc.b 'Attach and Adjust Waveforms//Press keys 1 to 8 to link waveform'
-
+                                        ; DATA XREF: sub_19546E↑o
                 dc.b 's//Use the joypad to change amplitude~g1:20:Press any FIRE butt'
                 dc.b 'on to exit',0
 wshead:     dc.b '@~g1:1:Edit basic waveforms~e3:3:',0
-
+                                        ; DATA XREF: sub_193F86+3A↑o
 fxphead:     dc.b '@~g1:1:Choose fx page~e3:3:',0
-
-                dc.b '~g1:20:<A> ADD    <B> EXIT   <C> SUB',0
+                                        ; DATA XREF: ROM:loc_19404E↑o
+bline3:     dc.b '~g1:20:<A> ADD    <B> EXIT   <C> SUB',0
+                                        ; DATA XREF: ROM:off_198AEC↓o
                 dc.b '@~g1:1:',0
                 dc.b 'Standard Mode~c30:',0
 unimp:     dc.b 'This function not yet implemented~c30:',0
-
-
+                                        ; DATA XREF: sub_194800↑o
 op11:     dc.b 'Edit this effect',0
                                         ; DATA XREF: ROM:off_198A9C↓o
                 dc.b 'Assign this effect to keypad',0
@@ -6308,25 +6309,26 @@ bline1:     dc.b '~g1:20:<A> Edit   <B> Edit   <C> Back',0
                                         ; DATA XREF: ROM:off_198A9C↓o
                                         ; ROM:off_198AB4↓o ...
 bline2:     dc.b '~g1:20:Joypad to select, any FIRE to edit',0
-
-                                        ; ROM:00193DA2↑o
-                dc.b '~g1:20:Up,Down to choose, L,R to change',0
+                                        ; DATA XREF: sub_192F26+106↑o
+                                        ; sub_193D82+20↑o
+bline4:     dc.b '~g1:20:Up,Down to choose, L,R to change',0
+                                        ; DATA XREF: ROM:off_198B54↓o
 bline5:     dc.b '~g1:18:Hold down b and use up,down to//change channel',0
-
+                                        ; DATA XREF: ROM:0019B08C↓o
                 dc.b '@~g1:1:Delay line settings//U,D changes number L,R changes spac'
                 dc.b 'ing~e3:7:',0
                 dc.b '@~g1:1:Compressing matrix to ROM//Press any fire to exit',0
 rsethead:     dc.b '@~g1:1:Reset ROM save pointers//Press any fire to exit',0
-
+                                        ; DATA XREF: ROM:loc_1941A6↑o
                 dc.b 'Edit: ',0
 eparm1:     dc.b '~g1:20:<A> Prev   <B> Menu   <C> Next',0
-
+                                        ; DATA XREF: sub_1946A8↑o
                                         ; ROM:00198A98↓o
 eparm2:     dc.b '~g1:18:Press ~i+*~i- to attach waveforms',0
-
-empt:     dc.b '<Empty>',0
+                                        ; DATA XREF: sub_19454C+152↑o
+empt:     dc.b '<Empty>',0        ; DATA XREF: sub_193D82+36↑o
 symplane:     dc.b 'Editing: Symmetry Planes and Types//Press number keys to turn o'
-
+                                        ; DATA XREF: sub_194648+14↑o
                 dc.b 'ff or on~g9:8:----- Rotational symmetry~g12:14:- Clear~g12:16:-'
                 dc.b ' Invert',0
                 dc.b 'Byte bitmap.  Press buttons to//change a bit.',0
@@ -6349,20 +6351,20 @@ symplane:     dc.b 'Editing: Symmetry Planes and Types//Press number keys to tur
                 dc.b 'Matrix',0
                 dc.b 'Spectrum as intensities',0
                 dc.b 'Jaguar Logo',0
-dlo1:     dc.b 'Off',0
-dlo2:     dc.b 'channel 1',0
-dlo3:     dc.b 'channel 2',0
-dlo4:     dc.b 'channel 3',0
-dlo5:     dc.b 'channel 4',0
-dlo6:     dc.b 'channel 5',0
-dlo7:     dc.b 'channel 6',0
+dlo1:     dc.b 'Off',0            ; DATA XREF: ROM:0019B090↓o
+dlo2:     dc.b 'channel 1',0      ; DATA XREF: ROM:0019B098↓o
+dlo3:     dc.b 'channel 2',0      ; DATA XREF: ROM:0019B0A0↓o
+dlo4:     dc.b 'channel 3',0      ; DATA XREF: ROM:0019B0A8↓o
+dlo5:     dc.b 'channel 4',0      ; DATA XREF: ROM:0019B0B0↓o
+dlo6:     dc.b 'channel 5',0      ; DATA XREF: ROM:0019B0B8↓o
+dlo7:     dc.b 'channel 6',0      ; DATA XREF: ROM:0019B0C0↓o
                 dc.b 'FX page 1',0
                 dc.b 'FX page 2',0
                 .even
-fxopt:    dc.w SRCEN
+fxopt:    dc.w 1                  ; DATA XREF: ROM:00194054↑o
                 dc.l $19, $775A0019, $7B0D0019, $405E0019, $7B170019
                 dc.b $40, $84
-availobj:    dc.w vfb_ysca
+availobj:    dc.w $10                ; DATA XREF: ROM:loc_19407A↑o
                 dc.l $19, $775A0019, $79AD0019, $23800019, $79B50019, $23A20019
                 dc.l $79C10019, $24DA0019, $79D50019, $24CA0019, $79E70019
                 dc.l $24F20019, $79F60019, $257E0019, $7A030019, $258C0019
@@ -6372,9 +6374,9 @@ availobj:    dc.w vfb_ysca
                 dc.l $25520019, $7A7D0019, $25000019, $7AA20019, $251E0019
                 dc.l $7A8D0019
                 dc.b $25, $44
-avail2:    dc.w SRCEN
+avail2:    dc.w 1                  ; DATA XREF: ROM:loc_1940A0↑o
                 dc.l $19, $775A0019, $7AA20019, $251E0019, $7AA90019
-asc_197BE8:     dc.b '%h~g1:6:',0
+asc_197BE8:     dc.b '%h~g1:6:',0       ; DATA XREF: sub_1941FA↑o
                 dc.b 'DELTABLOCK generated ',0
                 dc.b ' bytes/',0
                 dc.b '55296 bytes ---> ',0
@@ -6402,18 +6404,18 @@ op48:     dc.b '8:',0             ; DATA XREF: ROM:off_198AEC↓o
                 dc.b 'Constant           ',0
                 dc.b 'User control Y     ',0
                 dc.b 'User control X     ',0
-wt:     dc.b '~g2:12:',0
+wt:     dc.b '~g2:12:',0        ; DATA XREF: sub_1944C4↑o
                 dcb.b 2,0
                 dc.b $19
                 dc.l $7C690019, $7C7D0019, $7C910019, $7CA50019, $7CB90019
                 dc.l $7CCD0019, $7CE10019, $7CF50019
                 dc.b $7D, 9
-word_197D4A:    dc.w $1E
+word_197D4A:    dc.w $1E                ; DATA XREF: sub_195076+34↑o
                 dc.l $7540001E, $7644001E, $7748001E, $784C001E, $79500019
                 dc.l $6F4C001E
                 dcb.l 2,$7540001E
                 dc.b $75, $40
-padchars:    dc.w $2A87
+padchars:    dc.w $2A87              ; DATA XREF: sub_1960C4+10↑o
                 dc.b $84
                 dc.b $81, $23, $89
                 dc.b $86
@@ -6433,11 +6435,12 @@ padchars:    dc.w $2A87
                 dc.b 'Unpacking subsequent effect/',0
                 dc.b 'Activating slot 1//',0
                 dc.b 'Done~c50:',0
-                dc.b $FF
+cmask1:    dc.b $FF                ; DATA XREF: ROM:off_198C6C↓o
                 dcb.l 2,0
                 dc.l $FF000000, 0
 pbinfo:     dc.b 'Parameter not yet defined    ',0
-
+                                        ; DATA XREF: sub_192088+D6C↑o
+                                        ; sub_192F26+6↑o ...
                                         ; sub_192F26+6↑o ...
 word_197E3E:    dc.w 0
                                         ; sub_193C5C+1C↑o ...

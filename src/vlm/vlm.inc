@@ -54,8 +54,6 @@ bandl EQU $1AF010
 bank_mod EQU $1AE02E
 bbutton EQU $2000000
 beasties EQU $1AE048
-bline3 EQU $19752E
-bline4 EQU $197784
 blist EQU $1AEC7C
 bo EQU $1FD418
 board EQU $1B00F8
@@ -63,7 +61,6 @@ bytemask EQU $19797F
 cbuttf EQU $1AE568
 cbutton EQU $2000
 clearhom EQU $197553
-cmask1 EQU $197E0F
 col1 EQU $90
 colx EQU $E0
 coly EQU $E4
@@ -118,7 +115,6 @@ dvfedhea EQU $197269
 dy EQU $3C
 e_stac EQU $1E5CFC
 eddie EQU $1AF046
-edit2hea EQU $197223
 editing EQU $1AE028
 editlist EQU $1AE036
 edlhead EQU $1977E2
@@ -156,7 +152,6 @@ in_buf EQU $F03F60
 info EQU $F8
 intmask EQU $1AE4DC
 inverse EQU $1AE528
-isphead4 EQU $19731B
 j EQU $84
 k EQU $88
 ledit EQU $1AF064
