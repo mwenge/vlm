@@ -40,12 +40,13 @@ vlm.abs: vlm.gpu
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vidinit.s -o src/bin/vidinit.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/avbank.s -o src/bin/avbank.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vlmgpu.s -o src/bin/vlmgpu.cof
+	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/ians.s -o src/bin/ians.cof
 	./rln/rln -z -e -rw -a 192000 x x -o src/bin/vlm-temp.abs src/bin/vlm.cof\
 		src/bin/avbank.cof\
 		src/bin/vidinit.cof\
 		src/bin/vlmgpu.cof\
 		src/bin/images.cof\
-		-i src/vlm/incbin/ians.bin iansdoit
+		src/bin/ians.cof
 	./utils/StripAbsHeader.py src/bin/vlm-temp.abs src/bin/vlm.abs
 
 cdfront.abs: 

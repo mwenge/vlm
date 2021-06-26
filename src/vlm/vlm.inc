@@ -229,7 +229,6 @@ wave_2 EQU $D0
 width EQU $180
 width2 EQU $1FD428
 stack	EQU $1AEFA8
-iansdoit EQU $1AC1A0
 x_end EQU $1AE4EA
 zamp EQU $6C
 zero EQU $1AE020
