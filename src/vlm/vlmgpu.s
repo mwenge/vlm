@@ -116,7 +116,8 @@ theta:
 dc.w $00f0, $3000, $0000, $0224
 .incbin '../bin/theta.o'
 sigma: 
-.incbin 'gpu/sigma.bin'
+dc.w $00f0, $3000, $0000, $09f8
+.incbin '../bin/sigma.o'
 tau:
 dc.w $00f0, $3000, $0000, $0888
 .incbin '../bin/tau.o'
