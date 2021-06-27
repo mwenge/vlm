@@ -86,7 +86,7 @@ gpurun:                             ; CODE XREF: sub_192088+DA6↑p
                 rts
 ; ---------------------------------------------------------------------------
                 .dphrase
-gpumods:     dc.l alpha       ; DATA XREF: sub_192088+D8A↑o
+gpumods:        dc.l alpha       ; DATA XREF: sub_192088+D8A↑o
                 dc.l beta
                 dc.l gamma
                 dc.l psi
@@ -118,7 +118,8 @@ dc.w $00f0, $3000, $0000, $0224
 sigma: 
 .incbin 'gpu/sigma.bin'
 tau:
-.incbin 'gpu/tau.bin'
+dc.w $00f0, $3000, $0000, $0888
+.incbin '../bin/tau.o'
 shu:
 .incbin 'gpu/shu.bin'
 dbeast:   

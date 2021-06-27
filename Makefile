@@ -32,6 +32,7 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 vlm.gpu:
 	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/dbeast.gas -o src/bin/dbeast.o
 	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/theta.gas -o src/bin/theta.o
+	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/tau.gas -o src/bin/tau.o
 
 vlm.abs: vlm.gpu
 	$(shell mkdir -p $(DIRS))
