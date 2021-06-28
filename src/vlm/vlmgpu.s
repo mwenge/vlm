@@ -99,7 +99,8 @@ gpumods:        dc.l alpha       ; DATA XREF: sub_192088+D8A↑o
                 dc.l dbeast
                 .dphrase
 alpha:
-.incbin 'gpu/alpha.bin'
+dc.w $00f0, $3000, $0000, $09d0
+.incbin '../bin/alpha.o'
 beta:
 .incbin 'gpu/beta.bin'
 gamma:
