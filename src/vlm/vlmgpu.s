@@ -114,7 +114,8 @@ delta:
 dc.w $00f0, $3000, $0000, $0530
 .incbin '../bin/delta.o'
 epsilon: 
-.incbin 'gpu/epsilon.bin'
+dc.w $00f0, $3000, $0000, $09e0
+.incbin '../bin/epsilon.o'
 theta: 
 dc.w $00f0, $3000, $0000, $0224
 .incbin '../bin/theta.o'
