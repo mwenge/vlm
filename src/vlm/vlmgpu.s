@@ -111,7 +111,8 @@ omega:
 psi:   
 .incbin 'gpu/psi.bin'
 delta:
-.incbin 'gpu/delta.bin'
+dc.w $00f0, $3000, $0000, $0530
+.incbin '../bin/delta.o'
 epsilon: 
 .incbin 'gpu/epsilon.bin'
 theta: 
