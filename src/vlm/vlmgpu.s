@@ -105,7 +105,8 @@ beta:
 dc.w $00f0, $3000, $0000, $061e
 .incbin '../bin/beta.o'
 gamma:
-.incbin 'gpu/gamma.bin'
+dc.w $00f0, $3000, $0000, $0a38
+.incbin '../bin/gamma.o'
 omega:
 .incbin 'gpu/omega.bin'
 psi:   
