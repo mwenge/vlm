@@ -1,0 +1,454 @@
+.include "../../jaguar.inc"
+.include "../../blitter.inc"
+.include "../vlm.inc"
+.org $1b9c0
+                    movei   #$00f03f80, r14
+                    movei   #$00f03f4c, r0
+                    moveq   #SRCEN, r1
+                    store   r1, (r0)
+routine10:
+                    load    (r0), r1
+                    cmpq    #$0, r1
+                    jr    nz,routine10 ; #PIXEL8
+                    nop
+                    movei   #$00f03f68, r2
+                    moveq   #$5, r1
+                    load    (r2), r0
+                    or      r1, r1
+                    store   r1, (r14+$18)
+                    movei   #$00f03dc0, r2
+                    load    (r0), r3
+                    addq    #SRCENX, r0
+                    cmpq    #$0, r3
+                    jump    z,(r2)
+                    nop
+                    or      r3, r3
+                    or      r0, r0
+                    store   r3, (r14+$17)
+                    store   r0, (r14+$19)
+                    movei   #$000a0000, r1
+                    movei   #$00f03ad0, r2
+                    movei   #$00f03e82, r0
+                    or      r2, r2
+                    store   r2, (r14+$15)
+                    jump    (r0)
+                    nop
+                    movei   #$00f03b64, r0
+                    cmpq    #$0, r1
+                    jump    z,(r0)
+                    nop
+                    move    r26, r20
+                    movei   #$0000003f, r1
+                    and     r1, r20
+                    movei   #$00000600, r0
+                    mult    r0, r20
+                    add     r27, r20
+                    move    r20, r3
+                    movei   #$00f03b4c, r1
+                    movei   #$000000f8, r0
+                    add     r3, r0
+                    load    (r0), r2
+                    cmpq    #$0, r2
+                    jump    z,(r1)
+                    nop
+                    movei   #$00f03f40, r0
+                    load    (r0), r1
+                    movei   #$00000000, r0
+                    add     r3, r0
+                    store   r1, (r0)
+                    movei   #$000000fc, r0
+                    add     r3, r0
+                    load    (r0), r1
+                    moveta  r26, r26
+                    moveta  r27, r27
+                    moveta  r24, r24
+                    moveta  r25, r25
+                    movei   #$00f03b40, r2
+                    movei   #$00f03e82, r0
+                    or      r2, r2
+                    store   r2, (r14+$15)
+                    jump    (r0)
+                    nop
+                    movefa  r3, r3
+                    movefa  r14, r14
+                    movefa  r26, r26
+                    movefa  r27, r27
+                    movefa  r24, r24
+                    movefa  r25, r25
+                    add     r25, r26
+                    movei   #$00f03adc, r0
+                    subq    #SRCEN, r24
+                    jump    nz,(r0)
+                    nop
+                    movefa  r29, r29
+                    addq    #SRCENZ, r29
+                    loadw   (r29), r0
+                    addq    #SRCEN, r0
+                    storew  r0, (r29)
+                    load    (r14+$17), r3
+                    movei   #$00f03f54, r0
+                    load    (r0), r1
+                    movei   #$00000000, r0
+                    add     r3, r0
+                    store   r1, (r0)
+                    movei   #$00f03f3c, r0
+                    load    (r0), r1
+                    movei   #$000000f0, r0
+                    add     r3, r0
+                    store   r1, (r0)
+                    xor     r1, r1
+                    movei   #$00f03f58, r0
+                    store   r1, (r0)
+                    movei   #$000000fc, r0
+                    add     r3, r0
+                    load    (r0), r1
+                    movei   #$00f03bb2, r2
+                    movei   #$00f03e82, r0
+                    or      r2, r2
+                    store   r2, (r14+$15)
+                    jump    (r0)
+                    nop
+                    movefa  r3, r3
+                    movefa  r14, r14
+                    movei   #$00000300, r0
+                    moveq   #$7, r1
+                    add     r0, r3
+                    movei   #$00f03bc8, r20
+                    move    r3, r22
+                    load    (r22), r21
+                    addq    #SRCENX, r22
+                    load    (r22), r0
+                    addq    #PIXEL2, r22
+                    load    (r22), r4
+                    subq    #$c, r22
+                    cmpq    #$6, r4
+                    jr    nz,routine123 ; #$0000016C
+                    nop
+                    xor     r0, r0
+routine123:
+                    add     r0, r21
+                    store   r21, (r22)
+                    addq    #PIXEL4, r22
+                    subq    #SRCEN, r1
+                    jump    nn,(r20)
+                    nop
+                    movei   #$00f03f64, r0
+                    load    (r0), r4
+                    addq    #PIXEL4, r0
+                    movei   #$0000ffff, r20
+                    movei   #$000000ff, r21
+                    movei   #PIXEL2, r22
+                    movei   #$00f03c10, r23
+                    movei   #$00f03c54, r24
+                    load    (r3), r10
+                    addq    #PIXEL2, r3
+                    load    (r3), r11
+                    addq    #SRCENX, r3
+                    load    (r3), r12
+                    addq    #SRCENX, r3
+                    cmpq    #$7, r12
+                    jr    n,routine147 ; #ZOFFS7
+                    move    r12, r1
+                    subq    #$7, r1
+                    load    (r0), r2
+                    shlq    #SRCENZ, r1
+                    subq    #PIXEL2, r2
+                    add     r1, r2
+                    load    (r2), r12
+                    jump    (r24)
+routine147:
+                    cmpq    #PITCH8, r12
+                    jr    nz,routine157 ; #$000001CA
+                    move    r10, r12
+                    shrq    #PIXEL2, r12
+                    jump    (r24)
+routine157:
+                    move    r10, r15
+                    shrq    #PIXEL4, r10
+                    and     r21, r10
+                    add     r10, r11
+                    loadb   (r11), r12
+                    addq    #SRCEN, r11
+                    loadb   (r11), r13
+                    shrq    #PIXEL2, r15
+                    sub     r12, r13
+                    and     r21, r15
+                    shlq    #PIXEL2, r12
+                    imult   r15, r13
+                    add     r13, r12
+                    storew  r12, (r4)
+                    addq    #SRCENZ, r4
+                    subq    #SRCEN, r22
+                    jump    nz,(r23)
+                    nop
+                    movei   #$00f03f6c, r0
+                    load    (r14+$17), r22
+                    movei   #$0000003f, r26
+                    movei   #ZOFFS4, r2
+                    move    r22, r23
+                    move    r22, r25
+                    add     r2, r25
+                    add     r2, r23
+                    add     r2, r25
+                    load    (r0), r24
+                    loadw   (r23), r1
+                    movei   #$00f03daa, r2
+                    addq    #SRCENZ, r23
+                    cmpq    #$0, r1
+                    jump    z,(r2)
+                    shlq    #PIXEL4, r1
+                    loadw   (r23), r2
+                    or      r2, r1
+                    movei   #$0000003f, r0
+                    sub     r26, r0
+                    shlq    #PITCH8, r0
+                    move    r0, r2
+                    shlq    #SRCENZ, r0
+                    add     r2, r0
+                    movei   #$00f03f70, r2
+                    load    (r2), r27
+                    add     r27, r0
+                    moveq   #$1e, r27
+                    add     r27, r0
+                    subq    #$c, r2
+                    load    (r2), r8
+                    move    r1, r28
+                    move    r25, r21
+                    move    r0, r4
+                    move    r8, r16
+                    move    r28, r19
+                    addq    #PIXEL4, r16
+                    shrq    #PIXEL4, r28
+                    shrq    #SRCEN, r19
+                    addq    #PIXEL4, r16
+                    moveq   #PIXEL2, r3
+                    movei   #$00007fff, r5
+                    movei   #$00f03ce8, r7
+                    and     r5, r19
+                    move    r5, r27
+                    shlq    #SRCEN, r27
+                    movei   #$00f03cf8, r10
+                    movei   #TOPNEN, r17
+                    xor     r18, r18
+                    btst    #$0, r28
+                    jump    z,(r10)
+                    nop
+                    loadw   (r8), r1
+                    sub     r17, r1
+                    imult   r1, r5
+                    sharq   #PIXEL4, r5
+                    add     r5, r18
+                    btst    #PIXEL2, r28
+                    jr    z,routine237 ; #$00000290
+                    shrq    #SRCEN, r28
+                    loadw   (r16), r27
+routine237:
+                    addq    #SRCENZ, r16
+                    subq    #SRCEN, r3
+                    jump    nz,(r7)
+                    addq    #SRCENZ, r8
+                    mult    r27, r19
+                    shrq    #PIXEL4, r19
+                    imult   r19, r18
+                    sharq   #$f, r18
+                    cmpq    #$0, r18
+                    jr    nn,routine249 ; #$000002A6
+                    add     r17, r18
+routine249:
+                    or      r18, r18
+                    store   r18, (r14+$16)
+                    move    r18, r5
+                    load    (r14+$17), r6
+                    addq    #PITCH8, r4
+                    loadb   (r4), r9
+                    addq    #SRCEN, r4
+                    loadw   (r4), r0
+                    addq    #SRCENZ, r4
+                    shlq    #SRCENZ, r0
+                    load    (r4), r8
+                    add     r0, r6
+                    move    r8, r10
+                    xor     r7, r7
+                    shrq    #SRCEN, r10
+                    btst    #$7, r9
+                    jr    z,routine267 ; #$000002CC
+                    bclr    #$7, r9
+                    moveq   #SRCEN, r7
+routine267:
+                    movei   #$00f03d56, r0
+                    cmpq    #SRCENZ, r9
+                    jump    z,(r0)
+                    nop
+                    mult    r5, r8
+                    shrq    #PIXEL4, r8
+                    movei   #$00f03d90, r0
+                    jump    (r0)
+                    nop
+                    move    r5, r30
+                    moveq   #$0, r27
+                    move    r27, r28
+                    abs     r8
+                    addc    r28, r27
+                    abs     r5
+                    addc    r28, r27
+                    move    r5, r28
+                    mult    r8, r28
+                    move    r8, r29
+                    shrq    #PIXEL4, r28
+                    shrq    #PIXEL4, r29
+                    mult    r5, r29
+                    shrq    #PIXEL4, r5
+                    add     r29, r28
+                    move    r5, r29
+                    mult    r8, r29
+                    shrq    #PIXEL4, r8
+                    add     r29, r28
+                    mult    r5, r8
+                    shlq    #PIXEL4, r8
+                    add     r28, r8
+                    btst    #$0, r27
+                    jr    z,routine302 ; #$0000031A
+                    move    r30, r5
+                    neg     r8
+routine302:
+                    cmpq    #$0, r21
+                    jr    nz,routine306 ; #$00000324
+                    nop
+                    cmpq    #SRCEN, r7
+                    jr    nz,routine309 ; #$00000328
+routine306:
+                    nop
+                    sub     r10, r8
+routine309:
+                    cmpq    #$0, r21
+                    jr    z,routine313 ; #$00000332
+                    nop
+                    load    (r21), r0
+                    add     r0, r8
+routine313:
+                    store   r8, (r6)
+                    load    (r14+$16), r0
+                    or      r0, r0
+                    storew  r0, (r24)
+                    addq    #SRCENZ, r24
+                    addq    #SRCENZ, r23
+                    addq    #SRCENX, r25
+                    addq    #SRCENX, r22
+                    movei   #$00f03c7e, r0
+                    subq    #SRCEN, r26
+                    jump    nn,(r0)
+                    nop
+                    load    (r14+$19), r0
+                    load    (r14+$18), r2
+                    subq    #SRCEN, r2
+                    movei   #$00f03a9e, r3
+                    or      r2, r2
+                    store   r2, (r14+$18)
+                    jump    nn,(r3)
+                    nop
+                    movei   #$00f03dec, r2
+                    movei   #XADDINC, r1
+                    movei   #$00f03e82, r0
+                    or      r2, r2
+                    store   r2, (r14+$15)
+                    jump    (r0)
+                    nop
+                    moveq   #SRCEN, r0
+                    movei   #$00f03f50, r1
+                    store   r0, (r1)
+                    movei   #$00f03a7e, r0
+                    jump    (r0)
+                    nop
+                    movei   #B_CMD, r20
+routine353:
+                    load    (r20), r21
+                    btst    #$0, r21
+                    jr    z,routine353 ; #$00000396
+                    nop
+                    movei   #A1_BASE, r20
+                    movei   #A2_BASE, r21
+                    move    r1, r25
+                    movei   #$fffffff8, r26
+                    move    r25, r24
+                    and     r26, r25
+                    sub     r25, r24
+                    store   r25, (r20)
+                    addq    #SRCENX, r20
+                    movei   #$00004020, r22
+                    store   r22, (r20)
+                    addq    #PIXEL2, r20
+                    shrq    #SRCEN, r24
+                    store   r24, (r20)
+                    move    r0, r25
+                    move    r0, r23
+                    and     r26, r25
+                    sub     r25, r23
+                    store   r25, (r21)
+                    addq    #SRCENX, r21
+                    store   r22, (r21)
+                    addq    #PIXEL2, r21
+                    shrq    #SRCEN, r23
+                    store   r23, (r21)
+                    shrq    #SRCEN, r2
+                    movei   #B_COUNT, r25
+                    bset    #PIXEL4, r2
+                    store   r2, (r25)
+                    movei   #$01800001, r22
+                    or      r23, r24
+                    jr    z,routine385 ; #$000003FC
+                    nop
+                    movei   #$01800005, r22
+routine385:
+                    movei   #B_CMD, r20
+                    store   r22, (r20)
+routine392:
+                    load    (r20), r21
+                    btst    #$0, r21
+                    jr    z,routine392 ; #$00000404
+                    nop
+                    load    (r14+$15), r20
+                    jump    (r20)
+                    nop
+                    moveta  r3, r3
+                    moveta  r14, r14
+                    move    r1, r4
+                    move    r1, r5
+                    shlq    #PIXEL4, r4
+                    shrq    #PIXEL4, r5
+                    shrq    #PIXEL4, r4
+                    movei   #$00f03f5c, r0
+                    store   r4, (r0)
+                    movei   #G_RAM, r0
+                    movei   #$00f03ef8, r1
+                    load    (r1), r2
+                    cmp     r2, r5
+                    jump    z,(r0)
+                    nop
+                    store   r5, (r1)
+                    movei   #$00f03f48, r0
+                    load    (r0), r4
+                    shlq    #SRCENZ, r5
+                    add     r4, r5
+                    load    (r5), r4
+                    load    (r4), r1
+                    addq    #SRCENX, r4
+                    load    (r4), r2
+                    addq    #SRCENX, r4
+                    move    r4, r0
+                    load    (r14+$15), r4
+                    movei   #$00f03ee4, r5
+                    movei   #$00f03e00, r6
+                    movei   #TOPNEN, r20
+                    or      r5, r5
+                    add     r20, r1
+                    store   r5, (r14+$15)
+                    jump    (r6)
+                    nop
+                    or      r4, r4
+                    store   r4, (r14+$15)
+                    movei   #G_RAM, r0
+                    jump    (r0)
+                    nop
+                    dc.b    $00,$00,$00,$00,$00,$00
+                    dc.b    $ff,$ff
+                    dc.b    $00,$00,$00,$00,$00,$00

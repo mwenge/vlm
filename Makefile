@@ -39,6 +39,7 @@ vlm.gpu:
 	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/delta.gas -o src/bin/delta.o
 	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/epsilon.gas -o src/bin/epsilon.o
 	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/gamma.gas -o src/bin/gamma.o
+	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/omega.gas -o src/bin/omega.o
 
 vlm.abs: vlm.gpu
 	$(shell mkdir -p $(DIRS))
