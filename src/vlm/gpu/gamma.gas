@@ -1,7 +1,7 @@
 .include "../../jaguar.inc"
 .include "../../blitter.inc"
 .include "../vlm.inc"
-.org $1b9c0
+.org $f03000
                     movei   #$00f03f80, r14
                     movei   #$000000f0, r0
                     add     r3, r0

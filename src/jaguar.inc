@@ -268,3 +268,4 @@ ROM_CHIRP16 	equ	$F1D800	; SHORT SWEEP
 ROM_NTRI    	equ	$F1DA00	; Triangle w/NOISE
 ROM_DELTA   	equ	$F1DC00	; Positive spike
 ROM_NOISE   	equ	$F1DE00	; Guess
+; vim:ft=asm68k ts=2

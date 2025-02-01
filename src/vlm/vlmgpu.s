@@ -1,7 +1,8 @@
+; *******************************************************************
+; vlmgpu.s
+; *******************************************************************
 .include "../jaguar.inc"
 .include "../blitter.inc"
-
-; =============== S U B R O U T I N E =======================================
 
 .globl gpuload
 .globl wblit
@@ -19,7 +20,10 @@
 .globl dbeast
 .globl theta
 
-gpuload:                             ; CODE XREF: ROM:loc_1A6986↓p
+; *******************************************************************
+; gpuload
+; *******************************************************************
+gpuload:
                 movem.l d0-d2/a0-a1,-(sp)
                 clr.l   d0
                 move.l  d0,(G_CTRL).l
@@ -49,44 +53,49 @@ gpuload:                             ; CODE XREF: ROM:loc_1A6986↓p
                 beq.s   .aligned
                 move.l  #$1800005,d0
                 bra.s   .blit_go
-; ---------------------------------------------------------------------------
 
-.aligned:                             ; CODE XREF: sub_1A68F0+6E↑j
+.aligned:
                 move.l  #$1800001,d0
 
-.blit_go:                             ; CODE XREF: sub_1A68F0+76↑j
+.blit_go:
                 move.l  d0,(B_CMD).l
 
-wblit:                             ; CODE XREF: sub_1A68F0+8E↓j
+wblit: 
                 move.l  (B_CMD).l,d0
                 btst    #0,d0
                 beq.s   wblit
                 movem.l (sp)+,d0-d2/a0-a1
                 rts
-; End of function gpuload
 
-; ---------------------------------------------------------------------------
-
-gpurun:                             ; CODE XREF: sub_192088+DA6↑p
+; *******************************************************************
+; gpurun
+; *******************************************************************
+gpurun:
                 bsr.w   gpuload
                 movem.l d0-d1/a0,-(sp)
                 move.l  (a0)+,(G_PC).l
                 move.l  #$11,(G_CTRL).l
                 movem.l (sp)+,d0-d1/a0
                 rts
-; ---------------------------------------------------------------------------
+
+; *******************************************************************
+; gpuwait:
+; *******************************************************************
+gpuwait:
                 movem.l d0/a0,-(sp)
                 lea     (G_CTRL).l,a0
-
-.gpuwt:                             ; CODE XREF: ROM:001A69B4↓j
+.gpuwt: 
                 move.l  (a0),d0
                 btst    #0,d0
                 bne.s   .gpuwt
                 movem.l (sp)+,d0/a0
                 rts
-; ---------------------------------------------------------------------------
                 .dphrase
-gpumods:        dc.l alpha       ; DATA XREF: sub_192088+D8A↑o
+
+; *******************************************************************
+; gpumods
+; *******************************************************************
+gpumods:        dc.l alpha  
                 dc.l beta
                 dc.l gamma
                 dc.l psi
@@ -97,40 +106,71 @@ gpumods:        dc.l alpha       ; DATA XREF: sub_192088+D8A↑o
                 dc.l tau
                 dc.l shu
                 dc.l dbeast
+
+; *******************************************************************
+;
+;       CONSTANT DATA (GPU PROGRAMS)
+;
+; The extra bytes before each include are the output header the MAC
+; assembler would have produced for each. Unfortunately neither rmac nor
+; vasm support this output format, so we have to use rmac to create an 
+; absolute binary and append the headers here.
+;
+; There is a trick in the way these modules are used. The 'omega' module
+; orchestrates the loading of the others. Notice that 'omega' is loaded to 
+; address $F03A78 in the GPU's RAM. It loads all the other modules as they
+; are required. It can do this because all the others get loaded to $F03000 in 
+; the GPU's RAM and none of them is longer than $A78 bytes! This means
+; that 'omega' can stay resident in RAM at $F03a78 and load the others to $F03000 
+; without getting overwritten by them!
+; *******************************************************************
                 .dphrase
 alpha:
-dc.w $00f0, $3000, $0000, $09d0
-.incbin '../bin/alpha.o'
+                dc.w $00f0, $3000 ; The address in RAM to load the module at.
+                dc.w $0000, $09d0 ; The length in bytes of the module.
+                .incbin '../bin/alpha.o'
 beta:
-dc.w $00f0, $3000, $0000, $061e
-.incbin '../bin/beta.o'
+                dc.w $00f0, $3000 ; The address in RAM to load the module at.
+                dc.w $0000, $061e ; The length in bytes of the module.
+                .incbin '../bin/beta.o'
 gamma:
-dc.w $00f0, $3000, $0000, $0a38
-.incbin '../bin/gamma.o'
+                dc.w $00f0, $3000 ; The adddress in RAM to load the module at.
+                dc.w  $0000, $0a38 ; The length in bytes of the module.
+                .incbin '../bin/gamma.o'
 omega:
-dc.w $00f0, $3a78, $0000, $0484
-.incbin '../bin/omega.o'
+                dc.w $00f0, $3a78 ; The adddress in RAM to load the module at.
+                dc.w $0000, $0484 ; The length in bytes of the module.
+                .incbin '../bin/omega.o'
 psi:   
-dc.w $00f0, $3000, $0000, $071c
-.incbin '../bin/psi.o'
+                dc.w $00f0, $3000 ; The adddress in RAM to load the module at.
+                dc.w $0000, $071c ; The length in bytes of the module.
+                .incbin '../bin/psi.o'
 delta:
-dc.w $00f0, $3000, $0000, $0530
-.incbin '../bin/delta.o'
+                dc.w $00f0, $3000 ; The adddress in RAM to load the module at.
+                dc.w $0000, $0530 ; The length in bytes of the module.
+                .incbin '../bin/delta.o'
 epsilon: 
-dc.w $00f0, $3000, $0000, $09e0
-.incbin '../bin/epsilon.o'
+                dc.w $00f0, $3000 ; The adddress in RAM to load the module at.
+                dc.w $0000, $09e0 ; The length in bytes of the module.
+                .incbin '../bin/epsilon.o'
 theta: 
-dc.w $00f0, $3000, $0000, $0224
-.incbin '../bin/theta.o'
+                dc.w $00f0, $3000 ; The adddress in RAM to load the module at.
+                dc.w $0000, $0224 ; The length in bytes of the module.
+                .incbin '../bin/theta.o'
 sigma: 
-dc.w $00f0, $3000, $0000, $09f8
-.incbin '../bin/sigma.o'
+                dc.w $00f0, $3000 ; The adddress in RAM to load the module at.
+                dc.w $0000, $09f8 ; The length in bytes of the module.
+                .incbin '../bin/sigma.o'
 tau:
-dc.w $00f0, $3000, $0000, $0888
-.incbin '../bin/tau.o'
+                dc.w $00f0, $3000 ; The adddress in RAM to load the module at.
+                dc.w $0000, $0888 ; The length in bytes of the module.
+                .incbin '../bin/tau.o'
 shu:
-dc.w $00f0, $3000, $0000, $05f0
-.incbin '../bin/shu.o'
+                dc.w $00f0, $3000 ; The adddress in RAM to load the module at.
+                dc.w $0000, $05f0 ; The length in bytes of the module.
+                .incbin '../bin/shu.o'
 dbeast:   
-dc.w $00f0, $3000, $0000, $013c
-.incbin '../bin/dbeast.o'
+                dc.w $00f0, $3000 ; The adddress in RAM to load the module at.
+                dc.w $0000, $013c ; The length in bytes of the module.
+                .incbin '../bin/dbeast.o'
+; vim:ft=asm68k ts=2

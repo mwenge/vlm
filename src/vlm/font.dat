@@ -1,4 +1,4 @@
-myFont:   dc.l $80008
+myFont:         dc.l $80008
 word_198CB4:    dc.w $398, $3F8, $400, $408, $410
                                         ; DATA XREF: sub_196122+1A↑r
                 dcb.w $1C,$118

@@ -38,9 +38,9 @@ vlm.gpu:
 	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/beta.gas -o src/bin/beta.o
 	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/delta.gas -o src/bin/delta.o
 	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/epsilon.gas -o src/bin/epsilon.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/gamma.gas -o src/bin/gamma.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/omega.gas -o src/bin/omega.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/psi.gas -o src/bin/psi.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/gamma.gas -o src/bin/gamma.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/omega.gas -o src/bin/omega.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/psi.gas -o src/bin/psi.o
 	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/shu.gas -o src/bin/shu.o
 
 vlm.abs: vlm.gpu
@@ -48,11 +48,9 @@ vlm.abs: vlm.gpu
 	./rmac/rmac ~o1 -fb -u -l -isrc -isrc/vlm src/vlm/vlm.s -o src/bin/vlm.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/images.s -o src/bin/images.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vidinit.s -o src/bin/vidinit.cof
-	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/avbank.s -o src/bin/avbank.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vlmgpu.s -o src/bin/vlmgpu.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/ians.s -o src/bin/ians.cof
-	./rln/rln -z -e -rw -a 192000 x x -o src/bin/vlm-temp.abs src/bin/vlm.cof\
-		src/bin/avbank.cof\
+	./rln/rln -m -z -e -rw -a 192000 x x -o src/bin/vlm-temp.abs src/bin/vlm.cof\
 		src/bin/vidinit.cof\
 		src/bin/vlmgpu.cof\
 		src/bin/images.cof\

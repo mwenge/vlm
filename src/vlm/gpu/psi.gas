@@ -1,7 +1,7 @@
 .include "../../jaguar.inc"
 .include "../../blitter.inc"
 .include "../vlm.inc"
-.org $1b9c0
+.org $00f03000
                     movei   #$00f03f60, r0
                     movei   #$00f03f80, r14
                     load    (r0), r1
@@ -16,9 +16,9 @@
                     add     r0, r24
                     movei   #$00f1b130, r10
                     movei   #$0000003f, r2
-                    movei   #$00f03040, r4
+                    movei   #routine1, r4
                     movei   #WID64, r5
-                    move    r1, r20
+routine1:           move    r1, r20
                     moveq   #PITCH8, r21
                     xor     r22, r22
 routine26:

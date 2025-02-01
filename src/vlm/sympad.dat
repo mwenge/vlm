@@ -1,6 +1,7 @@
-sympad:    dc.b 0                  ; DATA XREF: sub_1946B2:loc_19470A↑o
+; TODO: Disassemble this.
+sympad:         dc.b 0 
                 dc.b $19
-                dc.b $2B ; +
+                dc.b $2B 
 byte_196DEF:    dc.b $C8,  0,$19,$2C,$24,  0,$19,$2C
                 dc.b $1C,  0,$19,$2B,$EC,  0,$19,$2B
                 dc.b $D4,  0,$19,$2C,$2C,  0,$19,$2C
