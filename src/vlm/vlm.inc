@@ -56,7 +56,7 @@ scron       EQU $1AE034
 editlist    EQU $1AE036
 selx        EQU $1AE03A
 sely        EQU $1AE03C
-selectab    EQU $1AE03E
+selectable    EQU $1AE03E
 selected    EQU $1AE040
 nbeastie    EQU $1AE042
 beasties    EQU $1AE048
@@ -189,10 +189,6 @@ pal         EQU $1FD426
 width2      EQU $1FD428
 a_hdb       EQU $1FD42A
 a_hde       EQU $1FD42C
-optionbu    EQU $200
-cbutton     EQU $2000
-bbutton     EQU $2000000
-abutton     EQU $20000000
 dstoffx     EQU $24
 dstoffy     EQU $28
 vfb_xpos    EQU $2C
