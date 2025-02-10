@@ -487,6 +487,7 @@ mpo:
 
 ; *******************************************************************
 ; makeshun
+; Make a Spectrum as Intensities object from the edit menu.
 ; *******************************************************************
 makeshun:
         bsr.w   makestar
@@ -618,6 +619,7 @@ initwsur:
 
 ; *******************************************************************
 ; initpsf
+; Create a 3D Starfield object.
 ; *******************************************************************
 initpsf:
         move.l  #3,plot_mod(a6)
@@ -627,6 +629,7 @@ initpsf:
 
 ; *******************************************************************
 ; initwave
+; Create a Polygon object.
 ; *******************************************************************
 initwave:
         move.l  #$20000,gpu(a6)
@@ -635,6 +638,7 @@ initwave:
 
 ; *******************************************************************
 ; initdvf
+; Create a Digital Video Feedback Area object.
 ; *******************************************************************
 initdvf:
         move.l  #4,info(a6)
@@ -645,6 +649,7 @@ initdvf:
 
 ; *******************************************************************
 ; initring
+; Create a Ring of Pixels object.
 ; *******************************************************************
 initring:
         clr.l   _i1(a6)
@@ -1524,9 +1529,76 @@ elcend:
 ; *******************************************************************
 ; ifxobj
 ; Initialize fx object of 1024 bytes. Each of the 9 'effects' in a bank consists
-; of 6 fx objects giving a total of 6144 (1024 *6) bytes per effect.
+; of 6 sub-effect fx objects giving a total of 6144 (1024 *6) bytes per effect.
 ;
 ; a6 points to the position in RAM where we should initialize the object.
+;
+; The first 256 bytes of a sub-effect fx object are as follows:
+;             Offset        Variable Name        Proper Name
+;             --------------------------------------------------------------
+;  Index 0 -  Byte 0-4:                           
+;  Index 1 -  Byte 4-8:     $4                   DVF window size: X           
+;  Index 2 -  Byte 8-12:    $8                   DVF window size: Y           
+;  Index 3 -  Byte 12-16:   vfb_xsca             DVF scale: X                 
+;  Index 4 -  Byte 16-20:   vfb_ysca             DVF scale: Y                 
+;  Index 5 -  Byte 20-24:   vfb_angl             DVF rotate angle             
+;  Index 6 -  Byte 24-28:   $18                  DVF centre of rotation: X    
+;  Index 7 -  Byte 28-32:   $1C                  DVF centre of rotation: Y    
+;  Index 8 -  Byte 32-36:   $20                  DVF Delta Intensity          
+;  Index 9 -  Byte 36-40:   dstoffx              Destination position: X      
+;  Index 10 - Byte 40-44:   dstoffy              Destination position: Y      
+;  Index 11 - Byte 44-48:   vfb_xpos             DVF window centre: X         
+;  Index 12 - Byte 48-52:   vfb_ypos             DVF window centre: Y         
+;  Index 13 - Byte 52-56:   dstoffz              Destination position: Z      
+;  Index 14 - Byte 56-60:                        Vector: X                    
+;  Index 15 - Byte 60-64:   dy                   Destination Y offset         
+;  Index 16 - Byte 64-68:                        Vector: Y                    
+;  Index 17 - Byte 68-72:                        Symmetry Types               
+;  Index 18 - Byte 72-76:   rsym_ord             Rotational Symmetry Order    
+;  Index 19 - Byte 76-80:   rsym_ste             Rotational Angle Step        
+;  Index 20 - Byte 80-84:   rsym_ist             Rotational Angle Step Delta  
+;  Index 21 - Byte 84-88:   _i1                  Intensity 1                  
+;  Index 22 - Byte 88-92:   _i2                  Intensity 2                  
+;  Index 23 - Byte 92-96:   _i3                  Intensity 3                  
+;  Index 24 - Byte 96-100:  _i4                  Intensity 4                  
+;  Index 25 - Byte 100-104: _i5                  Intensity 5                  
+;  Index 26 - Byte 104-108: _i6                  Intensity 6                  
+;  Index 27 - Byte 108-112: zamp                 Z amplitude                  
+;  Index 28 - Byte 112-116: phase1               Fixed point phase 1          
+;  Index 29 - Byte 116-120: phase2               Delta phase 1                
+;  Index 30 - Byte 120-124:                      Rotational sym overall phase 
+;  Index 31 - Byte 124-128: phase4               Fixed point phase 2          
+;  Index 32 - Byte 128-132: i                    Number of iterations         
+;  Index 33 - Byte 132-136: j                    X amplitude                  
+;  Index 34 - Byte 136-140: k                    Y amplitude                  
+;  Index 35 - Byte 140-144:                      Number of other iterations   
+;  Index 36 - Byte 144-148: col1                 Parameter not yet defined    
+;  Index 37 - Byte 148-152:                      delta Z                      
+;  Index 38 - Byte 152-156: thang                choice of Thang              
+;  Index 39 - Byte 156-160:                      Parameter not yet defined    
+;  Index 40 - Byte 160-164: asym_fla             Parameter not yet defined    
+;  Index 41 - Byte 164-168: sine_bas             Parameter not yet defined    
+;  Index 42 - Byte 168-172: rxcen                Rotational Sym centre: X     
+;  Index 43 - Byte 172-176: rycen                Rotational Sym centre: Y     
+;  Index 44 - Byte 176-180: roscale              Rotational Symmetry scale    
+;  Index 45 - Byte 180-184: roscal2              Rotational scale delta: X    
+;  Index 46 - Byte 184-188: cvx                  Colour generator vector: X   
+;  Index 47 - Byte 188-192: cvy                  Colour generator vector: Y   
+;  Index 48 - Byte 192-196: roscalei             Rotational scale delta: Y    
+;  Index 49 - Byte 196-200: drxcen               Rotational centre delta: X   
+;  Index 50 - Byte 200-204: drycen               Rotational centre delta: Y   
+;  Index 51 - Byte 204-208: phase5               Delta phase 2                
+;  Index 52 - Byte 208-212: wave_2               Parameter not yet defined    
+;  Index 53 - Byte 212-216: radius               Radius                       
+;  Index 54 - Byte 216-220: cvx2                 Base col generator vector: X 
+;  Index 55 - Byte 220-224: cvy2                 Base col generator vector: Y 
+;  Index 56 - Byte 224-228: colx                 Base colour: X               
+;  Index 57 - Byte 228-232: coly                 Base colour: Y               
+;  Index 58 - Byte 232-236: plot_mod             Destination plot routine     
+;  Index 59 - Byte 236-240: pixsize              Maximum pixel size           
+;  Index 60 - Byte 240-244: height               Parameter not yet defined    
+;  Index 61 - Byte 244-248: _mtrig               Trigger mask                 
+;  Index 62-  Byte 248-252: info                 Sub-Effect Type, e.g. 'Ring of Pixels'
 ; *******************************************************************
 ifxobj:
         ; Clear the 256 4-byte elements (1024 bytes) of the object.
@@ -1589,7 +1661,7 @@ xxxa:   clr.l   (a1)+
         move.l  #$00000000,pixsize(a6)
         move.l  #$00400000,phase4(a6)
         clr.l   thang(a6)
-        move.l  #$00000000,info(a6)
+        move.l  #$00000000,info(a6) ; The type of effect, e.g. 'Draw a Ring of Pixels'. See 'vars'. 
         clr.l   height(a6)
         clr.l   _mtrig(a6)
 
@@ -2706,7 +2778,7 @@ listit: movea.l d0,a2
         movea.l (a3,d6.w),a3      ; Use it as an index into vars to get the entry to display.
         move.l  a3,(a0)+          ; Add the entry to elspace.
         move.l  #edit2,(a0)+      ; Set the 'Editing: Effect' screen to be used if this entry is selected.
-lfx2:   dbf     d7,lfx            ; Loop until all 5 entries done.
+lfx2:   dbf     d7,lfx            ; Loop until all 6 entries done.
         
         lea     elspace,a1 ; Use elspace populated above as the list of items to display.
         lea     subfxhea,a0       ; Heading is "Choose a subeffect slot to edit"
@@ -3551,6 +3623,8 @@ primexy:
 ;
 ; d3 -> the current value for x or y in the fx object.
 ; a3 -> fxobj (current effect object)
+; a2 -> pointer to ixcon/iycon
+;
 ; a0 points to the variables after the text in the parameter's 
 ; relevant entry in editinginfo.
 ; *******************************************************************
@@ -6649,8 +6723,8 @@ getmatrix:
 ;
 ; Load a bank with 9 effects. 'matrix' is where we store the bank of 9 effects.
 ;
-; Each of the 9 'effects' in the 'bank' consists of 6 'fx objects' (see ifxobj). At launch we created
-; a set of 6 barebones fx objects and stored them in refblock. This acts
+; Each of the 9 'effects' in the 'bank' consists of 6 sub-effect 'fx objects' (see ifxobj). At launch we created
+; a set of 6 barebones sub-effect fx objects and stored them in refblock. This acts
 ; as our base layer for the first effect. Loading a bank of 9 effect to 'matrix' (which
 ; is where the active bank is stored) entails the following steps:
 ;
@@ -7375,26 +7449,27 @@ cmask2:         dcb.l 2,0
 cmask3:
 cmask4:         dc.l $FF000000, 0
 
+; *******************************************************************
+; *******************************************************************
 pbinfo:         dc.b 'Parameter not yet defined    ',0
 editinginfo:    dc.w 0
                 dcb.l 2,0
                 dc.b 'DVF window size: X           ',0  ; 1
                 dc.b $01 
                 dc.b $02        ; Index in this list of complementary 'Y' entry to use when displaying editing tool.
-                                ; So in this case '1' means get the start/end values from 'DVF window size: Y' too.
+                                ; So in this case '2' means get the start/end values from 'DVF window size: Y' too.
                 dc.b $04        ; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
                 dc.b $02        ; Get the type of value to display.
-                dc.w $0001      ; Minimum value?
-                dc.w $0180      ; Maximum value?
-                dc.b $00, $00
+                dc.w $0001      ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                                ; So for example '2' would refer to byte 8 in the fx object. 
+                dc.l $1800000
 
                 dc.b 'DVF window size: Y           ',0
-                dc.b $00; Index in this list of complementary 'Y' entry to use when displaying editing tool, 0 means none.
                 dc.b $00
+                dc.b $00; Index in this list of complementary 'Y' entry to use when displaying editing tool, 0 means none.
                 dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
                 dc.b $02
-                dc.b $00
-                dc.b $02
+                dc.w $0002; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
                 dc.l $1800000
 
                 dc.b 'DVF scale: X                 ',0  ; 3
@@ -7402,168 +7477,112 @@ editinginfo:    dc.w 0
                 dc.b $04; Index in this list of complementary 'Y' entry to use when displaying editing tool.
                 dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
                 dc.b $02
-                dc.b $00
-                dc.b $03
-                dc.b $03
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $0003; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $03FFFFFF
 
                 dc.b 'DVF scale: Y                 ',0
                 dc.b $00
                 dc.b $00
                 dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
                 dc.b $02
-                dc.b $00
-                dc.b $04
-                dc.b $03
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $0004; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $03FFFFFF
 
                 dc.b 'DVF rotate angle             ',0 ; 5
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $05
-                dc.b $01
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $0005; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01FFFFFF
 
                 dc.b 'DVF centre of rotation: X    ',0 ; 5
                 dc.b $01
                 dc.b $07; Index in this list of complementary 'Y' entry to use when displaying editing tool.
                 dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $06
-                dc.b $01
-                dc.b $80
-                dc.b $00
-                dc.b $00
+                dc.w $0006; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01800000
 
                 dc.b 'DVF centre of rotation: Y    ',0
                 dc.b $00
                 dc.b $00
                 dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $07
-                dc.b $01
-                dc.b $80
-                dc.b $00
-                dc.b $00
+                dc.w $0007; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01800000
 
                 dc.b 'DVF Delta Intensity          ',0 ; 8
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $08
-                dc.b $00
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $0008; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00FFFFFF
 
                 dc.b 'Destination position: X      ',0
                 dc.b $01
                 dc.b $0A
                 dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $09
-                dc.b $01
-                dc.b $80
-                dc.b $00
-                dc.b $00
+                dc.w $0009; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01800000
 
                 dc.b 'Destination position: Y      ',0 ; 10
                 dc.b $00
                 dc.b $00
                 dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $0A
-                dc.b $01
-                dc.b $80
-                dc.b $00
-                dc.b $00
+                dc.w $000A; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01800000
 
                 dc.b 'DVF window centre: X         ',0
                 dc.b $01
                 dc.b $0C
                 dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $0B
-                dc.b $01
-                dc.b $80
-                dc.b $00
-                dc.b $00
+                dc.w $000B; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01800000
 
                 dc.b 'DVF window centre: Y         ',0 ; 12
                 dc.b $00
                 dc.b $00
                 dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $0C
-                dc.b $01
-                dc.b $80
-                dc.b $00
-                dc.b $00
+                dc.w $000C; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01800000
 
                 dc.b 'Destination position: Z      ',0
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisinglx.
                 dc.b $02
-                dc.b $00
-                dc.b $0D
-                dc.b $07
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $000D; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $07FFFFFF
 
                 dc.b 'Vector: X                    ',0 ; 14
                 dc.b $01
                 dc.b $10
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $0E
-                dc.b $00
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $000E; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00FFFFFF
 
                 dc.b 'Destination Y offset         ',0
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisinglx.
                 dc.b $82
-                dc.b $00
-                dc.b $0F
-                dc.b $01
-                dc.b $80
-                dc.b $00
-                dc.b $00
+                dc.w $000F; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01800000
 
                 dc.b 'Vector: Y                    ',0 ; 16
                 dc.b $00
                 dc.b $00
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $10
-                dc.b $00
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $0010; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00FFFFFF
 
                 dc.b 'Symmetry Types               ',0
                 dc.b $00
@@ -7578,340 +7597,284 @@ editinginfo:    dc.w 0
                 dc.w $00
                 dc.b $02
                 dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
-                dc.b $00
-                dc.b $12
-                dc.b $00
-                dc.b $00
-                dc.b $01
-                dc.b $00
+                dc.w $0012; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00000100
 
                 dc.b 'Rotational Angle Step        ',0
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $13
-                dc.b $00
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $0013; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00FFFFFF
 
                 dc.b 'Rotational Angle Step Delta  ',0 ; 20
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisinglx.
                 dc.b $82
-                dc.b $00
-                dc.b $14
-                dc.l  $FFFFF
+                dc.w $0014; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFFF
 
                 dc.b 'Intensity 1                  ',0
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $15
-                dc.l  $FFFF
+                dc.w $0015; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFF
                 dc.b 'Intensity 2                  ',0 ; 22
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $16
-                dc.l  $FFFF
+                dc.w $0016; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFF
                 dc.b 'Intensity 3                  ',0
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $17
-                dc.l  $FFFF
+                dc.w $0017; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFF
                 dc.b 'Intensity 4                  ',0 ; 24
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $18
-                dc.l  $FFFF
+                dc.w $0018; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFF
                 dc.b 'Intensity 5                  ',0
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $19
-                dc.l  $FFFF
+                dc.w $0019; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFF
                 dc.b 'Intensity 6                  ',0 ; 26
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $1A
-                dc.l  $FFFF
+                dc.w $001A; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFF
                 dc.b 'Z amplitude                  ',0
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $01
-                dc.b $00
-                dc.b $1B
-                dc.l  $FFFF
+                dc.w $001B; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFF
                 dc.b 'Fixed point phase 1          ',0 ; 28
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $1C
-                dc.b $01
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $001C; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01FFFFFF
 
                 dc.b 'Delta phase 1                ',0
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $1D
-                dc.b $00
-                dc.b $1F
-                dc.b $FF
-                dc.b $FF
+                dc.w $001D; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $001FFFFF
 
                 dc.b 'Rotational sym overall phase ',0 ; 30
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $1E
-                dc.b $01
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $001E; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01FFFFFF
 
                 dc.b 'Fixed point phase 2          ',0 
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $1F
-                dc.b $01
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $001F; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01FFFFFF
 
                 dc.b 'Number of iterations         ',0 ; 32
                 dc.b 0,0,2,2,0,' ',1,0,0,0
+
                 dc.b 'X amplitude                  ',0 
                 dc.b 0,0,2,1,0,'!',0,0,$FF,$FF
+
                 dc.b 'Y amplitude                  ',0; 34
                 dc.b 0,0
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b 1,0,'"',0,0,$FF,$FF
+                dc.b $01
+                dc.w $0022; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFF
+
                 dc.b 'Number of other iterations   ',0 
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $23
-                dc.l  $1000000	
+                dc.w $0023; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $1000000	
+
                 dc.b 'Parameter not yet defined    ',0; 36
                 dc.b $00
                 dc.b $00
                 dcb.l 2,0
+
                 dc.b 'delta Z                      ',0 
                 dc.b $00
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $25
-                dc.b $00
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $0025; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00FFFFFF
 
                 dc.b 'choice of Thang              ',0; 38
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $26
-                dc.b $00
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $0026; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00FFFFFF
 
                 dc.b 'Parameter not yet defined    ',0 
                 .dphrase
+
                 dc.b 'Parameter not yet defined    ',0; 40
                 .dphrase
                 dcb.l 2,0
+
                 dc.b 'Parameter not yet defined    ',0 
                 .dphrase
+
                 dc.b 'Rotational Sym centre: X     ',0; 42
                 dc.w $12B
                 dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $2A
-                dc.b $01
-                dc.b $80
-                dc.b $00
-                dc.b $00
+                dc.w $002A; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01800000
 
                 dc.b 'Rotational Sym centre: Y     ',0 
                 dc.b $00
                 dc.b $00
-                dc.l $2002B, $01800000
+                dc.w $0002
+                dc.w $002B; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $01800000
 
                 dc.b 'Rotational Symmetry scale    ',0; 44
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
                 dc.b $81
-                dc.b $00
-                dc.b $2C
-                dc.l  $3FFF
+                dc.w $002C; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00003FFF
 
                 dc.b 'Rotational scale delta: X    ',0 
                 dc.w $130
                 dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
                 dc.b $81
-                dc.b $00
-                dc.b $2D
-                dc.l  $3FF
+                dc.w $002D; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $000003FF
 
                 dc.b 'Colour generator vector: X   ',0; 46
                 dc.w $12F
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $2E
-                dc.l  $7FFFF
+                dc.w $002E; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00007FFFF
+
                 dc.b 'Colour generator vector: Y   ',0 
                 dc.b $00
                 dc.b $00
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $2F
-                dc.l  $7FFFF
+                dc.w $002F; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0007FFFF
+
                 dc.b 'Rotational scale delta: Y    ',0; 48
                 dc.b $00
                 dc.b $00
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $81
-                dc.b $00
-                dc.b $30
-                dc.l  $1000
+                dc.w $0030; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00001000
+
                 dc.b 'Rotational centre delta: X   ',0 
                 dc.w $132
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $31
-                dc.l  $FFFFF
+                dc.w $0031; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $000FFFFF
+
                 dc.b 'Rotational centre delta: Y   ',0; 50
                 dc.b $00
                 dc.b $00
                 dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
                 dc.b $82
-                dc.b $00
-                dc.b $32
-                dc.l  $FFFFF
+                dc.w $0032; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0000FFFFF
+
                 dc.b 'Delta phase 2                ',0 
                 dc.b $00
                 dc.b $00
                 dc.b $03; Index to edit routine variable in edvex: sisinglx.
                 dc.b $82
-                dc.b $00
-                dc.b $33
-                dc.b $00
-                dc.b $1F
-                dc.b $FF
-                dc.b $FF
+                dc.w $0033; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $001FFFFF
 
                 dc.b 'Parameter not yet defined    ',0 ; 52
                 dc.b $00
                 dc.b $00
                 dcb.l 2,0
+
                 dc.b 'Radius                       ',0
                 dc.b $00
                 dc.b $00
                 dc.b $03
                 dc.b $82
-                dc.b $00
-                dc.b $35
-                dc.b $0F
-                dc.b $FF
-                dc.b $FF
-                dc.b $FF
+                dc.w $0035; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $0FFFFFFF
 
                 dc.b 'Base col generator vector: X ',0 ; 54
                 dc.b $01
                 dc.b $37
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $36
-                dc.b $00
-                dc.b $1F
-                dc.b $FF
-                dc.b $FF
+                dc.w $0036; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $001FFFFF
 
                 dc.b 'Base col generator vector: Y ',0
                 dc.b $00
                 dc.b $00
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $37
-                dc.b $00
-                dc.b $1F
-                dc.b $FF
-                dc.b $FF
+                dc.w $0037; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $001FFFFF
 
                 dc.b 'Base colour: X               ',0 ; 56
-                dc.w $139
+                dc.b $01
+                dc.b $39
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $38
-                dc.b $00
-                dc.b $1F
-                dc.b $FF
-                dc.b $FF
+                dc.w $0038; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $001FFFFF
 
                 dc.b 'Base colour: Y               ',0
                 dc.b $00
                 dc.b $00
                 dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
                 dc.b $82
-                dc.b $00
-                dc.b $39
-                dc.b $00
-                dc.b $1F
-                dc.b $FF
-                dc.b $FF
+                dc.w $0039; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $001FFFFF
 
                 dc.b 'Destination plot routine     ',0 ; 58
                 dc.b $00
                 dc.b $00
                 dc.b   6; Index to edit routine variable in edvex: init_sym.
-                dc.b 3, 0, $3A
+                dc.b 3
+                dc.w $003A; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
                 dc.l init_sym
 
                 dc.b 'Maximum pixel size           ',0
@@ -7919,30 +7882,28 @@ editinginfo:    dc.w 0
                 dc.b $00
                 dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
                 dc.b $02
-                dc.b $00
-                dc.b $3B
-                dc.b $00
-                dc.b $7F
-                dc.b $FF
-                dc.b $FF
+                dc.w $003B; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $007FFFFF
 
                 dc.b 'Parameter not yet defined    ',0 ; 60
                 dc.b $00
                 dc.b $00
                 dcb.l 2,0
+
                 dc.b 'Trigger mask                 ',0
                 dc.b $00
                 dc.b $00
                 dc.b $07; Index to edit routine variable in edvex: init_byt.
                 dc.b $03
-                dc.b $00
-                dc.b $3D
-                dc.l  0
+                dc.w $003D; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.l $00000000
+
                 dc.b 'Parameter not yet defined    ',0 ; 62
                 .dphrase
                 dcb.l 2,0
                 dc.b 'Parameter not yet defined    ',0 
                 .dphrase
+
 symvars:        dc.l $111E1213, $142A2B2C, $2D302E2F, $313206FF
 dvfvars:        dc.l $1030506, $80B38FF
 vars:           dc.l polyvars    ; "Draw a polygon object        "
@@ -8259,12 +8220,18 @@ av1:
 				dc.b  $00,$90,$00,$38,$F4,$35,$2A,$C6 ; 0x38
 
         ; Offsets into each bank. The 'gm' routine uses the
-        ; offsets here into each bank's data below.
-				dc.b  $00,$90,$02,$00,$00,$90,$18,$56 ; 0x40
-				dc.b  $00,$90,$34,$A4,$00,$90,$44,$82 ; 0x48
-				dc.b  $00,$90,$57,$76,$00,$90,$61,$D8 ; 0x50
-				dc.b  $00,$90,$75,$A6,$00,$90,$88,$06 ; 0x58
-				dc.b  $00,$90,$9A,$72,$00,$90,$A6,$B4 ; 0x60
+        ; last two bytes (e.g. $0200, $1856) into 
+        ; each bank's data in banks.s.
+				dc.l  $00900200 ; Bank 1
+        dc.l  $00901856 ; Bank 2
+				dc.l  $009034A4 ; Bank 3
+        dc.l  $00904482 ; Bank 4
+				dc.l  $00905776 ; Bank 5
+        dc.l  $009061D8 ; Bank 6
+				dc.l  $009075A6 ; Bank 7
+        dc.l  $00908806 ; Bank 8
+				dc.l  $00909A72 ; Bank 9
+        dc.l  $0090A6B4 ; Bank 10 - Unused
 
 
 ; *******************************************************************
@@ -8274,5 +8241,5 @@ av1:
 ; *******************************************************************
 .include "banks.s"
 
-                END
+END
 ; vim:ft=asm68k ts=2
