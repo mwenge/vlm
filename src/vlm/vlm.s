@@ -13,6 +13,8 @@
 ;         ..``'tzi         .``''''''''''''''''-rwL_    ..................... ioa
 ;            ..``.         .`````````````````  .``                           ...
 ;
+; vlm.s
+;
 ; Below is the reverse-engineered source code for the 'Virtual Light Machine'
 ; written by Jeff Minter in 1994 for the Atari Jaguar.
 ;
@@ -3585,9 +3587,9 @@ idun:
 primexy:
         move    selected,lselecte
         movea.l fxobj,a3
-        move    4(a0),d2 ; Store min in d2
-        move    d2,monitor
-        addi.w  #1,monitor
+        move    4(a0),d2 ; Store the index to current value in fxobj in d2.
+        move    d2,monitor ; Store it in monitor.
+        addi.w  #1,monitor ; Add 1.
         move    #1,_m
         move.l  6(a0),d3 ; Store max in d3
         lea     ixcon,a2
@@ -3619,37 +3621,39 @@ primexy:
 
 ; *******************************************************************
 ; s16
-; I think this gets the current value in the fx object for displaying.
+; Gets the current value in the fx object for displaying.
 ;
 ; d3 -> the current value for x or y in the fx object.
 ; a3 -> fxobj (current effect object)
 ; a2 -> pointer to ixcon/iycon
-;
-; a0 points to the variables after the text in the parameter's 
+; a0 -> points to the variables after the text in the parameter's 
 ; relevant entry in editinginfo.
 ; *******************************************************************
 s16:
-        move    4(a0),d0
+        ; Third variable in the editinginfo entry contains an index
+        ; to the value in fxobj we want to edit. 
+        move    4(a0),d0 ; Put the index to value in fxobj in d0.
         lsl     #2,d0 ; Multiply d0 by 4.
         lea     256(a3),a4
-        lea     (a3,d0.w),a3
+        lea     (a3,d0.w),a3 ; Point a3 at the location in fxobj of the value we want to edit.
         tst.w   (a4,d0.w)
         beq.w   shall
 
+        ; Something to do with the maximum possible value?
         lea     512(a3),a3
 shall:  move.l  (a3),d7
-        move.b  3(a0),d0
+        move.b  3(a0),d0 ; Put the type of the value from the editinginfo entry in d0.
         btst    #7,d0
         beq.w   nsiggn
         move.l  d3,d4
         lsr.l   #1,d4 ; Divide d4 by 2.
         add.l   d4,d7
 
-nsiggn: and.w   #$7F,d0
+nsiggn: and.w   #$7F,d0 ; Make sure our 'type' index is a positive value.
         lsl     #2,d0 ; Multiply d0 by 4.
-        lea     vtypes,a3
-        movea.l (a3,d0.w),a3
-        jmp     (a3)
+        lea     vtypes,a3 ; Point a3 at vtypes below.
+        movea.l (a3,d0.w),a3 ; Get the entry into vtypes for our 'type' index.
+        jmp     (a3) ; Run it.
         ; returns
 
 ; *******************************************************************
@@ -7450,454 +7454,460 @@ cmask3:
 cmask4:         dc.l $FF000000, 0
 
 ; *******************************************************************
+; pbinfo/editinginfo
+;
+; This array contains the detail of each parameter that can be edited in a
+; subeffect object (fxobj).
 ; *******************************************************************
 pbinfo:         dc.b 'Parameter not yet defined    ',0
 editinginfo:    dc.w 0
                 dcb.l 2,0
+
                 dc.b 'DVF window size: X           ',0  ; 1
                 dc.b $01 
-                dc.b $02        ; Index in this list of complementary 'Y' entry to use when displaying editing tool.
-                                ; So in this case '2' means get the start/end values from 'DVF window size: Y' too.
-                dc.b $04        ; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
-                dc.b $02        ; Get the type of value to display.
-                dc.w $0001      ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
-                                ; So for example '2' would refer to byte 8 in the fx object. 
+                dc.b $02                                 ; Index in this list of complementary 'Y' entry to use when displaying editing tool.
+                                                         ; So in this case '2' means get the start/end values from 'DVF window size: Y' too.
+                dc.b $04                                 ; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0001                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
+                                                         ; So for example '2' would refer to byte 8 in the fx object.
                 dc.l $1800000
-
+        
                 dc.b 'DVF window size: Y           ',0
                 dc.b $00
-                dc.b $00; Index in this list of complementary 'Y' entry to use when displaying editing tool, 0 means none.
-                dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
-                dc.b $02
-                dc.w $0002; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $00                                 ; Index in this list of complementary 'Y' entry to use when displaying editing tool, 0 means none.
+                dc.b $04                                 ; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0002                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $1800000
-
-                dc.b 'DVF scale: X                 ',0  ; 3
-                dc.b $01 
-                dc.b $04; Index in this list of complementary 'Y' entry to use when displaying editing tool.
-                dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
-                dc.b $02
-                dc.w $0003; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+        
+                dc.b 'DVF scale: X                 ',0   ; 3
+                dc.b $01
+                dc.b $04                                 ; Index in this list of complementary 'Y' entry to use when displaying editing tool.
+                dc.b $04                                 ; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0003                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $03FFFFFF
-
+        
                 dc.b 'DVF scale: Y                 ',0
                 dc.b $00
                 dc.b $00
-                dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
-                dc.b $02
-                dc.w $0004; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $04                                 ; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0004                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $03FFFFFF
-
-                dc.b 'DVF rotate angle             ',0 ; 5
+        
+                dc.b 'DVF rotate angle             ',0   ; 5
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $82
-                dc.w $0005; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0005                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01FFFFFF
-
-                dc.b 'DVF centre of rotation: X    ',0 ; 5
+        
+                dc.b 'DVF centre of rotation: X    ',0   ; 5
                 dc.b $01
-                dc.b $07; Index in this list of complementary 'Y' entry to use when displaying editing tool.
-                dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0006; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $07                                 ; Index in this list of complementary 'Y' entry to use when displaying editing tool.
+                dc.b $01                                 ; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0006                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01800000
-
+        
                 dc.b 'DVF centre of rotation: Y    ',0
                 dc.b $00
                 dc.b $00
-                dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0007; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $01                                 ; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0007                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01800000
-
-                dc.b 'DVF Delta Intensity          ',0 ; 8
+        
+                dc.b 'DVF Delta Intensity          ',0   ; 8
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0008; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0008                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00FFFFFF
-
+        
                 dc.b 'Destination position: X      ',0
                 dc.b $01
                 dc.b $0A
-                dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0009; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $01                                 ; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0009                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01800000
-
-                dc.b 'Destination position: Y      ',0 ; 10
+        
+                dc.b 'Destination position: Y      ',0   ; 10
                 dc.b $00
                 dc.b $00
-                dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $000A; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $01                                 ; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $000A                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01800000
-
+        
                 dc.b 'DVF window centre: X         ',0
                 dc.b $01
                 dc.b $0C
-                dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $000B; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $01                                 ; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $000B                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01800000
-
-                dc.b 'DVF window centre: Y         ',0 ; 12
+        
+                dc.b 'DVF window centre: Y         ',0   ; 12
                 dc.b $00
                 dc.b $00
-                dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $000C; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $01                                 ; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $000C                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01800000
-
+        
                 dc.b 'Destination position: Z      ',0
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisinglx.
-                dc.b $02
-                dc.w $000D; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisinglx.
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $000D                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $07FFFFFF
-
-                dc.b 'Vector: X                    ',0 ; 14
+        
+                dc.b 'Vector: X                    ',0   ; 14
                 dc.b $01
                 dc.b $10
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $82
-                dc.w $000E; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $000E                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00FFFFFF
-
+        
                 dc.b 'Destination Y offset         ',0
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisinglx.
-                dc.b $82
-                dc.w $000F; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisinglx.
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $000F                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01800000
-
-                dc.b 'Vector: Y                    ',0 ; 16
+        
+                dc.b 'Vector: Y                    ',0   ; 16
                 dc.b $00
                 dc.b $00
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $82
-                dc.w $0010; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0010                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00FFFFFF
-
+        
                 dc.b 'Symmetry Types               ',0
                 dc.b $00
                 dc.b $00
-                dc.b $06 ; 6 -> routine at last 4 bytes here (init_sym).
-                dc.b $03
-                dc.b $00 ; monitor
-                dc.b $11
-                dc.l init_sym ; 
-
-                dc.b 'Rotational Symmetry Order    ',0 ; 18
-                dc.w $00
-                dc.b $02
-                dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
-                dc.w $0012; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $06                                 ; 6 -> routine at last 4 bytes here (init_sym).
+                dc.b $03                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0011                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
+                dc.l init_sym                            ; 
+        
+                dc.b 'Rotational Symmetry Order    ',0   ; 18
+                dc.b $00
+                dc.b $00
+                dc.b $02                                 ; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
+                dc.b $01                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0012                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00000100
-
+        
                 dc.b 'Rotational Angle Step        ',0
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0013; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0013                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00FFFFFF
-
-                dc.b 'Rotational Angle Step Delta  ',0 ; 20
+        
+                dc.b 'Rotational Angle Step Delta  ',0   ; 20
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisinglx.
-                dc.b $82
-                dc.w $0014; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisinglx.
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0014                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFFF
-
+        
                 dc.b 'Intensity 1                  ',0
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0015; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0015                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFF
-                dc.b 'Intensity 2                  ',0 ; 22
+                dc.b 'Intensity 2                  ',0   ; 22
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0016; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0016                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFF
                 dc.b 'Intensity 3                  ',0
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0017; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0017                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFF
-                dc.b 'Intensity 4                  ',0 ; 24
+                dc.b 'Intensity 4                  ',0   ; 24
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0018; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0018                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFF
                 dc.b 'Intensity 5                  ',0
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0019; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0019                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFF
-                dc.b 'Intensity 6                  ',0 ; 26
+                dc.b 'Intensity 6                  ',0   ; 26
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $001A; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $001A                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFF
                 dc.b 'Z amplitude                  ',0
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $01
-                dc.w $001B; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $01                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $001B                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFF
-                dc.b 'Fixed point phase 1          ',0 ; 28
+                dc.b 'Fixed point phase 1          ',0   ; 28
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
-                dc.b $82
-                dc.w $001C; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $001C                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01FFFFFF
-
+        
                 dc.b 'Delta phase 1                ',0
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
-                dc.b $82
-                dc.w $001D; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $001D                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $001FFFFF
-
-                dc.b 'Rotational sym overall phase ',0 ; 30
+        
+                dc.b 'Rotational sym overall phase ',0   ; 30
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
-                dc.b $82
-                dc.w $001E; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $001E                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01FFFFFF
-
-                dc.b 'Fixed point phase 2          ',0 
+        
+                dc.b 'Fixed point phase 2          ',0
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
-                dc.b $82
-                dc.w $001F; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $001F                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01FFFFFF
-
-                dc.b 'Number of iterations         ',0 ; 32
+        
+                dc.b 'Number of iterations         ',0   ; 32
                 dc.b 0,0,2,2,0,' ',1,0,0,0
-
-                dc.b 'X amplitude                  ',0 
+        
+                dc.b 'X amplitude                  ',0
                 dc.b 0,0,2,1,0,'!',0,0,$FF,$FF
-
-                dc.b 'Y amplitude                  ',0; 34
+        
+                dc.b 'Y amplitude                  ',0   ; 34
                 dc.b 0,0
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $01
-                dc.w $0022; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $01                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0022                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFF
-
-                dc.b 'Number of other iterations   ',0 
+        
+                dc.b 'Number of other iterations   ',0
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0023; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
-                dc.l $1000000	
-
-                dc.b 'Parameter not yet defined    ',0; 36
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0023                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
+                dc.l $1000000
+        
+                dc.b 'Parameter not yet defined    ',0   ; 36
                 dc.b $00
                 dc.b $00
                 dcb.l 2,0
-
-                dc.b 'delta Z                      ',0 
+        
+                dc.b 'delta Z                      ',0
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $82
-                dc.w $0025; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0025                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00FFFFFF
-
-                dc.b 'choice of Thang              ',0; 38
+        
+                dc.b 'choice of Thang              ',0   ; 38
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $0026; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0026                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00FFFFFF
-
-                dc.b 'Parameter not yet defined    ',0 
+        
+                dc.b 'Parameter not yet defined    ',0
                 .dphrase
-
-                dc.b 'Parameter not yet defined    ',0; 40
+        
+                dc.b 'Parameter not yet defined    ',0   ; 40
                 .dphrase
                 dcb.l 2,0
-
-                dc.b 'Parameter not yet defined    ',0 
+        
+                dc.b 'Parameter not yet defined    ',0
                 .dphrase
-
-                dc.b 'Rotational Sym centre: X     ',0; 42
+        
+                dc.b 'Rotational Sym centre: X     ',0   ; 42
                 dc.w $12B
-                dc.b $01; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $002A; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $01                                 ; Index to edit routine variable in edvex: crot and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $002A                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01800000
-
-                dc.b 'Rotational Sym centre: Y     ',0 
+        
+                dc.b 'Rotational Sym centre: Y     ',0
                 dc.b $00
                 dc.b $00
-                dc.w $0002
-                dc.w $002B; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $00
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $002B                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $01800000
-
-                dc.b 'Rotational Symmetry scale    ',0; 44
+        
+                dc.b 'Rotational Symmetry scale    ',0   ; 44
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
-                dc.b $81
-                dc.w $002C; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisnglx and editvex: x_one (i.e. index + 1).
+                dc.b $81                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $002C                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00003FFF
-
-                dc.b 'Rotational scale delta: X    ',0 
+        
+                dc.b 'Rotational scale delta: X    ',0
                 dc.w $130
-                dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
-                dc.b $81
-                dc.w $002D; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $04                                 ; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
+                dc.b $81                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $002D                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $000003FF
-
-                dc.b 'Colour generator vector: X   ',0; 46
+        
+                dc.b 'Colour generator vector: X   ',0   ; 46
                 dc.w $12F
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $82
-                dc.w $002E; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $002E                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00007FFFF
-
-                dc.b 'Colour generator vector: Y   ',0 
+        
+                dc.b 'Colour generator vector: Y   ',0
                 dc.b $00
                 dc.b $00
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $82
-                dc.w $002F; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $002F                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0007FFFF
-
-                dc.b 'Rotational scale delta: Y    ',0; 48
+        
+                dc.b 'Rotational scale delta: Y    ',0   ; 48
                 dc.b $00
                 dc.b $00
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $81
-                dc.w $0030; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $81                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0030                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00001000
-
-                dc.b 'Rotational centre delta: X   ',0 
+        
+                dc.b 'Rotational centre delta: X   ',0
                 dc.w $132
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $82
-                dc.w $0031; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0031                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $000FFFFF
-
-                dc.b 'Rotational centre delta: Y   ',0; 50
+        
+                dc.b 'Rotational centre delta: Y   ',0   ; 50
                 dc.b $00
                 dc.b $00
-                dc.b $04; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
-                dc.b $82
-                dc.w $0032; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $04                                 ; Index to edit routine variable in edvex: sidbl and editvex: xy1. (Index + 1)
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0032                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0000FFFFF
-
-                dc.b 'Delta phase 2                ',0 
+        
+                dc.b 'Delta phase 2                ',0
                 dc.b $00
                 dc.b $00
-                dc.b $03; Index to edit routine variable in edvex: sisinglx.
-                dc.b $82
-                dc.w $0033; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $03                                 ; Index to edit routine variable in edvex: sisinglx.
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0033                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $001FFFFF
-
-                dc.b 'Parameter not yet defined    ',0 ; 52
+        
+                dc.b 'Parameter not yet defined    ',0   ; 52
                 dc.b $00
                 dc.b $00
                 dcb.l 2,0
-
+        
                 dc.b 'Radius                       ',0
                 dc.b $00
                 dc.b $00
                 dc.b $03
-                dc.b $82
-                dc.w $0035; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0035                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $0FFFFFFF
-
-                dc.b 'Base col generator vector: X ',0 ; 54
+        
+                dc.b 'Base col generator vector: X ',0   ; 54
                 dc.b $01
                 dc.b $37
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $82
-                dc.w $0036; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0036                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $001FFFFF
-
+        
                 dc.b 'Base col generator vector: Y ',0
                 dc.b $00
                 dc.b $00
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $82
-                dc.w $0037; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0037                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $001FFFFF
-
-                dc.b 'Base colour: X               ',0 ; 56
+        
+                dc.b 'Base colour: X               ',0   ; 56
                 dc.b $01
                 dc.b $39
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $82
-                dc.w $0038; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0038                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $001FFFFF
-
+        
                 dc.b 'Base colour: Y               ',0
                 dc.b $00
                 dc.b $00
-                dc.b $05; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
-                dc.b $82
-                dc.w $0039; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $05                                 ; Index to edit routine variable in edvex: dvect and editvex: xy1 (i.e. index + 1).
+                dc.b $82                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $0039                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $001FFFFF
-
-                dc.b 'Destination plot routine     ',0 ; 58
+        
+                dc.b 'Destination plot routine     ',0   ; 58
                 dc.b $00
                 dc.b $00
-                dc.b   6; Index to edit routine variable in edvex: init_sym.
-                dc.b 3
-                dc.w $003A; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b   6                                 ; Index to edit routine variable in edvex: init_sym.
+                dc.b $03                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $003A                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l init_sym
-
+        
                 dc.b 'Maximum pixel size           ',0
                 dc.b $00
                 dc.b $00
-                dc.b $02; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
-                dc.b $02
-                dc.w $003B; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $02                                 ; Index to edit routine variable in edvex: snglx and editvex: x_one (i.e. index + 1).
+                dc.b $02                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $003B                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $007FFFFF
-
-                dc.b 'Parameter not yet defined    ',0 ; 60
+        
+                dc.b 'Parameter not yet defined    ',0   ; 60
                 dc.b $00
                 dc.b $00
                 dcb.l 2,0
-
+        
                 dc.b 'Trigger mask                 ',0
                 dc.b $00
                 dc.b $00
-                dc.b $07; Index to edit routine variable in edvex: init_byt.
-                dc.b $03
-                dc.w $003D; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list). 
+                dc.b $07                                 ; Index to edit routine variable in edvex: init_byt.
+                dc.b $03                                 ; Get the type of the value to display: 1 = byte, 2 = word, 3=16:16.
+                dc.w $003D                               ; Index in 4-byte longs to the value to be edited in the fxobj (see ifxobj for a list).
                 dc.l $00000000
-
+        
                 dc.b 'Parameter not yet defined    ',0 ; 62
                 .dphrase
                 dcb.l 2,0
