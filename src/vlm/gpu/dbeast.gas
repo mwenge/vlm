@@ -1,128 +1,152 @@
+; ******************************************************************************
+; This is Jeff Minter's Virtual Light Machine for the Atari Jaguar.
+;
+; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
+; _;^)iiiiiiiiiiiiiii)!#j- .`_?[[[[[[[[12m{         _;;/"//|1o)      `[ol//"/*Tu
+;   ./""""""""""""""""}Jj- .`_l{sssssss*2m{            ':'':|)la!. <a[\)=''''lTu
+;  .`=+/////////////=^*Cu_ .`_xlllllllcs3m{           .'''''''+>)?[l><'''''''lTu
+;   .__,^^========^=r*x)<. .`_i%vvvvvvvc3ms           ._''''''___vx"__''''''_lTu
+;      _,,^^^^^^^,';L#%    .`_<>>>>>>>>v2mL}}}}**r`   .__________--_________-cTu
+;      `__:::,,::"ii{*|    .`_|\))))))|<toozzz7Cq2_   .---------------------`cTu
+;       ..-__''-.cT7`      .`-+/////////======^!6y_   .``````````````````````cTu
+;       ..``-__""la]-      .`-;^^^^^^^^^^^^^^^:!qy_   .`````````````````````.c#n
+;         ..``'tzi         .``''''''''''''''''-rwL_    ..................... ioa
+;            ..``.         .`````````````````  .``                           ...
+;
+; dbeast.gas
+; 
+; This module is loaded and run before each sub-effect's module proper.
+; See omega.gas
+; ******************************************************************************
 .include "../../jaguar.inc"
 .include "../../blitter.inc"
 .include "../vlm.inc"
-.org $1b9c0
+.org $00f03000
 
-      movei   #$f03f74, r0
-      load    (r0), r29
-      moveta  r29, r29
-      loadw   (r29), r27
-      movei   #$f030ac, r0
-      cmpq    #$0, r27
-      jump    n,(r0)
-      nop
-      movei   #$f0304e, r0
-      load    (r14+$18), r2
-      moveq   #$5, r1
-      sub     r2, r1
-      cmp     r1, r27
-      jump    z,(r0)
-      nop
-      movei   #in_buf, r0
-      load    (r0), r1
-      addq    #PIXEL16, r1
-      load    (r1), r29
-      moveta  r29, r29
-      loadw   (r29), r27
-      movei   #$f030ac, r0
-      cmpq    #$0, r27
-      jump    n,(r0)
-      nop
-      moveq   #$5, r1
-      sub     r2, r1
-      cmp     r1, r27
-      jump    nz,(r0)
-      addq    #SRCENZ, r29
-      movei   #$3f, r0
-      loadw   (r29), r28
-      and     r0, r28
-      move    r28, r26
-      movei   #$600, r0
-      addq    #SRCENZ, r29
-      mult    r0, r26
-      load    (r29), r1
-      add     r1, r26
-      movei   #$300, r2
-      move    r3, r0
-      move    r26, r1
-      movei   #$f030ba, r20
-      movei   #$f03088, r21
-      or      r21, r21
-      store   r21, (r14+$1f)
-      jump    (r20)
-      nop
-      addq    #SRCENX, r29
-      loadw   (r29), r26
-      addq    #SRCENZ, r29
-      move    r26, r25
-      loadw   (r29), r24
-      mult    r24, r26
-      neg     r26
-      add     r28, r26
-      subq    #$6, r29
-      load    (r29), r27
-      movei   #$f03f58, r0
-      moveq   #SRCEN, r1
-      store   r1, (r0)
-      moveq   #SRCEN, r1
-      jr    routine1
-      nop
-      xor     r1, r1
+; *******************************************************************
+;
+; *******************************************************************
+                   movei   #in_buf + $14, r0
+                   load    (r0), r29
+                   moveta  r29, r29
+                   loadw   (r29), r27
+                   movei   #$f030ac, r0
+                   cmpq    #$0, r27
+                   jump    n,(r0)
+                   nop
+                   movei   #$f0304e, r0
+                   load    (r14+$18), r2
+                   moveq   #$5, r1
+                   sub     r2, r1
+                   cmp     r1, r27
+                   jump    z,(r0)
+                   nop
+                   movei   #in_buf, r0
+                   load    (r0), r1
+                   addq    #PIXEL16, r1
+                   load    (r1), r29
+                   moveta  r29, r29
+                   loadw   (r29), r27
+                   movei   #$f030ac, r0
+                   cmpq    #$0, r27
+                   jump    n,(r0)
+                   nop
+                   moveq   #$5, r1
+                   sub     r2, r1
+                   cmp     r1, r27
+                   jump    nz,(r0)
+                   addq    #SRCENZ, r29
+                   movei   #$3f, r0
+                   loadw   (r29), r28
+                   and     r0, r28
+                   move    r28, r26
+                   movei   #$600, r0
+                   addq    #SRCENZ, r29
+                   mult    r0, r26
+                   load    (r29), r1
+                   add     r1, r26
+                   movei   #$300, r2
+                   move    r3, r0
+                   move    r26, r1
+                   movei   #$f030ba, r20
+                   movei   #$f03088, r21
+                   or      r21, r21
+                   store   r21, (r14+$1f)
+                   jump    (r20)
+                   nop
+                   addq    #SRCENX, r29
+                   loadw   (r29), r26
+                   addq    #SRCENZ, r29
+                   move    r26, r25
+                   loadw   (r29), r24
+                   mult    r24, r26
+                   neg     r26
+                   add     r28, r26
+                   subq    #$6, r29
+                   load    (r29), r27
+                   movei   #$f03f58, r0
+                   moveq   #SRCEN, r1
+                   store   r1, (r0)
+                   moveq   #SRCEN, r1
+                   jr    routine1
+                   nop
+                   xor     r1, r1
 routine1:
-      movei   #$f03f80, r14
-      load    (r14+$15), r0
-      jump    (r0)
-      nop
-      movei   #B_CMD, r20
+                   movei   #$f03f80, r14
+                   load    (r14+$15), r0
+                   jump    (r0)
+                   nop
+                   movei   #B_CMD, r20
 routine2:
-      load    (r20), r21
-      btst    #$0, r21
-      jr    z,routine2
-      nop
-      movei   #A1_BASE, r20
-      movei   #A2_BASE, r21
-      move    r1, r25
-      movei   #$fffffff8, r26
-      move    r25, r24
-      and     r26, r25
-      sub     r25, r24
-      store   r25, (r20)
-      addq    #SRCENX, r20
-      movei   #$4020, r22
-      store   r22, (r20)
-      addq    #PIXEL2, r20
-      shrq    #SRCEN, r24
-      store   r24, (r20)
-      move    r0, r25
-      move    r0, r23
-      and     r26, r25
-      sub     r25, r23
-      store   r25, (r21)
-      addq    #SRCENX, r21
-      store   r22, (r21)
-      addq    #PIXEL2, r21
-      shrq    #SRCEN, r23
-      store   r23, (r21)
-      shrq    #SRCEN, r2
-      movei   #B_COUNT, r25
-      bset    #PIXEL4, r2
-      store   r2, (r25)
-      movei   #$1800001, r22
-      or      r23, r24
-      jr      z,routine3
-      nop
-      movei   #$1800005, r22
+                   load    (r20), r21
+                   btst    #$0, r21
+                   jr    z,routine2
+                   nop
+                   movei   #A1_BASE, r20
+                   movei   #A2_BASE, r21
+                   move    r1, r25
+                   movei   #$fffffff8, r26
+                   move    r25, r24
+                   and     r26, r25
+                   sub     r25, r24
+                   store   r25, (r20)
+                   addq    #SRCENX, r20
+                   movei   #$4020, r22
+                   store   r22, (r20)
+                   addq    #PIXEL2, r20
+                   shrq    #SRCEN, r24
+                   store   r24, (r20)
+                   move    r0, r25
+                   move    r0, r23
+                   and     r26, r25
+                   sub     r25, r23
+                   store   r25, (r21)
+                   addq    #SRCENX, r21
+                   store   r22, (r21)
+                   addq    #PIXEL2, r21
+                   shrq    #SRCEN, r23
+                   store   r23, (r21)
+                   shrq    #SRCEN, r2
+                   movei   #B_COUNT, r25
+                   bset    #PIXEL4, r2
+                   store   r2, (r25)
+                   movei   #$1800001, r22
+                   or      r23, r24
+                   jr      z,routine3
+                   nop
+                   movei   #$1800005, r22
 
 routine3:
-      movei   #B_CMD, r20
-      store   r22, (r20)
+                   movei   #B_CMD, r20
+                   store   r22, (r20)
 routine4:
-      load    (r20), r21
-      btst    #$0, r21
-      jr      z,routine4
-      nop
-      load    (r14+$1f), r20
-      jump    (r20)
-      nop
-      add     r0, r0
-      add     r0, r0
+                   load    (r20), r21
+                   btst    #$0, r21
+                   jr      z,routine4
+                   nop
+                   load    (r14+$1f), r20
+                   jump    (r20)
+                   nop
+                   add     r0, r0
+                   add     r0, r0
+; vim:ft=asm68k ts=2

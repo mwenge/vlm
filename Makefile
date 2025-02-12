@@ -32,18 +32,18 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 	echo "cc268a46764dc1d8f47d8612cd3c4c8c  VirtualLightMachine.jag" | md5sum -c
 
 vlm.gpu:
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/dbeast.gas -o src/bin/dbeast.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/theta.gas -o src/bin/theta.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/tau.gas -o src/bin/tau.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/sigma.gas -o src/bin/sigma.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/alpha.gas -o src/bin/alpha.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/beta.gas -o src/bin/beta.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/delta.gas -o src/bin/delta.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/epsilon.gas -o src/bin/epsilon.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/dbeast.gas -o src/bin/dbeast.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/theta.gas -o src/bin/theta.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/tau.gas -o src/bin/tau.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/sigma.gas -o src/bin/sigma.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/alpha.gas -o src/bin/alpha.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/beta.gas -o src/bin/beta.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/delta.gas -o src/bin/delta.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/epsilon.gas -o src/bin/epsilon.o
 	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/gamma.gas -o src/bin/gamma.o
 	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/omega.gas -o src/bin/omega.o
 	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/psi.gas -o src/bin/psi.o
-	./rmac/rmac -fr -mtom -isrc -isrc/vlm/gpu src/vlm/gpu/shu.gas -o src/bin/shu.o
+	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/shu.gas -o src/bin/shu.o
 
 vlm.abs: vlm.gpu
 	$(shell mkdir -p $(DIRS))

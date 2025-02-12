@@ -17,6 +17,25 @@
 ; The data for all 9 banks. Each bank contains 9 effects. Each effect
 ; consists of 6 sub-effects (see ifxobj) of 1024 bytes (6144 bytes in total).
 ;
+; The high level structure of each 1024 byte sub-effect object is:
+;   Bytes 0   - 256  (64 4-byte longs): Parameters for the object. 
+;   Bytes 256 - 512  (64 4-byte longs): Some kind of buffer? 
+;   Bytes 512 - 768  (64 4-byte longs): Some kind of buffer? 
+;   Bytes 768 - 896  (64 4-byte longs): The contents of oscbank. 
+;   Bytes 896 - 1004 (64 4-byte longs): The contents of 'pixcon' to 'delayn'. 
+;
+; The bank data is given in compressed form. See 'getmatrix' for the routine
+; responsible for decompressing it. The compression scheme consists of treating
+; the default initialized sub-effect object created by 'ifxobj' as a 'base layer'.
+; The data below is read in as byte pairs. The first byte gives the number of positions
+; to advance along the base layer. The second byte is the value to write at that new
+; position. So what we have here is a kind of binary patch that we apply to the base
+; sub-effect object created by ifxobj for all 6 objects in each effect and for all 9 
+; effects in each bank: so 54 sub-effect objects in total for each bank. To improve
+; compression each 'patched object' is used as the 'base layer' for the one that follows
+; it: this improves compression because the sub-effect objects in each effect tend to be
+; similar to each other.
+;
 ; For convenience we've prefixed each bank of compressed data with it's
 ; uncompressed contents, specifically the first 256 bytes of all 6 sub-effect
 ; objects (fxobj) for each of the 9 effects in each bank.
@@ -85,7 +104,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; Bank 1
 ****************************************
 ; Bank 1-1
-; Sub-Effect 1 - First 256 Bytes
+; Bank 1-1: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01122000    ; Byte 8-12   : $8           DVF window size: Y
@@ -150,7 +169,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 1-1: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -215,7 +234,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 1-1: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -280,7 +299,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 1-1: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -345,7 +364,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 1-1: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -410,7 +429,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 1-1: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -476,7 +495,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
 ; Bank 1-2
-; Sub-Effect 1 - First 256 Bytes
+; Bank 1-2: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010F0E00    ; Byte 8-12   : $8           DVF window size: Y
@@ -541,7 +560,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 1-2: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -606,7 +625,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 1-2: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -671,7 +690,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 1-2: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -736,7 +755,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 1-2: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -801,7 +820,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 1-2: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -867,7 +886,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 1-3
-; Sub-Effect 1 - First 256 Bytes
+; Bank 1-3: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010A4000    ; Byte 8-12   : $8           DVF window size: Y
@@ -932,7 +951,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 1-3: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -997,7 +1016,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 1-3: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1062,7 +1081,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 1-3: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1127,7 +1146,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 1-3: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1192,7 +1211,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 1-3: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1258,7 +1277,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 1-4
-; Sub-Effect 1 - First 256 Bytes
+; Bank 1-4: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010D1000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1323,7 +1342,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 1-4: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1388,7 +1407,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 1-4: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1453,7 +1472,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 1-4: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1518,7 +1537,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 1-4: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1583,7 +1602,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 1-4: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1649,7 +1668,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 1-5
-; Sub-Effect 1 - First 256 Bytes
+; Bank 1-5: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01151A00    ; Byte 8-12   : $8           DVF window size: Y
@@ -1714,7 +1733,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 1-5: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1779,7 +1798,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 1-5: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1844,7 +1863,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 1-5: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1909,7 +1928,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 1-5: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -1974,7 +1993,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 1-5: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2040,7 +2059,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 1-6
-; Sub-Effect 1 - First 256 Bytes
+; Bank 1-6: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0113DC00    ; Byte 8-12   : $8           DVF window size: Y
@@ -2105,7 +2124,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 1-6: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2170,7 +2189,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 1-6: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2235,7 +2254,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 1-6: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2300,7 +2319,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 1-6: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2365,7 +2384,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 1-6: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2431,7 +2450,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 1-7
-; Sub-Effect 1 - First 256 Bytes
+; Bank 1-7: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0109EC00    ; Byte 8-12   : $8           DVF window size: Y
@@ -2496,7 +2515,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 1-7: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2561,7 +2580,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 1-7: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2626,7 +2645,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 1-7: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2691,7 +2710,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 1-7: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2756,7 +2775,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 1-7: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2822,7 +2841,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 1-8
-; Sub-Effect 1 - First 256 Bytes
+; Bank 1-8: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010A8200    ; Byte 8-12   : $8           DVF window size: Y
@@ -2887,7 +2906,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 1-8: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -2952,7 +2971,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 1-8: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -3017,7 +3036,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 1-8: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -3082,7 +3101,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 1-8: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -3147,7 +3166,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 1-8: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -3213,7 +3232,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 1-9
-; Sub-Effect 1 - First 256 Bytes
+; Bank 1-9: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01171E00    ; Byte 8-12   : $8           DVF window size: Y
@@ -3278,7 +3297,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 1-9: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -3343,7 +3362,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 1-9: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -3408,7 +3427,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 1-9: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -3473,7 +3492,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 1-9: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -3538,7 +3557,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 1-9: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -3602,6 +3621,7 @@ dc.b  $92,$49,$32,$96,$DF,$6A,$88,$4A ; 0x1f8
 ; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
 
 dc.b  $01,$14,$00,$80,$01,$01,$00,$48 ; 0x200
 dc.b  $00,$38,$01,$01,$00,$12,$00,$20 ; 0x208
@@ -4322,7 +4342,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; Bank 2
 ****************************************
 ; Bank 2-1
-; Sub-Effect 1 - First 256 Bytes
+; Bank 2-1: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0111D200    ; Byte 8-12   : $8           DVF window size: Y
@@ -4387,7 +4407,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 2-1: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -4452,7 +4472,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 2-1: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -4517,7 +4537,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 2-1: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -4565,6 +4585,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
 ; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
 ; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+
 ; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
 ; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
 ; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
@@ -4582,7 +4603,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 2-1: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -4647,7 +4668,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000001    ; Byte 248-252: info         Sub-Effect Type: Draw a polygon object        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 2-1: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -4713,7 +4734,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
 ; Bank 2-2
-; Sub-Effect 1 - First 256 Bytes
+; Bank 2-2: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010EE400    ; Byte 8-12   : $8           DVF window size: Y
@@ -4778,7 +4799,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 2-2: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -4843,7 +4864,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 2-2: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -4908,7 +4929,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 2-2: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -4973,7 +4994,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 2-2: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5038,7 +5059,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 2-2: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5104,7 +5125,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
 ; Bank 2-3
-; Sub-Effect 1 - First 256 Bytes
+; Bank 2-3: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010E1200    ; Byte 8-12   : $8           DVF window size: Y
@@ -5169,7 +5190,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 2-3: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5234,7 +5255,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 2-3: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5299,7 +5320,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 2-3: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5364,7 +5385,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 2-3: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5429,7 +5450,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 2-3: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5495,7 +5516,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
 ; Bank 2-4
-; Sub-Effect 1 - First 256 Bytes
+; Bank 2-4: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010B0000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5560,7 +5581,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 2-4: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5625,7 +5646,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 2-4: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5690,73 +5711,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
+; Bank 2-4: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5821,7 +5776,72 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 2-4: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 2-4: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -5887,7 +5907,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
 ; Bank 2-5
-; Sub-Effect 1 - First 256 Bytes
+; Bank 2-5: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010CB600    ; Byte 8-12   : $8           DVF window size: Y
@@ -5952,7 +5972,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 2-5: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6017,7 +6037,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 2-5: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6082,7 +6102,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 2-5: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6147,7 +6167,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 2-5: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6212,7 +6232,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000001    ; Byte 248-252: info         Sub-Effect Type: Draw a polygon object        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 2-5: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6278,7 +6298,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
 ; Bank 2-6
-; Sub-Effect 1 - First 256 Bytes
+; Bank 2-6: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010BF000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6343,7 +6363,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 2-6: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6408,7 +6428,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000005    ; Byte 248-252: info         Sub-Effect Type: Wave Surface Thang           
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 2-6: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6473,7 +6493,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 2-6: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6538,7 +6558,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 2-6: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6603,7 +6623,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 2-6: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6669,7 +6689,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
 ; Bank 2-7
-; Sub-Effect 1 - First 256 Bytes
+; Bank 2-7: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010B4E00    ; Byte 8-12   : $8           DVF window size: Y
@@ -6734,7 +6754,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 2-7: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6799,7 +6819,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000005    ; Byte 248-252: info         Sub-Effect Type: Wave Surface Thang           
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 2-7: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6864,7 +6884,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 2-7: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6929,7 +6949,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 2-7: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -6994,7 +7014,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 2-7: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7060,7 +7080,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
 ; Bank 2-8
-; Sub-Effect 1 - First 256 Bytes
+; Bank 2-8: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010F3200    ; Byte 8-12   : $8           DVF window size: Y
@@ -7125,7 +7145,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 2-8: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7190,7 +7210,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000005    ; Byte 248-252: info         Sub-Effect Type: Wave Surface Thang           
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 2-8: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7255,7 +7275,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 2-8: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7320,7 +7340,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 2-8: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7385,7 +7405,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 2-8: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7451,7 +7471,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
 ; Bank 2-9
-; Sub-Effect 1 - First 256 Bytes
+; Bank 2-9: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010ED200    ; Byte 8-12   : $8           DVF window size: Y
@@ -7516,7 +7536,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 2-9: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7581,7 +7601,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 2-9: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7646,7 +7666,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 2-9: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7711,7 +7731,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 2-9: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7776,7 +7796,7 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 2-9: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -7840,7 +7860,6 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00
 ; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
 
 dc.b  $01,$14,$00,$80,$01,$01,$00,$48 ; 0x1856
 dc.b  $00,$38,$01,$01,$00,$11,$00,$D2 ; 0x185e
@@ -8752,7 +8771,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; Bank 3
 ****************************************
 ; Bank 3-1
-; Sub-Effect 1 - First 256 Bytes
+; Bank 3-1: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $0131D000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010A0400    ; Byte 8-12   : $8           DVF window size: Y
@@ -8817,7 +8836,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 3-1: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -8882,7 +8901,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 3-1: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -8947,7 +8966,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 3-1: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9012,7 +9031,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 3-1: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9077,7 +9096,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000008    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000001    ; Byte 248-252: info         Sub-Effect Type: Draw a polygon object        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 3-1: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9143,7 +9162,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000001    ; Byte 248-252: info         Sub-Effect Type: Draw a polygon object        
 
 ; Bank 3-2
-; Sub-Effect 1 - First 256 Bytes
+; Bank 3-2: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01458000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010F3800    ; Byte 8-12   : $8           DVF window size: Y
@@ -9208,7 +9227,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 3-2: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9273,7 +9292,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000094    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 3-2: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9338,7 +9357,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 3-2: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9403,7 +9422,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 3-2: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9468,7 +9487,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 3-2: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9534,7 +9553,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 3-3
-; Sub-Effect 1 - First 256 Bytes
+; Bank 3-3: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01458000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01248C00    ; Byte 8-12   : $8           DVF window size: Y
@@ -9599,7 +9618,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 3-3: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9664,7 +9683,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 3-3: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9729,7 +9748,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 3-3: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9794,7 +9813,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 3-3: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9859,7 +9878,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 3-3: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -9925,7 +9944,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 3-4
-; Sub-Effect 1 - First 256 Bytes
+; Bank 3-4: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00540000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $005CAC00    ; Byte 8-12   : $8           DVF window size: Y
@@ -9990,7 +10009,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 3-4: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10055,7 +10074,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 3-4: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10120,7 +10139,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 3-4: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10185,7 +10204,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 3-4: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10250,8 +10269,9 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 3-4: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
+
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
 ; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
@@ -10316,7 +10336,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 3-5
-; Sub-Effect 1 - First 256 Bytes
+; Bank 3-5: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $009F0000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0091B000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10381,7 +10401,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 3-5: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10446,7 +10466,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 3-5: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10511,7 +10531,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 3-5: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10576,7 +10596,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 3-5: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10641,7 +10661,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 3-5: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10707,7 +10727,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 3-6
-; Sub-Effect 1 - First 256 Bytes
+; Bank 3-6: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $009F0C00    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0091B000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10772,7 +10792,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 3-6: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10837,7 +10857,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 3-6: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10902,7 +10922,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 3-6: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -10967,7 +10987,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 3-6: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11032,7 +11052,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 3-6: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11098,7 +11118,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 3-7
-; Sub-Effect 1 - First 256 Bytes
+; Bank 3-7: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00B6E800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00B71800    ; Byte 8-12   : $8           DVF window size: Y
@@ -11163,7 +11183,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 3-7: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11228,7 +11248,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 3-7: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11293,73 +11313,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
+; Bank 3-7: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11424,7 +11378,72 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 3-7: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 3-7: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11490,7 +11509,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 3-8
-; Sub-Effect 1 - First 256 Bytes
+; Bank 3-8: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00A1D050    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0099124C    ; Byte 8-12   : $8           DVF window size: Y
@@ -11555,7 +11574,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 3-8: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11620,7 +11639,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 3-8: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11685,7 +11704,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 3-8: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11750,7 +11769,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 3-8: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11815,7 +11834,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 3-8: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -11881,7 +11900,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 3-9
-; Sub-Effect 1 - First 256 Bytes
+; Bank 3-9: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00A90E00    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00B2C200    ; Byte 8-12   : $8           DVF window size: Y
@@ -11946,7 +11965,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 3-9: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -12011,7 +12030,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 3-9: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -12076,7 +12095,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 3-9: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -12141,7 +12160,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 3-9: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -12206,7 +12225,7 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 3-9: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -12270,3529 +12289,6 @@ dc.b  $00,$58,$02,$B3,$18,$00
 ; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-****************************************
-; Bank 4
-****************************************
-; Bank 4-1
-; Sub-Effect 1 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00A1D000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00862800    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $02549FB5    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $023F2FDC    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00206C00    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00585000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $0060D800    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $0059EDFF    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $0059B800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00610800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00006540    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $FFF6E002    ; Byte 224-228: colx         Base colour: X
-; dc.l $FFF9CFFF    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65219000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
-
-; Sub-Effect 2 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 6 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Bank 4-2
-; Sub-Effect 1 - First 256 Bytes
-; dc.l $00100000    ; Byte 0-4    : not used     
-; dc.l $00CCB400    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00AB1200    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $012677FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $017FD3FF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $FFFFD800    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $006D8300    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $005AA680    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $006DC2FF    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $0059B800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00610800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00006540    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $001004C0    ; Byte 224-228: colx         Base colour: X
-; dc.l $000AA1C0    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65219C15    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
-
-; Sub-Effect 2 - First 256 Bytes
-; dc.l $00100000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00529E00    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $004A7900    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000003    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $0051B7FF    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000800    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $0000266F    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00001B13    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $FFB06600    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $001FFC00    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $005FFC00    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $005B7000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00010001    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $0066CC00    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $005D1800    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000DAB    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00750000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $000F0940    ; Byte 224-228: colx         Base colour: X
-; dc.l $000137E0    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000002    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00014FFF    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65219C15    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
-
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 6 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Bank 4-3
-; Sub-Effect 1 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00A95C00    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $008A3600    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $02F973FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $02F0ABFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $0013F200    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00501D80    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00654C00    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $008B7DFF    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $0059B800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00610800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00006540    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $00088140    ; Byte 224-228: colx         Base colour: X
-; dc.l $FFF56E00    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65219300    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
-
-; Sub-Effect 2 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 6 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00819C00    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $004CAA00    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00003433    ; Byte 132-136: j            X amplitude
-; dc.l $00003679    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $FFFE6908    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00004B10    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $000857C0    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $FFFF5200    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $000164C0    ; Byte 224-228: colx         Base colour: X
-; dc.l $0010C0E0    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65219300    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
-
-; Bank 4-4
-; Sub-Effect 1 - First 256 Bytes
-; dc.l $00100000    ; Byte 0-4    : not used     
-; dc.l $00B79000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00AB1800    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $028D07FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $026647FF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00025000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00585000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $0060D800    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $007AFCFF    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $0059C42C    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00610830    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00006540    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $000FFFE0    ; Byte 224-228: colx         Base colour: X
-; dc.l $000B49E0    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65218700    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
-
-; Sub-Effect 2 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00100000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $005B6800    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $005DF000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $FFAA2000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00000000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00000000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $FFC6D200    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $FFCDC000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00157400    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000001    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $006A4000    ; Byte 212-216: radius       Radius
-; dc.l $0003EE80    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00022400    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0001D7E0    ; Byte 224-228: colx         Base colour: X
-; dc.l $0005E220    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000002    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $000177FF    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65218700    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
-
-; Sub-Effect 5 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 6 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Bank 4-5
-; Sub-Effect 1 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00B79000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00AB1800    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01DF83FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $0065D3FF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00268A00    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00585000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $0060D800    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $0073DBFF    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $0059C42C    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00610830    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00006540    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $FFF84400    ; Byte 224-228: colx         Base colour: X
-; dc.l $0002F2C0    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65218200    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
-
-; Sub-Effect 2 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00606000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $005CB800    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00094C00    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $FF800001    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $0020FBFF    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00000000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00000000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $FFA8A000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00083000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00010001    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $005C9400    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $005CD600    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $000014A7    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00522000    ; Byte 212-216: radius       Radius
-; dc.l $FFFEAA00    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $0000ED80    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $00003E00    ; Byte 224-228: colx         Base colour: X
-; dc.l $FFFA4800    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000002    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $000029FF    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65218200    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
-
-; Sub-Effect 5 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 6 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Bank 4-6
-; Sub-Effect 1 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00B79000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00AB1800    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $014F3FFF    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $0177ABFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $FFDD6600    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $005AEA00    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $005D0600    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $004DF2FF    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $0059C42C    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00610830    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00006540    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0005A6C0    ; Byte 224-228: colx         Base colour: X
-; dc.l $FFFD8800    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65218D00    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
-
-; Sub-Effect 2 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $0032B800    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $005DF000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $001D0FFF    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $FFBC2A00    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000000    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00010001    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $005C2E00    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $005E7A00    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $FFFFC300    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00000000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $FFF4EA80    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $FFFEEF00    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0001E400    ; Byte 224-228: colx         Base colour: X
-; dc.l $000A87C0    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000003    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $000323FF    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65218D00    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
-
-; Sub-Effect 6 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Bank 4-7
-; Sub-Effect 1 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00A7BE00    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $008BCE00    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $02516FFF    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $03E6CBFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $0013F200    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00602100    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $005ED280    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $009F4BFF    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $0059B800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00610800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00006540    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $000AFB00    ; Byte 224-228: colx         Base colour: X
-; dc.l $FFFC3DC0    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65219900    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
-
-; Sub-Effect 2 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $0097FE00    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $0078F000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $001C3BFF    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $0000A71A    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $0000B8F6    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $0000800A    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $0000A516    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $0000A71A    ; Byte 100-104: _i5          Intensity 5
-; dc.l $0000B8F6    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $0025FC00    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00004C84    ; Byte 132-136: j            X amplitude
-; dc.l $000023BD    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $0004DBFF    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00010003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $005DA200    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $005FE800    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000A31    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65219900    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000001    ; Byte 248-252: info         Sub-Effect Type: Draw a polygon object        
-
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 6 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Bank 4-8
-; Sub-Effect 1 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00B35800    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00AED800    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01DFDFFF    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01E01FFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $0059EF80    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00606A80    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $006FEFFF    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00568800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $0060D800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00006540    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65218C00    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
-
-; Sub-Effect 2 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 6 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $005DF000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $0061C800    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $009F005A    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00B5985A    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000000    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $FFFB8000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $0039B800    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $000001B7    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $000100FF    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00B21459    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00B5EC5A    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $000004C6    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $FFFD9C84    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $000057FF    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $FFFE7BC4    ; Byte 224-228: colx         Base colour: X
-; dc.l $0001D9BF    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000003    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $000497FD    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65218C00    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
-
-; Bank 4-9
-; Sub-Effect 1 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00B35859    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00AED804    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $020367FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $024BFBFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $FFF0BBFF    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $005D9AAC    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $0061D5B0    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $007DB3FF    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $0056882B    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $0060DE30    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00006540    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65219F00    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
-
-; Sub-Effect 2 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 6 - First 256 Bytes
-; dc.l $00148000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $005FAC00    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $005FCA00    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $009F005A    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00B5985A    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000000    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $0012BE00    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00121600    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000000    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $000100FF    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00B21459    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00B5EC5A    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $000001C7    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $FFFF5684    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $0001393F    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0003E680    ; Byte 224-228: colx         Base colour: X
-; dc.l $000555A0    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000003    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $000713FF    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $65219F00    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
-
 
 dc.b  $01,$10,$02,$01,$00,$31,$00,$D0 ; 0x34a4
 dc.b  $01,$01,$00,$0A,$00,$04,$16,$4F ; 0x34ac
@@ -16302,6 +12798,3529 @@ dc.b  $FF,$FF,$FF,$00,$FF,$00,$FF,$00 ; 0x4464
 dc.b  $FF,$FF,$FF,$00,$FF,$00,$FF,$00 ; 0x446c
 dc.b  $FF,$FF,$FF,$00,$FF,$00,$FF,$00 ; 0x4474
 dc.b  $FF,$FF,$FF,$00,$FF,$00
+****************************************
+; Bank 4
+****************************************
+; Bank 4-1
+; Bank 4-1: Sub-Effect 1 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00A1D000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00862800    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $02549FB5    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $023F2FDC    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00206C00    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00585000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $0060D800    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $0059EDFF    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $0059B800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00610800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00006540    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $FFF6E002    ; Byte 224-228: colx         Base colour: X
+; dc.l $FFF9CFFF    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65219000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
+
+; Bank 4-1: Sub-Effect 2 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-1: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-1: Sub-Effect 4 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-1: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-1: Sub-Effect 6 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-2
+; Bank 4-2: Sub-Effect 1 - First 256 Bytes
+; dc.l $00100000    ; Byte 0-4    : not used     
+; dc.l $00CCB400    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00AB1200    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $012677FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $017FD3FF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $FFFFD800    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $006D8300    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $005AA680    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $006DC2FF    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $0059B800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00610800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00006540    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $001004C0    ; Byte 224-228: colx         Base colour: X
+; dc.l $000AA1C0    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65219C15    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
+
+; Bank 4-2: Sub-Effect 2 - First 256 Bytes
+; dc.l $00100000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00529E00    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $004A7900    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000003    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $0051B7FF    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000800    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $0000266F    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00001B13    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $FFB06600    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $001FFC00    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $005FFC00    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $005B7000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00010001    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $0066CC00    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $005D1800    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000DAB    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00750000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $000F0940    ; Byte 224-228: colx         Base colour: X
+; dc.l $000137E0    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000002    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00014FFF    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65219C15    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
+
+; Bank 4-2: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-2: Sub-Effect 4 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-2: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-2: Sub-Effect 6 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-3
+; Bank 4-3: Sub-Effect 1 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00A95C00    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $008A3600    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $02F973FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $02F0ABFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $0013F200    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00501D80    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00654C00    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $008B7DFF    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $0059B800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00610800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00006540    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $00088140    ; Byte 224-228: colx         Base colour: X
+; dc.l $FFF56E00    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65219300    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
+
+; Bank 4-3: Sub-Effect 2 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-3: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-3: Sub-Effect 4 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-3: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-3: Sub-Effect 6 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00819C00    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $004CAA00    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00003433    ; Byte 132-136: j            X amplitude
+; dc.l $00003679    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $FFFE6908    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00004B10    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $000857C0    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $FFFF5200    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $000164C0    ; Byte 224-228: colx         Base colour: X
+; dc.l $0010C0E0    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65219300    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $0000000A    ; Byte 248-252: info         Sub-Effect Type: Colour plasma area type SRCEN
+
+; Bank 4-4
+; Bank 4-4: Sub-Effect 1 - First 256 Bytes
+; dc.l $00100000    ; Byte 0-4    : not used     
+; dc.l $00B79000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00AB1800    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $028D07FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $026647FF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00025000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00585000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $0060D800    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $007AFCFF    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $0059C42C    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00610830    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00006540    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $000FFFE0    ; Byte 224-228: colx         Base colour: X
+; dc.l $000B49E0    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65218700    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
+
+; Bank 4-4: Sub-Effect 2 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-4: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-4: Sub-Effect 4 - First 256 Bytes
+; dc.l $00100000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $005B6800    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $005DF000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $FFAA2000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00000000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00000000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $FFC6D200    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $FFCDC000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00157400    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000001    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $006A4000    ; Byte 212-216: radius       Radius
+; dc.l $0003EE80    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00022400    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0001D7E0    ; Byte 224-228: colx         Base colour: X
+; dc.l $0005E220    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000002    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $000177FF    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65218700    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
+
+; Bank 4-4: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-4: Sub-Effect 6 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-5
+; Bank 4-5: Sub-Effect 1 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00B79000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00AB1800    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01DF83FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $0065D3FF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00268A00    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00585000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $0060D800    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $0073DBFF    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $0059C42C    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00610830    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00006540    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $FFF84400    ; Byte 224-228: colx         Base colour: X
+; dc.l $0002F2C0    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65218200    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
+
+; Bank 4-5: Sub-Effect 2 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-5: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-5: Sub-Effect 4 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00606000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $005CB800    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00094C00    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $FF800001    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $0020FBFF    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00000000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00000000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $FFA8A000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00083000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00010001    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $005C9400    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $005CD600    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $000014A7    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00522000    ; Byte 212-216: radius       Radius
+; dc.l $FFFEAA00    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $0000ED80    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $00003E00    ; Byte 224-228: colx         Base colour: X
+; dc.l $FFFA4800    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000002    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $000029FF    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65218200    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
+
+; Bank 4-5: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-5: Sub-Effect 6 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-6
+; Bank 4-6: Sub-Effect 1 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00B79000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00AB1800    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $014F3FFF    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $0177ABFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $FFDD6600    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $005AEA00    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $005D0600    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $004DF2FF    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $0059C42C    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00610830    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00006540    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0005A6C0    ; Byte 224-228: colx         Base colour: X
+; dc.l $FFFD8800    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65218D00    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
+
+; Bank 4-6: Sub-Effect 2 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-6: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-6: Sub-Effect 4 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-6: Sub-Effect 5 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $0032B800    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $005DF000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $001D0FFF    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $FFBC2A00    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000000    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00010001    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $005C2E00    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $005E7A00    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $FFFFC300    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00000000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $FFF4EA80    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $FFFEEF00    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0001E400    ; Byte 224-228: colx         Base colour: X
+; dc.l $000A87C0    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000003    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $000323FF    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65218D00    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
+
+; Bank 4-6: Sub-Effect 6 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-7
+; Bank 4-7: Sub-Effect 1 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00A7BE00    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $008BCE00    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $02516FFF    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $03E6CBFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $0013F200    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00602100    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $005ED280    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $009F4BFF    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $0059B800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00610800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00006540    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $000AFB00    ; Byte 224-228: colx         Base colour: X
+; dc.l $FFFC3DC0    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65219900    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
+
+; Bank 4-7: Sub-Effect 2 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $0097FE00    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $0078F000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $001C3BFF    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $0000A71A    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $0000B8F6    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $0000800A    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $0000A516    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $0000A71A    ; Byte 100-104: _i5          Intensity 5
+; dc.l $0000B8F6    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $0025FC00    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00004C84    ; Byte 132-136: j            X amplitude
+; dc.l $000023BD    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $0004DBFF    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00010003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $005DA200    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $005FE800    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000A31    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65219900    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000001    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000001    ; Byte 248-252: info         Sub-Effect Type: Draw a polygon object        
+
+; Bank 4-7: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-7: Sub-Effect 4 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-7: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-7: Sub-Effect 6 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-8
+; Bank 4-8: Sub-Effect 1 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00B35800    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00AED800    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01DFDFFF    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01E01FFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $0059EF80    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00606A80    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $006FEFFF    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00568800    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $0060D800    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00006540    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65218C00    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
+
+; Bank 4-8: Sub-Effect 2 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-8: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-8: Sub-Effect 4 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-8: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-8: Sub-Effect 6 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $005DF000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $0061C800    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $009F005A    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00B5985A    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000000    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $FFFB8000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $0039B800    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $000001B7    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $000100FF    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00B21459    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00B5EC5A    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $000004C6    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $FFFD9C84    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $000057FF    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $FFFE7BC4    ; Byte 224-228: colx         Base colour: X
+; dc.l $0001D9BF    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000003    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $000497FD    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65218C00    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
+
+; Bank 4-9
+; Bank 4-9: Sub-Effect 1 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00B35859    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00AED804    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $020367FF    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $024BFBFF    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $FFF0BBFF    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $005D9AAC    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $0061D5B0    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $007DB3FF    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $0056882B    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $0060DE30    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00006540    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00010000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65219F00    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
+
+; Bank 4-9: Sub-Effect 2 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-9: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-9: Sub-Effect 4 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-9: Sub-Effect 5 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 4-9: Sub-Effect 6 - First 256 Bytes
+; dc.l $00148000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $005FAC00    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $005FCA00    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $009F005A    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00B5985A    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000000    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $0012BE00    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00121600    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000000    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $000100FF    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00B21459    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00B5EC5A    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $000001C7    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $FFFF5684    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $0001393F    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0003E680    ; Byte 224-228: colx         Base colour: X
+; dc.l $000555A0    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000003    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $000713FF    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $65219F00    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
+
 dc.b  $01,$14,$00,$80,$02,$A1,$00,$D0 ; 0x4482
 dc.b  $02,$86,$00,$28,$01,$02,$00,$54 ; 0x448a
 dc.b  $00,$9F,$00,$B5,$00,$02,$00,$3F ; 0x4492
@@ -16909,12 +16928,11 @@ dc.b  $00,$9A,$0E,$C1,$00,$06,$00,$C0 ; 0x575a
 dc.b  $0D,$A8,$00,$09,$00,$4E,$0C,$08 ; 0x5762
 dc.b  $00,$D1,$00,$73,$00,$F7,$00,$A0 ; 0x576a
 dc.b  $0B,$07,$7F,$00
-
 ****************************************
 ; Bank 5
 ****************************************
 ; Bank 5-1
-; Sub-Effect 1 - First 256 Bytes
+; Bank 5-1: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010F3800    ; Byte 8-12   : $8           DVF window size: Y
@@ -16979,7 +16997,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 5-1: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17044,73 +17062,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 4 - First 256 Bytes
+; Bank 5-1: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17175,7 +17127,72 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 5-1: Sub-Effect 4 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 5-1: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17240,7 +17257,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 5-1: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17306,7 +17323,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 5-2
-; Sub-Effect 1 - First 256 Bytes
+; Bank 5-2: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010F1400    ; Byte 8-12   : $8           DVF window size: Y
@@ -17371,7 +17388,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 5-2: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17436,7 +17453,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 5-2: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17501,7 +17518,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 5-2: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17566,7 +17583,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 5-2: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17631,7 +17648,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 5-2: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17697,7 +17714,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 5-3
-; Sub-Effect 1 - First 256 Bytes
+; Bank 5-3: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01483800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01098C00    ; Byte 8-12   : $8           DVF window size: Y
@@ -17762,7 +17779,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 5-3: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17827,7 +17844,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 5-3: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17892,7 +17909,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 5-3: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -17957,7 +17974,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 5-3: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18022,7 +18039,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 5-3: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18088,7 +18105,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 5-4
-; Sub-Effect 1 - First 256 Bytes
+; Bank 5-4: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00A93800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00A3F800    ; Byte 8-12   : $8           DVF window size: Y
@@ -18153,7 +18170,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 5-4: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18218,7 +18235,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 5-4: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18283,7 +18300,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 5-4: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18348,7 +18365,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 5-4: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18413,7 +18430,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 5-4: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18479,7 +18496,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 5-5
-; Sub-Effect 1 - First 256 Bytes
+; Bank 5-5: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01542000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E8A400    ; Byte 8-12   : $8           DVF window size: Y
@@ -18544,7 +18561,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 5-5: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18609,7 +18626,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 5-5: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18674,7 +18691,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 5-5: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18739,7 +18756,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 5-5: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18804,7 +18821,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 5-5: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -18870,7 +18887,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 5-6
-; Sub-Effect 1 - First 256 Bytes
+; Bank 5-6: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01252800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01089C00    ; Byte 8-12   : $8           DVF window size: Y
@@ -18935,7 +18952,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 5-6: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19000,7 +19017,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 5-6: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19065,7 +19082,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 5-6: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19130,7 +19147,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 5-6: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19195,7 +19212,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 5-6: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19261,7 +19278,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 5-7
-; Sub-Effect 1 - First 256 Bytes
+; Bank 5-7: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01252800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $011B5000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19326,7 +19343,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 5-7: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19391,7 +19408,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 5-7: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19456,7 +19473,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 5-7: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19521,7 +19538,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 5-7: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19586,7 +19603,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 5-7: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19652,7 +19669,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 5-8
-; Sub-Effect 1 - First 256 Bytes
+; Bank 5-8: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01252800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0114B400    ; Byte 8-12   : $8           DVF window size: Y
@@ -19717,7 +19734,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 5-8: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19782,7 +19799,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 5-8: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19847,7 +19864,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 5-8: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19912,7 +19929,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 5-8: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -19977,7 +19994,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 5-8: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -20043,7 +20060,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 5-9
-; Sub-Effect 1 - First 256 Bytes
+; Bank 5-9: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01435800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0106BC00    ; Byte 8-12   : $8           DVF window size: Y
@@ -20108,7 +20125,73 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 5-9: Sub-Effect 2 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 5-9: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -20173,7 +20256,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 5-9: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -20238,72 +20321,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
+; Bank 5-9: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -20368,7 +20386,7 @@ dc.b  $0B,$07,$7F,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000E    ; Byte 248-252: info         Sub-Effect Type: Spectrum as intensities      
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 5-9: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -20773,7 +20791,7 @@ dc.b  $17,$00,$01,$14,$00
 ; the $01,$14,$00 above!
 ****************************************
 ; Bank 6-1
-; Sub-Effect 1 - First 256 Bytes
+; Bank 6-1: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -20838,7 +20856,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 6-1: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000002    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -20903,7 +20921,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 6-1: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -20968,7 +20986,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 6-1: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21033,7 +21051,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 6-1: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21098,7 +21116,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 6-1: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21164,7 +21182,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 6-2
-; Sub-Effect 1 - First 256 Bytes
+; Bank 6-2: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21229,7 +21247,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 6-2: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000002    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21294,7 +21312,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 6-2: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21359,7 +21377,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 6-2: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21424,7 +21442,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 6-2: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21489,7 +21507,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 6-2: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21555,7 +21573,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 6-3
-; Sub-Effect 1 - First 256 Bytes
+; Bank 6-3: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21620,7 +21638,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 6-3: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000002    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21685,7 +21703,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 6-3: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21750,7 +21768,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 6-3: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21815,7 +21833,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 6-3: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21880,7 +21898,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 6-3: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -21946,7 +21964,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 6-4
-; Sub-Effect 1 - First 256 Bytes
+; Bank 6-4: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22011,7 +22029,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 6-4: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000002    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22076,7 +22094,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 6-4: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22107,7 +22125,6 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
 ; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
 ; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-
 ; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
 ; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
 ; dc.l $00140000    ; Byte 128-132: i            Number of iterations
@@ -22142,7 +22159,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 6-4: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22207,7 +22224,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 6-4: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22272,7 +22289,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 6-4: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22338,7 +22355,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 6-5
-; Sub-Effect 1 - First 256 Bytes
+; Bank 6-5: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22403,7 +22420,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 6-5: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000002    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22468,7 +22485,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 6-5: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22533,7 +22550,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 6-5: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22598,7 +22615,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 6-5: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22663,7 +22680,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 6-5: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22729,7 +22746,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 6-6
-; Sub-Effect 1 - First 256 Bytes
+; Bank 6-6: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22794,7 +22811,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 6-6: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000002    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22859,7 +22876,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 6-6: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22924,7 +22941,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 6-6: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -22989,7 +23006,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 6-6: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23054,7 +23071,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 6-6: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23120,7 +23137,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 6-7
-; Sub-Effect 1 - First 256 Bytes
+; Bank 6-7: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23185,7 +23202,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 6-7: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000002    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23250,7 +23267,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 6-7: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23315,7 +23332,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 6-7: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23380,7 +23397,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 6-7: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23445,7 +23462,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $000E0000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 6-7: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23511,7 +23528,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 6-8
-; Sub-Effect 1 - First 256 Bytes
+; Bank 6-8: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23576,7 +23593,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 6-8: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000002    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23641,7 +23658,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 6-8: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23706,7 +23723,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 6-8: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23771,7 +23788,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 6-8: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23836,7 +23853,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $000E0000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 6-8: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23902,7 +23919,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 6-9
-; Sub-Effect 1 - First 256 Bytes
+; Bank 6-9: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -23967,7 +23984,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 6-9: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000002    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -24032,7 +24049,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 6-9: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -24097,7 +24114,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 6-9: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -24162,7 +24179,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 6-9: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -24227,7 +24244,7 @@ dc.b  $17,$00,$01,$14,$00
 ; dc.l $000E0000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 6-9: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -24930,7 +24947,7 @@ dc.b  $15,$8C,$00
 ; Bank 7
 ****************************************
 ; Bank 7-1
-; Sub-Effect 1 - First 256 Bytes
+; Bank 7-1: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $013E1800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010D8200    ; Byte 8-12   : $8           DVF window size: Y
@@ -24995,7 +25012,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 7-1: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25060,7 +25077,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 7-1: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25125,7 +25142,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 7-1: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25190,7 +25207,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 7-1: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25255,7 +25272,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 7-1: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25321,7 +25338,7 @@ dc.b  $15,$8C,$00
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
 ; Bank 7-2
-; Sub-Effect 1 - First 256 Bytes
+; Bank 7-2: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $013E1800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010F4A00    ; Byte 8-12   : $8           DVF window size: Y
@@ -25386,7 +25403,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 7-2: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25451,7 +25468,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 7-2: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25516,7 +25533,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 7-2: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25581,7 +25598,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 7-2: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25646,7 +25663,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 7-2: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25712,7 +25729,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
 ; Bank 7-3
-; Sub-Effect 1 - First 256 Bytes
+; Bank 7-3: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $013E1800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010CBC00    ; Byte 8-12   : $8           DVF window size: Y
@@ -25777,7 +25794,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 7-3: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25842,7 +25859,73 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 7-3: Sub-Effect 3 - First 256 Bytes
+; dc.l $00000000    ; Byte 0-4    : not used     
+; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
+; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
+; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
+; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
+; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
+; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
+; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
+; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
+; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
+; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
+; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
+; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
+; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
+; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
+; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
+; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
+; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
+; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
+; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
+; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
+; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
+; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
+; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
+; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
+; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
+; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
+; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
+; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
+; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
+; dc.l $00140000    ; Byte 128-132: i            Number of iterations
+; dc.l $00000400    ; Byte 132-136: j            X amplitude
+; dc.l $00000400    ; Byte 136-140: k            Y amplitude
+; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
+; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
+; dc.l $00000000    ; Byte 148-152: not used     delta Z
+; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
+; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
+; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
+; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
+; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
+; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
+; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
+; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
+; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
+; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
+
+; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
+; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
+; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
+; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
+; dc.l $00080000    ; Byte 212-216: radius       Radius
+; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
+; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
+; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
+; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
+; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
+; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
+; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
+; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
+; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
+; Bank 7-3: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -25907,72 +25990,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
-; dc.l $00000000    ; Byte 0-4    : not used     
-; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
-; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
-; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
-; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
-; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
-; dc.l $00C00000    ; Byte 28-32  : $1C          DVF centre of rotation: Y
-; dc.l $00780000    ; Byte 32-36  : $20          DVF Delta Intensity
-; dc.l $00C00000    ; Byte 36-40  : dstoffx      Destination position: X
-; dc.l $00C00000    ; Byte 40-44  : dstoffy      Destination position: Y
-; dc.l $00C00000    ; Byte 44-48  : vfb_xpos     DVF window centre: X
-; dc.l $00C00000    ; Byte 48-52  : vfb_ypos     DVF window centre: Y
-; dc.l $00000000    ; Byte 52-56  : dstoffz      Destination position: Z
-; dc.l $00000000    ; Byte 56-60  : not used     Vector: X
-; dc.l $00200000    ; Byte 60-64  : dy           Destination Y offset
-; dc.l $00000000    ; Byte 64-68  : not used     Vector: Y
-; dc.l $00000000    ; Byte 68-72  : not used     Symmetry Types
-; dc.l $00000008    ; Byte 72-76  : rsym_ord     Rotational Symmetry Order
-; dc.l $00080000    ; Byte 76-80  : rsym_ste     Rotational Angle Step
-; dc.l $00000000    ; Byte 80-84  : rsym_ist     Rotational Angle Step Delta
-; dc.l $00008000    ; Byte 84-88  : _i1          Intensity 1
-; dc.l $00008000    ; Byte 88-92  : _i2          Intensity 2
-; dc.l $00008000    ; Byte 92-96  : _i3          Intensity 3
-; dc.l $00008000    ; Byte 96-100 : _i4          Intensity 4
-; dc.l $00008000    ; Byte 100-104: _i5          Intensity 5
-; dc.l $00008000    ; Byte 104-108: _i6          Intensity 6
-; dc.l $00000400    ; Byte 108-112: zamp         Z amplitude
-; dc.l $00000000    ; Byte 112-116: phase1       Fixed point phase 1
-; dc.l $00000400    ; Byte 116-120: phase2       Delta phase 1
-; dc.l $00000000    ; Byte 120-124: not used     Rotational sym overall phase
-; dc.l $00400000    ; Byte 124-128: phase4       Fixed point phase 2
-; dc.l $00140000    ; Byte 128-132: i            Number of iterations
-; dc.l $00000400    ; Byte 132-136: j            X amplitude
-; dc.l $00000400    ; Byte 136-140: k            Y amplitude
-; dc.l $00000000    ; Byte 140-144: not used     Number of other iterations
-; dc.l $00008000    ; Byte 144-148: col1         Parameter not yet defined
-; dc.l $00000000    ; Byte 148-152: not used     delta Z
-; dc.l $00000000    ; Byte 152-156: thang        choice of Thang
-; dc.l $00000000    ; Byte 156-160: not used     Parameter not yet defined
-; dc.l $00000003    ; Byte 160-164: asym_fla     Parameter not yet defined
-; dc.l $001E7540    ; Byte 164-168: sine_bas     Sine Table
-; dc.l $00C00000    ; Byte 168-172: rxcen        Rotational Sym centre: X
-; dc.l $00C00000    ; Byte 172-176: rycen        Rotational Sym centre: Y
-; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
-; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
-; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
-; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
-; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
-; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
-; dc.l $00000000    ; Byte 200-204: drycen       Rotational centre delta: Y
-; dc.l $00021555    ; Byte 204-208: phase5       Delta phase 2
-; dc.l $001E7540    ; Byte 208-212: wave_2       Sine Table
-; dc.l $00080000    ; Byte 212-216: radius       Radius
-; dc.l $00010000    ; Byte 216-220: cvx2         Base col generator vector: X
-; dc.l $00010000    ; Byte 220-224: cvy2         Base col generator vector: Y
-; dc.l $0008F000    ; Byte 224-228: colx         Base colour: X
-; dc.l $0008F000    ; Byte 228-232: coly         Base colour: Y
-; dc.l $00000000    ; Byte 232-236: plot_mod     Destination plot routine
-; dc.l $00000000    ; Byte 236-240: pixsize      Maximum pixel size
-; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
-; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
-; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
-
-; Sub-Effect 5 - First 256 Bytes
+; Bank 7-3: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26037,7 +26055,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 7-3: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26103,7 +26121,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
 ; Bank 7-4
-; Sub-Effect 1 - First 256 Bytes
+; Bank 7-4: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $015A2000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01110000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26168,7 +26186,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 7-4: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26233,7 +26251,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 7-4: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26298,7 +26316,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 7-4: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26363,7 +26381,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 7-4: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26428,7 +26446,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 7-4: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26494,7 +26512,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 7-5
-; Sub-Effect 1 - First 256 Bytes
+; Bank 7-5: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01461000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01110000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26559,7 +26577,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 7-5: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26624,7 +26642,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 7-5: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26689,7 +26707,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 7-5: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26754,8 +26772,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
-
+; Bank 7-5: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26820,7 +26837,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 7-5: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26886,7 +26903,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 7-6
-; Sub-Effect 1 - First 256 Bytes
+; Bank 7-6: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $015A2000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01110000    ; Byte 8-12   : $8           DVF window size: Y
@@ -26951,7 +26968,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 7-6: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27016,7 +27033,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 7-6: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27081,7 +27098,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 7-6: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27146,7 +27163,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 7-6: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27211,7 +27228,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 7-6: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27277,7 +27294,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 7-7
-; Sub-Effect 1 - First 256 Bytes
+; Bank 7-7: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $015A2000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01110000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27342,7 +27359,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 7-7: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27407,7 +27424,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 7-7: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27472,7 +27489,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 7-7: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27537,7 +27554,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 7-7: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27602,7 +27619,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 7-7: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27668,7 +27685,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 7-8
-; Sub-Effect 1 - First 256 Bytes
+; Bank 7-8: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01591800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01110000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27733,7 +27750,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 7-8: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27798,7 +27815,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 7-8: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27863,7 +27880,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 7-8: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27928,7 +27945,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 7-8: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -27993,7 +28010,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 7-8: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -28059,7 +28076,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 7-9
-; Sub-Effect 1 - First 256 Bytes
+; Bank 7-9: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01592400    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01110000    ; Byte 8-12   : $8           DVF window size: Y
@@ -28124,7 +28141,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 7-9: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -28189,7 +28206,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 7-9: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -28254,7 +28271,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 7-9: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -28319,7 +28336,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 7-9: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -28384,7 +28401,7 @@ dc.b  $15,$8C,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 7-9: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29041,7 +29058,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; Bank 8
 ****************************************
 ; Bank 8-1
-; Sub-Effect 1 - First 256 Bytes
+; Bank 8-1: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $014EB000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01248600    ; Byte 8-12   : $8           DVF window size: Y
@@ -29106,7 +29123,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 8-1: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29171,7 +29188,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 8-1: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29236,7 +29253,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 8-1: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29301,7 +29318,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 8-1: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29366,7 +29383,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 8-1: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29432,7 +29449,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
 ; Bank 8-2
-; Sub-Effect 1 - First 256 Bytes
+; Bank 8-2: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $0123D800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01155000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29497,7 +29514,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 8-2: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29562,7 +29579,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 8-2: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29627,7 +29644,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 8-2: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29692,7 +29709,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 8-2: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29757,7 +29774,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 8-2: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29823,7 +29840,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
 ; Bank 8-3
-; Sub-Effect 1 - First 256 Bytes
+; Bank 8-3: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01450C80    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0134B080    ; Byte 8-12   : $8           DVF window size: Y
@@ -29888,7 +29905,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 8-3: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -29953,7 +29970,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 8-3: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30018,7 +30035,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 8-3: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30083,7 +30100,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 8-3: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30148,7 +30165,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $0000000D    ; Byte 248-252: info         Sub-Effect Type: Do particle motion           
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 8-3: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30214,7 +30231,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $0000000C    ; Byte 248-252: info         Sub-Effect Type: Draw particle object         
 
 ; Bank 8-4
-; Sub-Effect 1 - First 256 Bytes
+; Bank 8-4: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01450800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $0134A000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30279,7 +30296,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 8-4: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30344,7 +30361,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 8-4: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30409,7 +30426,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 8-4: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30474,7 +30491,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 8-4: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30539,7 +30556,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 8-4: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30605,7 +30622,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
 ; Bank 8-5
-; Sub-Effect 1 - First 256 Bytes
+; Bank 8-5: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01458000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $011F4600    ; Byte 8-12   : $8           DVF window size: Y
@@ -30670,7 +30687,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 8-5: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30735,7 +30752,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 8-5: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30800,7 +30817,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 8-5: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30865,7 +30882,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 8-5: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30930,7 +30947,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 8-5: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -30996,7 +31013,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
 ; Bank 8-6
-; Sub-Effect 1 - First 256 Bytes
+; Bank 8-6: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $0148B000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010F5000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31044,6 +31061,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000800    ; Byte 176-180: roscale      Rotational Symmetry scale
 ; dc.l $00000000    ; Byte 180-184: roscal2      Rotational scale delta: X
 ; dc.l $00001000    ; Byte 184-188: cvx          Colour generator vector: X
+
 ; dc.l $00020000    ; Byte 188-192: cvy          Colour generator vector: Y
 ; dc.l $00000000    ; Byte 192-196: roscalei     Rotational scale delta: Y
 ; dc.l $00000000    ; Byte 196-200: drxcen       Rotational centre delta: X
@@ -31061,7 +31079,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 8-6: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31126,7 +31144,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 8-6: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31191,7 +31209,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 8-6: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31256,7 +31274,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 8-6: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31321,7 +31339,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 8-6: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31387,7 +31405,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
 ; Bank 8-7
-; Sub-Effect 1 - First 256 Bytes
+; Bank 8-7: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $0167C400    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01003800    ; Byte 8-12   : $8           DVF window size: Y
@@ -31452,7 +31470,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 8-7: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31517,7 +31535,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 8-7: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31582,7 +31600,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 8-7: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31647,7 +31665,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 8-7: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31712,7 +31730,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 8-7: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31778,7 +31796,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
 ; Bank 8-8
-; Sub-Effect 1 - First 256 Bytes
+; Bank 8-8: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $015A8000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $01096800    ; Byte 8-12   : $8           DVF window size: Y
@@ -31843,7 +31861,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 8-8: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31908,7 +31926,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 8-8: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -31973,12 +31991,11 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 8-8: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
 ; dc.l $01850000    ; Byte 12-16  : vfb_xsca     DVF scale: X
-
 ; dc.l $01850000    ; Byte 16-20  : vfb_ysca     DVF scale: Y
 ; dc.l $00000000    ; Byte 20-24  : vfb_angl     DVF rotate angle
 ; dc.l $00C00000    ; Byte 24-28  : $18          DVF centre of rotation: X
@@ -32039,7 +32056,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 8-8: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -32104,7 +32121,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 8-8: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -32170,7 +32187,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
 ; Bank 8-9
-; Sub-Effect 1 - First 256 Bytes
+; Bank 8-9: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00F63000    ; Byte 8-12   : $8           DVF window size: Y
@@ -32235,7 +32252,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 8-9: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -32300,7 +32317,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 8-9: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -32365,7 +32382,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 8-9: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -32430,7 +32447,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 8-9: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -32495,7 +32512,7 @@ dc.b  $00,$30,$01,$03,$00,$B3,$88,$00 ; 0x87fe
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 8-9: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33154,7 +33171,7 @@ dc.b  $00,$B0,$8B,$00
 ; Bank 9
 ****************************************
 ; Bank 9-1
-; Sub-Effect 1 - First 256 Bytes
+; Bank 9-1: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00F63000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33219,7 +33236,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 9-1: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33284,7 +33301,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 9-1: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33349,7 +33366,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 9-1: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33414,7 +33431,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 9-1: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33479,7 +33496,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 9-1: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33545,7 +33562,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 9-2
-; Sub-Effect 1 - First 256 Bytes
+; Bank 9-2: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00F63000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33610,7 +33627,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 9-2: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33675,7 +33692,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 9-2: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33740,7 +33757,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 9-2: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33805,7 +33822,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 9-2: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33870,7 +33887,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 9-2: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -33936,7 +33953,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 9-3
-; Sub-Effect 1 - First 256 Bytes
+; Bank 9-3: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00F63000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34001,7 +34018,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 9-3: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34066,7 +34083,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 9-3: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34131,7 +34148,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 9-3: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34196,7 +34213,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 9-3: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34261,7 +34278,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 9-3: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34327,7 +34344,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 9-4
-; Sub-Effect 1 - First 256 Bytes
+; Bank 9-4: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00F63000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34392,7 +34409,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 9-4: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34457,7 +34474,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 9-4: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34522,7 +34539,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 9-4: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34587,7 +34604,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 9-4: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34652,7 +34669,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 9-4: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34718,7 +34735,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 9-5
-; Sub-Effect 1 - First 256 Bytes
+; Bank 9-5: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $01464000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010C9800    ; Byte 8-12   : $8           DVF window size: Y
@@ -34783,7 +34800,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 9-5: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34848,7 +34865,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 9-5: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34913,7 +34930,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 9-5: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -34978,7 +34995,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 9-5: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35043,7 +35060,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 9-5: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35109,7 +35126,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 9-6
-; Sub-Effect 1 - First 256 Bytes
+; Bank 9-6: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $01435800    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010D5800    ; Byte 8-12   : $8           DVF window size: Y
@@ -35174,7 +35191,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 9-6: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35239,7 +35256,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 9-6: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35304,7 +35321,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 9-6: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35369,7 +35386,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 9-6: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35434,7 +35451,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 9-6: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35500,7 +35517,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 9-7
-; Sub-Effect 1 - First 256 Bytes
+; Bank 9-7: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00DFF800    ; Byte 8-12   : $8           DVF window size: Y
@@ -35565,7 +35582,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 9-7: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35630,7 +35647,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000005    ; Byte 248-252: info         Sub-Effect Type: Wave Surface Thang           
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 9-7: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35695,7 +35712,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 9-7: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35760,7 +35777,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 9-7: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35825,7 +35842,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 9-7: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -35891,7 +35908,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 9-8
-; Sub-Effect 1 - First 256 Bytes
+; Bank 9-8: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00DFF800    ; Byte 8-12   : $8           DVF window size: Y
@@ -35956,7 +35973,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 9-8: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36021,7 +36038,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 9-8: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00148000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36086,7 +36103,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 9-8: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36151,7 +36168,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 9-8: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36216,7 +36233,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 9-8: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36282,7 +36299,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
 ; Bank 9-9
-; Sub-Effect 1 - First 256 Bytes
+; Bank 9-9: Sub-Effect 1 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $0145B000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $010D5800    ; Byte 8-12   : $8           DVF window size: Y
@@ -36347,7 +36364,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000004    ; Byte 248-252: info         Sub-Effect Type: Digital Video Feedback area  
 
-; Sub-Effect 2 - First 256 Bytes
+; Bank 9-9: Sub-Effect 2 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36412,7 +36429,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000002    ; Byte 248-252: info         Sub-Effect Type: Draw 3D starfield            
 
-; Sub-Effect 3 - First 256 Bytes
+; Bank 9-9: Sub-Effect 3 - First 256 Bytes
 ; dc.l $00100000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36477,7 +36494,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000003    ; Byte 248-252: info         Sub-Effect Type: Draw a ring of pixels        
 
-; Sub-Effect 4 - First 256 Bytes
+; Bank 9-9: Sub-Effect 4 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36542,7 +36559,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 5 - First 256 Bytes
+; Bank 9-9: Sub-Effect 5 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36607,7 +36624,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
 
-; Sub-Effect 6 - First 256 Bytes
+; Bank 9-9: Sub-Effect 6 - First 256 Bytes
 ; dc.l $00000000    ; Byte 0-4    : not used     
 ; dc.l $00000000    ; Byte 4-8    : $4           DVF window size: X
 ; dc.l $00E00000    ; Byte 8-12   : $8           DVF window size: Y
@@ -36671,6 +36688,7 @@ dc.b  $00,$B0,$8B,$00
 ; dc.l $00000000    ; Byte 240-244: height       Parameter not yet defined
 ; dc.l $00000000    ; Byte 244-248: _mtrig       Trigger mask
 ; dc.l $00000000    ; Byte 248-252: info         Sub-Effect Type: <Empty>
+
 dc.b  $01,$10,$07,$F6,$00,$30,$01,$02 ; 0x9a72
 dc.b  $00,$1F,$00,$BF,$00,$FF,$00,$02 ; 0x9a7a
 dc.b  $00,$26,$00,$3F,$00,$FF,$00,$FF ; 0x9a82

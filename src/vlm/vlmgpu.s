@@ -95,17 +95,17 @@ gpuwait:
 ; *******************************************************************
 ; gpumods
 ; *******************************************************************
-gpumods:        dc.l alpha  
-                dc.l beta
-                dc.l gamma
-                dc.l psi
-                dc.l delta
-                dc.l epsilon
-                dc.l theta
-                dc.l sigma
-                dc.l tau
-                dc.l shu
-                dc.l dbeast
+gpumods:        dc.l alpha     ; Draw 3D Starfield  - $0000
+                dc.l beta      ; Digital Feedback Video Area - $10000
+                dc.l gamma     ; Draw a Polygon Object - $20000
+                dc.l psi       ; Post-amble for each effect. - $30000
+                dc.l delta     ; Colour Plasma Area - $40000
+                dc.l epsilon   ; Draw Particle Object - $50000
+                dc.l theta     ; Do Particle motion - $60000
+                dc.l sigma     ; Mono Particle Object (Appears to be unused?) - $70000
+                dc.l tau       ; Matrix object (Appears to be unused?) - $80000
+                dc.l shu       ; Spectrum as intensities - $90000
+                dc.l dbeast    ; Preamble for each effect. - $a0000
 
 ; *******************************************************************
 ;

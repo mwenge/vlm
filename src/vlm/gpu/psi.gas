@@ -1,7 +1,34 @@
+; ******************************************************************************
+; This is Jeff Minter's Virtual Light Machine for the Atari Jaguar.
+;
+; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
+; _;^)iiiiiiiiiiiiiii)!#j- .`_?[[[[[[[[12m{         _;;/"//|1o)      `[ol//"/*Tu
+;   ./""""""""""""""""}Jj- .`_l{sssssss*2m{            ':'':|)la!. <a[\)=''''lTu
+;  .`=+/////////////=^*Cu_ .`_xlllllllcs3m{           .'''''''+>)?[l><'''''''lTu
+;   .__,^^========^=r*x)<. .`_i%vvvvvvvc3ms           ._''''''___vx"__''''''_lTu
+;      _,,^^^^^^^,';L#%    .`_<>>>>>>>>v2mL}}}}**r`   .__________--_________-cTu
+;      `__:::,,::"ii{*|    .`_|\))))))|<toozzz7Cq2_   .---------------------`cTu
+;       ..-__''-.cT7`      .`-+/////////======^!6y_   .``````````````````````cTu
+;       ..``-__""la]-      .`-;^^^^^^^^^^^^^^^:!qy_   .`````````````````````.c#n
+;         ..``'tzi         .``''''''''''''''''-rwL_    ..................... ioa
+;            ..``.         .`````````````````  .``                           ...
+;
+; psi.gas
+; 
+; This module is loaded and run after all the effect's modules have been run.
+; Remember each effect has 6 sub-effects, each with an associated GPU module.
+; Once omega.gas has done all of them, we run this guy.
+; See omega.gas where this routine is loaded from.
+;
+; ******************************************************************************
 .include "../../jaguar.inc"
 .include "../../blitter.inc"
 .include "../vlm.inc"
 .org $00f03000
+
+; *******************************************************************
+; *******************************************************************
+
                     movei   #$00f03f60, r0
                     movei   #$00f03f80, r14
                     load    (r0), r1
@@ -737,3 +764,4 @@ routine682:
                     nop
                     add     r0, r0
                     add     r0, r0
+; vim:ft=asm68k ts=2

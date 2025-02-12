@@ -1291,6 +1291,8 @@ titlescr:
         lsr.l   #1,d3 ; Divide d3 by 2.
         swap    d3
         move    d2,d3
+
+        ; dvf_buf is at position 128 of the Digital Video Feedback fx objects.
         lea     dvf_buf,a0
         move.l  cscreen,(a0)+
         move.l  d0,(a0)+
@@ -1301,10 +1303,10 @@ titlescr:
         clr.w   d0
         swap    d0
         move.l  d0,(a0)+
-        move.l  $18(a6),(a0)+
-        move.l  $1C(a6),(a0)+
+        move.l  dvf_crot_x(a6),(a0)+
+        move.l  dvf_crot_y(a6),(a0)+
         move.l  d3,(a0)+
-        move.l  $20(a6),(a0)+
+        move.l  dvf_deltai(a6),(a0)+
         move.l  #p_sines,(a0)+
         move.l  draw_screen,(a0)+
         move.l  a6,(a0)+
@@ -1320,7 +1322,7 @@ titlescr:
 
         move.l  #gpumods,mods
         move.l  #1,screen_ready ; Signal screen ready for display (omega also does this!).
-        moveq   #$A,d0
+        moveq   #10,d0
         lea     omega,a0
         jsr     gpurun
 
@@ -1528,6 +1530,11 @@ elcend:
         move.l  #bline2,4(a0)   ; Joypad to select, any FIRE to edit
         rts
 
+dvf_ws_x EQU 4
+dvf_ws_y EQU 8
+dvf_crot_x EQU $18
+dvf_crot_y EQU $1C
+dvf_deltai EQU $20
 ; *******************************************************************
 ; ifxobj
 ; Initialize fx object of 1024 bytes. Each of the 9 'effects' in a bank consists
@@ -1601,6 +1608,7 @@ elcend:
 ;  Index 60 - Byte 240-244: height               Parameter not yet defined    
 ;  Index 61 - Byte 244-248: _mtrig               Trigger mask                 
 ;  Index 62-  Byte 248-252: info                 Sub-Effect Type, e.g. 'Ring of Pixels'
+;  Index 63-  Byte 252-256: gpu                  Some kind of indicator for the GPU module.
 ; *******************************************************************
 ifxobj:
         ; Clear the 256 4-byte elements (1024 bytes) of the object.
@@ -6753,6 +6761,15 @@ getmatrix:
 ; default fx objects we initialized and stored in 'refblock' when the game was
 ; launched. Reading in the data from av1 is a case of filling in the parts of
 ; we got from refblock that are different from the default values.
+;
+; The high level structure of each 1024 byte sub-effect object is:
+;   Bytes 0   - 256  (64 4-byte longs): Parameters for the object. 
+;   Bytes 256 - 512  (64 4-byte longs): Some kind of buffer? 
+;   Bytes 512 - 768  (64 4-byte longs): Some kind of buffer? 
+;   Bytes 768 - 896  (64 4-byte longs): The contents of oscbank. 
+;   Bytes 896 - 1004 (64 4-byte longs): The contents of 'pixcon' to 'delayn'. 
+;
+; See also banks.s for more detail and the uncompressed contents of all banks!
 ; *******************************************************************
 gm:
         ; Clear the matrix RAM.
