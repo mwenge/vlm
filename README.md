@@ -19,11 +19,14 @@ The source code can be compiled into an executable that you can run in `t2k.exe`
 * [Play the Virtual Light Machine](#play-the-virtual-light-machine)
   * [Getting to know the controls of the Virtual Light Machine](#getting-to-know-the-controls-of-the-virtual-light-machine)
 * [Notes on the Source Code](#notes-on-the-source-code)
+* [Reading the Source Code](#reading-the-source-code)
 
 <!-- vim-markdown-toc -->
 ## Build Instructions
 
 ### Build Requirements
+You may need to install the requirements for building. The below will work on Ubuntu-like platforms.
+
 ```sh
 sudo apt install build-essentials wine python3
 ```
@@ -31,13 +34,19 @@ sudo apt install build-essentials wine python3
 ### Build the assembler toolchain
 
 We use two tools to build the source code: `rmac` and `rln`. If you already have these installed you may have some
-luck using them, if not you can build the versions included in this repository as they are known to work. 
+luck using them, if not you can build the versions suggested below as they are known to work. 
 
-First you must run the following to set up the git submodules containing the assembler toolchain:
+First clone the vlm repository:
 
 ```sh
-git submodule init
-git submodule update
+git clone https://github.com/mwenge/vlm.git
+```
+Next run the following commands to enter the vlm repository and downoad the assembler toolchain:
+
+```sh
+cd vlm
+git clone git@github.com:mwenge/rmac.git
+git clone http://tiddly.mooo.com:5000/rln/rln.git
 ```
 
 Now you can build the toolchain, as follows:
@@ -52,7 +61,7 @@ cd ..
 
 ### Build the Virtual Light Machine
 
-To build the rom image `VirtualLightMachine.jag`:
+You are now ready to build the rom image `VirtualLightMachine.jag`:
 ```sh
 make virtuallightmachine.jag
 ```
@@ -121,4 +130,9 @@ the original. The reconstructed VLM source and accompanying images and binary ob
 It was possible to get everything to build with only minor modifications. Most of these were to make the source
 comaptible with `rmac` since most of the code would originally have been written for the native jaguar assembler
 `gasm`.
+
+## Reading the Source Code
+I've recently started annotating the reverse-engineered code. Little by little, its mode of operation is becoming
+clear and hopefully my annotations make the code worth exploring in its own right. A good place to start is [vlm.s](src/vlm/vlm.s).
+
 
