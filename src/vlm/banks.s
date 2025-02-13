@@ -1,4 +1,4 @@
-; *******************************************************************
+; *******************************************************************************
 ; This is Jeff Minter's Virtual Light Machine for the Atari Jaguar.
 ;
 ; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
@@ -26,20 +26,21 @@
 ;
 ; The bank data is given in compressed form. See 'getmatrix' for the routine
 ; responsible for decompressing it. The compression scheme consists of treating
-; the default initialized sub-effect object created by 'ifxobj' as a 'base layer'.
-; The data below is read in as byte pairs. The first byte gives the number of positions
-; to advance along the base layer. The second byte is the value to write at that new
-; position. So what we have here is a kind of binary patch that we apply to the base
-; sub-effect object created by ifxobj for all 6 objects in each effect and for all 9 
-; effects in each bank: so 54 sub-effect objects in total for each bank. To improve
-; compression each 'patched object' is used as the 'base layer' for the one that follows
-; it: this improves compression because the sub-effect objects in each effect tend to be
-; similar to each other.
+; the default initialized sub-effect object created by 'ifxobj' as a 'base
+; layer'.  The data below is read in as byte pairs. The first byte gives the
+; number of positions to advance along the base layer. The second byte is the
+; value to write at that new position. So what we have here is a kind of binary
+; patch that we apply to the base sub-effect object created by ifxobj for all 6
+; objects in each effect and for all 9 effects in each bank: so 54 sub-effect
+; objects in total for each bank. To improve compression each 'patched object'
+; is used as the 'base layer' for the one that follows it: this improves
+; compression because the sub-effect objects in each effect tend to be similar
+; to each other.
 ;
-; For convenience we've prefixed each bank of compressed data with it's
+; For convenience we've prefixed each bank of compressed data with its
 ; uncompressed contents, specifically the first 256 bytes of all 6 sub-effect
 ; objects (fxobj) for each of the 9 effects in each bank.
-; *******************************************************************
+; *******************************************************************************
 ****************************************
 ; Bank 0 - Unused.
 ****************************************

@@ -1,4 +1,4 @@
-; *******************************************************************
+; ******************************************************************************
 ; This is Jeff Minter's Virtual Light Machine for the Atari Jaguar.
 ;
 ; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
@@ -31,12 +31,192 @@
 ;    May you find forgiveness for yourself and forgive others.
 ;    May you share freely, never taking more than you give.
 ;
-; *******************************************************************
+; 
+; VLM: Mode of Operation
+; ------------------------------------------------------------------------------
+; Two routines work in lockstep to generate, update, and draw pixels to the
+; screen while VLM is in progress. These are:
+; 
+;  - 'Frame': This routine is a 'vertical sync interrupt handler'. This means
+;    that the Atari Jaguar's CPU runs it every time the Object Processor has
+;    finished painting the screen and is about to start painting it again. This
+;    creates a brief interlude in which state can be updated and even some
+;    preparation performed of the next batch of pixels to be drawn to the screen.
+;    Very little pixel preparation is done in 'Frame': it focuses principally on
+;    updating the state of all the objects in the game. This routine is called up
+;    to 60 times a second.
+;
+;  - 'RunFXObjModules': This routine is the game's main loop. It is responsible
+;    for nearly all of the 'drawing' in the VLM. By 'drawing' we mean preparing
+;    the pixel data in RAM that the Jaguar's Object Processor will use to paint
+;    the screen after the next vertical sync. You will find 'RunFXObjModules' in
+;    the file 'gpu/omega.gas'. This is because (rather unusually) the 'main loop'
+;    is being run from within the GPU. 'omega.gas' contains more detail about the
+;    implementation, including about how GPU modules are loaded and run by VLM.
+;
+; The mechanism 'Frame' and 'RunFXObjModules' use to hand off work to each other is the
+; 'sync' variable. When the Jaguar's Object Processor has completed painting to
+; screen, 'Frame' will reset 'sync' to 0. When 'RunFXObjModules' sees that 'sync' is
+; 0 it will start preparing a new frame and 'draw' it in the GPU RAM. When it
+; is finished it will set sync to 1, so that 'Frame' knows it is time to paint
+; a new frame to the screen again.
+;
+; Effects and Sub-Effects
+; ------------------------------------------------------------------------------
+; You may already know that the VLM has 9 'Banks', each with 9 different 'effects'.
+; The user selects a bank and effect, and the VLM does the rest: displaying pretty
+; pictures synchronized to music played on the system or in response to user input
+; on the joypad.
+;
+; Every effect is defined by 6 'sub-effects'. In this file, sub-effects go by the
+; moniker 'fxobj'. To get a sense of the data structure of 'fxobj' take a look
+; at the routine 'ifxobj'. A quick glance will tell you there's a lot going on in there,
+; but there are two particularly important data points: the type of
+; object that it is ('info') and the GPU routine responsible for rendering it ('gpu').
+; By way of example, here is the 'info' and 'gpu' data for the 6 sub-effects that make
+; up the effect in 'Bank 1-1':
+;
+; Sub-Effect   Object Description             'info'    'gpu'       GPU Module
+; ---------    ---------------------------    --------  --------    ------------
+; 1            Digital Video Feedback area    00000004  00010000    gpu/beta.gas
+; 2            <Empty>                        00000000  00000000    N/A
+; 3            Draw a ring of pixels          00000003  00000009    gpu/alpha.gas
+; 4            Draw a ring of pixels          00000003  00000009    gpu/alpha.gas 
+; 5            Draw a ring of pixels          00000003  00000009    gpu/alpha.gas 
+; 6            Spectrum as intensities        0000000E  00090000    gpu/shu.gas 
+;
+; The value in 'info' acts as an index into 'editinginfo' for identifying the
+; sub-effect during editing. Meanwhile 'gpu' acts as an index into the array
+; 'gpumods' in vlmgpu.s and tells 'omega.gas' (which is responsible for
+; orchestrating all GPU modules) the specific GPU module to load for the
+; particular sub-effect. (Note that the 'gpu' index is shifted 16 bits to the
+; right before use: so $00090000 becomes $09.)
+;
+; If you are interested in the mechanics of drawing the effects and how each
+; effect works, 'gpu/omega.gas' is where you will have to start. That file 
+; attempts to explain in detail how the sub-effects are processed and is your
+; gateway into the other GPU modules that implement each type of sub-effect.
+; There are ten types of sub-effect implemented in total, though only eight are
+; actually used:
+;
+;    Module     Description                 'gpu' 
+;    --------------------------------------------------
+;    alpha      Draw 3D Starfield           $00000
+;    beta       Digital Feedback Video Area $10000
+;    gamma      Draw a Polygon Object       $20000
+;    psi        Post-Load for each effect.  $30000
+;    delta      Colour Plasma Area          $40000
+;    epsilon    Draw Particle Object        $50000
+;    theta      Do Particle motion          $60000
+;    sigma      Mono Particle Object        $70000 - UNUSED
+;    tau        Matrix object               $80000 - UNUSED
+;    shu        Spectrum as intensities     $90000
+;    dbeast     Pre-Load for each effect.   $A0000
+;
+; Every effect is a combination of six sub-effects, as we saw in 'Bank 1-1' above,
+; and every sub-effect is one of the eight possible types listed above.
+;
+; You may wonder what distinguishes two sub-effects of the same type when in use
+; in the same effect, such as 'Draw a ring of pixels' which is used three times in
+; 'Bank 1-1'. The answer lies in the 64 or so parameters that sit in the first 256
+; bytes of the 'fxobj' data structure representing the sub-effect. 
+;
+; If you want to know more about these other parameters or the contents of the
+; data structure of each and every effect in each and every 'Bank': then
+; 'banks.s' is for you. It gives an overview of how the bank data is stored,
+; decompressed, and details the contents of all effects.
+; 
+; As a taster, here is the first 256 bytes of the first sub-effect/fxobj for
+; Bank 1-1. Keep in mind there are 5 more of these, just to describe the full
+; effect of 1-1! Note that 'info' and 'gpu' are at the very end. 
+;
+; Data as 'Long'    Byte Offset     Offset Name  Description
+; --------------    -------------   -----------  -------------------------------
+; dc.l $00148000    Byte 0-4                     
+; dc.l $01483800    Byte 4-8                     DVF window size: X
+; dc.l $01122000    Byte 8-12                    DVF window size: Y
+; dc.l $01850000    Byte 12-16      vfb_xsca     DVF scale: X
+; dc.l $01850000    Byte 16-20      vfb_ysca     DVF scale: Y
+; dc.l $00000000    Byte 20-24      vfb_angl     DVF rotate angle
+; dc.l $00C0FC00    Byte 24-28                   DVF centre of rotation: X
+; dc.l $00C07800    Byte 28-32                   DVF centre of rotation: Y
+; dc.l $005EEBFF    Byte 32-36                   DVF Delta Intensity
+; dc.l $00C00000    Byte 36-40      dstoffx      Destination position: X
+; dc.l $00C00000    Byte 40-44      dstoffy      Destination position: Y
+; dc.l $00C00000    Byte 44-48      vfb_xpos     DVF window centre: X
+; dc.l $00C00000    Byte 48-52      vfb_ypos     DVF window centre: Y
+; dc.l $00000000    Byte 52-56      dstoffz      Destination position: Z
+; dc.l $00000000    Byte 56-60                   Vector: X
+; dc.l $00200000    Byte 60-64      dy           Destination Y offset
+; dc.l $00000000    Byte 64-68                   Vector: Y
+; dc.l $00000000    Byte 68-72                   Symmetry Types
+; dc.l $00000008    Byte 72-76      rsym_ord     Rotational Symmetry Order
+; dc.l $00080000    Byte 76-80      rsym_ste     Rotational Angle Step
+; dc.l $00000000    Byte 80-84      rsym_ist     Rotational Angle Step Delta
+; dc.l $00008000    Byte 84-88      _i1          Intensity 1
+; dc.l $00008000    Byte 88-92      _i2          Intensity 2
+; dc.l $00008000    Byte 92-96      _i3          Intensity 3
+; dc.l $00008000    Byte 96-100     _i4          Intensity 4
+; dc.l $00008000    Byte 100-104    _i5          Intensity 5
+; dc.l $00008000    Byte 104-108    _i6          Intensity 6
+; dc.l $00000400    Byte 108-112    zamp         Z amplitude
+; dc.l $00000000    Byte 112-116    phase1       Fixed point phase 1
+; dc.l $00000400    Byte 116-120    phase2       Delta phase 1
+; dc.l $00000000    Byte 120-124                 Rotational sym overall phase
+; dc.l $00400000    Byte 124-128    phase4       Fixed point phase 2
+; dc.l $00006540    Byte 128-132    i            Number of iterations
+; dc.l $00000400    Byte 132-136    j            X amplitude
+; dc.l $00000400    Byte 136-140    k            Y amplitude
+; dc.l $00000001    Byte 140-144                 Number of other iterations
+; dc.l $00008000    Byte 144-148    col1         
+; dc.l $00000000    Byte 148-152                 delta Z
+; dc.l $00000000    Byte 152-156    thang        choice of Thang
+; dc.l $00000000    Byte 156-160                 
+; dc.l $00000003    Byte 160-164    asym_fla     
+; dc.l $001E7540    Byte 164-168    sine_bas     Sine Table
+; dc.l $00C00000    Byte 168-172    rxcen        Rotational Sym centre: X
+; dc.l $00C00000    Byte 172-176    rycen        Rotational Sym centre: Y
+; dc.l $00000800    Byte 176-180    roscale      Rotational Symmetry scale
+; dc.l $00000000    Byte 180-184    roscal2      Rotational scale delta: X
+; dc.l $00001000    Byte 184-188    cvx          Colour generator vector: X
+; dc.l $00020000    Byte 188-192    cvy          Colour generator vector: Y
+; dc.l $00000000    Byte 192-196    roscalei     Rotational scale delta: Y
+; dc.l $00000000    Byte 196-200    drxcen       Rotational centre delta: X
+; dc.l $00000000    Byte 200-204    drycen       Rotational centre delta: Y
+; dc.l $00021555    Byte 204-208    phase5       Delta phase 2
+; dc.l $001E7540    Byte 208-212    wave_2       Sine Table
+; dc.l $00080000    Byte 212-216    radius       Radius
+; dc.l $00010000    Byte 216-220    cvx2         Base col generator vector: X
+; dc.l $00010000    Byte 220-224    cvy2         Base col generator vector: Y
+; dc.l $0008F000    Byte 224-228    colx         Base colour: X
+; dc.l $0008F000    Byte 228-232    coly         Base colour: Y
+; dc.l $00000000    Byte 232-236    plot_mod     Destination plot routine
+; dc.l $00000000    Byte 236-240    pixsize      Maximum pixel size
+; dc.l $65219302    Byte 240-244    height       
+; dc.l $00000000    Byte 244-248    _mtrig       Trigger mask
+; dc.l $00000004    Byte 248-252    info         Sub-Effect Type: Digital Video Feedback area  
+; dc.l $00010000    Byte 252-256    gpu          GPU Module: beta
+;
+; Most of these parameters are editable through the VLM's super-sekrit editing
+; panel.
+;
+; Editing Effects
+; ------------------------------------------------------------------------------
+; I've hacked VLM to allow you to access the editing facility without an
+; elaborate button sequence: just press 'Pause'. Then to access the 'real'
+; editing panel, keep pressing down until the screen changes.
+;
+; ******************************************************************************
 
 .include "../jaguar.inc"
 .include "../blitter.inc"
 .include "vlm.inc"
 
+        dvf_ws_x     EQU 4
+        dvf_ws_y     EQU 8
+        dvf_crot_x   EQU $18
+        dvf_crot_y   EQU $1C
+        dvf_deltai   EQU $20
 ; *******************************************************************
 ; Constants for the joystick controller.
 ; *******************************************************************
@@ -65,15 +245,18 @@
 
 ; *******************************************************************
 ; LaunchVLM
+;
+; This is where execution starts. Set the initial Bank and Effect to
+; 9-5 and enter the main loop.
 ; *******************************************************************
 LaunchVLM:
-        move    #5,skid
-        movea.l #stack,sp
+        move    #5,skid          ; Select Effect 5
+        movea.l #stack,sp        ; Set 'sp' as our stack pointer.
         move.l  #rrts,davesvec
         move    #0,started
         move    #1,freerun
-        move    #9,imatrix ; Set Bank Number to 9
-        bsr.w   everything
+        move    #9,imatrix       ; Set Bank Number to 9
+        bsr.w   everything       ; Set up everything.
         lea     davesobj,a0
         rts
 
@@ -93,9 +276,13 @@ audio:
         move.l  #-1,CLUT+4
 
 ; *******************************************************************
-; Main Loop?
+; Main Loop - Sort Of
 ; This is invoked from cdfront.s which manages the Audio CD control 
 ; functions and interface to the Virtual Light Machine.
+;
+; The 'real' main loop is 'RunFXObjModules' in 'omega.gas', which you
+; will find invoked by 'titlescr' at the very end of the execution flow
+; of the routine 'everything' below.
 ; *******************************************************************
 goagain:
         clr.w   freerun ; Allow the VLM to run freely, like a demo mode?
@@ -116,23 +303,23 @@ goagain:
 ; GPU to draw the data.
 ; *******************************************************************
 everything:
-        bsr.w   gogo ; Initialize the VLM if required.
-        tst.w   freerun ; Are we in audio reactive mode?
-        bne.w   nodoit ; If not, don't initialize the sound DSP module.
-        jsr     iansdoit ; Call the DSP initialistion routine in ians.s.
-
+        bsr.w   gogo                  ; Initialize the VLM if required.
+        tst.w   freerun               ; Are we in audio reactive mode?
+        bne.w   nodoit                ; If not, don't initialize the sound DSP module.
+        jsr     iansdoit              ; Call the DSP initialistion routine in ians.s.
+        
 nodoit:
         clr.l   udud
         clr.l   aded
         clr.l   cskr
-
+        
         ; Create 6 initialized fx objects and store them at refblock.
         lea     refblock,a6
-        move    #5,d7 ; We'll do 6 objects.
-irb:    bsr.w   ifxobj ; Initialize the object.
-        lea     1024(a6),a6 ; Each fx object is 1024 bytes long.
-        dbf     d7,irb ; Loop until we've done 6 objects.
-
+        move    #5,d7                 ; We'll do 6 objects.
+irb:    bsr.w   ifxobj                ; Initialize the object.
+        lea     1024(a6),a6           ; Each fx object is 1024 bytes long.
+        dbf     d7,irb                ; Loop until we've done 6 objects.
+        
         ; Create an fx object in fxspace and point to it in a few
         ; different places.
         movea.l #fxspace,a6
@@ -140,117 +327,117 @@ irb:    bsr.w   ifxobj ; Initialize the object.
         move.l  a6,fxobj
         move.l  a6,fxedbase
         move.l  a6,i_fxobj
-        bsr.w   ifxobj ; Initialize the fx object.
-        bsr.w   zapdel ; Clear the delay parameters
-        jsr     gm ; Generate the matrices
-
+        bsr.w   ifxobj                ; Initialize the fx object.
+        bsr.w   zapdel                ; Clear the delay parameters
+        jsr     gm                    ; Generate the matrices
+        
         lea     cubeobj,a0
         jsr     makeclear
-
+        
         lea     genobj,a0
         jsr     makecube
-
+        
         lea     monoobj,a0
         jsr     monovert
-
+        
         lea     board,a0
         jsr     cleol
-
+        
         move    #$FFFF,actime
-
+        
         ; Draw the version details.
-        movea.l #versionp,a0  ; "Virtual Light Machine v0.9//(c) 1994 Vi"...
+        movea.l #versionp,a0          ; "Virtual Light Machine v0.9//(c) 1994 Vi"...
         move    #1,cursx
         move    #1,cursy
         bsr.w   print
-
+        
         ; We create a bunch of entries in the 'beasties' list. These will be converted
         ; by RunBeasties into entries into the actual Object List stored at 'blist'.
         ; When the time comes to actually get the Object Processor to write pixels to
         ; the screen we will copy the contents of the blist to dlist. It is dlist that
         ; the Object Processor will treat as the final Object List for writing.
-
+        
         ; Create the main screen object in the beasties display backing list.
         lea     beasties,a0
-        move.l  draw_screen,d2 ; Make draw_screen the screen data.
+        move.l  draw_screen,d2        ; Make draw_screen the screen data.
         move    #$FFF8,d0
         sub.w   palside,d0
-        move    #$2C,d1 ; ','
+        move    #$2C,d1               ; ','
         add.w   paltop,d1
         sub.w   #$B0,d1
-        move    #1,skale ; Set scale to 1.
+        move    #1,skale              ; Set scale to 1.
         swap    d0
         swap    d1
-        move    #0,d5 ; Set Object Type to 0.
-        jsr     makeit ; Create the screen object in the display list.
-
-        tst.w   freerun ; Are we in audio reactive mode?
+        move    #0,d5                 ; Set Object Type to 0.
+        jsr     makeit                ; Create the screen object in the display list.
+        
+        tst.w   freerun               ; Are we in audio reactive mode?
         bne.w   zippo
-
+        
         ; Is this the display list object for the controls screen?
         lea     beasties+128,a0
-        move.l  #board,d2 ; Make board the screen data for the object.
+        move.l  #board,d2             ; Make board the screen data for the object.
         move    #24,d0
-        sub.w   palside,d0 ; Set the X position.
-        move    #60,d1 
-        add.w   paltop,d1 ; Set the Y position.
+        sub.w   palside,d0            ; Set the X position.
+        move    #60,d1
+        add.w   paltop,d1             ; Set the Y position.
         swap    d0
         swap    d1
-        move    #1,d5 ; Set the Object Type (ObTypes) to 1.
-        move    #$24,d3 ; Set the width.
-        move    #$24,d4 ; Set the hight.
+        move    #1,d5                 ; Set the Object Type (ObTypes) to 1.
+        move    #$24,d3               ; Set the width.
+        move    #$24,d4               ; Set the hight.
         jsr     makeit_transparent
-
+        
         move    #$FFFF,beasties+140
         lea     beasties+64,a0
-
+        
 zippo:  lea     beasties+192,a0
-        move    #$64,d0 ; 'd'
+        move    #$64,d0               ; 'd'
         move    #$104,d1
-        move.l  #jaglogo + $04,d2 ; Make the jaguar logo the screen data.
-        move    #5,d5 ; Set the Object Type to 5
+        move.l  #jaglogo + $04,d2     ; Make the jaguar logo the screen data.
+        move    #5,d5                 ; Set the Object Type to 5
         jsr     makeit_transparent
         move    #$10,$16(a0)
-        move    #$FFFF,12(a0) ; Set Display Object's Mode to off.
+        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
         move    #$88FF,$F00420
         move    #$80FF,$F00422
-
+        
         lea     davesobj,a0
-        move    #$50,d0 ; 'P'
+        move    #$50,d0               ; 'P'
         move    #$104,d1
         swap    d0
         swap    d1
         move.l  #$4000,d2
-        move    #6,d5 ; Set the Object Type to 6.
+        move    #6,d5                 ; Set the Object Type to 6.
         jsr     makeit_transparent
         move    #4,$16(a0)
-        move    #$FFFF,12(a0) ; Set Display Object's Mode to off.
+        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
         move    #1,$1E(a0)
-
+        
         lea     beasties+320,a0
-        move    #$50,d0 ; 'P'
+        move    #$50,d0               ; 'P'
         move    #$104,d1
         swap    d0
         swap    d1
         move.l  #$4000,d2
         move    #6,d5
         jsr     makeit_transparent
-        move    #$FFFF,12(a0) ; Set Display Object's Mode to off.
+        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
         move    #$14,$16(a0)
         move    #1,$1E(a0)
-
+        
         lea     beasties+384,a0
-        move    #$50,d0 ; 'P'
+        move    #$50,d0               ; 'P'
         move    #$104,d1
         move.l  #$4000,d2
         move    #6,d5
         swap    d0
         swap    d1
         jsr     makeit_transparent
-        move    #$FFFF,12(a0) ; Set Display Object's Mode to off.
-        move    #$24,$16(a0) ; '$'
+        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
+        move    #$24,$16(a0)          ; '$'
         move    #1,$1E(a0)
-
+        
         lea     beasties+448,a0
         move    #$10A,d0
         move    #$190,d1
@@ -259,15 +446,15 @@ zippo:  lea     beasties+192,a0
         swap    d0
         swap    d1
         jsr     makeit_transparent
-        move    #$FFFF,12(a0) ; Set Display Object's Mode to off.
+        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
         move    #$FFFF,vlmtim
-
+        
         ; Clear the environment variables.
         lea     envvals,a0
         move    #7,d0
 xx:     clr.l   (a0)+
         dbf     d0,xx
-
+        
         clr.w   XLO
         clr.w   YLO
         move    #$17F,XHI
@@ -276,16 +463,16 @@ xx:     clr.l   (a0)+
         move.l  #$C00000,YCEN
         move.l  #fx1,fx
         move    #1,fxed
-
+        
         ; Create the fx objects.
         lea     fxspace+1024,a6
         move    #4,d7
-iprep:  movem.l d7/a5-a6,-(sp) ; Stash some values in the stack so we can restore them later.
+iprep:  movem.l d7/a5-a6,-(sp)        ; Stash some values in the stack so we can restore them later.
         bsr.w   ifxobj
         movem.l (sp)+,d7/a5-a6
         lea     1024(a6),a6
         dbf     d7,iprep
-
+        
         move.l  #fxspace+1536,fxobj
         move    #0,monitor
         move    #$104,monx
@@ -293,7 +480,7 @@ iprep:  movem.l d7/a5-a6,-(sp) ; Stash some values in the stack so we can restor
         move    #3,monitand
         move.l  #symadj,routine
         clr.l   action
-        jmp     titlescr ; Draw the screen. Do all the GPU stuff.
+        jmp     titlescr              ; Draw the screen. Do all the GPU stuff.
 
 
 ; *******************************************************************
@@ -1273,6 +1460,11 @@ rys:
 ; This calls the 'omega' GPU module to fill out the screen RAM with pixels
 ; to draw. It signals to the 'Frame' vertical sync interrupt that things
 ; are ready to draw by setting the 'screen_ready' to 1.
+;
+; Note that the 'main loop' is actually in omega.gas which will loop
+; ad-infinitum running the GPU modules for the current effects.
+; If it ever bails out, we would end up back in 'goagain' which will
+; reinitialize everything.
 ; *******************************************************************
 titlescr:
         movea.l draw_screen,a0
@@ -1530,11 +1722,6 @@ elcend:
         move.l  #bline2,4(a0)   ; Joypad to select, any FIRE to edit
         rts
 
-dvf_ws_x EQU 4
-dvf_ws_y EQU 8
-dvf_crot_x EQU $18
-dvf_crot_y EQU $1C
-dvf_deltai EQU $20
 ; *******************************************************************
 ; ifxobj
 ; Initialize fx object of 1024 bytes. Each of the 9 'effects' in a bank consists
@@ -1675,9 +1862,9 @@ xxxa:   clr.l   (a1)+
         clr.l   height(a6)
         clr.l   _mtrig(a6)
 
-        ; Initiatize the 256 bytes in Bytes 256 to 512 of the object with 0XFF.
-        ; Initiatize the 256 bytes in Bytes 512 to 768 of the object with 0X00.
-        ; Initiatize the 128 bytes in Bytes 0 to 128 of 'results' with 0x00.
+        ; Initialize the 256 bytes in Bytes 256 to 512 of the object with 0XFF.
+        ; Initialize the 256 bytes in Bytes 512 to 768 of the object with 0X00.
+        ; Initialize the 128 bytes in Bytes 0 to 128 of 'results' with 0x00.
         lea     256(a6),a5
         lea     results,a4
         lea     512(a6),a3
@@ -4047,84 +4234,84 @@ justfade:
 ; to 'Frame' using the 'sync' and 'screen ready' variables.
 ; *******************************************************************
 Frame:
-        movem.l d0-d5/a0-a2,-(sp) ; Stash some values in the stack so we can restore them later.
-
+        movem.l d0-d5/a0-a2,-(sp)   ; Stash some values in the stack so we can restore them later.
+        
         ; Check if we're in a vertical blank or not.
         move    INT1,d0
-        move    d0,-(sp) ; Stash some values in the stack so we can restore them later.
-        btst    #0,d0         ; Are we in a vertical blank?
-        beq.w   CheckTimer      ; If not, skip everything and check for input only.
-
+        move    d0,-(sp)            ; Stash some values in the stack so we can restore them later.
+        btst    #0,d0               ; Are we in a vertical blank?
+        beq.w   CheckTimer          ; If not, skip everything and check for input only.
+        
         addi.w  #1,frames
         tst.w   clut_sha
         beq.w   ncc
         move    clut_sha,$F00482
         clr.w   clut_sha
-
+        
         ; We're in a vertical blank so can update some state.
         ; Copy the display list we built in 'blist' to 'dlist'. The
         ; display list will be used by the Objects Processor to paint
         ; the next frame.
         ; blist is the the shadow hardware display list.
         ; dlist is the hardware display list.
-ncc:    movem.l d6-d7/a3-a6,-(sp) ; Stash some values in the stack so we can restore them later.
-        movea.l blist,a0; Stash blist in a0.
-        movea.l dlist,a1; Stash dlist in a1.
-
-        moveq   #$40,d0      ; 0x40 units of 4 bytes each to be copied.
-xlst:   move.l  (a0)+,(a1)+  ; Copy 4 bytes from blist to dlist.
-        dbf     d0,xlst      ; Keep copying until we run out of bytes.
-
+ncc:    movem.l d6-d7/a3-a6,-(sp)   ; Stash some values in the stack so we can restore them later.
+        movea.l blist,a0            ; Stash blist in a0.
+        movea.l dlist,a1            ; Stash dlist in a1.
+        
+        moveq   #$40,d0             ; 0x40 units of 4 bytes each to be copied.
+xlst:   move.l  (a0)+,(a1)+         ; Copy 4 bytes from blist to dlist.
+        dbf     d0,xlst             ; Keep copying until we run out of bytes.
+        
         ; Build the display list in 'blist' from 'beasties' for the next frame.
         ; The 'beasties' list is populated mostly in 'everything' which runs in our 'goagain' mainloop.
         bsr.w   RunBeasties
-
+        
         ; In our 'goagain' mainloop we prepare draw_screen (double-buffered screen) with
         ; objects drawn by the GPU/Blitter. Once it's ready we set
         ; screen_ready. Here we check if screen_ready is set and if so, we swap
         ; draw_screen into 'cscreen' (current screen). We will then update the
         ; main screen object in the Display List to reference this new address.
-
+        
         ; Check if we can swap in the new screen prepared in 'omega.gas'.
-        tst.l   screen_ready; has 'omega' finished preparing a new screen?
-        beq.w   no_new_screen   ; If no, go to no_new_screen.
-        tst.l   sync        ; Has omega.gas signalled it safe to swap screens?
-        beq.w   no_new_screen   ; If no, go to new_screen.
-
+        tst.l   screen_ready        ; has 'omega' finished preparing a new screen?
+        beq.w   no_new_screen       ; If no, go to no_new_screen.
+        tst.l   sync                ; Has omega.gas signalled it is safe to swap screens, i.e. a new screen is awaiting rendering?
+        beq.w   no_new_screen       ; If not, go to no_new_screen.
+        
         ; Swap draw_screen into cscreen so that the new screen can be used in the Object List.
         ; Note that dscreen points to draw_screen so it is draw_screen we are swapping in here.
-        move.l  cscreen,d1            ; Stash cscreen in d1.                          
-        move.l  dscreen,cscreen   ; Overwrite cscreen with dscreen.
-        move.l  d1,dscreen            ; Overwrite dscreen with stashed cscreen.
-        move.l  d1,draw_screen        ; Overwrite draw_screen with stashed cscreen.
-        clr.l   screen_ready          ; Signal that a new screen is required before we come here again.
-        clr.l   sync                  ; Signal to omega it can build a new screen.
-
+        move.l  cscreen,d1          ; Stash cscreen in d1.
+        move.l  dscreen,cscreen     ; Overwrite cscreen with dscreen.
+        move.l  d1,dscreen          ; Overwrite dscreen with stashed cscreen.
+        move.l  d1,draw_screen      ; Overwrite draw_screen with stashed cscreen.
+        clr.l   screen_ready        ; Signal that a new screen is required before we come here again.
+        clr.l   sync                ; Signal to omega it can build a new screen.
+        
 no_new_screen:
         move.l  cscreen,d5
-        movea.l dlist,a0 ; Point a0 at the display list
-        move    db_on,d7 ;  Is double-buffering enabled
-        bmi.w   no_db        ; If not, skip to warp flash.
+        movea.l dlist,a0            ; Point a0 at the display list
+        move    db_on,d7            ; Is double-buffering enabled
+        bmi.w   no_db               ; If not, skip to warp flash.
         tst.w   scron
         beq.w   stdb
         bpl.w   no_db
         clr.w   scron
         bra.w   no_db
-
+        
         ; Update the main screen item in the Object List with the address of the new screen contained
         ; in cscreen. This has the effect of ensuring all the objects we drew with the GPU
         ; and Blitter in 'mainloop' are actually written to the screen by the Object Processor.
 stdb:   move.l  d5,d6
         add.l   hango,d6
-        and.l   #$FFFFFFF8,d6 ; lose three LSB's
-        lsl.l   #8,d6         ; move to correct bit position
-        move.l  (a0),d1       ; get first word of the BMO
-        and.l   #$7FF,d1      ; clear data pointer
-        or.l    d6,d1         ; mask in new pointer
-        move.l  d1,(a0)       ; replace in OL
-        lea     $40(a0),a0    ; This skips to the next object in the object list.
-        add.l   dbadj,d5 ; Move to the next object in cscreen. 
-        dbf     d7,stdb ; Keep looping until we've done all double-buffered screens.
+        and.l   #$FFFFFFF8,d6       ; lose three LSB's
+        lsl.l   #8,d6               ; move to correct bit position
+        move.l  (a0),d1             ; get first word of the BMO
+        and.l   #$7FF,d1            ; clear data pointer
+        or.l    d6,d1               ; mask in new pointer
+        move.l  d1,(a0)             ; replace in OL
+        lea     $40(a0),a0          ; This skips to the next object in the object list.
+        add.l   dbadj,d5            ; Move to the next object in cscreen.
+        dbf     d7,stdb             ; Keep looping until we've done all double-buffered screens.
 
 no_db:  tst.w   flash
         beq.w   cflash
@@ -4218,76 +4405,76 @@ nothash:
         ;Get the number that was pressed.
         bsr.w   dcode
         and.w   #$FF,d2
-        sub.b   #$30,d2 ; '0'
+        sub.b   #$30,d2             ; '0'
         bne.w   pharty
         bra.w   no_ksel
-
+        
         ; An effect was selected, so enable it.
 pharty: move    star_on+2,star_on
         move    d2,star_on+2
         move    #1,seldb
         bra.w   no_ksel
-
+        
         ; Was an effect selected?
-knobby: tst.l   star_on ; Test if one was turned on.
-        beq.w   no_ksel ; If not, skip to no_ksel.
-        move    star_on,d0 ; Store selection in d0.
+knobby: tst.l   star_on             ; Test if one was turned on.
+        beq.w   no_ksel             ; If not, skip to no_ksel.
+        move    star_on,d0          ; Store selection in d0.
         bne.w   setbth
         move    star_on+2,skid
         move.l  #skidoo,action
         bra.w   n_ks
-
+        
         ; We've got an effect to load so load it.
 setbth: sub.w   #1,d0
-        move    d0,imatrix ;  Set the bank number
-        move    star_on+2,skid ; Set the effect number within the bank.
-        move.l  #gm,action ; Load the effect.
-
+        move    d0,imatrix          ; Set the bank number
+        move    star_on+2,skid      ; Set the effect number within the bank.
+        move.l  #gm,action          ; Load the effect.
+        
 n_ks:   clr.l   star_on
-
+        
 no_ksel:
         ; Detect the cheat-mode enable for editing.
-        move.l  pad_now,d0        ; Get button press.
-
+        move.l  pad_now,d0          ; Get button press.
+        
         ; Temporarily use pause button to enter edit mode.
-        ;cmp.l   #(seven|asterisk|zerobutton|three),d0
-        cmp.l   #pausebutton,d0   ; Was the edit cheat code (037#) selected?
-
-        bne.w   nse1              ; Edit not selected
-        jsr     setedit           ; Enable Edit mode.
-        bra.w   nse2              ; Skip next line, leave editing enabled.
-
-nse1:   clr.w   vedit ; Clear edit enabled.
-
+        ; cmp.l   #(seven|asterisk|zerobutton|three),d0
+        cmp.l   #pausebutton,d0     ; Was the edit cheat code (037#) selected?
+        
+        bne.w   nse1                ; Edit not selected
+        jsr     setedit             ; Enable Edit mode.
+        bra.w   nse2                ; Skip next line, leave editing enabled.
+        
+nse1:   clr.w   vedit               ; Clear edit enabled.
+        
         ; Perform whatever the current 'fx' routine is. Can be one of:
-        ;   - symadj, keydb, ov, rrts.
+        ; - symadj, keydb, ov, rrts.
 nse2:   movea.l _fx,a0
         jsr     (a0)
         tst.l   action
         bne.w   gharbaj
-
+        
         ; Perform whatever the current 'routine' is. Can be one of:
-        ;   - symadj, keydb, ov, rrts.
+        ; - symadj, keydb, ov, rrts.
         movea.l routine,a0
         jsr     (a0)
-
+        
 gharbaj:
-        movem.l (sp)+,d6-d7/a3-a6 ; Restore stashed values from the stack.
-
+        movem.l (sp)+,d6-d7/a3-a6   ; Restore stashed values from the stack.
+        
 CheckTimer:
-        move    (sp)+,d0 ; Restore stashed values from the stack.
-        move    d0,-(sp) ; Stash some values in the stack so we can restore them later.
+        move    (sp)+,d0            ; Restore stashed values from the stack.
+        move    d0,-(sp)            ; Stash some values in the stack so we can restore them later.
         btst    #3,d0
-        beq.w   exxit 
-
-exxit:  move    (sp)+,d0 ; Restore stashed values from the stack.
+        beq.w   exxit
+        
+exxit:  move    (sp)+,d0            ; Restore stashed values from the stack.
         lsl     #8,d0
         move.b  intmask,d0
         move    d0,INT1
         move    d0,INT2
-        movem.l (sp)+,d0-d5/a0-a2 ; Restore stashed values from the stack.
+        movem.l (sp)+,d0-d5/a0-a2   ; Restore stashed values from the stack.
         rte
-
+        
 ; *******************************************************************
 ; ski1
 ; *******************************************************************
@@ -6735,32 +6922,36 @@ getmatrix:
 ;
 ; Load a bank with 9 effects. 'matrix' is where we store the bank of 9 effects.
 ;
-; Each of the 9 'effects' in the 'bank' consists of 6 sub-effect 'fx objects' (see ifxobj). At launch we created
-; a set of 6 barebones sub-effect fx objects and stored them in refblock. This acts
-; as our base layer for the first effect. Loading a bank of 9 effect to 'matrix' (which
-; is where the active bank is stored) entails the following steps:
+; Each of the 9 'effects' in the 'bank' consists of 6 sub-effect 'fx objects'
+; (see ifxobj). At launch we created a set of 6 barebones sub-effect fx objects
+; and stored them in refblock. This acts as our base layer for the first
+; effect. Loading a bank of 9 effect to 'matrix' (which is where the active
+; bank is stored) entails the following steps:
 ;
-;  - Given the selected bank, figure out the location in 'av1' (see banks.s) that the
-;    bank data starts at.
+;  - Given the selected bank, figure out the location in 'av1' (see banks.s)
+;  that the bank data starts at.
 ;
 ;  - Copy refblock to matrix so that it has the base layer for all 6 fx objects
-;    for the first effect.
+;  for the first effect.
 ;
-;  - Read in the selected bank's data for the first effect from av1. This data consists of byte
-;    pairs such as ($01,$12). Each byte pair is like an instruction. In this
-;    example $01 means advance 1 position in 'matrix' and store $12 in the new
-;    position. We continue doing that until we've advanced 6144 positions, i.e.
-;    the full length of the data for the first effect (6 fx objects, each 1024 bytes long).
+;  - Read in the selected bank's data for the first effect from av1. This data
+;  consists of byte pairs such as ($01,$12). Each byte pair is like an
+;  instruction. In this example $01 means advance 1 position in 'matrix' and
+;  store $12 in the new position. We continue doing that until we've advanced
+;  6144 positions, i.e.  the full length of the data for the first effect (6 fx
+;  objects, each 1024 bytes long).
 ;
-;  - Loop through the rest of av1 for the remaining 8 effects. For each effect, use the previous effect as a 
-;    base layer, then read through av1 plugging in the data from the byte pairs read in from
-;    av1 using the same method as the step above.
+;  - Loop through the rest of av1 for the remaining 8 effects. For each effect,
+;  use the previous effect as a base layer, then read through av1 plugging in
+;  the data from the byte pairs read in from av1 using the same method as the
+;  step above.
 ;
-; So as you can see each bank's data in av1 is 'compressed' - it doesn't contain
-; the whole 6144 bytes of data for each of the 9 effects - just the bytes that are different from the
-; default fx objects we initialized and stored in 'refblock' when the game was
-; launched. Reading in the data from av1 is a case of filling in the parts of
-; we got from refblock that are different from the default values.
+; So as you can see each bank's data in av1 is 'compressed' - it doesn't
+; contain the whole 6144 bytes of data for each of the 9 effects - just the
+; bytes that are different from the default fx objects we initialized and
+; stored in 'refblock' when the game was launched. Reading in the data from av1
+; is a case of filling in the parts of we got from refblock that are different
+; from the default values.
 ;
 ; The high level structure of each 1024 byte sub-effect object is:
 ;   Bytes 0   - 256  (64 4-byte longs): Parameters for the object. 
@@ -6791,8 +6982,8 @@ ivtb:   move.l  #-1,(a1)+       ; Clear a 4-byte phrase.
         add.l   d1,d0           ; Add the offset + av1 to get the address of the selected bank.
         movea.l d0,a0           ; Store the address of the selected bank in a0.
         
-        ; - Copy refblock to matrix so that it has the base layer for all 6 fx objects.
-        ; Copy the contents of refblock (a0) to matrix (a1).
+        ; - Copy refblock to matrix so that it has the base layer for all 6 fx
+        ; objects.  Copy the contents of refblock (a0) to matrix (a1).
         ; Remember that refblock contains six clean, initialized fx objects.
         lea     matrix,a1
         movem.l a0-a1,-(sp)     ; Stash some values in the stack so we can restore them later.
@@ -6819,9 +7010,10 @@ unp:    move.b  (a0)+,d1        ; First byte: steps to advance.
         add.w   #1,d0           ; Advance at least 1 position.
         bra.s   unp             ; Keep looping.
         
-        ; - Loop through the rest of av1 for the remaining 8 effects. For each effect, use the previous effect as a
-        ; base layer, then read through av1 plugging in the data from the byte pairs read in from
-        ; av1 using the same method as the step above.
+        ; - Loop through the rest of av1 for the remaining 8 effects. For each
+        ; effect, use the previous effect as a base layer, then read through
+        ; av1 plugging in the data from the byte pairs read in from av1 using
+        ; the same method as the step above.
 taiga:  move    #7,d5           ; Loop through all 8 objects?
         ; a0 is the current position in av1 containing the effect info for the bank.
         ; a1 is the pointer to matrix where we will unpack it all to.

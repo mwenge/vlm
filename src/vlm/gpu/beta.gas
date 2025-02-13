@@ -622,3 +622,4 @@ routine603:
                     jump    (r30)
                     add     r0, r0
                     add     r0, r0
+; vim:ft=asm68k ts=2

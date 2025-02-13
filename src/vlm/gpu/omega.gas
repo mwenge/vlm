@@ -30,19 +30,28 @@
 
 fx_in_buf         EQU in_buf+$8
 results_in_buf    EQU in_buf + $C
-LOADED_MODULE     EQU  $F03000 ;l RW GPU Internal sRAM
+loaded_module     EQU  $F03000 ;l RW GPU Internal sRAM
 _post_gpu_routine EQU $15
 _object_counter   EQU $18
 fx_obj            REGEQU r3
 _fxobj            EQU $17
 _results          EQU $19
-_dbeast EQU $a0000
-_psi EQU $30000
+_dbeast           EQU $a0000
+_psi              EQU $30000
+_fxobj_r22        REGEQU r22
+_fxobj_r23        REGEQU r23
+_fxobj_r25        REGEQU r25
+_bigloop_ctr      REGEQU r26
+_results_r24      REGEQU r24
 
 .org $00f03a78
 ; *******************************************************************
-; fmult
+; MACROS
+; Some macros used by omega.gas
 ; *******************************************************************
+; -------------------------------------------------------------------
+; fmult
+; -------------------------------------------------------------------
         MACRO fmult     ;multiply 2 thangs, uses r2-r4, returns in first reg.
         move \2,r30    ;(preserves second Thang)
         moveq #0,r27
@@ -73,9 +82,9 @@ _psi EQU $30000
 \~fmptt:
         ENDM
 
-; *******************************************************************
+; -------------------------------------------------------------------
 ; waitblit
-; *******************************************************************
+; -------------------------------------------------------------------
         MACRO waitblit  ; Wait for the GPULoad to stop
       \~waitt:
         load (blit_cmd),r21
@@ -91,65 +100,93 @@ _psi EQU $30000
 ; module associated with each. Before an fxobj's module is run we run
 ; the dbeast module first. When all 6 fxobjs have been 'run', we run
 ; the 'psi' GPU module to finish off.
+;
+; It looks like this is a 'main loop' and will keep running forever,
+; signalling 'screen ready', then cycling back to RunFXObjModulesLoop to start again
+;  after updating each of the 6 fxobjs.
 ; *******************************************************************
 
 RunFXObjModules:    movei   #in_buf+$20, r14
 
-                    ;Set the 'sync' signal.
-SetSync:            movei   #sync, r0 ; Point r0 at sync.
-                    moveq   #1, r1 ; Load 1 to r1.
-                    store   r1, (r0) ; Store 1 in sync.
-                    ; Wait for sync to get updated to 1.
-LoopUntilSet:       load    (r0), r1 ; Check sync.
-                    cmpq    #$0, r1 ; Is it still zero?
-                    jr      nz,LoopUntilSet ; If so, loop again.
+                    ; ----------------------------------------------------------------
+                    ; The top of the main 'run fx obj' modules loop.
+                    ; This will keep looping, running the GPU modules for all 6 fx objs
+                    ; in the effect, setting the 'sync' and 'screen_ready' signals at 
+                    ; each iteration.
+                    ; ----------------------------------------------------------------
+RunFXObjModulesLoop:
+                    ; Set the 'sync' signal.
+                    movei   #sync, r0                   ; Point r0 at sync.
+                    moveq   #1, r1                      ; Load 1 to r1.
+                    store   r1, (r0)                    ; Store 1 in sync.
+                    
+                    ; ----------------------------------------------------------------
+                    ; We've set sync to '1' so we wait for Frame to signal that it is
+                    ; ready for a new frame by resetting 'sync' to 0.
+                    ; ----------------------------------------------------------------
+WaitForSync:        load    (r0), r1                    ; Check sync.
+                    cmpq    #$0, r1                     ; Is it still non-zero?
+                    jr      nz,WaitForSync              ; If so, loop again.
                     nop
-
+                    
+                    ; 'sync' has been reset to zero so its safe to build a new frame.
                     ; Loop through all 6 fx objects.
                     movei   #fx_in_buf, r2              ; Point r2 at the sub-effect fx obj.
                     moveq   #5, r1                      ; We are going to loop through all 6 fx objects.
                     load    (r2), r0                    ; Point r0 at the sub-effect fx obj.
                     or      r1, r1                      ; Make sure current counter is loaded.
                     store   r1, (r14+_object_counter)   ; Store the current count.
-
+                    
+                    ; ----------------------------------------------------------------
                     ; Loop through all 6 fx objects.
+                    ; ----------------------------------------------------------------
 LoopThroughFXObjs:  movei   #GoToNext, r2
-                    load    (r0), fx_obj ; Point r3 at the fxobject.
-                    addq    #4, r0 ; Add 4 so that r0 points at the results object.
-                    cmpq    #$0, fx_obj ; Is the fx object zeros?
-                    jump    z,(r2) ; If so, go to GoToNext.
+                    load    (r0), fx_obj                ; Point r3 at the fxobject.
+                    addq    #4, r0                      ; Add 4 so that r0 points at the results object.
+                    cmpq    #$0, fx_obj                 ; Is the fx object zeros?
+                    jump    z,(r2)                      ; If so, go to GoToNext.
                     nop
-
+                    
                     ; We have an fx object to process.
-                    or      fx_obj, fx_obj ; Make sure fxobj is loaded.
-                    or      r0, r0 ; Make sure results object is loaded.
-                    store   fx_obj, (r14+_fxobj) ; Stash the fx object.
-                    store   r0, (r14+_results) ; Stash the results object.
-
+                    or      fx_obj, fx_obj              ; Make sure fxobj is loaded.
+                    or      r0, r0                      ; Make sure results object is loaded.
+                    store   fx_obj, (r14+_fxobj)        ; Stash the fx object.
+                    store   r0, (r14+_results)          ; Stash the results object.
+                    
                     ; Run the dbeast module first.
-                    movei   #_dbeast, r1 ; Index into 'mods' -> dbeast
-                    movei   #ResumeLoop, r2 ; Pick up at ResumeLoop when finished.
+                    movei   #_dbeast, r1                  ; Index into 'mods' -> dbeast
+                    movei   #FinishedDBeast, r2           ; Pick up at FinishedDBeast when finished.
                     movei   #RunGPUModule, r0
-                    or      r2, r2 ; Make sure ResumeLoop is ready.
-                    store   r2, (r14+_post_gpu_routine) ; Store it as our post-GPU routine.
-                    jump    (r0) ; Run the dbeast GPU module.
+                    or      r2, r2                        ; Make sure ResumeLoop is ready.
+                    store   r2, (r14+_post_gpu_routine)   ; Store it as our post-GPU routine.
+                    jump    (r0)                          ; Run the dbeast GPU module.
                     nop
 
+                    ; ----------------------------------------------------------------
                     ; When finished running the dbeast module we resume here.
-ResumeLoop:         movei   #routine2, r0
+                    ; Whatever we're checking here, it if it's true we skip
+                    ; the main module run loop below.
+                    ; ----------------------------------------------------------------
+FinishedDBeast:     movei   #PostMainModuleRun, r0
                     cmpq    #$0, r1
                     jump    z,(r0)
                     nop
 
+                    ; ----------------------------------------------------------------
+                    ; Main Module Run Loop
                     ; Keep loopin in here until something.
-routine35:          move    r26, r20
+                    ; This is an inner loop that keeps running the fx obj's GPU module.
+                    ; It depends on decrementring r24 to zero before it stops.
+                    ; ----------------------------------------------------------------
+MainModuleRunLoop:  move    r26, r20
                     movei   #$0000003f, r1
                     and     r1, r20
                     movei   #$00000600, r0
                     mult    r0, r20
                     add     r27, r20
                     move    r20, r3
-                    movei   #routine5, r1
+
+                    movei   #JumpToNext, r1
                     movei   #info, r0
                     add     r3, r0
                     load    (r0), r2
@@ -161,14 +198,14 @@ routine35:          move    r26, r20
                     ; the 'gpu' index. When shifted 16 bits to the left this gives us an index into the
                     ; 'mods' array. So for example '$90000' is index 9 into the 10th object in 'mods',
                     ; which is 'shu'.
-                    movei   #dscreen, r0
-                    load    (r0), r1
-                    movei   #$00000000, r0
-                    add     r3, r0
-                    store   r1, (r0)
-                    movei   #gpu, r0 ; Put the offset for the GPU routine in r0.
-                    add     r3, r0 ; Add the fxobj address to it to get our index for the gpu module in 'mods'.
-                    load    (r0), r1 ; Point r1 at our index into 'mods'.
+                    movei   #dscreen, r0                  ; Put dscreen in r0..
+                    load    (r0), r1                      ; .. and point r1 at the address of dscreen.
+                    movei   #$00000000, r0                ; Make r0 zero.
+                    add     fx_obj, r0                    ; And make r0 point to the first byte in fx_obj.
+                    store   r1, (r0)                      ; Store pointer to draw screen in first 4 bytes of fx_obj.
+                    movei   #gpu, r0                      ; Put the offset for the GPU routine ($FC/252) in r0.
+                    add     r3, r0                        ; Add the fxobj address to it to get our index for the gpu module in 'mods'.
+                    load    (r0), r1                      ; Point r1 at our index into 'mods'.
                     moveta  r26, r26
                     moveta  r27, r27
                     moveta  r24, r24
@@ -180,6 +217,7 @@ routine35:          move    r26, r20
                     jump    (r0)
                     nop
 
+                    ; We come back here after we finish running the GPU module loaded above.
 ResumeLoopAgain:    movefa  r3, r3
                     movefa  r14, r14
                     movefa  r26, r26
@@ -187,64 +225,83 @@ ResumeLoopAgain:    movefa  r3, r3
                     movefa  r24, r24
                     movefa  r25, r25
 
-routine5:           add     r25, r26
-                    movei   #routine35, r0
+JumpToNext:         add     r25, r26
+                    movei   #MainModuleRunLoop, r0
                     subq    #1, r24
-                    jump    nz,(r0)
+                    jump    nz,(r0) ; Keep looping until r24 reaches zero.
                     nop
+                    
+                    ; ----------------------------------------------------------------
+                    ; Do more stuff
+                    ; ----------------------------------------------------------------
                     movefa  r29, r29
                     addq    #2, r29
                     loadw   (r29), r0
                     addq    #1, r0
                     storew  r0, (r29)
-routine2:
-                    load    (r14+_fxobj), fx_obj
+
+                    ; ----------------------------------------------------------------
+                    ; Run the sub-effect's module again, but just the once.
+                    ; ----------------------------------------------------------------
+PostMainModuleRun:  load    (r14+_fxobj), fx_obj          ; Load the fx obj to fx_obj (r3).
                     movei   #draw_screen, r0
                     load    (r0), r1
                     movei   #$00000000, r0
                     add     fx_obj, r0
-                    store   r1, (r0)
-                    movei   #trig, r0
-                    load    (r0), r1
-                    movei   #$000000f0, r0
-                    add     fx_obj, r0
-                    store   r1, (r0)
-                    xor     r1, r1
+                    store   r1, (r0)                      ; Store pointer to draw screen in first 4 bytes of fx_obj.
+                    movei   #trig, r0                     ; Point r1..
+                    load    (r0), r1                      ; .. at 'trig'.
+                    movei   #height, r0                   ; Get the offset to 'height' in fxobj..
+                    add     fx_obj, r0                    ; .. add it the fx_obj address to point r0 at its position.
+                    store   r1, (r0)                      ; Store 'trig' in the 'height' of the fxobj.
+                    xor     r1, r1                        ; Make sure r1 is ready.
                     movei   #screen_ready+$8, r0
                     store   r1, (r0)
-                    movei   #$000000fc, r0
-                    add     fx_obj, r0
-                    load    (r0), r1
-                    movei   #routine36, r2
+                    movei   #gpu, r0                      ; Put the offset to the gpu index in r0.
+                    add     fx_obj, r0                    ; Add the fx_obj address to it.
+                    load    (r0), r1                      ; Store the gpu index in r1.
+                    movei   #ResumeAfterGPU, r2
                     movei   #RunGPUModule, r0
                     or      r2, r2
-                    store   r2, (r14+_post_gpu_routine)
-                    jump    (r0)
+                    store   r2, (r14+_post_gpu_routine)   ; Stash the post-GPU routine.
+                    jump    (r0)                          ; Load the fx obj's GPU module.
                     nop
-routine36:          movefa  r3, r3
+
+_little_loop REGEQU r20
+
+                    ; ----------------------------------------------------------------
+                    ; Loop 8 times for something
+                    ; ----------------------------------------------------------------
+ResumeAfterGPU:     movefa  r3, r3
                     movefa  r14, r14
                     movei   #$00000300, r0
-                    moveq   #$7, r1
+
+                    ; Looping 8 times doing something.
+                    moveq   #$7, r1 ; Loop 8 times.
                     add     r0, r3
-                    movei   #routine7, r20
+                    movei   #LittleLoop, _little_loop
                     move    r3, r22
-routine7:           load    (r22), r21
+LittleLoop:         load    (r22), r21
                     addq    #4, r22
                     load    (r22), r0
                     addq    #8, r22
                     load    (r22), r4
                     subq    #$c, r22
                     cmpq    #$6, r4
-                    jr    nz,routine123 ; #$0000016C
+                    jr    nz,SkipXOR ; #$0000016C
                     nop
                     xor     r0, r0
-routine123:
-                    add     r0, r21
+SkipXOR:            add     r0, r21
                     store   r21, (r22)
                     addq    #16, r22
                     subq    #1, r1
-                    jump    nn,(r20)
+                    jump    nn,(_little_loop)
                     nop
+                    ; End of Little Loop.
+
+                    ; ----------------------------------------------------------------
+                    ; Do some stuff
+                    ; ----------------------------------------------------------------
                     movei   #in_buf+4, r0 ; oscvals
                     load    (r0), r4
                     addq    #16, r0
@@ -260,7 +317,7 @@ routine9:           load    (r3), r10
                     load    (r3), r12
                     addq    #4, r3
                     cmpq    #$7, r12
-                    jr    n,routine147 ; #ZOFFS7
+                    jr    n,routine7 ; #ZOFFS7
                     move    r12, r1
                     subq    #$7, r1
                     load    (r0), r2
@@ -269,14 +326,12 @@ routine9:           load    (r3), r10
                     add     r1, r2
                     load    (r2), r12
                     jump    (r24)
-routine147:
-                    cmpq    #PITCH8, r12
+routine7:           cmpq    #PITCH8, r12
                     jr    nz,routine157 ; #$000001CA
                     move    r10, r12
                     shrq    #8, r12
                     jump    (r24)
-routine157:
-                    move    r10, r15
+routine157:         move    r10, r15
                     shrq    #16, r10
                     and     r21, r10
                     add     r10, r11
@@ -294,26 +349,34 @@ routine11:          storew  r12, (r4)
                     subq    #1, r22
                     jump    nz,(r23)
                     nop
-                    movei   #in_buf+$c, r0 ; results
-                    load    (r14+_fxobj), r22
-                    movei   #$0000003f, r26
-                    movei   #ZOFFS4, r2
-                    move    r22, r23
-                    move    r22, r25
-                    add     r2, r25
-                    add     r2, r23
-                    add     r2, r25
-                    load    (r0), r24
-routine16:          loadw   (r23), r1
-                    movei   #routine12, r2
-                    addq    #2, r23
+
+                    ; ----------------------------------------------------------------
+                    ; A Big Inner Loop of some sort.
+                    ; A big loop controlled by r26, which we do 64 times.
+                    ; I suspect we're doing something to each of the 64 values
+                    ; in the first 256 bytes of the fxobj?
+                    ; ----------------------------------------------------------------
+                    movei   #results_in_buf, r0 ; results
+                    load    (r14+_fxobj), _fxobj_r22
+                    movei   #63, _bigloop_ctr
+                    movei   #256, r2
+                    move    _fxobj_r22, _fxobj_r23
+                    move    _fxobj_r22, _fxobj_r25
+                    add     r2, _fxobj_r25
+                    add     r2, _fxobj_r23
+                    add     r2, _fxobj_r25
+                    load    (r0), _results_r24
+BigLoop64:          loadw   (_fxobj_r23), r1
+                    movei   #BigLoopSkipToNext, r2
+                    addq    #2, _fxobj_r23
                     cmpq    #$0, r1
                     jump    z,(r2)
+
                     shlq    #16, r1
-                    loadw   (r23), r2
+                    loadw   (_fxobj_r23), r2
                     or      r2, r1
                     movei   #$0000003f, r0
-                    sub     r26, r0
+                    sub     _bigloop_ctr, r0
                     shlq    #PITCH8, r0
                     move    r0, r2
                     shlq    #2, r0
@@ -326,7 +389,7 @@ routine16:          loadw   (r23), r1
                     subq    #$c, r2
                     load    (r2), r8
                     move    r1, r28
-                    move    r25, r21
+                    move    _fxobj_r25, r21
                     move    r0, r4
                     move    r8, r16
                     move    r28, r19
@@ -334,16 +397,20 @@ routine16:          loadw   (r23), r1
                     shrq    #16, r28
                     shrq    #1, r19
                     addq    #16, r16
+
+                    ; ----------------------
+                    ; A little inner loop.
+                    ; ----------------------
                     moveq   #8, r3
                     movei   #$00007fff, r5
-                    movei   #routine14, r7
+                    movei   #LittleInnerLoop, r7
                     and     r5, r19
                     move    r5, r27
                     shlq    #1, r27
                     movei   #routine15, r10
                     movei   #TOPNEN, r17
                     xor     r18, r18
-routine14:          btst    #$0, r28
+LittleInnerLoop:    btst    #$0, r28
                     jump    z,(r10)
                     nop
                     loadw   (r8), r1
@@ -352,13 +419,19 @@ routine14:          btst    #$0, r28
                     sharq   #16, r5
                     add     r5, r18
 routine15:          btst    #8, r28
-                    jr    z,GPULoad7 ; #$00000290
+                    jr    z,SkipTwoLines ; #$00000290
                     shrq    #1, r28
                     loadw   (r16), r27
-GPULoad7:
-                    addq    #2, r16
+SkipTwoLines:       addq    #2, r16
                     subq    #1, r3
                     jump    nz,(r7)
+                    ; ----------------------
+                    ; End of Little Inner Loop
+                    ; ---------------------
+
+                    ; ----------------------------------------------------------------
+                    ; Something something
+                    ; ----------------------------------------------------------------
                     addq    #2, r8
                     mult    r27, r19
                     shrq    #16, r19
@@ -367,8 +440,7 @@ GPULoad7:
                     cmpq    #$0, r18
                     jr    nn,routine249 ; #$000002A6
                     add     r17, r18
-routine249:
-                    or      r18, r18
+routine249:         or      r18, r18
                     store   r18, (r14+$16)
                     move    r18, r5
                     load    (r14+_fxobj), r6
@@ -387,8 +459,7 @@ routine249:
                     jr    z,routine267 ; #$000002CC
                     bclr    #$7, r9
                     moveq   #1, r7
-routine267:
-                    movei   #routine33, r0
+routine267:         movei   #routine33, r0
                     cmpq    #2, r9
                     jump    z,(r0)
                     nop
@@ -397,66 +468,77 @@ routine267:
                     movei   #routine34, r0
                     jump    (r0)
                     nop
-
 routine33:          fmult r8,r5
-
-routine302:
-                    cmpq    #$0, r21
+routine302:         cmpq    #$0, r21
                     jr    nz,routine306 ; #$00000324
                     nop
 routine34:          cmpq    #1, r7
                     jr    nz,routine309 ; #$00000328
-routine306:
-                    nop
+routine306:         nop
                     sub     r10, r8
-routine309:
-                    cmpq    #$0, r21
+routine309:         cmpq    #$0, r21
                     jr    z,routine313 ; #$00000332
                     nop
                     load    (r21), r0
                     add     r0, r8
-routine313:
-                    store   r8, (r6)
+routine313:         store   r8, (r6)
                     load    (r14+$16), r0
                     or      r0, r0
-                    storew  r0, (r24)
-routine12:          addq    #2, r24
-                    addq    #2, r23
-                    addq    #4, r25
-                    addq    #4, r22
-                    movei   #routine16, r0
-                    subq    #1, r26
+                    storew  r0, (_results_r24)
+
+                    ; ----------------------------------------------------------------
+                    ; Clean up and go to next in Big Loop
+                    ; ----------------------------------------------------------------
+BigLoopSkipToNext:  addq    #2, _results_r24
+                    addq    #2, _fxobj_r23
+                    addq    #4, _fxobj_r25
+                    addq    #4, _fxobj_r22
+                    movei   #BigLoop64, r0
+                    subq    #1, _bigloop_ctr
                     jump    nn,(r0)
                     nop
-                    load    (r14+_results), r0
+                    ; ----------------------------------------------------------------
+                    ; End of Big Loop
+                    ; ----------------------------------------------------------------
 
+                    ; ----------------------------------------------------------------
+                    ; Clean up and go to next fx object.
+                    ; ----------------------------------------------------------------
+                    load    (r14+_results), r0
                     ; Move to the next fx object.
 GoToNext:           load    (r14+_object_counter), r2
                     subq    #1, r2
                     movei   #LoopThroughFXObjs, r3
                     or      r2, r2
                     store   r2, (r14+_object_counter)
-                    jump    nn,(r3) ; Loop if we still have more objects to do.
+                    jump    nn,(r3)                       ; Loop if we still have more objects to do.
                     nop
-
+                    ; ----------------------------------------------------------------
+                    ; End of the LoopThroughFXObjs loop.
+                    ; ----------------------------------------------------------------
+                    
+                    ; ----------------------------------------------------------------
                     ; We've finished all objects. Run 'psi' as our final module.
+                    ; ----------------------------------------------------------------
                     movei   #SetScreenReady, r2
-                    movei   #_psi, r1 ; Index into mods -> 'psi'
+                    movei   #_psi, r1                     ; Index into mods -> 'psi'
                     movei   #RunGPUModule, r0
                     or      r2, r2
-                    store   r2, (r14+_post_gpu_routine)
-                    jump    (r0)
+                    store   r2, (r14+_post_gpu_routine)   ; Make SetScreenReady our post-GPU routine.
+                    jump    (r0)                          ; Run the psi GPU module (psi.gas).
                     nop
-
-                    ; Signal that a screen is ready for display
-                    ; by setting screen_ready.
-SetScreenReady:     moveq   #1, r0 ; Store 1 in r0.
-                    movei   #screen_ready, r1 ; Point r1 at screen_ready.
-                    store   r0, (r1) ; Store 1 in screen_ready.
-                    movei   #SetSync, r0 ; Loop back to top!
-                    jump    (r0) ; Loop back to top!
+                    
+                    ; ----------------------------------------------------------------
+                    ; Signal that a screen is ready for display by setting screen_ready.
+                    ; Loop and run through all 6 fx objs all over again.
+                    ; ----------------------------------------------------------------
+SetScreenReady:     moveq   #1, r0                        ; Store 1 in r0.
+                    movei   #screen_ready, r1             ; Point r1 at screen_ready.
+                    store   r0, (r1)                      ; Store 1 in screen_ready.
+                    movei   #RunFXObjModulesLoop, r0      ; Loop back to top!
+                    jump    (r0)                          ; Loop back to top!
                     nop
-
+                    
 ; *******************************************************************
 ; GPULoad
 ; Load the selected GPU module.
@@ -555,28 +637,28 @@ RunGPUModule:
                     shrq    #16, r4
                     movei   #screen_ready+$c, r0
                     store   r4, (r0)
-                    movei   #LOADED_MODULE, r0
+                    movei   #loaded_module, r0
                     movei   #previously_loaded_module, r1
                     load    (r1), r2
                     cmp     r2, r5
                     jump    z,(r0)
                     nop
                     store   r5, (r1)
-
+                    
                     ; Select which module to use.
-                    movei   #mods, r0 ; Point r0 at the list of modules.
-                    load    (r0), r4                    ; Store address of gpu mods in a4.
-                    shlq    #2, r5                      ; Multiply our index by 4.
-                    add     r4, r5                      ; Add the index to the address of gpu mods.
-                    load    (r5), r4                    ; Store the resulting address in r4.
-                    load    (r4), module_load_address   ; Stash the result, a pointer to the load address, in r1
-                    addq    #4, r4                      ; Add 4 to point to the module length.
-                    load    (r4), module_length         ; Store it in r2.
-                    addq    #4, r4                      ; Add 4 to point to the module itself.
-                    move    r4, module_itself           ; Point r0 at our selected module in 'mods'.
-
+                    movei   #mods, r0                         ; Point r0 at the list of modules.
+                    load    (r0), r4                          ; Store address of gpu mods in a4.
+                    shlq    #2, r5                            ; Multiply our index by 4.
+                    add     r4, r5                            ; Add the index to the address of gpu mods.
+                    load    (r5), r4                          ; Store the resulting address in r4.
+                    load    (r4), module_load_address         ; Stash the result, a pointer to the load address, in r1
+                    addq    #4, r4                            ; Add 4 to point to the module length.
+                    load    (r4), module_length               ; Store it in r2.
+                    addq    #4, r4                            ; Add 4 to point to the module itself.
+                    move    r4, module_itself                 ; Point r0 at our selected module in 'mods'.
+                    
                     ; Load the selected GPU module.
-                    load    (r14+_post_gpu_routine), r4 ; Store our 'post-GPU' routine in r4.
+                    load    (r14+_post_gpu_routine), r4       ; Store our 'post-GPU' routine in r4.
                     movei   #GPURun, r5
                     movei   #GPULoad, gpu_load
                     movei   #$8000, r20
@@ -585,11 +667,11 @@ RunGPUModule:
                     store   r5, (r14+_post_gpu_routine)
                     jump    (gpu_load)
                     nop
-
+                    
                     ; This invokes the 'post-GPU' routine somehow!
-GPURun:             or      r4, r4 ; Make sure the post-GPU routine is loaded.
-                    store   r4, (r14+_post_gpu_routine) ; Stash it
-                    movei   #LOADED_MODULE, r0
+GPURun:             or      r4, r4                            ; Make sure the post-GPU routine is loaded.
+                    store   r4, (r14+_post_gpu_routine)       ; Stash it
+                    movei   #loaded_module, r0
                     jump    (r0)
                     nop
                     dc.b    $00,$00,$00,$00,$00,$00
