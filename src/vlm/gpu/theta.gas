@@ -41,31 +41,38 @@
 .include "../../blitter.inc"
 .include "../vlm.inc"
 
-fx_in_buf         EQU in_buf+$8
-results_in_buf    EQU in_buf + $C
-loaded_module     EQU  $F03000 ;l RW GPU Internal sRAM
-_post_gpu_routine EQU $15
-_object_counter   EQU $18
-fx_obj            REGEQU r3
-_fxobj            EQU $17
-_results          EQU $19
+fx_in_buf            EQU in_buf+$8
+results_in_buf       EQU in_buf + $C
+loaded_module        EQU  $F03000 ;l RW GPU Internal sRAM
+_post_gpu_routine    EQU $15
+_object_counter      EQU $18
+fx_obj               REGEQU r3
+_fxobj               EQU $17
+_results             EQU $19
 
+_particleloop_ctr    REGEQU r30
+_MaybeLoop           REGEQU r7
+_ParticleLoop        REGEQU r0
+_TightLoop           REGEQU r10
 _enter_particle_loop REGEQU r1
-dstoffx_      REGEQU r16
-dstoffy_      REGEQU r17
-dstoffz_      REGEQU r18
-vectorx_      REGEQU r19
-vectory_      REGEQU r20
-deltaz_      REGEQU r21
-cvx_      REGEQU r22
-cvy_      REGEQU r23
-_i3_      REGEQU r22
-_i4_      REGEQU r23
-_i5_      REGEQU r24
-phase5_   REGEQU r24
-_i1_       REGEQU r26
-coly_      REGEQU r1 
-colx_      REGEQU r2 
+dstoffx_             REGEQU r16
+dstoffy_             REGEQU r17
+dstoffz_             REGEQU r18
+vectorx_             REGEQU r19
+vectory_             REGEQU r20
+deltaz_              REGEQU r21
+cvx_                 REGEQU r22
+cvy_                 REGEQU r23
+_i2_                 REGEQU r5
+_i3_                 REGEQU r22
+_i4_                 REGEQU r23
+_i5_                 REGEQU r24
+phase5_              REGEQU r24
+_i1_                 REGEQU r26
+coly_                REGEQU r1
+colx_                REGEQU r2
+dvf_ws_x_            REGEQU r2
+i_                   REGEQU r2
 
 ; Position to load this module in GPU RAM.
 .org $00f03000
@@ -82,16 +89,19 @@ colx_      REGEQU r2
                    load    (r4), r6
                    move    r4, r11
 
+                   ; Get Destination position: X 
                    movei   #dstoffx, r0
                    add     fx_obj, r0
                    load    (r0), dstoffx_
 
+                   ; Get Destination position: Y 
                    movei   #dstoffy, r0
                    add     fx_obj, r0
                    load    (r0), dstoffy_
 
                    movei   #$C00000, r1
 
+                   ; Get Destination position: Z 
                    movei   #dstoffz, r0
                    add     fx_obj, r0
                    load    (r0), dstoffz_
@@ -99,14 +109,17 @@ colx_      REGEQU r2
                    sub     r1, dstoffx_
                    sub     r1, dstoffy_
                    
+                   ; Get Vector: X
                    movei   #vectorx, r0
                    add     fx_obj, r0
                    load    (r0), vectorx_
 
+                   ; Get Vector: Y
                    movei   #vectory, r0
                    add     fx_obj, r0
                    load    (r0), vectory_
 
+                   ; Get Delta: Z
                    movei   #deltaz, r0
                    add     fx_obj, r0
                    load    (r0), deltaz_
@@ -114,15 +127,18 @@ colx_      REGEQU r2
                    sharq   #4, vectorx_
                    sharq   #4, vectory_
                    sharq   #4, deltaz_
-
+                   
+                   ; Get Colour generator vector: X
                    movei   #cvx, r0
                    add     fx_obj, r0
                    load    (r0), cvx_
 
+                   ; Get Colour generator vector: Y
                    movei   #cvy, r0
                    add     fx_obj, r0
                    load    (r0), cvy_
-
+                   
+                   ; Get Delta Phase 2
                    movei   #phase5, r0
                    add     fx_obj, r0
                    load    (r0), phase5_
@@ -135,14 +151,17 @@ colx_      REGEQU r2
                    add     phase5_, deltaz_
                    movei   #32768, r1
 
+                   ; Get Intensity 3
                    movei   #_i3, r0
                    add     fx_obj, r0
                    load    (r0), _i3_
 
+                   ; Get Intensity 4
                    movei   #_i4, r0
                    add     fx_obj, r0
                    load    (r0), _i4_
 
+                   ; Get Intensity 5
                    movei   #_i5, r0
                    add     fx_obj, r0
                    load    (r0), _i5_
@@ -151,20 +170,23 @@ colx_      REGEQU r2
                    sub     r1, _i4_
                    sub     r1, _i5_
 
+                   ; Get Intensity 1
                    movei   #_i1, r0
                    add     fx_obj, r0
                    load    (r0), _i1_
 
                    bset    #$0, _i1_
                    cmpq    #$0, _i1_
-                   jr    nz,routine1 ; #$000000D4
+                   jr    nz,DontResetIntensi 
                    nop
-                   moveq   #1, _i1_
-routine1:
-                   movei   #coly, r0
+                   moveq   #1, _i1_ ; Reset intensity 1
+
+                   ; Get Base colour: Y
+DontResetIntensi:  movei   #coly, r0
                    add     fx_obj, r0
                    load    (r0), coly_
 
+                   ; Get Base colour: X
                    movei   #colx, r0
                    add     fx_obj, r0
                    load    (r0), colx_
@@ -178,54 +200,62 @@ routine1:
                    and     r30, r25
                    shrq    #1, r30
                    sub     r30, r31
-                   jr      nn,routine2 ; #$00000104
+                   jr      nn,DontResetColour ; #$00000104
                    nop
+
                    neg     r31
-routine2:
-                   sub     r30, r25
-                   jr    nn,routine3 ; #$0000010C
+
+DontResetColour:   sub     r30, r25
+                   jr      nn,DontResetColourY ; #$0000010C
                    nop
                    neg     r25
-routine3:
-                   shrq    #16, r31
+
+DontResetColourY:  shrq    #16, r31
                    shrq    #16, r25
                    shlq    #4, r31
                    or      r31, r25
                    shlq    #8, r25
 
+                   ; Get Intensity 2
                    movei   #_i2, r0
                    add     fx_obj, r0
-                   load    (r0), r5
+                   load    (r0), _i2_
 
                    addq    #4, r4
-                   shrq    #4, r5
-                   movei   #routine206, r7
+                   shrq    #4, _i2_
+                   movei   #MaybeLoop, _MaybeLoop
                    xor     r12, r12
                    movei   #EnterParticleLoop, _enter_particle_loop
 
+                   ; Get  DVF window size: X
                    movei   #dvf_ws_x, r0
                    add     fx_obj, r0
-                   load    (r0), r2
+                   load    (r0), dvf_ws_x_
 
-                   subq    #1, r2
+                   subq    #1, dvf_ws_x_
 
+                   ; Update  DVF window size: X
                    movei   #dvf_ws_x, r0
                    add     fx_obj, r0
-                   store   r2, (r0)
+                   store   dvf_ws_x_, (r0)
 
-                   cmpq    #$0, r2
+                   cmpq    #$0, dvf_ws_x_
                    jump    nn,(_enter_particle_loop)
                    nop
 
+                   ; Reset the DVF Window Size
+
+                   ; Get 'Number of Iterations'
                    movei   #i, r0
                    add     fx_obj, r0
-                   load    (r0), r2
+                   load    (r0), i_
 
-                   shrq    #16, r2
+                   shrq    #16, i_
 
+                   ; Update the DVF Window Size: X
                    movei   #dvf_ws_x, r0
                    add     fx_obj, r0
-                   store   r2, (r0)
+                   store   i_, (r0)
 
                    movei   #500, r30
                    sub     r6, r30
@@ -235,19 +265,18 @@ routine3:
                    addq    #1, r6
                    store   r6, (r11)
                    move    r4, r9
-                   movei   #routine174, r10
-routine174:
-                   addq    #$e, r9
+                   movei   #TightLoop, _TightLoop
+TightLoop:         addq    #14, r9
                    loadw   (r9), r0
                    cmpq    #$0, r0
-                   jr    z,routine4 ; #$0000018A
+                   jr      z,StoreNewData ; #$0000018A
                    nop
-                   jump    (r10)
+                   jump    (_TightLoop)
+
                    addq    #$12, r9
-routine4:
-                   move    r9, r1
-                   movei   #$ffff, r0
-                   subq    #$e, r1
+StoreNewData:      move    r9, r1
+                   movei   #65535, r0
+                   subq    #14, r1
                    storew  r0, (r9)
                    store   dstoffx_, (r1)
                    addq    #4, r1
@@ -269,11 +298,11 @@ routine4:
                    ; -------------------------------------------------------------------
                    ; Loop
                    ; -------------------------------------------------------------------
-EnterParticleLoop: movei   #511, r30
+EnterParticleLoop: movei   #511, _particleloop_ctr ; Loop 512 times.
 ParticleLoop:      addq    #$e, r4
                    loadw   (r4), r8
                    cmpq    #$0, r8
-                   jump    z,(r7)
+                   jump    z,(_MaybeLoop)
                    nop
                    move    r4, r0
                    move    r4, r1
@@ -303,23 +332,26 @@ ParticleLoop:      addq    #$e, r4
                    addq    #4, r0
                    store   r20, (r1)
                    addq    #4, r1
-                   sub     r5, r8
+                   sub     _i2_, r8
                    cmpq    #1, r8
-                   jr    nn,routine5 ; #$0000020A
+                   jr      nn,SkipR8 ; #$0000020A
                    nop
                    xor     r8, r8
                    addq    #1, r12
-routine5:          storew  r8, (r4)
+SkipR8:            storew  r8, (r4)
                    subq    #1, r6
-routine206:        movei   #ParticleLoop, r0
+MaybeLoop:         movei   #ParticleLoop, _ParticleLoop
                    addq    #$12, r4
-                   subq    #1, r30
-                   jr      n,ReturnToOmega ; #$00000220
+                   subq    #1, _particleloop_ctr ; Decrement the loop counter.
+                   jr      n,ReturnToOmega ; If we've reached zero, return to omega.gas.
                    cmpq    #$0, r6 ; Is it zero yet?
-                   jump    nn,(r0) ; If not, loop again to ParticleLoop.
+                   jump    nn,(_ParticleLoop) ; If not, loop again to ParticleLoop.
                    nop
-ReturnToOmega:
-                   load    (r11), r0
+
+; *******************************************************************
+; ReturnToOmega
+; *******************************************************************
+ReturnToOmega:     load    (r11), r0
                    sub     r12, r0
                    store   r0, (r11)
                    load    (r14+_post_gpu_routine), r0
@@ -327,4 +359,4 @@ ReturnToOmega:
                    nop
                    add     r0, r0
                    add     r0, r0
-; vim:ft=asm68k ts=2
+; vim:ft=asm68k ts=20

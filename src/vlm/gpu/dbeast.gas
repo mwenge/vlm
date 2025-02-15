@@ -23,6 +23,10 @@
 .include "../vlm.inc"
 .org $00f03000
 
+_post_gpu_routine EQU $15
+_object_counter   EQU $18
+fx_obj            REGEQU r3
+
 ; *******************************************************************
 ;
 ; *******************************************************************
@@ -30,12 +34,12 @@
                    load    (r0), r29
                    moveta  r29, r29
                    loadw   (r29), r27
-                   movei   #$f030ac, r0
+                   movei   #routineac, r0
                    cmpq    #$0, r27
                    jump    n,(r0)
                    nop
-                   movei   #$f0304e, r0
-                   load    (r14+$18), r2
+                   movei   #routine4e, r0
+                   load    (r14+_object_counter), r2
                    moveq   #$5, r1
                    sub     r2, r1
                    cmp     r1, r27
@@ -47,7 +51,7 @@
                    load    (r1), r29
                    moveta  r29, r29
                    loadw   (r29), r27
-                   movei   #$f030ac, r0
+                   movei   #routineac, r0
                    cmpq    #$0, r27
                    jump    n,(r0)
                    nop
@@ -55,6 +59,7 @@
                    sub     r2, r1
                    cmp     r1, r27
                    jump    nz,(r0)
+routine4e:
                    addq    #2, r29
                    movei   #$3f, r0
                    loadw   (r29), r28
@@ -68,12 +73,13 @@
                    movei   #$300, r2
                    move    r3, r0
                    move    r26, r1
-                   movei   #$f030ba, r20
-                   movei   #$f03088, r21
+                   movei   #routineba, r20
+                   movei   #routine88, r21
                    or      r21, r21
                    store   r21, (r14+$1f)
                    jump    (r20)
                    nop
+routine88:
                    addq    #4, r29
                    loadw   (r29), r26
                    addq    #2, r29
@@ -90,12 +96,14 @@
                    moveq   #1, r1
                    jr    routine1
                    nop
+routineac:
                    xor     r1, r1
 routine1:
                    movei   #$f03f80, r14
                    load    (r14+$15), r0
                    jump    (r0)
                    nop
+routineba:
                    movei   #B_CMD, r20
 routine2:
                    load    (r20), r21
