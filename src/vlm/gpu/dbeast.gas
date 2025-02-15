@@ -113,7 +113,7 @@ routine2:
                    addq    #4, r20
                    movei   #$4020, r22
                    store   r22, (r20)
-                   addq    #PIXEL2, r20
+                   addq    #8, r20
                    shrq    #1, r24
                    store   r24, (r20)
                    move    r0, r25
@@ -123,7 +123,7 @@ routine2:
                    store   r25, (r21)
                    addq    #4, r21
                    store   r22, (r21)
-                   addq    #PIXEL2, r21
+                   addq    #8, r21
                    shrq    #1, r23
                    store   r23, (r21)
                    shrq    #1, r2

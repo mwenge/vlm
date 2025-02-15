@@ -33,7 +33,7 @@ routine13:
                     and     r5, r7
                     loadb   (r6), r8
                     add     r4, r7
-                    movei   #ZOFFS2, r0
+                    movei   #128, r0
                     loadb   (r7), r9
                     sub     r0, r8
                     sub     r0, r9
@@ -101,7 +101,7 @@ routine13:
                     store   r1, (r14+$10)
                     loadw   (r6), r5
                     addq    #2, r6
-                    shlq    #PIXEL2, r5
+                    shlq    #8, r5
                     loadw   (r6), r1
                     addq    #2, r6
                     loadw   (r6), r27
@@ -383,8 +383,8 @@ routine343:
                     sub     r30, r19
                     load    (r14+$4), r31
                     sub     r29, r30
-                    shrq    #PIXEL2, r31
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r31
+                    shlq    #8, r30
                     and     r13, r31
                     imult   r31, r19
                     add     r19, r30
@@ -397,7 +397,7 @@ routine343:
                     loadb   (r1), r19
                     sub     r2, r19
                     sub     r29, r2
-                    shlq    #PIXEL2, r2
+                    shlq    #8, r2
                     imult   r31, r19
                     add     r19, r2
                     imult   r17, r30
@@ -506,10 +506,10 @@ routine454:
                     add     r3, r0
                     load    (r0), r1
                     store   r1, (r14+$4)
-                    movei   #ZOFFS2, r29
+                    movei   #128, r29
                     jump    (r30)
                     nop
-                    shrq    #PIXEL2, r20
+                    shrq    #8, r20
                     moveta  r20, r20
                     movei   #A1_BASE, r14
                     movei   #$00f02238, r13
@@ -527,9 +527,9 @@ routine515:
                     or      r0, r0
                     store   r0, (r14+$2)
                     nop
-                    shlq    #PIXEL2, r9
-                    shlq    #PIXEL2, r10
-                    shlq    #PIXEL2, r11
+                    shlq    #8, r9
+                    shlq    #8, r10
+                    shlq    #8, r11
                     cmp     r4, r6
                     jr    nn,routine529 ; #$0000054E
                     move    r3, r31
@@ -625,7 +625,7 @@ routine605:
                     move    r3, r23
                     or      r0, r22
                     move    r9, r24
-                    shlq    #PIXEL2, r22
+                    shlq    #8, r22
                     move    r3, r25
                     move    r9, r26
                     shlq    #16, r23

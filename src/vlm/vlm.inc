@@ -215,6 +215,8 @@ CD_read     EQU $303C
 CD_setup    EQU $3048
 CD_osamp    EQU $3054
 dstoffz     EQU $34
+vectorx     EQU 56
+vectory     EQU 64
 d_x         EQU $38
 dy          EQU $3C
 d_z         EQU $40
@@ -282,4 +284,9 @@ VOLUME      EQU $F1BD60
 _mtrig      EQU $F4
 info        EQU $F8
 gpu         EQU $FC
+dvf_ws_x     EQU 4
+dvf_ws_y     EQU 8
+dvf_crot_x   EQU $18
+dvf_crot_y   EQU $1C
+dvf_deltai   EQU $20
 ; vim:ft=asm68k ts=2

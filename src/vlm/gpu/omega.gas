@@ -45,7 +45,11 @@ _fxobj_r25        REGEQU r25
 _bigloop_ctr      REGEQU r26
 _results_r24      REGEQU r24
 
+; Position to load this module in GPU RAM.
+; Note that it's clear of the position where all other modules are loaded,
+; allowing it to load them at $f03000 'beneath' it.
 .org $00f03a78
+
 ; *******************************************************************
 ; MACROS
 ; Some macros used by omega.gas

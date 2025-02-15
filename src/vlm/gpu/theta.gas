@@ -16,231 +16,315 @@
 ; theta.gas
 ;
 ; This module is loaded from 'MainModuleRunLoop' in omega.gas. 
-; It is responsible for Drawing Particle Motion.
+; It is responsible for the 'Drawing Particle Motion' sub-effect. This sub-effect is
+; used in the following Bank-Effect combinations:
+;
+; Bank 2-1: Sub-Effect 6 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 2-2: Sub-Effect 6 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 2-3: Sub-Effect 6 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 2-4: Sub-Effect 6 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 7-1: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 7-2: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 7-3: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 7-4: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 7-5: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 7-6: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 7-7: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 7-8: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 7-9: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 8-1: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 8-2: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
+; Bank 8-3: Sub-Effect 5 Do particle motion            : 0000000D     - GPU Module: 00060000    
 ;
 ; ******************************************************************************
 .include "../../jaguar.inc"
 .include "../../blitter.inc"
 .include "../vlm.inc"
 
+fx_in_buf         EQU in_buf+$8
+results_in_buf    EQU in_buf + $C
+loaded_module     EQU  $F03000 ;l RW GPU Internal sRAM
+_post_gpu_routine EQU $15
+_object_counter   EQU $18
+fx_obj            REGEQU r3
+_fxobj            EQU $17
+_results          EQU $19
+
+_enter_particle_loop REGEQU r1
+dstoffx_      REGEQU r16
+dstoffy_      REGEQU r17
+dstoffz_      REGEQU r18
+vectorx_      REGEQU r19
+vectory_      REGEQU r20
+deltaz_      REGEQU r21
+cvx_      REGEQU r22
+cvy_      REGEQU r23
+_i3_      REGEQU r22
+_i4_      REGEQU r23
+_i5_      REGEQU r24
+phase5_   REGEQU r24
+_i1_       REGEQU r26
+coly_      REGEQU r1 
+colx_      REGEQU r2 
+
+; Position to load this module in GPU RAM.
 .org $00f03000
 
-            movei   #in_buf+$20, r14
-            movei   #in_buf, r0
-            load    (r0), r1
-            addq    #$c, r1
-            load    (r1), r2
-            load    (r2), r4
-            load    (r4), r6
-            move    r4, r11
-            movei   #$24, r0
-            add     r3, r0
-            load    (r0), r16
-            movei   #40, r0
-            add     r3, r0
-            load    (r0), r17
-            movei   #LFU_N_SXORD, r1
-            movei   #$34, r0
-            add     r3, r0
-            load    (r0), r18
-            sub     r1, r16
-            sub     r1, r17
-            movei   #$38, r0
-            add     r3, r0
-            load    (r0), r19
-            movei   #64, r0
-            add     r3, r0
-            load    (r0), r20
-            movei   #$94, r0
-            add     r3, r0
-            load    (r0), r21
-            sharq   #4, r19
-            sharq   #4, r20
-            sharq   #4, r21
-            movei   #$b8, r0
-            add     r3, r0
-            load    (r0), r22
-            movei   #$bc, r0
-            add     r3, r0
-            load    (r0), r23
-            movei   #$cc, r0
-            add     r3, r0
-            load    (r0), r24
-            shlq    #1, r22
-            shlq    #1, r23
-            sharq   #1, r24
-            add     r22, r19
-            add     r23, r20
-            add     r24, r21
-            movei   #TOPNEN, r1
-            movei   #$5c, r0
-            add     r3, r0
-            load    (r0), r22
-            movei   #$60, r0
-            add     r3, r0
-            load    (r0), r23
-            movei   #$64, r0
-            add     r3, r0
-            load    (r0), r24
-            sub     r1, r22
-            sub     r1, r23
-            sub     r1, r24
-            movei   #$54, r0
-            add     r3, r0
-            load    (r0), r26
-            bset    #$0, r26
-            cmpq    #$0, r26
-            jr    nz,routine1 ; #$000000D4
-            nop
-            moveq   #1, r26
+; *******************************************************************
+;
+; *******************************************************************
+                   movei   #in_buf+$20, r14
+                   movei   #in_buf, r0
+                   load    (r0), r1
+                   addq    #$c, r1 ; Point at 'results' in in_buf.
+                   load    (r1), r2
+                   load    (r2), r4
+                   load    (r4), r6
+                   move    r4, r11
+
+                   movei   #dstoffx, r0
+                   add     fx_obj, r0
+                   load    (r0), dstoffx_
+
+                   movei   #dstoffy, r0
+                   add     fx_obj, r0
+                   load    (r0), dstoffy_
+
+                   movei   #$C00000, r1
+
+                   movei   #dstoffz, r0
+                   add     fx_obj, r0
+                   load    (r0), dstoffz_
+
+                   sub     r1, dstoffx_
+                   sub     r1, dstoffy_
+                   
+                   movei   #vectorx, r0
+                   add     fx_obj, r0
+                   load    (r0), vectorx_
+
+                   movei   #vectory, r0
+                   add     fx_obj, r0
+                   load    (r0), vectory_
+
+                   movei   #deltaz, r0
+                   add     fx_obj, r0
+                   load    (r0), deltaz_
+
+                   sharq   #4, vectorx_
+                   sharq   #4, vectory_
+                   sharq   #4, deltaz_
+
+                   movei   #cvx, r0
+                   add     fx_obj, r0
+                   load    (r0), cvx_
+
+                   movei   #cvy, r0
+                   add     fx_obj, r0
+                   load    (r0), cvy_
+
+                   movei   #phase5, r0
+                   add     fx_obj, r0
+                   load    (r0), phase5_
+
+                   shlq    #1, cvx_
+                   shlq    #1, cvy_
+                   sharq   #1, phase5_
+                   add     cvx_, vectorx_
+                   add     cvy_, vectory_
+                   add     phase5_, deltaz_
+                   movei   #32768, r1
+
+                   movei   #_i3, r0
+                   add     fx_obj, r0
+                   load    (r0), _i3_
+
+                   movei   #_i4, r0
+                   add     fx_obj, r0
+                   load    (r0), _i4_
+
+                   movei   #_i5, r0
+                   add     fx_obj, r0
+                   load    (r0), _i5_
+
+                   sub     r1, _i3_
+                   sub     r1, _i4_
+                   sub     r1, _i5_
+
+                   movei   #_i1, r0
+                   add     fx_obj, r0
+                   load    (r0), _i1_
+
+                   bset    #$0, _i1_
+                   cmpq    #$0, _i1_
+                   jr    nz,routine1 ; #$000000D4
+                   nop
+                   moveq   #1, _i1_
 routine1:
-            movei   #$e4, r0
-            add     r3, r0
-            load    (r0), r1
-            movei   #$e0, r0
-            add     r3, r0
-            load    (r0), r2
-            movei   #$1fffff, r29
-            move    r2, r0
-            move    r29, r30
-            move    r0, r31
-            move    r1, r25
-            and     r30, r31
-            and     r30, r25
-            shrq    #1, r30
-            sub     r30, r31
-            jr    nn,routine2 ; #$00000104
-            nop
-            neg     r31
+                   movei   #coly, r0
+                   add     fx_obj, r0
+                   load    (r0), coly_
+
+                   movei   #colx, r0
+                   add     fx_obj, r0
+                   load    (r0), colx_
+
+                   movei   #$1fffff, r29
+                   move    colx_, r0
+                   move    r29, r30
+                   move    r0, r31
+                   move    coly_, r25
+                   and     r30, r31
+                   and     r30, r25
+                   shrq    #1, r30
+                   sub     r30, r31
+                   jr      nn,routine2 ; #$00000104
+                   nop
+                   neg     r31
 routine2:
-            sub     r30, r25
-            jr    nn,routine3 ; #$0000010C
-            nop
-            neg     r25
+                   sub     r30, r25
+                   jr    nn,routine3 ; #$0000010C
+                   nop
+                   neg     r25
 routine3:
-            shrq    #16, r31
-            shrq    #16, r25
-            shlq    #4, r31
-            or      r31, r25
-            shlq    #PIXEL2, r25
-            movei   #$58, r0
-            add     r3, r0
-            load    (r0), r5
-            addq    #4, r4
-            shrq    #4, r5
-            movei   #$f03206, r7
-            xor     r12, r12
-            movei   #$f031ae, r1
-            movei   #4, r0
-            add     r3, r0
-            load    (r0), r2
-            subq    #1, r2
-            movei   #4, r0
-            add     r3, r0
-            store   r2, (r0)
-            cmpq    #$0, r2
-            jump    nn,(r1)
-            nop
-            movei   #ZOFFS2, r0
-            add     r3, r0
-            load    (r0), r2
-            shrq    #16, r2
-            movei   #4, r0
-            add     r3, r0
-            store   r2, (r0)
-            movei   #$1f4, r30
-            sub     r6, r30
-            jump    n,(r1)
-            nop
-            addq    #1, r6
-            store   r6, (r11)
-            move    r4, r9
-            movei   #$f03174, r10
-            addq    #$e, r9
-            loadw   (r9), r0
-            cmpq    #$0, r0
-            jr    z,routine4 ; #$0000018A
-            nop
-            jump    (r10)
-            addq    #$12, r9
+                   shrq    #16, r31
+                   shrq    #16, r25
+                   shlq    #4, r31
+                   or      r31, r25
+                   shlq    #8, r25
+
+                   movei   #_i2, r0
+                   add     fx_obj, r0
+                   load    (r0), r5
+
+                   addq    #4, r4
+                   shrq    #4, r5
+                   movei   #routine206, r7
+                   xor     r12, r12
+                   movei   #EnterParticleLoop, _enter_particle_loop
+
+                   movei   #dvf_ws_x, r0
+                   add     fx_obj, r0
+                   load    (r0), r2
+
+                   subq    #1, r2
+
+                   movei   #dvf_ws_x, r0
+                   add     fx_obj, r0
+                   store   r2, (r0)
+
+                   cmpq    #$0, r2
+                   jump    nn,(_enter_particle_loop)
+                   nop
+
+                   movei   #i, r0
+                   add     fx_obj, r0
+                   load    (r0), r2
+
+                   shrq    #16, r2
+
+                   movei   #dvf_ws_x, r0
+                   add     fx_obj, r0
+                   store   r2, (r0)
+
+                   movei   #500, r30
+                   sub     r6, r30
+                   jump    n,(_enter_particle_loop)
+                   nop
+
+                   addq    #1, r6
+                   store   r6, (r11)
+                   move    r4, r9
+                   movei   #routine174, r10
+routine174:
+                   addq    #$e, r9
+                   loadw   (r9), r0
+                   cmpq    #$0, r0
+                   jr    z,routine4 ; #$0000018A
+                   nop
+                   jump    (r10)
+                   addq    #$12, r9
 routine4:
-            move    r9, r1
-            movei   #$ffff, r0
-            subq    #$e, r1
-            storew  r0, (r9)
-            store   r16, (r1)
-            addq    #4, r1
-            store   r17, (r1)
-            addq    #4, r1
-            store   r18, (r1)
-            addq    #4, r1
-            storew  r25, (r1)
-            addq    #2, r1
-            storew  r26, (r1)
-            addq    #2, r1
-            store   r19, (r1)
-            addq    #4, r1
-            store   r20, (r1)
-            addq    #4, r1
-            store   r21, (r1)
-            addq    #$12, r9
-            movei   #$1ff, r30
-            addq    #$e, r4
-            loadw   (r4), r8
-            cmpq    #$0, r8
-            jump    z,(r7)
-            nop
-            move    r4, r0
-            move    r4, r1
-            subq    #$e, r0
-            addq    #2, r1
-            load    (r1), r20
-            load    (r0), r21
-            add     r20, r21
-            store   r21, (r0)
-            add     r22, r20
-            addq    #4, r0
-            store   r20, (r1)
-            addq    #4, r1
-            load    (r1), r20
-            load    (r0), r21
-            add     r20, r21
-            store   r21, (r0)
-            add     r23, r20
-            addq    #4, r0
-            store   r20, (r1)
-            addq    #4, r1
-            load    (r1), r20
-            load    (r0), r21
-            add     r20, r21
-            store   r21, (r0)
-            add     r24, r20
-            addq    #4, r0
-            store   r20, (r1)
-            addq    #4, r1
-            sub     r5, r8
-            cmpq    #1, r8
-            jr    nn,routine5 ; #$0000020A
-            nop
-            xor     r8, r8
-            addq    #1, r12
-routine5:
-            storew  r8, (r4)
-            subq    #1, r6
-            movei   #$f031b4, r0
-            addq    #$12, r4
-            subq    #1, r30
-            jr    n,routine6 ; #$00000220
-            cmpq    #$0, r6
-            jump    nn,(r0)
-            nop
-routine6:
-            load    (r11), r0
-            sub     r12, r0
-            store   r0, (r11)
-            load    (r14+$15), r0
-            jump    (r0)
-            nop
-            add     r0, r0
-            add     r0, r0
+                   move    r9, r1
+                   movei   #$ffff, r0
+                   subq    #$e, r1
+                   storew  r0, (r9)
+                   store   dstoffx_, (r1)
+                   addq    #4, r1
+                   store   dstoffy_, (r1)
+                   addq    #4, r1
+                   store   dstoffz_, (r1)
+                   addq    #4, r1
+                   storew  r25, (r1)
+                   addq    #2, r1
+                   storew  _i1_, (r1)
+                   addq    #2, r1
+                   store   vectorx_, (r1)
+                   addq    #4, r1
+                   store   vectory_, (r1)
+                   addq    #4, r1
+                   store   deltaz_, (r1)
+                   addq    #$12, r9
+
+                   ; -------------------------------------------------------------------
+                   ; Loop
+                   ; -------------------------------------------------------------------
+EnterParticleLoop: movei   #511, r30
+ParticleLoop:      addq    #$e, r4
+                   loadw   (r4), r8
+                   cmpq    #$0, r8
+                   jump    z,(r7)
+                   nop
+                   move    r4, r0
+                   move    r4, r1
+                   subq    #$e, r0
+                   addq    #2, r1
+                   load    (r1), r20
+                   load    (r0), r21
+                   add     r20, r21
+                   store   r21, (r0)
+                   add     _i3_, r20
+                   addq    #4, r0
+                   store   r20, (r1)
+                   addq    #4, r1
+                   load    (r1), r20
+                   load    (r0), r21
+                   add     r20, r21
+                   store   r21, (r0)
+                   add     _i4_, r20
+                   addq    #4, r0
+                   store   r20, (r1)
+                   addq    #4, r1
+                   load    (r1), r20
+                   load    (r0), r21
+                   add     r20, r21
+                   store   r21, (r0)
+                   add     _i5_, r20
+                   addq    #4, r0
+                   store   r20, (r1)
+                   addq    #4, r1
+                   sub     r5, r8
+                   cmpq    #1, r8
+                   jr    nn,routine5 ; #$0000020A
+                   nop
+                   xor     r8, r8
+                   addq    #1, r12
+routine5:          storew  r8, (r4)
+                   subq    #1, r6
+routine206:        movei   #ParticleLoop, r0
+                   addq    #$12, r4
+                   subq    #1, r30
+                   jr      n,ReturnToOmega ; #$00000220
+                   cmpq    #$0, r6 ; Is it zero yet?
+                   jump    nn,(r0) ; If not, loop again to ParticleLoop.
+                   nop
+ReturnToOmega:
+                   load    (r11), r0
+                   sub     r12, r0
+                   store   r0, (r11)
+                   load    (r14+_post_gpu_routine), r0
+                   jump    (r0)
+                   nop
+                   add     r0, r0
+                   add     r0, r0
 ; vim:ft=asm68k ts=2

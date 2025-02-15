@@ -118,7 +118,7 @@ routine70:
                     cmpq    #$0, r2
                     jump    z,(r1)
                     nop
-                    cmpq    #PIXEL2, r2
+                    cmpq    #8, r2
                     jr    nz,routine89 ; #$000000F0
                     nop
                     movei   #$00f0341a, r3
@@ -661,7 +661,7 @@ routine561:
                     add     r1, r2
                     add     r23, r2
                     move    r27, r0
-                    shrq    #PIXEL2, r0
+                    shrq    #8, r0
                     or      r5, r0
                     storew  r0, (r2)
                     addq    #2, r2
@@ -676,7 +676,7 @@ routine561:
                     load    (r0), r1
                     addq    #$1c, r1
                     load    (r1), r4
-                    addq    #PIXEL2, r1
+                    addq    #8, r1
                     load    (r1), r9
                     addq    #4, r1
                     load    (r1), r10
@@ -687,7 +687,7 @@ routine561:
                     movei   #$00f03f3c, r0
                     load    (r0), r20
                     xor     r17, r17
-                    shrq    #PIXEL2, r20
+                    shrq    #8, r20
                     moveq   #1, r28
                     loadw   (r9), r5
                     xor     r7, r7
@@ -756,7 +756,7 @@ routine682:
                     subq    #1, r11
                     jump    nn,(r12)
                     addq    #2, r10
-                    shlq    #PIXEL2, r20
+                    shlq    #8, r20
                     movei   #$00f03f3c, r0
                     or      r20, r17
                     store   r17, (r0)

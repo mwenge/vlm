@@ -31,12 +31,12 @@ routine22:
 routine26:
                     shlq    #4, r31
                     or      r31, r7
-                    shlq    #PIXEL2, r7
+                    shlq    #8, r7
                     movei   #4, r0
                     add     r18, r0
                     load    (r0), r23
                     shrq    #16, r23
-                    movei   #PIXEL2, r0
+                    movei   #8, r0
                     add     r18, r0
                     load    (r0), r24
                     shrq    #16, r24
@@ -211,7 +211,7 @@ routine166:
                     add     r18, r0
                     load    (r0), r23
                     shrq    #16, r23
-                    movei   #PIXEL2, r0
+                    movei   #8, r0
                     add     r18, r0
                     load    (r0), r24
                     shrq    #16, r24
@@ -232,7 +232,7 @@ routine166:
                     load    (r0), r20
                     shrq    #16, r20
                     mult    r20, r12
-                    shrq    #PIXEL2, r9
+                    shrq    #8, r9
                     move    r19, r2
                     movei   #$14, r0
                     add     r18, r0
@@ -246,8 +246,8 @@ routine166:
                     loadb   (r0), r28
                     sub     r30, r28
                     move    r20, r2
-                    shrq    #PIXEL2, r2
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r2
+                    shlq    #8, r30
                     and     r9, r2
                     imult   r2, r28
                     add     r30, r28
@@ -264,16 +264,16 @@ routine166:
                     loadb   (r0), r28
                     sub     r30, r28
                     move    r20, r2
-                    shrq    #PIXEL2, r2
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r2
+                    shlq    #8, r30
                     and     r9, r2
                     imult   r2, r28
                     add     r30, r28
                     movei   #TOPNEN, r1
                     sub     r1, r28
                     move    r28, r17
-                    shlq    #PIXEL2, r11
-                    shlq    #PIXEL2, r12
+                    shlq    #8, r11
+                    shlq    #8, r12
                     move    r11, r3
                     moveta  r17, r0
                     moveq   #$0, r27

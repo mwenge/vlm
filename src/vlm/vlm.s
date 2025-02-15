@@ -133,8 +133,8 @@
 ; Data as 'Long'    Byte Offset     Offset Name  Description
 ; --------------    -------------   -----------  -------------------------------
 ; dc.l $00148000    Byte 0-4                     
-; dc.l $01483800    Byte 4-8                     DVF window size: X
-; dc.l $01122000    Byte 8-12                    DVF window size: Y
+; dc.l $01483800    Byte 4-8        dvf_ws_x     DVF window size: X
+; dc.l $01122000    Byte 8-12       dvf_ws_y     DVF window size: Y
 ; dc.l $01850000    Byte 12-16      vfb_xsca     DVF scale: X
 ; dc.l $01850000    Byte 16-20      vfb_ysca     DVF scale: Y
 ; dc.l $00000000    Byte 20-24      vfb_angl     DVF rotate angle
@@ -146,9 +146,9 @@
 ; dc.l $00C00000    Byte 44-48      vfb_xpos     DVF window centre: X
 ; dc.l $00C00000    Byte 48-52      vfb_ypos     DVF window centre: Y
 ; dc.l $00000000    Byte 52-56      dstoffz      Destination position: Z
-; dc.l $00000000    Byte 56-60                   Vector: X
+; dc.l $00000000    Byte 56-60      vectorx      Vector: X
 ; dc.l $00200000    Byte 60-64      dy           Destination Y offset
-; dc.l $00000000    Byte 64-68                   Vector: Y
+; dc.l $00000000    Byte 64-68      vectory      Vector: Y
 ; dc.l $00000000    Byte 68-72                   Symmetry Types
 ; dc.l $00000008    Byte 72-76      rsym_ord     Rotational Symmetry Order
 ; dc.l $00080000    Byte 76-80      rsym_ste     Rotational Angle Step
@@ -169,7 +169,7 @@
 ; dc.l $00000400    Byte 136-140    k            Y amplitude
 ; dc.l $00000001    Byte 140-144                 Number of other iterations
 ; dc.l $00008000    Byte 144-148    col1         
-; dc.l $00000000    Byte 148-152                 delta Z
+; dc.l $00000000    Byte 148-152    deltaz       delta Z
 ; dc.l $00000000    Byte 152-156    thang        choice of Thang
 ; dc.l $00000000    Byte 156-160                 
 ; dc.l $00000003    Byte 160-164    asym_fla     
@@ -218,11 +218,6 @@
 .include "../blitter.inc"
 .include "vlm.inc"
 
-        dvf_ws_x     EQU 4
-        dvf_ws_y     EQU 8
-        dvf_crot_x   EQU $18
-        dvf_crot_y   EQU $1C
-        dvf_deltai   EQU $20
 ; *******************************************************************
 ; Constants for the joystick controller.
 ; *******************************************************************

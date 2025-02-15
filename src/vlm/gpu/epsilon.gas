@@ -68,14 +68,14 @@ routine61:
                     shrq    #16, r5
                     shlq    #4, r31
                     or      r31, r5
-                    shlq    #PIXEL2, r5
+                    shlq    #8, r5
                     movei   #$0000007c, r0
                     add     r3, r0
                     load    (r0), r20
                     movei   #LFU_NSAD, r9
                     load    (r14+$3), r2
                     move    r20, r0
-                    movei   #ZOFFS2, r29
+                    movei   #128, r29
                     shrq    #16, r0
                     and     r13, r0
                     add     r2, r0
@@ -85,8 +85,8 @@ routine61:
                     sub     r30, r26
                     move    r20, r2
                     sub     r29, r30
-                    shrq    #PIXEL2, r2
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r2
+                    shlq    #8, r30
                     and     r13, r2
                     imult   r2, r26
                     add     r30, r26
@@ -94,7 +94,7 @@ routine61:
                     add     r9, r20
                     load    (r14+$3), r2
                     move    r20, r0
-                    movei   #ZOFFS2, r29
+                    movei   #128, r29
                     shrq    #16, r0
                     and     r13, r0
                     add     r2, r0
@@ -104,8 +104,8 @@ routine61:
                     sub     r30, r26
                     move    r20, r2
                     sub     r29, r30
-                    shrq    #PIXEL2, r2
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r2
+                    shlq    #8, r30
                     and     r13, r2
                     imult   r2, r26
                     add     r30, r26
@@ -116,7 +116,7 @@ routine61:
                     shlq    #4, r20
                     load    (r14+$3), r2
                     move    r20, r0
-                    movei   #ZOFFS2, r29
+                    movei   #128, r29
                     shrq    #16, r0
                     and     r13, r0
                     add     r2, r0
@@ -126,8 +126,8 @@ routine61:
                     sub     r30, r26
                     move    r20, r2
                     sub     r29, r30
-                    shrq    #PIXEL2, r2
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r2
+                    shlq    #8, r30
                     and     r13, r2
                     imult   r2, r26
                     add     r30, r26
@@ -135,7 +135,7 @@ routine61:
                     add     r9, r20
                     load    (r14+$3), r2
                     move    r20, r0
-                    movei   #ZOFFS2, r29
+                    movei   #128, r29
                     shrq    #16, r0
                     and     r13, r0
                     add     r2, r0
@@ -145,8 +145,8 @@ routine61:
                     sub     r30, r26
                     move    r20, r2
                     sub     r29, r30
-                    shrq    #PIXEL2, r2
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r2
+                    shlq    #8, r30
                     and     r13, r2
                     imult   r2, r26
                     add     r30, r26
@@ -156,7 +156,7 @@ routine61:
                     load    (r0), r20
                     load    (r14+$3), r2
                     move    r20, r0
-                    movei   #ZOFFS2, r29
+                    movei   #128, r29
                     shrq    #16, r0
                     and     r13, r0
                     add     r2, r0
@@ -166,8 +166,8 @@ routine61:
                     sub     r30, r26
                     move    r20, r2
                     sub     r29, r30
-                    shrq    #PIXEL2, r2
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r2
+                    shlq    #8, r30
                     and     r13, r2
                     imult   r2, r26
                     add     r30, r26
@@ -175,7 +175,7 @@ routine61:
                     add     r9, r20
                     load    (r14+$3), r2
                     move    r20, r0
-                    movei   #ZOFFS2, r29
+                    movei   #128, r29
                     shrq    #16, r0
                     and     r13, r0
                     add     r2, r0
@@ -185,8 +185,8 @@ routine61:
                     sub     r30, r26
                     move    r20, r2
                     sub     r29, r30
-                    shrq    #PIXEL2, r2
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r2
+                    shlq    #8, r30
                     and     r13, r2
                     imult   r2, r26
                     add     r30, r26
@@ -259,9 +259,9 @@ routine61:
                     imult   r9, r17
                     imult   r4, r25
                     imult   r20, r18
-                    shlq    #PIXEL2, r17
-                    shlq    #PIXEL2, r18
-                    shlq    #PIXEL2, r25
+                    shlq    #8, r17
+                    shlq    #8, r18
+                    shlq    #8, r25
                     loadw   (r11), r5
                     addq    #2, r11
                     loadw   (r11), r27
@@ -686,7 +686,7 @@ routine601:
                     nop
 routine666:
                     store   r5, (r14+$a)
-                    shrq    #PIXEL2, r5
+                    shrq    #8, r5
                     movei   #$0000000f, r1
                     move    r5, r0
                     shrq    #4, r5
@@ -715,7 +715,7 @@ routine666:
                     add     r3, r0
                     load    (r0), r1
                     store   r1, (r14+$4)
-                    movei   #ZOFFS2, r29
+                    movei   #128, r29
                     movei   #$000000a8, r0
                     add     r3, r0
                     load    (r0), r1
@@ -750,8 +750,8 @@ routine666:
                     sub     r30, r19
                     load    (r14+$4), r31
                     sub     r29, r30
-                    shrq    #PIXEL2, r31
-                    shlq    #PIXEL2, r30
+                    shrq    #8, r31
+                    shlq    #8, r30
                     and     r13, r31
                     imult   r31, r19
                     add     r19, r30
@@ -764,7 +764,7 @@ routine666:
                     loadb   (r1), r19
                     sub     r2, r19
                     sub     r29, r2
-                    shlq    #PIXEL2, r2
+                    shlq    #8, r2
                     imult   r31, r19
                     add     r19, r2
                     imult   r17, r30
@@ -809,7 +809,7 @@ routine784:
 routine788:
                     shlq    #4, r31
                     or      r31, r5
-                    shlq    #PIXEL2, r5
+                    shlq    #8, r5
                     move    r0, r31
                     movei   #$000000b8, r0
                     add     r3, r0
@@ -918,7 +918,7 @@ routine880:
                     jump    (r19)
                     nop
 routine890:
-                    bset    #PIXEL2, r22
+                    bset    #8, r22
                     movei   #$00f037c8, r0
                     jump    (r0)
                     nop
@@ -940,7 +940,7 @@ routine890:
                     add     r1, r2
                     add     r23, r2
                     move    r27, r0
-                    shrq    #PIXEL2, r0
+                    shrq    #8, r0
                     or      r5, r0
                     storew  r0, (r2)
                     jump    (r19)
@@ -960,7 +960,7 @@ routine890:
                     add     r1, r2
                     add     r23, r2
                     move    r27, r0
-                    shrq    #PIXEL2, r0
+                    shrq    #8, r0
                     or      r5, r0
                     storew  r0, (r2)
                     addq    #2, r2
@@ -1026,7 +1026,7 @@ routine965:
                     bset    #16, r2
                     move    r27, r28
                     store   r2, (r0)
-                    shrq    #PIXEL2, r28
+                    shrq    #8, r28
                     movei   #$00f0226c, r0
                     or      r5, r28
                     move    r28, r2
