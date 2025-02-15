@@ -25,7 +25,7 @@
                     shrq    #PIXEL4, r4
                     movei   #PITCH8, r0
                     and     r0, r4
-                    movei   #$f03f60, r0
+                    movei   #in_buf, r0
                     load    (r0), r1
                     addq    #$14, r1
                     shlq    #SRCENZ, r4
@@ -115,7 +115,7 @@ routine105:
                     nop
                     neg     r5
 routine110:
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     shlq    #$b, r27
                     or      r31, r5
                     bset    #$f, r27
@@ -542,7 +542,7 @@ routine453:
                     movei   #PITCH8, r31
                     shrq    #PIXEL4, r30
                     and     r31, r30
-                    movei   #$f03f60, r0
+                    movei   #in_buf, r0
                     shlq    #SRCENZ, r30
                     load    (r0), r1
                     load    (r1), r0
@@ -689,7 +689,7 @@ routine668:
                     movei   #A1_BASE, r0
                     store   r23, (r0)
                     movei   #$14420, r2
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     store   r2, (r0)
                     move    r15, r25
                     sub     r1, r25
@@ -715,7 +715,7 @@ routine668:
                     store   r17, (r0)
                     move    r1, r2
                     neg     r2
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     shlq    #PIXEL4, r2
                     shrq    #PIXEL4, r2
                     bset    #PIXEL4, r2
@@ -728,7 +728,7 @@ routine668:
                     shlq    #PIXEL4, r17
                     or      r2, r17
                     store   r17, (r0)
-                    subq    #SRCENX, r0
+                    subq    #4, r0
                     store   r17, (r0)
                     move    r1, r2
                     movei   #B_COUNT, r0
@@ -736,7 +736,7 @@ routine668:
                     or      r2, r1
                     store   r1, (r0)
                     movei   #$10200, r2
-                    subq    #SRCENX, r0
+                    subq    #4, r0
                     store   r2, (r0)
 routine724:
                     load    (r0), r1
@@ -808,7 +808,7 @@ routine778:
 routine782:
                     shrq    #PIXEL4, r31
                     shrq    #PIXEL4, r5
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r5
                     shlq    #PIXEL2, r5
                     movei   #$7c, r0
@@ -856,7 +856,7 @@ routine782:
                     movei   #$74, r0
                     add     r3, r0
                     load    (r0), r20
-                    shlq    #SRCENX, r20
+                    shlq    #4, r20
                     load    (r14+$3), r2
                     move    r20, r0
                     movei   #ZOFFS2, r29

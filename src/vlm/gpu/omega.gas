@@ -1,4 +1,4 @@
-; *******************************************************************
+; ******************************************************************************
 ; This is Jeff Minter's Virtual Light Machine for the Atari Jaguar.
 ;
 ; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
@@ -23,7 +23,8 @@
 ; the dbeast module first. When all 6 fxobjs have been 'run', we run
 ; the 'psi' GPU module to finish off.
 ;
-; *******************************************************************
+; ******************************************************************************
+
 .include "../../jaguar.inc"
 .include "../../blitter.inc"
 .include "../vlm.inc"
@@ -153,7 +154,9 @@ LoopThroughFXObjs:  movei   #GoToNext, r2
                     store   fx_obj, (r14+_fxobj)        ; Stash the fx object.
                     store   r0, (r14+_results)          ; Stash the results object.
                     
+                    ; ----------------------------------------------------------------
                     ; Run the dbeast module first.
+                    ; ----------------------------------------------------------------
                     movei   #_dbeast, r1                  ; Index into 'mods' -> dbeast
                     movei   #FinishedDBeast, r2           ; Pick up at FinishedDBeast when finished.
                     movei   #RunGPUModule, r0
@@ -210,7 +213,7 @@ MainModuleRunLoop:  move    r26, r20
                     moveta  r27, r27
                     moveta  r24, r24
                     moveta  r25, r25
-                    movei   #ResumeLoopAgain, r2
+                    movei   #FinishedGPUModule, r2
                     movei   #RunGPUModule, r0
                     or      r2, r2
                     store   r2, (r14+_post_gpu_routine)
@@ -218,7 +221,7 @@ MainModuleRunLoop:  move    r26, r20
                     nop
 
                     ; We come back here after we finish running the GPU module loaded above.
-ResumeLoopAgain:    movefa  r3, r3
+FinishedGPUModule:  movefa  r3, r3
                     movefa  r14, r14
                     movefa  r26, r26
                     movefa  r27, r27
@@ -243,111 +246,135 @@ JumpToNext:         add     r25, r26
                     ; ----------------------------------------------------------------
                     ; Run the sub-effect's module again, but just the once.
                     ; ----------------------------------------------------------------
-PostMainModuleRun:  load    (r14+_fxobj), fx_obj          ; Load the fx obj to fx_obj (r3).
-                    movei   #draw_screen, r0
-                    load    (r0), r1
-                    movei   #$00000000, r0
-                    add     fx_obj, r0
-                    store   r1, (r0)                      ; Store pointer to draw screen in first 4 bytes of fx_obj.
+PostMainModuleRun:  ; Store draw_screen at the start of the fxobj for some reason.
+                    load    (r14+_fxobj), fx_obj   ; Load the fx obj to fx_obj (r3).
+                    movei   #draw_screen, r0       ; Store draw_screen..
+                    load    (r0), r1               ; .. in r1.
+                    movei   #$00000000, r0         ; Point r0
+                    add     fx_obj, r0             ; .. at fx_obj.
+                    store   r1, (r0)               ; Store pointer to draw screen in first 4 bytes of fx_obj.
+
+                    _trig REGEQU r1
+                    ; Store trig in the 'height' slot in the fxobj.
                     movei   #trig, r0                     ; Point r1..
-                    load    (r0), r1                      ; .. at 'trig'.
+                    load    (r0), _trig                      ; .. at 'trig'.
                     movei   #height, r0                   ; Get the offset to 'height' in fxobj..
-                    add     fx_obj, r0                    ; .. add it the fx_obj address to point r0 at its position.
-                    store   r1, (r0)                      ; Store 'trig' in the 'height' of the fxobj.
-                    xor     r1, r1                        ; Make sure r1 is ready.
-                    movei   #screen_ready+$8, r0
-                    store   r1, (r0)
+                    add     fx_obj, r0                    ; .. add the fx_obj address to point r0 at its position.
+                    store   _trig, (r0)                      ; Store 'trig' in the 'height' of the fxobj.
+                    xor     _trig, _trig                        ; Make sure r1 is ready.
+
+                    movei   #draw_screen+$4, r0
+                    store   _trig, (r0)
+
+                    ; Run the GPU module for the fxobj using the height and screen provided above.
                     movei   #gpu, r0                      ; Put the offset to the gpu index in r0.
                     add     fx_obj, r0                    ; Add the fx_obj address to it.
                     load    (r0), r1                      ; Store the gpu index in r1.
-                    movei   #ResumeAfterGPU, r2
+                    movei   #UpdateOSCBank, r2
                     movei   #RunGPUModule, r0
                     or      r2, r2
                     store   r2, (r14+_post_gpu_routine)   ; Stash the post-GPU routine.
                     jump    (r0)                          ; Load the fx obj's GPU module.
                     nop
 
-_little_loop REGEQU r20
+                    _update_osc_loop      REGEQU r20
+                    fx_obj_oscbank        REGEQU r3
+                    fx_obj_oscbank_curpos REGEQU r22
 
                     ; ----------------------------------------------------------------
-                    ; Loop 8 times for something
+                    ; Update the oscbank in the fxobj.
+                    ; Each entry in the oscbank consists of:
+                    ;   Element 1 - Bytes 1-4 - Initial Value
+                    ;   Element 2 - Bytes 4-8 - Value to increment 'Initial Value' by.
+                    ; This loop increments Element 1 with the value of Element 2 for each
+                    ; entry.
                     ; ----------------------------------------------------------------
-ResumeAfterGPU:     movefa  r3, r3
+UpdateOSCBank:      movefa  fx_obj, fx_obj
                     movefa  r14, r14
-                    movei   #$00000300, r0
+                    movei   #768, r0 ; Store 768 in r0, this will help point us to the oscbank in the fxobj.
 
-                    ; Looping 8 times doing something.
-                    moveq   #$7, r1 ; Loop 8 times.
-                    add     r0, r3
-                    movei   #LittleLoop, _little_loop
-                    move    r3, r22
-LittleLoop:         load    (r22), r21
-                    addq    #4, r22
-                    load    (r22), r0
-                    addq    #8, r22
-                    load    (r22), r4
-                    subq    #$c, r22
+                    moveq   #$7, r1                      ; Loop 8 times.
+                    add     r0, fx_obj_oscbank                   ; Point to the oscbank in the fxobj.
+                    movei   #OSCLoop, _update_osc_loop   ; Set up our loop
+                    move    fx_obj_oscbank, fx_obj_oscbank_curpos           ; Stash start position in oscbank.
+OSCLoop:            load    (fx_obj_oscbank_curpos), r21            ; Store the first element of the oscbank entry in r21.
+                    addq    #4, fx_obj_oscbank_curpos               ; Move to the second element of this oscbank entry.
+                    load    (fx_obj_oscbank_curpos), r0             ; Store it in r0.
+                    addq    #8, fx_obj_oscbank_curpos               ; Move to the third element of this oscbank entry.
+                    load    (fx_obj_oscbank_curpos), r4             ; Store it in r4.
+                    subq    #12, fx_obj_oscbank_curpos              ; Point bank to the start of this oscbank entry.
                     cmpq    #$6, r4
-                    jr    nz,SkipXOR ; #$0000016C
+                    jr    nz,SkipXOR                     ; #$0000016C
                     nop
                     xor     r0, r0
-SkipXOR:            add     r0, r21
-                    store   r21, (r22)
-                    addq    #16, r22
+SkipXOR:            add     r0, r21                      ; Increment the initial value (r21) by the increment (r0).
+                    store   r21, (fx_obj_oscbank_curpos)            ; Store the updated value.
+                    addq    #16, fx_obj_oscbank_curpos              ; Move to the next entry in the oscbank.
                     subq    #1, r1
-                    jump    nn,(_little_loop)
+                    jump    nn,(_update_osc_loop)
                     nop
-                    ; End of Little Loop.
+
+                    _osc_vals_loop REGEQU r23
+                    _osc_loop_counter REGEQU r22
+                    _osc_vals REGEQU r4
+                    _delayf REGEQU r0
+                    _next_osc_val REGEQU r24
+                    _oscbank_cur REGEQU r10
+                    _oscbank_sines REGEQU r11
+                    _oscbank_4 REGEQU r12
+                    _255 REGEQU r21
+                    _65535 REGEQU r20
 
                     ; ----------------------------------------------------------------
-                    ; Do some stuff
+                    ; Use the updated OSC Bank from above to populate the 'oscvals'.
+                    ; 
                     ; ----------------------------------------------------------------
-                    movei   #in_buf+4, r0 ; oscvals
-                    load    (r0), r4
-                    addq    #16, r0
-                    movei   #$0000ffff, r20
-                    movei   #$000000ff, r21
-                    movei   #8, r22
-                    movei   #routine9, r23
-                    movei   #routine11, r24
-routine9:           load    (r3), r10
-                    addq    #8, r3
-                    load    (r3), r11
-                    addq    #4, r3
-                    load    (r3), r12
-                    addq    #4, r3
-                    cmpq    #$7, r12
+                    movei   #in_buf+4, r0 ; Load address for oscvals to r0.
+                    load    (r0), _osc_vals ; Store the address in r4.
+                    addq    #16, _delayf ; Now point r0 at 'delayf' in the in_buf.
+                    movei   #65535, r20
+                    movei   #255, _255
+                    movei   #8, _osc_loop_counter ; Loop 9 times
+                    movei   #OSCValsLoop, _osc_vals_loop
+                    movei   #NextOSCVal, _next_osc_val
+OSCValsLoop:        load    (fx_obj_oscbank), _oscbank_cur
+                    addq    #8, fx_obj_oscbank ; Advance to p_sines element in entry.
+                    load    (fx_obj_oscbank), _oscbank_sines ; Store in _oscbank_sines
+                    addq    #4, fx_obj_oscbank ; Advance to last element in entry
+                    load    (fx_obj_oscbank), _oscbank_4 ; Store in _oscbank_4
+                    addq    #4, fx_obj_oscbank ; Advance fx_obj_oscbank to the position of the next entry.
+                    cmpq    #7, _oscbank_4
                     jr    n,routine7 ; #ZOFFS7
-                    move    r12, r1
-                    subq    #$7, r1
-                    load    (r0), r2
+                    move    _oscbank_4, r1
+                    subq    #7, r1
+                    load    (_delayf), r2
                     shlq    #2, r1
                     subq    #8, r2
                     add     r1, r2
-                    load    (r2), r12
-                    jump    (r24)
-routine7:           cmpq    #PITCH8, r12
+                    load    (r2), _oscbank_4
+                    jump    (_next_osc_val)
+routine7:           cmpq    #3, _oscbank_4
                     jr    nz,routine157 ; #$000001CA
-                    move    r10, r12
-                    shrq    #8, r12
-                    jump    (r24)
-routine157:         move    r10, r15
-                    shrq    #16, r10
-                    and     r21, r10
-                    add     r10, r11
-                    loadb   (r11), r12
-                    addq    #1, r11
-                    loadb   (r11), r13
+                    move    _oscbank_cur, _oscbank_4
+                    shrq    #8, _oscbank_4
+                    jump    (_next_osc_val)
+routine157:         move    _oscbank_cur, r15
+                    shrq    #16, _oscbank_cur
+                    and     _255, _oscbank_cur
+                    add     _oscbank_cur, _oscbank_sines
+                    loadb   (_oscbank_sines), _oscbank_4
+                    addq    #1, _oscbank_sines
+                    loadb   (_oscbank_sines), r13
                     shrq    #8, r15
-                    sub     r12, r13
-                    and     r21, r15
-                    shlq    #8, r12
+                    sub     _oscbank_4, r13
+                    and     _255, r15
+                    shlq    #8, _oscbank_4
                     imult   r15, r13
-                    add     r13, r12
-routine11:          storew  r12, (r4)
-                    addq    #2, r4
-                    subq    #1, r22
-                    jump    nz,(r23)
+                    add     r13, _oscbank_4
+NextOSCVal:         storew  _oscbank_4, (_osc_vals) ; Store _oscbank_4 in oscvals.
+                    addq    #2, _osc_vals ; Advance two bytes in oscvals.
+                    subq    #1, _osc_loop_counter ; Decrement our counter.
+                    jump    nz,(_osc_vals_loop) ; Loop if not zero yet.
                     nop
 
                     ; ----------------------------------------------------------------
@@ -357,7 +384,7 @@ routine11:          storew  r12, (r4)
                     ; in the first 256 bytes of the fxobj?
                     ; ----------------------------------------------------------------
                     movei   #results_in_buf, r0 ; results
-                    load    (r14+_fxobj), _fxobj_r22
+                    load    (r14+_fxobj), _fxobj_r22 ; Point r22 at the fxobj
                     movei   #63, _bigloop_ctr
                     movei   #256, r2
                     move    _fxobj_r22, _fxobj_r23
@@ -608,7 +635,7 @@ GPULoad:
                     or      r23, r24 ; Are a1 and a2 the same?
                     jr      z,JustBlit ; If so, adjust blitter command.
                     nop
-.aligned:           movei  #SRCEN|SRCENX|LFU_AN|LFU_A,r22
+.aligned:           movei  #SRCEN|4|LFU_AN|LFU_A,r22
 
 JustBlit:           movei   #B_CMD, blit_cmd ; Point blit_cmd to the blit command register.
                     store   r22, (blit_cmd) ; Issue the blit command.

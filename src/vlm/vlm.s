@@ -54,12 +54,12 @@
 ;    is being run from within the GPU. 'omega.gas' contains more detail about the
 ;    implementation, including about how GPU modules are loaded and run by VLM.
 ;
-; The mechanism 'Frame' and 'RunFXObjModules' use to hand off work to each other is the
-; 'sync' variable. When the Jaguar's Object Processor has completed painting to
-; screen, 'Frame' will reset 'sync' to 0. When 'RunFXObjModules' sees that 'sync' is
-; 0 it will start preparing a new frame and 'draw' it in the GPU RAM. When it
-; is finished it will set sync to 1, so that 'Frame' knows it is time to paint
-; a new frame to the screen again.
+; The mechanism 'Frame' and 'RunFXObjModules' use to hand off work to each
+; other is the 'sync' variable. When the Jaguar's Object Processor has
+; completed painting to screen, 'Frame' will reset 'sync' to 0. When
+; 'RunFXObjModules' sees that 'sync' is 0 it will start preparing a new frame
+; and 'draw' it in the GPU RAM. When it is finished it will set sync to 1, so
+; that 'Frame' knows it is time to paint a new frame to the screen again.
 ;
 ; Effects and Sub-Effects
 ; ------------------------------------------------------------------------------
@@ -202,9 +202,15 @@
 ;
 ; Editing Effects
 ; ------------------------------------------------------------------------------
-; I've hacked VLM to allow you to access the editing facility without an
+; I've hacked VLM to allow you to access the editing panel without an
 ; elaborate button sequence: just press 'Pause'. Then to access the 'real'
 ; editing panel, keep pressing down until the screen changes.
+;
+; This Is Not A Place of Honor
+; ------------------------------------------------------------------------------
+; If you're seeing this notice then that means I still haven't figured everything
+; out. If you see a mistake or don't understand something, please let me know at
+; https://github.com/mwenge/vlm.
 ;
 ; ******************************************************************************
 
@@ -296,7 +302,7 @@ goagain:
 ; This populates our 'beasties' list with all the objects to be drawn. This
 ; list will later be converted by RunBeasties into a full Object List for the
 ; Object Processor to draw to the screen.
-
+;
 ; While each of the entries in the beasties list references regions of pixel
 ; data to be drawn and where to draw it, we have to actually fill out that
 ; pixel data with stuff to draw. This is done by 'titlescr' which calls the
@@ -8345,22 +8351,23 @@ symbutts:       dc.l $80E0100, $5090000, $B090000, $7050000, $8100100
                 dc.l $8080000, $70B0000, $B070000, $FF000000, $5070000
                 dc.l $90B0000, $9050000
 
-oscbank:        dc.l $0400000
-                dc.l $0011100, p_sines
-                dc.l $0000000, $0000000
-                dc.l $0016300, p_sines
-                dc.l $0000000, $0000000
-                dc.l $0003000, p_sines
-                dc.l $0000000, $0000000
-                dc.l $000C000, p_sines
-                dc.l $0000000, $0000000
-                dc.l $0010000, p_sines
-                dc.l $0000000, $0000000
-                dc.l $000E000, p_sines
-                dc.l $0000000, $0000000
-                dc.l $000C300, p_sines
-                dc.l $0000000, $0000000
-                dc.l $0000F310, p_sines, $00000000
+
+; *******************************************************************
+; oscbank
+; Used by omega.gas
+;
+; Element 1 - Bytes 1-4 - Initial Value
+; Element 2 - Bytes 4-8 - Value to increment 'Initial Value' by.
+;
+; *******************************************************************
+oscbank:        dc.l $0400000,$0011100, p_sines,$0000000
+                dc.l $0000000,$0016300, p_sines,$0000000
+                dc.l $0000000,$0003000, p_sines,$0000000
+                dc.l $0000000,$000C000, p_sines,$0000000
+                dc.l $0000000,$0010000, p_sines,$0000000
+                dc.l $0000000,$000E000, p_sines,$0000000
+                dc.l $0000000,$000C300, p_sines,$0000000
+                dc.l $0000000,$000F310, p_sines,$0000000
 
 pixcon:         dc.l $00800000, $00000000
                 dc.l $00001600, $00003000, $00FFFF00, $00000000
@@ -8428,28 +8435,28 @@ avbank:
         ;  - Spectrum End
         ;  - Minimum value to trigger.
         ;  - Unused.
-				dc.w  $0001,$0006,$7000,$1000 ; Spectrum 1 
-				dc.w  $0007,$000A,$6000,$1000 ; Spectrum 2
-				dc.w  $000B,$0018,$5000,$1000 ; Spectrum 3
-				dc.w  $0019,$0028,$4000,$1000 ; Spectrum 4
-				dc.w  $0029,$003F,$3000,$1000 ; Spectrum 5
-				dc.w  $0000,$0000,$0000,$0000 
+        dc.w  $0001,$0006,$7000,$1000 ; Spectrum 1 
+        dc.w  $0007,$000A,$6000,$1000 ; Spectrum 2
+        dc.w  $000B,$0018,$5000,$1000 ; Spectrum 3
+        dc.w  $0019,$0028,$4000,$1000 ; Spectrum 4
+        dc.w  $0029,$003F,$3000,$1000 ; Spectrum 5
+        dc.w  $0000,$0000,$0000,$0000 
 av1:
-				dc.b  $00,$00,$00,$0A,$00,$90,$B6,$9C ; 0x30
-				dc.b  $00,$90,$00,$38,$F4,$35,$2A,$C6 ; 0x38
+        dc.b  $00,$00,$00,$0A,$00,$90,$B6,$9C ; 0x30
+        dc.b  $00,$90,$00,$38,$F4,$35,$2A,$C6 ; 0x38
 
         ; Offsets into each bank. The 'gm' routine uses the
         ; last two bytes (e.g. $0200, $1856) into 
         ; each bank's data in banks.s.
-				dc.l  $00900200 ; Bank 1
+        dc.l  $00900200 ; Bank 1
         dc.l  $00901856 ; Bank 2
-				dc.l  $009034A4 ; Bank 3
+        dc.l  $009034A4 ; Bank 3
         dc.l  $00904482 ; Bank 4
-				dc.l  $00905776 ; Bank 5
+        dc.l  $00905776 ; Bank 5
         dc.l  $009061D8 ; Bank 6
-				dc.l  $009075A6 ; Bank 7
+        dc.l  $009075A6 ; Bank 7
         dc.l  $00908806 ; Bank 8
-				dc.l  $00909A72 ; Bank 9
+        dc.l  $00909A72 ; Bank 9
         dc.l  $0090A6B4 ; Bank 10 - Unused
 
 

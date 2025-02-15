@@ -2,7 +2,7 @@
 .include "../../blitter.inc"
 .include "../vlm.inc"
 .org $f03000
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     movei   #$000000f0, r0
                     add     r3, r0
                     load    (r0), r1
@@ -70,9 +70,9 @@ routine13:
                     moveta  r10, r10
                     addq    #SRCENZ, r6
                     move    r8, r7
-                    shlq    #SRCENX, r7
+                    shlq    #4, r7
                     add     r6, r7
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     movefa  r3, r3
                     movei   #$00f034ae, r0
                     move    pc, r30
@@ -115,8 +115,8 @@ routine13:
                     movefa  r10, r1
                     sub     r0, r17
                     sub     r1, r18
-                    shrq    #SRCENX, r17
-                    shrq    #SRCENX, r18
+                    shrq    #4, r17
+                    shrq    #4, r18
                     load    (r14+$1c), r24
                     load    (r14+$1d), r25
                     imult   r24, r17
@@ -171,8 +171,8 @@ routine13:
                     movefa  r10, r1
                     sub     r0, r17
                     sub     r1, r18
-                    shrq    #SRCENX, r17
-                    shrq    #SRCENX, r18
+                    shrq    #4, r17
+                    shrq    #4, r18
                     load    (r14+$1c), r24
                     load    (r14+$1d), r25
                     imult   r24, r17
@@ -217,7 +217,7 @@ routine13:
                     loadw   (r6), r1
                     addq    #SRCENZ, r6
                     loadw   (r6), r27
-                    addq    #SRCENX, r6
+                    addq    #4, r6
                     shlq    #SRCENZ, r1
                     add     r7, r1
                     loadw   (r1), r17
@@ -227,8 +227,8 @@ routine13:
                     movefa  r10, r1
                     sub     r0, r17
                     sub     r1, r18
-                    shrq    #SRCENX, r17
-                    shrq    #SRCENX, r18
+                    shrq    #4, r17
+                    shrq    #4, r18
                     load    (r14+$1c), r24
                     load    (r14+$1d), r25
                     imult   r24, r17
@@ -1022,11 +1022,11 @@ routine975:
                     move    pc, r30
                     jump    (r20)
                     addq    #$6, r30
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     load    (r14+$f), r0
                     jump    (r0)
                     nop
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     load    (r14+$15), r0
                     jump    (r0)
                     nop
@@ -1063,11 +1063,11 @@ routine1035:
                     nop
                     movei   #B_PATD, r1
                     store   r22, (r1)
-                    addq    #SRCENX, r1
+                    addq    #4, r1
                     store   r22, (r1)
                     movei   #$00004420, r1
                     move    r29, r0
-                    shrq    #SRCENX, r0
+                    shrq    #4, r0
                     jr    z,routine1044 ; #$00000992
                     nop
                     movei   #$00f039a0, r0
@@ -1109,13 +1109,13 @@ routine1070:
                     movei   #B_I0, r0
                     store   r28, (r0)
                     add     r1, r28
-                    subq    #SRCENX, r0
+                    subq    #4, r0
                     store   r28, (r0)
                     add     r1, r28
-                    subq    #SRCENX, r0
+                    subq    #4, r0
                     store   r28, (r0)
                     add     r1, r28
-                    subq    #SRCENX, r0
+                    subq    #4, r0
                     store   r28, (r0)
                     movei   #B_IINC, r0
                     movei   #$00ffffff, r1

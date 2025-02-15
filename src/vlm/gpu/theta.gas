@@ -1,9 +1,32 @@
+; ******************************************************************************
+; This is Jeff Minter's Virtual Light Machine for the Atari Jaguar.
+;
+; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
+; _;^)iiiiiiiiiiiiiii)!#j- .`_?[[[[[[[[12m{         _;;/"//|1o)      `[ol//"/*Tu
+;   ./""""""""""""""""}Jj- .`_l{sssssss*2m{            ':'':|)la!. <a[\)=''''lTu
+;  .`=+/////////////=^*Cu_ .`_xlllllllcs3m{           .'''''''+>)?[l><'''''''lTu
+;   .__,^^========^=r*x)<. .`_i%vvvvvvvc3ms           ._''''''___vx"__''''''_lTu
+;      _,,^^^^^^^,';L#%    .`_<>>>>>>>>v2mL}}}}**r`   .__________--_________-cTu
+;      `__:::,,::"ii{*|    .`_|\))))))|<toozzz7Cq2_   .---------------------`cTu
+;       ..-__''-.cT7`      .`-+/////////======^!6y_   .``````````````````````cTu
+;       ..``-__""la]-      .`-;^^^^^^^^^^^^^^^:!qy_   .`````````````````````.c#n
+;         ..``'tzi         .``''''''''''''''''-rwL_    ..................... ioa
+;            ..``.         .`````````````````  .``                           ...
+;
+; theta.gas
+;
+; This module is loaded from 'MainModuleRunLoop' in omega.gas. 
+; It is responsible for Drawing Particle Motion.
+;
+; ******************************************************************************
 .include "../../jaguar.inc"
 .include "../../blitter.inc"
 .include "../vlm.inc"
-.org $1b9c0
-            movei   #$f03f80, r14
-            movei   #$f03f60, r0
+
+.org $00f03000
+
+            movei   #in_buf+$20, r14
+            movei   #in_buf, r0
             load    (r0), r1
             addq    #$c, r1
             load    (r1), r2
@@ -31,9 +54,9 @@
             movei   #$94, r0
             add     r3, r0
             load    (r0), r21
-            sharq   #SRCENX, r19
-            sharq   #SRCENX, r20
-            sharq   #SRCENX, r21
+            sharq   #4, r19
+            sharq   #4, r20
+            sharq   #4, r21
             movei   #$b8, r0
             add     r3, r0
             load    (r0), r22
@@ -97,22 +120,22 @@ routine2:
 routine3:
             shrq    #PIXEL4, r31
             shrq    #PIXEL4, r25
-            shlq    #SRCENX, r31
+            shlq    #4, r31
             or      r31, r25
             shlq    #PIXEL2, r25
             movei   #$58, r0
             add     r3, r0
             load    (r0), r5
-            addq    #SRCENX, r4
-            shrq    #SRCENX, r5
+            addq    #4, r4
+            shrq    #4, r5
             movei   #$f03206, r7
             xor     r12, r12
             movei   #$f031ae, r1
-            movei   #SRCENX, r0
+            movei   #4, r0
             add     r3, r0
             load    (r0), r2
             subq    #SRCEN, r2
-            movei   #SRCENX, r0
+            movei   #4, r0
             add     r3, r0
             store   r2, (r0)
             cmpq    #$0, r2
@@ -122,7 +145,7 @@ routine3:
             add     r3, r0
             load    (r0), r2
             shrq    #PIXEL4, r2
-            movei   #SRCENX, r0
+            movei   #4, r0
             add     r3, r0
             store   r2, (r0)
             movei   #$1f4, r30
@@ -146,19 +169,19 @@ routine4:
             subq    #$e, r1
             storew  r0, (r9)
             store   r16, (r1)
-            addq    #SRCENX, r1
+            addq    #4, r1
             store   r17, (r1)
-            addq    #SRCENX, r1
+            addq    #4, r1
             store   r18, (r1)
-            addq    #SRCENX, r1
+            addq    #4, r1
             storew  r25, (r1)
             addq    #SRCENZ, r1
             storew  r26, (r1)
             addq    #SRCENZ, r1
             store   r19, (r1)
-            addq    #SRCENX, r1
+            addq    #4, r1
             store   r20, (r1)
-            addq    #SRCENX, r1
+            addq    #4, r1
             store   r21, (r1)
             addq    #$12, r9
             movei   #$1ff, r30
@@ -176,25 +199,25 @@ routine4:
             add     r20, r21
             store   r21, (r0)
             add     r22, r20
-            addq    #SRCENX, r0
+            addq    #4, r0
             store   r20, (r1)
-            addq    #SRCENX, r1
+            addq    #4, r1
             load    (r1), r20
             load    (r0), r21
             add     r20, r21
             store   r21, (r0)
             add     r23, r20
-            addq    #SRCENX, r0
+            addq    #4, r0
             store   r20, (r1)
-            addq    #SRCENX, r1
+            addq    #4, r1
             load    (r1), r20
             load    (r0), r21
             add     r20, r21
             store   r21, (r0)
             add     r24, r20
-            addq    #SRCENX, r0
+            addq    #4, r0
             store   r20, (r1)
-            addq    #SRCENX, r1
+            addq    #4, r1
             sub     r5, r8
             cmpq    #SRCEN, r8
             jr    nn,routine5 ; #$0000020A
@@ -220,3 +243,4 @@ routine6:
             nop
             add     r0, r0
             add     r0, r0
+; vim:ft=asm68k ts=2

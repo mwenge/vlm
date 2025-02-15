@@ -1,3 +1,24 @@
+; ******************************************************************************
+; This is Jeff Minter's Virtual Light Machine for the Atari Jaguar.
+;
+; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
+; _;^)iiiiiiiiiiiiiii)!#j- .`_?[[[[[[[[12m{         _;;/"//|1o)      `[ol//"/*Tu
+;   ./""""""""""""""""}Jj- .`_l{sssssss*2m{            ':'':|)la!. <a[\)=''''lTu
+;  .`=+/////////////=^*Cu_ .`_xlllllllcs3m{           .'''''''+>)?[l><'''''''lTu
+;   .__,^^========^=r*x)<. .`_i%vvvvvvvc3ms           ._''''''___vx"__''''''_lTu
+;      _,,^^^^^^^,';L#%    .`_<>>>>>>>>v2mL}}}}**r`   .__________--_________-cTu
+;      `__:::,,::"ii{*|    .`_|\))))))|<toozzz7Cq2_   .---------------------`cTu
+;       ..-__''-.cT7`      .`-+/////////======^!6y_   .``````````````````````cTu
+;       ..``-__""la]-      .`-;^^^^^^^^^^^^^^^:!qy_   .`````````````````````.c#n
+;         ..``'tzi         .``''''''''''''''''-rwL_    ..................... ioa
+;            ..``.         .`````````````````  .``                           ...
+;
+; alpha.gas
+;
+; This module is loaded from 'MainModuleRunLoop' in omega.gas. 
+; It is responsible for Drawing 3D Starfields.
+; 
+; ******************************************************************************
 .include "../../jaguar.inc"
 .include "../../blitter.inc"
 .include "../vlm.inc"
@@ -81,7 +102,7 @@ routine73:
                     nop
                     neg     r5
 routine77:
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r5
                     shlq    #PIXEL2, r5
                     movei   #$f031bc, r0
@@ -147,9 +168,9 @@ routine135:
                     move    r6, r0
                     move    r7, r1
                     move    r24, r2
-                    shrq    #SRCENX, r0
-                    shrq    #SRCENX, r1
-                    shrq    #SRCENX, r2
+                    shrq    #4, r0
+                    shrq    #4, r1
+                    shrq    #4, r2
                     add     r0, r17
                     add     r1, r18
                     add     r2, r25
@@ -293,7 +314,7 @@ routine279:
                     nop
                     neg     r5
 routine283:
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r5
                     shlq    #PIXEL2, r5
                     movei   #$d8, r0
@@ -367,7 +388,7 @@ routine349:
                     shrq    #PIXEL2, r5
                     movei   #$f, r1
                     move    r5, r0
-                    shrq    #SRCENX, r5
+                    shrq    #4, r5
                     and     r1, r0
                     shlq    #PIXEL4, r5
                     shlq    #PIXEL4, r0
@@ -485,7 +506,7 @@ routine467:
                     nop
                     neg     r5
 routine471:
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r5
                     shlq    #PIXEL2, r5
                     move    r0, r31
@@ -585,10 +606,10 @@ routine553:
 routine563:
                     move    r15, r0
                     sub     r17, r0
-                    shrq    #SRCENX, r22
+                    shrq    #4, r22
                     move    r18, r17
                     move    r0, r18
-                    btst    #SRCENX, r22
+                    btst    #4, r22
                     jr    z,routine573 ; #$000005D6
                     nop
                     load    (r14+$7), r19
@@ -689,7 +710,7 @@ routine663:
                     nop
                     neg     r5
 routine667:
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r5
                     shlq    #PIXEL2, r5
                     movei   #$24, r0
@@ -716,7 +737,7 @@ routine667:
                     jump    n,(r0)
                     move    r25, r1
                     sharq   #PIXEL4, r1
-                    cmpq    #SRCENX, r1
+                    cmpq    #4, r1
                     jump    n,(r0)
                     nop
                     movei   #$f037e6, r0
@@ -904,7 +925,7 @@ routine877:
                     movei   #A1_BASE, r0
                     store   r23, (r0)
                     movei   #$14420, r2
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     store   r2, (r0)
                     move    r15, r16
                     sub     r1, r16
@@ -931,7 +952,7 @@ routine877:
                     store   r28, (r0)
                     move    r1, r2
                     neg     r2
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     shlq    #PIXEL4, r2
                     shrq    #PIXEL4, r2
                     bset    #PIXEL4, r2
@@ -944,7 +965,7 @@ routine877:
                     shlq    #PIXEL4, r28
                     or      r2, r28
                     store   r28, (r0)
-                    subq    #SRCENX, r0
+                    subq    #4, r0
                     store   r28, (r0)
                     move    r1, r2
                     movei   #B_COUNT, r0
@@ -952,7 +973,7 @@ routine877:
                     or      r2, r1
                     store   r1, (r0)
                     movei   #$10200, r2
-                    subq    #SRCENX, r0
+                    subq    #4, r0
                     store   r2, (r0)
 routine934:
                     load    (r0), r1
@@ -1010,7 +1031,7 @@ routine956:
                     add     r7, r16
                     btst    #PIXEL4, r8
                     add     r7, r16
-                    bset    #SRCENX, r2
+                    bset    #4, r2
                     add     r7, r16
                     bset    #$c, r10
                     add     r0, r0

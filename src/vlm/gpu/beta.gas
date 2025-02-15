@@ -29,10 +29,10 @@ routine22:
                     nop
                     neg     r7
 routine26:
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r7
                     shlq    #PIXEL2, r7
-                    movei   #SRCENX, r0
+                    movei   #4, r0
                     add     r18, r0
                     load    (r0), r23
                     shrq    #PIXEL4, r23
@@ -46,10 +46,10 @@ routine26:
                     movei   #$98, r0
                     add     r18, r0
                     load    (r0), r1
-                    movei   #$f03f60, r0
+                    movei   #in_buf, r0
                     shrq    #PIXEL4, r1
                     load    (r0), r2
-                    addq    #SRCENX, r2
+                    addq    #4, r2
                     load    (r2), r0
                     storew  r1, (r0)
                     movei   #$2c, r0
@@ -147,7 +147,7 @@ routine26:
                     move    r12, r6
                     add     r11, r3
                     add     r24, r6
-                    subq    #SRCENX, r3
+                    subq    #4, r3
                     movei   #$f03598, r0
                     shlq    #PIXEL4, r12
                     movei   #$f03f80, r0
@@ -177,11 +177,11 @@ routine166:
                     store   r0, (r1)
                     movei   #B_I3, r1
                     store   r0, (r1)
-                    addq    #SRCENX, r1
+                    addq    #4, r1
                     store   r0, (r1)
-                    addq    #SRCENX, r1
+                    addq    #4, r1
                     store   r0, (r1)
-                    addq    #SRCENX, r1
+                    addq    #4, r1
                     store   r0, (r1)
                     movei   #$ffff0000, r10
                     movei   #$ffff, r9
@@ -207,7 +207,7 @@ routine166:
                     movei   #$f03f44, r0
                     load    (r0), r20
                     store   r20, (r14)
-                    movei   #SRCENX, r0
+                    movei   #4, r0
                     add     r18, r0
                     load    (r0), r23
                     shrq    #PIXEL4, r23
@@ -587,7 +587,7 @@ routine551:
                     or      r7, r0
                     movei   #B_PATD, r1
                     store   r0, (r1)
-                    addq    #SRCENX, r1
+                    addq    #4, r1
                     store   r0, (r1)
                     store   r8, (r14)
                     movei   #$4420, r0

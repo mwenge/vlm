@@ -6,7 +6,7 @@
                     add     r3, r0
                     load    (r0), r2
                     moveq   #PITCH8, r4
-                    movei   #$00f03f60, r0
+                    movei   #in_buf, r0
                     shrq    #PIXEL4, r2
                     load    (r0), r1
                     and     r4, r2
@@ -14,7 +14,7 @@
                     shlq    #SRCENZ, r2
                     add     r2, r0
                     load    (r0), r24
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     movei   #$00f03f5c, r0
                     load    (r0), r1
                     cmpq    #PITCH8, r1
@@ -42,7 +42,7 @@ routine20:
                     shrq    #PIXEL4, r18
                     move    r16, r0
                     move    r19, r1
-                    shlq    #SRCENX, r0
+                    shlq    #4, r0
                     shrq    #SRCEN, r1
                     sub     r0, r17
                     sub     r1, r18
@@ -96,7 +96,7 @@ routine84:
                     jump    (r0)
                     nop
 routine90:
-                    cmpq    #SRCENX, r1
+                    cmpq    #4, r1
                     jr    nz,routine96 ; #$0000011E
                     nop
                     movei   #$00f0341e, r0
@@ -122,8 +122,8 @@ routine96:
                     jump    nz,(r0)
                     nop
 routine114:
-                    sharq   #SRCENX, r12
-                    sharq   #SRCENX, r13
+                    sharq   #4, r12
+                    sharq   #4, r13
                     sharq   #SRCENZ, r9
                     sharq   #SRCENZ, r11
                     movei   #ZOFFS1, r28
@@ -154,7 +154,7 @@ routine143:
                     move    r5, r27
                     shrq    #PIXEL4, r31
                     shrq    #PIXEL4, r5
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r5
                     shrq    #$d, r27
                     shlq    #PIXEL2, r5
@@ -168,7 +168,7 @@ routine143:
                     jump    nn,(r21)
                     add     r11, r8
                     moveq   #$1f, r22
-                    addq    #SRCENX, r24
+                    addq    #4, r24
                     load    (r24), r26
                     subq    #SRCEN, r16
                     jump    nn,(r21)
@@ -189,7 +189,7 @@ routine143:
                     jump    (r0)
                     nop
                     sharq   #SRCENZ, r11
-                    sharq   #SRCENX, r13
+                    sharq   #4, r13
                     move    r7, r2
                     move    r8, r1
                     move    r2, r0
@@ -211,7 +211,7 @@ routine197:
                     nop
                     neg     r5
 routine201:
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r5
                     shlq    #PIXEL2, r5
                     movei   #$00000054, r0
@@ -247,7 +247,7 @@ routine224:
                     jump    nn,(r21)
                     nop
                     moveq   #$1f, r22
-                    addq    #SRCENX, r24
+                    addq    #4, r24
                     load    (r24), r26
                     subq    #SRCEN, r16
                     jump    nn,(r21)
@@ -297,8 +297,8 @@ routine224:
                     add     r1, r20
                     moveta  r20, r20
                     moveta  r16, r16
-                    sharq   #SRCENX, r12
-                    sharq   #SRCENX, r13
+                    sharq   #4, r12
+                    sharq   #4, r13
                     sharq   #SRCENZ, r9
                     sharq   #SRCENZ, r11
                     movei   #ZOFFS1, r28
@@ -339,7 +339,7 @@ routine322:
                     move    r5, r27
                     shrq    #PIXEL4, r31
                     shrq    #PIXEL4, r5
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r5
                     shrq    #$d, r27
                     movei   #$000000ff, r1
@@ -374,7 +374,7 @@ routine334:
                     load    (r14+$15), r0
                     jump    (r0)
                     nop
-                    movei   #$00f03f60, r0
+                    movei   #in_buf, r0
                     load    (r0), r1
                     addq    #PIXEL2, r1
                     load    (r1), r2
@@ -388,7 +388,7 @@ routine334:
                     load    (r0), r5
                     shlq    #SRCEN, r5
                     store   r4, (r2)
-                    addq    #SRCENX, r2
+                    addq    #4, r2
                     store   r5, (r2)
                     addq    #PIXEL2, r2
                     movei   #$00000005, r0
@@ -424,19 +424,19 @@ routine401:
 routine405:
                     shrq    #PIXEL4, r31
                     shrq    #PIXEL4, r5
-                    shlq    #SRCENX, r31
+                    shlq    #4, r31
                     or      r31, r5
                     shlq    #PIXEL2, r5
-                    movei   #$00f03f60, r0
+                    movei   #in_buf, r0
                     or      r27, r5
                     load    (r0), r1
-                    subq    #SRCENX, r1
+                    subq    #4, r1
                     storew  r5, (r1)
                     load    (r14+$15), r0
                     jump    (r0)
                     nop
-                    sharq   #SRCENX, r12
-                    sharq   #SRCENX, r13
+                    sharq   #4, r12
+                    sharq   #4, r13
                     sharq   #SRCENZ, r9
                     sharq   #SRCENZ, r11
                     movei   #ZOFFS1, r28
@@ -515,9 +515,9 @@ routine488:
                     add     r22, r5
                     loadb   (r31), r0
                     loadb   (r5), r1
-                    shrq    #SRCENX, r0
-                    shrq    #SRCENX, r1
-                    shlq    #SRCENX, r0
+                    shrq    #4, r0
+                    shrq    #4, r1
+                    shlq    #4, r0
                     or      r0, r1
                     movei   #$000000ff, r0
                     movefa  r2, r2

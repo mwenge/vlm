@@ -29,14 +29,14 @@
 ; *******************************************************************
 ; *******************************************************************
 
-                    movei   #$00f03f60, r0
-                    movei   #$00f03f80, r14
+                    movei   #in_buf, r0
+                    movei   #in_buf+$20, r14
                     load    (r0), r1
                     addq    #$1c, r1
                     load    (r1), r0
                     addq    #PIXEL4, r1
                     load    (r1), r2
-                    addq    #SRCENX, r2
+                    addq    #4, r2
                     store   r2, (r14+$1e)
                     movei   #$000000fc, r24
                     movei   #$00f1b034, r1
@@ -50,7 +50,7 @@ routine1:           move    r1, r20
                     xor     r22, r22
 routine26:
                     load    (r20), r23
-                    addq    #SRCENX, r20
+                    addq    #4, r20
                     subq    #SRCEN, r21
                     jr    nn,routine26 ; #$0000004E
                     add     r23, r22
@@ -59,9 +59,9 @@ routine26:
                     load    (r0), r7
                     xor     r25, r25
                     move    r0, r26
-                    addq    #SRCENX, r26
+                    addq    #4, r26
                     load    (r26), r27
-                    addq    #SRCENX, r26
+                    addq    #4, r26
                     load    (r26), r28
                     cmp     r27, r7
                     jr    nn,routine40 ; #$00000076
@@ -70,11 +70,11 @@ routine26:
                     nop
                     moveq   #SRCEN, r25
 routine40:
-                    addq    #SRCENX, r1
+                    addq    #4, r1
                     store   r25, (r24)
                     sub     r5, r7
                     jr    nn,routine46 ; #$00000082
-                    addq    #SRCENX, r24
+                    addq    #4, r24
                     xor     r7, r7
 routine46:
                     cmp     r6, r7
@@ -85,17 +85,17 @@ routine50:
                     store   r7, (r0)
                     subq    #SRCEN, r2
                     jump    nn,(r4)
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     movei   #$00f0365a, r3
                     move    pc, r30
                     jump    (r3)
                     addq    #$6, r30
-                    movei   #$00f03f60, r0
+                    movei   #in_buf, r0
                     load    (r0), r1
                     addq    #PIXEL16, r1
                     addq    #$c, r1
                     load    (r1), r0
-                    addq    #SRCENX, r1
+                    addq    #4, r1
                     load    (r1), r2
                     loadw   (r2), r3
                     cmpq    #$0, r3
@@ -107,7 +107,7 @@ routine50:
 routine70:
                     moveq   #SRCEN, r1
                     storew  r1, (r0)
-                    movei   #$00f03f60, r0
+                    movei   #in_buf, r0
                     load    (r0), r1
                     addq    #PIXEL16, r1
                     addq    #$c, r1
@@ -156,7 +156,7 @@ routine113:
                     move    pc, r30
                     jump    (r3)
                     addq    #$6, r30
-                    movei   #$00f03f60, r0
+                    movei   #in_buf, r0
                     load    (r0), r1
                     addq    #PIXEL16, r1
                     addq    #$c, r1
@@ -164,7 +164,7 @@ routine113:
                     addq    #SRCENZ, r0
                     xor     r1, r1
                     storew  r1, (r0)
-                    movei   #$00f03f60, r0
+                    movei   #in_buf, r0
                     load    (r0), r1
                     addq    #PIXEL16, r1
                     addq    #$c, r1
@@ -177,7 +177,7 @@ routine113:
                     jump    (r0)
                     nop
 routine144:
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     load    (r14+$15), r0
                     jump    (r0)
                     nop
@@ -193,14 +193,14 @@ routine151:
                     jr    routine151 ; #$00000192
                     nop
                     xor     r21, r21
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     load    (r14+$1e), r0
                     load    (r0), r4
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     load    (r0), r5
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     load    (r0), r6
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     addq    #PITCH8, r4
                     loadb   (r4), r9
                     addq    #SRCEN, r4
@@ -271,10 +271,10 @@ routine220:
                     store   r8, (r6)
                     jump    (r30)
                     nop
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     load    (r14+$1e), r0
                     load    (r0), r1
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     movei   #A1_BASE, r3
                     load    (r0), r2
                     store   r1, (r3)
@@ -308,7 +308,7 @@ routine220:
                     nop
                     movei   #B_PATD, r1
                     store   r0, (r1)
-                    addq    #SRCENX, r1
+                    addq    #4, r1
                     store   r0, (r1)
                     movei   #A1_FINC, r1
                     store   r8, (r1)
@@ -492,14 +492,14 @@ routine364:
                     nop
                     jump    (r30)
                     nop
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     load    (r14+$1e), r0
                     load    (r0), r23
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     load    (r0), r8
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     load    (r0), r7
-                    addq    #SRCENX, r0
+                    addq    #4, r0
                     move    r7, r6
                     shrq    #PIXEL4, r7
                     movei   #$0000ffff, r13
@@ -521,9 +521,9 @@ routine364:
                     jump    (r1)
                     addq    #$6, r31
                     load    (r8), r14
-                    addq    #SRCENX, r8
+                    addq    #4, r8
                     load    (r8), r28
-                    addq    #SRCENX, r8
+                    addq    #4, r8
                     load    (r8), r8
                     movei   #$00f03506, r19
                     movei   #$00f034dc, r20
@@ -540,9 +540,9 @@ routine364:
                     shrq    #SRCENZ, r1
                     sub     r1, r18
                     moveta  r17, r17
-                    movei   #$00f03f60, r24
+                    movei   #in_buf, r24
                     load    (r24), r25
-                    addq    #SRCENX, r25
+                    addq    #4, r25
                     load    (r25), r24
                     loadw   (r24), r25
                     sh      r25, r17
@@ -564,7 +564,7 @@ routine364:
                     movei   #$00000300, r10
                     movei   #$0000017f, r15
                     movei   #UPDA2, r8
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     load    (r14+$1e), r0
                     xor     r28, r28
                     load    (r0), r8
@@ -613,7 +613,7 @@ routine547:
                     move    pc, r31
                     jump    (r0)
                     addq    #$6, r31
-                    addq    #SRCENX, r6
+                    addq    #4, r6
                     subq    #SRCEN, r9
                     jr    n,routine561 ; #$000005E8
                     nop
@@ -672,16 +672,16 @@ routine561:
                     storew  r0, (r2)
                     jump    (r19)
                     nop
-                    movei   #$00f03f60, r0
+                    movei   #in_buf, r0
                     load    (r0), r1
                     addq    #$1c, r1
                     load    (r1), r4
                     addq    #PIXEL2, r1
                     load    (r1), r9
-                    addq    #SRCENX, r1
+                    addq    #4, r1
                     load    (r1), r10
                     movei   #UPDA1, r19
-                    moveq   #SRCENX, r11
+                    moveq   #4, r11
                     movei   #$00f03690, r12
                     movei   #$00f036aa, r13
                     movei   #$00f03f3c, r0
@@ -707,7 +707,7 @@ routine653:
                     load    (r5), r0
                     cmp     r7, r0
                     jr    n,routine649 ; #$000006BC
-                    addq    #SRCENX, r5
+                    addq    #4, r5
                     move    r0, r7
 routine649:
                     subq    #SRCEN, r8
@@ -751,7 +751,7 @@ routine682:
                     xor     r2, r20
                     subq    #SRCENZ, r9
                     storew  r0, (r9)
-                    addq    #SRCENX, r9
+                    addq    #4, r9
                     shlq    #SRCEN, r28
                     subq    #SRCEN, r11
                     jump    nn,(r12)

@@ -23,7 +23,7 @@
 .include "../vlm.inc"
 .org $00f03000
                     movei   #screen_ready+$c, r0
-                    movei   #$00f03f80, r14
+                    movei   #in_buf+$20, r14
                     load    (r0), r1
                     movei   #$00000048, r0
                     add     r3, r0
@@ -85,7 +85,7 @@
                     or      r0, r0
                     store   r0, (r14+$f)
                     movei   #$0000003f, r4
-                    movei   #$00f03f60, r0
+                    movei   #in_buf, r0
                     load    (r0), r1
                     addq    #$1c, r1
                     load    (r1), r6
