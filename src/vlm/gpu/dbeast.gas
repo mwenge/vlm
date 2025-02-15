@@ -55,13 +55,13 @@
                    sub     r2, r1
                    cmp     r1, r27
                    jump    nz,(r0)
-                   addq    #SRCENZ, r29
+                   addq    #2, r29
                    movei   #$3f, r0
                    loadw   (r29), r28
                    and     r0, r28
                    move    r28, r26
                    movei   #$600, r0
-                   addq    #SRCENZ, r29
+                   addq    #2, r29
                    mult    r0, r26
                    load    (r29), r1
                    add     r1, r26
@@ -76,7 +76,7 @@
                    nop
                    addq    #4, r29
                    loadw   (r29), r26
-                   addq    #SRCENZ, r29
+                   addq    #2, r29
                    move    r26, r25
                    loadw   (r29), r24
                    mult    r24, r26
@@ -85,9 +85,9 @@
                    subq    #$6, r29
                    load    (r29), r27
                    movei   #$f03f58, r0
-                   moveq   #SRCEN, r1
+                   moveq   #1, r1
                    store   r1, (r0)
-                   moveq   #SRCEN, r1
+                   moveq   #1, r1
                    jr    routine1
                    nop
                    xor     r1, r1
@@ -114,7 +114,7 @@ routine2:
                    movei   #$4020, r22
                    store   r22, (r20)
                    addq    #PIXEL2, r20
-                   shrq    #SRCEN, r24
+                   shrq    #1, r24
                    store   r24, (r20)
                    move    r0, r25
                    move    r0, r23
@@ -124,11 +124,11 @@ routine2:
                    addq    #4, r21
                    store   r22, (r21)
                    addq    #PIXEL2, r21
-                   shrq    #SRCEN, r23
+                   shrq    #1, r23
                    store   r23, (r21)
-                   shrq    #SRCEN, r2
+                   shrq    #1, r2
                    movei   #B_COUNT, r25
-                   bset    #PIXEL4, r2
+                   bset    #16, r2
                    store   r2, (r25)
                    movei   #$1800001, r22
                    or      r23, r24

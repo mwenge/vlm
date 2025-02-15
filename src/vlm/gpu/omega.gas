@@ -631,11 +631,11 @@ GPULoad:
                     store   module_length, (r25)
 
                     ; Make the blit command.
-                    movei  #SRCEN|LFU_AN|LFU_A,r22
+                    movei  #1|LFU_AN|LFU_A,r22
                     or      r23, r24 ; Are a1 and a2 the same?
                     jr      z,JustBlit ; If so, adjust blitter command.
                     nop
-.aligned:           movei  #SRCEN|4|LFU_AN|LFU_A,r22
+.aligned:           movei  #1|4|LFU_AN|LFU_A,r22
 
 JustBlit:           movei   #B_CMD, blit_cmd ; Point blit_cmd to the blit command register.
                     store   r22, (blit_cmd) ; Issue the blit command.

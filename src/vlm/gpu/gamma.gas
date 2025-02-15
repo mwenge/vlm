@@ -21,12 +21,12 @@ routine13:
                     add     r3, r0
                     load    (r0), r6
                     movei   #$000000ff, r5
-                    shrq    #PIXEL4, r6
+                    shrq    #16, r6
                     move    r6, r7
                     movei   #$000000a4, r0
                     add     r3, r0
                     load    (r0), r4
-                    movei   #ZOFFS1, r2
+                    movei   #64, r2
                     and     r5, r6
                     add     r2, r7
                     add     r4, r6
@@ -56,19 +56,19 @@ routine13:
                     add     r3, r0
                     load    (r0), r20
                     moveq   #$7, r21
-                    shrq    #PIXEL4, r20
+                    shrq    #16, r20
                     and     r21, r20
-                    shlq    #SRCENZ, r20
+                    shlq    #2, r20
                     add     r20, r1
                     load    (r1), r6
                     loadw   (r6), r8
-                    addq    #SRCENZ, r6
+                    addq    #2, r6
                     loadw   (r6), r9
-                    addq    #SRCENZ, r6
+                    addq    #2, r6
                     loadw   (r6), r10
                     moveta  r9, r9
                     moveta  r10, r10
-                    addq    #SRCENZ, r6
+                    addq    #2, r6
                     move    r8, r7
                     shlq    #4, r7
                     add     r6, r7
@@ -90,26 +90,26 @@ routine13:
                     movei   #$00000024, r0
                     add     r3, r0
                     load    (r0), r30
-                    movei   #PIXEL32, r0
+                    movei   #40, r0
                     add     r3, r0
                     load    (r0), r31
-                    sharq   #PIXEL4, r30
-                    sharq   #PIXEL4, r31
+                    sharq   #16, r30
+                    sharq   #16, r31
                     movei   #$00f03f7c, r0
                     load    (r0), r1
                     or      r1, r1
                     store   r1, (r14+$10)
                     loadw   (r6), r5
-                    addq    #SRCENZ, r6
+                    addq    #2, r6
                     shlq    #PIXEL2, r5
                     loadw   (r6), r1
-                    addq    #SRCENZ, r6
+                    addq    #2, r6
                     loadw   (r6), r27
-                    addq    #SRCENZ, r6
-                    shlq    #SRCENZ, r1
+                    addq    #2, r6
+                    shlq    #2, r1
                     add     r7, r1
                     loadw   (r1), r17
-                    addq    #SRCENZ, r1
+                    addq    #2, r1
                     loadw   (r1), r18
                     movefa  r9, r0
                     movefa  r10, r1
@@ -153,19 +153,19 @@ routine13:
                     movei   #$00000024, r0
                     add     r3, r0
                     load    (r0), r30
-                    movei   #PIXEL32, r0
+                    movei   #40, r0
                     add     r3, r0
                     load    (r0), r31
-                    sharq   #PIXEL4, r30
-                    sharq   #PIXEL4, r31
+                    sharq   #16, r30
+                    sharq   #16, r31
                     loadw   (r6), r1
-                    addq    #SRCENZ, r6
+                    addq    #2, r6
                     loadw   (r6), r27
-                    addq    #SRCENZ, r6
-                    shlq    #SRCENZ, r1
+                    addq    #2, r6
+                    shlq    #2, r1
                     add     r7, r1
                     loadw   (r1), r17
-                    addq    #SRCENZ, r1
+                    addq    #2, r1
                     loadw   (r1), r18
                     movefa  r9, r0
                     movefa  r10, r1
@@ -209,19 +209,19 @@ routine13:
                     movei   #$00000024, r0
                     add     r3, r0
                     load    (r0), r30
-                    movei   #PIXEL32, r0
+                    movei   #40, r0
                     add     r3, r0
                     load    (r0), r31
-                    sharq   #PIXEL4, r30
-                    sharq   #PIXEL4, r31
+                    sharq   #16, r30
+                    sharq   #16, r31
                     loadw   (r6), r1
-                    addq    #SRCENZ, r6
+                    addq    #2, r6
                     loadw   (r6), r27
                     addq    #4, r6
-                    shlq    #SRCENZ, r1
+                    shlq    #2, r1
                     add     r7, r1
                     loadw   (r1), r17
-                    addq    #SRCENZ, r1
+                    addq    #2, r1
                     loadw   (r1), r18
                     movefa  r9, r0
                     movefa  r10, r1
@@ -270,26 +270,26 @@ routine13:
                     load    (r14+$10), r0
                     movei   #$00002ffa, r1
                     loadw   (r0), r3
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     loadw   (r0), r4
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     loadw   (r0), r20
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     move    r20, r23
                     or      r0, r0
                     store   r0, (r14+$10)
                     add     r1, r0
                     loadw   (r0), r5
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     loadw   (r0), r6
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     loadw   (r0), r24
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     add     r1, r0
                     loadw   (r0), r7
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     loadw   (r0), r8
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     loadw   (r0), r25
                     moveq   #$1c, r12
                     movefa  r3, r26
@@ -304,24 +304,24 @@ routine13:
                     load    (r23), r9
                     load    (r24), r10
                     load    (r25), r11
-                    shlq    #PIXEL4, r3
-                    shlq    #PIXEL4, r4
-                    shlq    #PIXEL4, r5
-                    shlq    #PIXEL4, r6
-                    shlq    #PIXEL4, r7
-                    shlq    #PIXEL4, r8
-                    sharq   #PIXEL4, r3
-                    sharq   #PIXEL4, r4
-                    sharq   #PIXEL4, r5
-                    sharq   #PIXEL4, r6
-                    sharq   #PIXEL4, r7
-                    sharq   #PIXEL4, r8
+                    shlq    #16, r3
+                    shlq    #16, r4
+                    shlq    #16, r5
+                    shlq    #16, r6
+                    shlq    #16, r7
+                    shlq    #16, r8
+                    sharq   #16, r3
+                    sharq   #16, r4
+                    sharq   #16, r5
+                    sharq   #16, r6
+                    sharq   #16, r7
+                    sharq   #16, r8
                     movei   #$00f034f4, r1
                     jump    (r1)
                     nop
                     load    (r14+$12), r0
                     movei   #$00f032a8, r1
-                    subq    #SRCEN, r0
+                    subq    #1, r0
                     or      r0, r0
                     store   r0, (r14+$12)
                     cmpq    #$0, r0
@@ -331,7 +331,7 @@ routine13:
                     movefa  r7, r7
                     movefa  r8, r8
                     movei   #$00f030c2, r0
-                    subq    #SRCEN, r8
+                    subq    #1, r8
                     jump    nz,(r0)
                     nop
                     movei   #$00f03920, r0
@@ -341,7 +341,7 @@ routine13:
                     movei   #$00f03476, r31
                     store   r0, (r14+$11)
                     xor     r4, r4
-                    btst    #PIXEL4, r22
+                    btst    #16, r22
                     jr    nz,routine343 ; #$0000036C
                     nop
                     load    (r14+$f), r19
@@ -360,8 +360,8 @@ routine343:
                     load    (r0), r2
                     store   r1, (r14+$d)
                     store   r2, (r14+$e)
-                    sharq   #PIXEL4, r1
-                    sharq   #PIXEL4, r2
+                    sharq   #16, r1
+                    sharq   #16, r2
                     sub     r1, r17
                     sub     r2, r18
                     store   r17, (r14+$5)
@@ -371,14 +371,14 @@ routine343:
                     add     r0, r1
                     load    (r14+$3), r2
                     store   r1, (r14+$4)
-                    shrq    #PIXEL4, r1
+                    shrq    #16, r1
                     and     r13, r1
                     move    r1, r0
                     addq    #PIXEL16, r1
                     add     r2, r0
                     addq    #PIXEL16, r1
                     loadb   (r0), r30
-                    addq    #SRCEN, r0
+                    addq    #1, r0
                     loadb   (r0), r19
                     sub     r30, r19
                     load    (r14+$4), r31
@@ -393,7 +393,7 @@ routine343:
                     add     r2, r1
                     imult   r18, r0
                     loadb   (r1), r2
-                    addq    #SRCEN, r1
+                    addq    #1, r1
                     loadb   (r1), r19
                     sub     r2, r19
                     sub     r29, r2
@@ -416,8 +416,8 @@ routine343:
                     sharq   #$c, r18
                     load    (r14+$d), r1
                     load    (r14+$e), r2
-                    sharq   #PIXEL4, r1
-                    sharq   #PIXEL4, r2
+                    sharq   #16, r1
+                    sharq   #16, r2
                     add     r1, r17
                     add     r2, r18
                     movei   #$00f03476, r31
@@ -453,7 +453,7 @@ routine343:
                     store   r2, (r14+$e)
                     load    (r14), r0
                     movei   #$00f03390, r1
-                    subq    #SRCEN, r0
+                    subq    #1, r0
                     jr    n,routine454 ; #$00000478
                     store   r0, (r14)
                     jump    (r1)
@@ -472,16 +472,16 @@ routine454:
                     load    (r14+$9), r22
                     jump    (r19)
                     nop
-                    addq    #SRCEN, r4
+                    addq    #1, r4
                     load    (r14+$11), r0
                     storew  r17, (r0)
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     storew  r18, (r0)
                     move    r5, r1
                     or      r27, r1
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     storew  r1, (r0)
-                    addq    #SRCENZ, r0
+                    addq    #2, r0
                     or      r0, r0
                     store   r0, (r14+$11)
                     jump    (r19)
@@ -571,10 +571,10 @@ routine551:
                     sub     r4, r18
                     sub     r6, r19
                     move    r8, r22
-                    addq    #SRCEN, r18
+                    addq    #1, r18
                     sub     r4, r22
-                    addq    #SRCEN, r19
-                    addq    #SRCEN, r22
+                    addq    #1, r19
+                    addq    #1, r22
                     move    r7, r16
                     move    r5, r12
                     sub     r3, r16
@@ -583,8 +583,8 @@ routine551:
                     move    r10, r15
                     sub     r9, r17
                     sub     r9, r15
-                    shlq    #PIXEL4, r16
-                    shlq    #PIXEL4, r12
+                    shlq    #16, r16
+                    shlq    #16, r12
                     move    r12, r31
                     abs     r12
                     div     r18, r12
@@ -621,15 +621,15 @@ routine605:
                     movei   #$00f0392c, r20
                     move    r22, r0
                     movei   #$00f0392e, r21
-                    shlq    #PIXEL4, r22
+                    shlq    #16, r22
                     move    r3, r23
                     or      r0, r22
                     move    r9, r24
                     shlq    #PIXEL2, r22
                     move    r3, r25
                     move    r9, r26
-                    shlq    #PIXEL4, r23
-                    shlq    #PIXEL4, r25
+                    shlq    #16, r23
+                    shlq    #16, r25
                     movei   #$00f03790, r0
                     cmpq    #$0, r4
                     jump    nn,(r0)
@@ -648,7 +648,7 @@ routine605:
                     nop
 routine632:
                     move    r18, r0
-                    shlq    #PIXEL4, r0
+                    shlq    #16, r0
                     move    r16, r1
                     move    r17, r31
                     moveta  r0, r31
@@ -661,17 +661,17 @@ routine632:
                     move    r0, r28
                     mult    r1, r28
                     move    r1, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r1, r29
-                    shrq    #PIXEL4, r1
+                    shrq    #16, r1
                     add     r29, r28
                     mult    r0, r1
-                    shlq    #PIXEL4, r1
+                    shlq    #16, r1
                     add     r28, r1
                     btst    #$0, r27
                     jr    z,routine664 ; #$00000662
@@ -688,17 +688,17 @@ routine664:
                     move    r0, r28
                     mult    r31, r28
                     move    r31, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r31, r29
-                    shrq    #PIXEL4, r31
+                    shrq    #16, r31
                     add     r29, r28
                     mult    r0, r31
-                    shlq    #PIXEL4, r31
+                    shlq    #16, r31
                     add     r28, r31
                     btst    #$0, r27
                     jr    z,routine690 ; #$00000696
@@ -710,15 +710,15 @@ routine690:
                     xor     r4, r4
                     move    r5, r23
                     move    r10, r24
-                    shlq    #PIXEL4, r23
+                    shlq    #16, r23
                     movei   #$00f037c4, r0
                     jump    (r0)
                     nop
                     move    r4, r0
                     add     r4, r18
                     neg     r0
-                    addq    #SRCEN, r18
-                    shlq    #PIXEL4, r0
+                    addq    #1, r18
+                    shlq    #16, r0
                     move    r12, r1
                     move    r15, r31
                     moveta  r0, r31
@@ -731,17 +731,17 @@ routine690:
                     move    r0, r28
                     mult    r1, r28
                     move    r1, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r1, r29
-                    shrq    #PIXEL4, r1
+                    shrq    #16, r1
                     add     r29, r28
                     mult    r0, r1
-                    shlq    #PIXEL4, r1
+                    shlq    #16, r1
                     add     r28, r1
                     btst    #$0, r27
                     jr    z,routine732 ; #$000006EE
@@ -758,17 +758,17 @@ routine732:
                     move    r0, r28
                     mult    r31, r28
                     move    r31, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r31, r29
-                    shrq    #PIXEL4, r31
+                    shrq    #16, r31
                     add     r29, r28
                     mult    r0, r31
-                    shlq    #PIXEL4, r31
+                    shlq    #16, r31
                     add     r28, r31
                     btst    #$0, r27
                     jr    z,routine758 ; #$00000722
@@ -789,17 +789,17 @@ routine758:
                     move    r0, r28
                     mult    r1, r28
                     move    r1, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r1, r29
-                    shrq    #PIXEL4, r1
+                    shrq    #16, r1
                     add     r29, r28
                     mult    r0, r1
-                    shlq    #PIXEL4, r1
+                    shlq    #16, r1
                     add     r28, r1
                     btst    #$0, r27
                     jr    z,routine788 ; #$0000075E
@@ -816,17 +816,17 @@ routine788:
                     move    r0, r28
                     mult    r31, r28
                     move    r31, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r31, r29
-                    shrq    #PIXEL4, r31
+                    shrq    #16, r31
                     add     r29, r28
                     mult    r0, r31
-                    shlq    #PIXEL4, r31
+                    shlq    #16, r31
                     add     r28, r31
                     btst    #$0, r27
                     jr    z,routine814 ; #$00000792
@@ -852,7 +852,7 @@ routine814:
                     nop
                     jump    z,(r31)
                     nop
-                    shlq    #PIXEL4, r4
+                    shlq    #16, r4
                     move    pc, r30
                     jump    (r20)
                     addq    #$6, r30
@@ -860,7 +860,7 @@ routine814:
                     move    r11, r15
                     sub     r5, r12
                     sub     r10, r15
-                    shlq    #PIXEL4, r12
+                    shlq    #16, r12
                     move    r12, r31
                     abs     r12
                     div     r19, r12
@@ -884,8 +884,8 @@ routine856:
                     move    r6, r0
                     add     r6, r19
                     neg     r0
-                    addq    #SRCEN, r19
-                    shlq    #PIXEL4, r0
+                    addq    #1, r19
+                    shlq    #16, r0
                     move    r12, r1
                     move    r15, r31
                     moveta  r0, r31
@@ -898,17 +898,17 @@ routine856:
                     move    r0, r28
                     mult    r1, r28
                     move    r1, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r1, r29
-                    shrq    #PIXEL4, r1
+                    shrq    #16, r1
                     add     r29, r28
                     mult    r0, r1
-                    shlq    #PIXEL4, r1
+                    shlq    #16, r1
                     add     r28, r1
                     btst    #$0, r27
                     jr    z,routine893 ; #$00000840
@@ -925,17 +925,17 @@ routine893:
                     move    r0, r28
                     mult    r31, r28
                     move    r31, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r31, r29
-                    shrq    #PIXEL4, r31
+                    shrq    #16, r31
                     add     r29, r28
                     mult    r0, r31
-                    shlq    #PIXEL4, r31
+                    shlq    #16, r31
                     add     r28, r31
                     btst    #$0, r27
                     jr    z,routine919 ; #$00000874
@@ -956,17 +956,17 @@ routine919:
                     move    r0, r28
                     mult    r1, r28
                     move    r1, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r1, r29
-                    shrq    #PIXEL4, r1
+                    shrq    #16, r1
                     add     r29, r28
                     mult    r0, r1
-                    shlq    #PIXEL4, r1
+                    shlq    #16, r1
                     add     r28, r1
                     btst    #$0, r27
                     jr    z,routine949 ; #$000008B0
@@ -983,17 +983,17 @@ routine949:
                     move    r0, r28
                     mult    r31, r28
                     move    r31, r29
-                    shrq    #PIXEL4, r28
-                    shrq    #PIXEL4, r29
+                    shrq    #16, r28
+                    shrq    #16, r29
                     mult    r0, r29
-                    shrq    #PIXEL4, r0
+                    shrq    #16, r0
                     add     r29, r28
                     move    r0, r29
                     mult    r31, r29
-                    shrq    #PIXEL4, r31
+                    shrq    #16, r31
                     add     r29, r28
                     mult    r0, r31
-                    shlq    #PIXEL4, r31
+                    shlq    #16, r31
                     add     r28, r31
                     btst    #$0, r27
                     jr    z,routine975 ; #$000008E4
@@ -1046,9 +1046,9 @@ routine975:
 routine1014:
                     sub     r27, r29
                     sub     r28, r30
-                    sharq   #PIXEL4, r27
-                    shrq    #PIXEL4, r29
-                    addq    #SRCEN, r29
+                    sharq   #16, r27
+                    shrq    #16, r29
+                    addq    #1, r29
                     move    r30, r31
                     abs     r30
                     div     r29, r30
@@ -1074,7 +1074,7 @@ routine1035:
                     jump    (r0)
                     nop
 routine1044:
-                    bset    #PIXEL4, r1
+                    bset    #16, r1
                     movei   #B_I3, r0
                     store   r28, (r0)
                     movei   #$00f039ea, r0
@@ -1091,7 +1091,7 @@ routine1066:
                     jr    z,routine1062 ; #$000009C0
                     nop
                     sub     r30, r28
-                    subq    #SRCEN, r0
+                    subq    #1, r0
                     jr    routine1066 ; #$000009B2
                     nop
 routine1062:
@@ -1105,7 +1105,7 @@ routine1062:
                     nop
 routine1070:
                     move    r30, r1
-                    shlq    #SRCENZ, r30
+                    shlq    #2, r30
                     movei   #B_I0, r0
                     store   r28, (r0)
                     add     r1, r28
@@ -1129,7 +1129,7 @@ routine1070:
                     and     r1, r27
                     or      r4, r27
                     store   r27, (r14+$3)
-                    bset    #PIXEL4, r29
+                    bset    #16, r29
                     movei   #B_COUNT, r0
                     store   r29, (r0)
                     store   r2, (r13)
@@ -1138,7 +1138,7 @@ routine1070:
                     add     r12, r23
                     add     r15, r24
                     add     r16, r25
-                    subq    #SRCEN, r18
+                    subq    #1, r18
                     jump    nz,(r21)
                     add     r17, r26
                     movefa  r30, r30
