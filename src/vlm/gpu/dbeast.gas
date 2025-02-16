@@ -23,7 +23,8 @@
 .include "../vlm.inc"
 .org $00f03000
 
-_post_gpu_routine EQU $15
+_OmegaReentryPoint EQU $15
+_PostGPULoadRoutine EQU $1f
 _object_counter   EQU $18
 fx_obj            REGEQU r3
 
@@ -34,10 +35,12 @@ fx_obj            REGEQU r3
                    load    (r0), r29
                    moveta  r29, r29
                    loadw   (r29), r27
-                   movei   #routineac, r0
+
+                   movei   #ReturnEarlyToOmega, r0
                    cmpq    #$0, r27
                    jump    n,(r0)
                    nop
+
                    movei   #routine4e, r0
                    load    (r14+_object_counter), r2
                    moveq   #$5, r1
@@ -45,22 +48,25 @@ fx_obj            REGEQU r3
                    cmp     r1, r27
                    jump    z,(r0)
                    nop
+
                    movei   #in_buf, r0
                    load    (r0), r1
-                   addq    #PIXEL16, r1
+                   addq    #32, r1
                    load    (r1), r29
+
                    moveta  r29, r29
                    loadw   (r29), r27
-                   movei   #routineac, r0
+                   movei   #ReturnEarlyToOmega, r0
                    cmpq    #$0, r27
                    jump    n,(r0)
                    nop
+
                    moveq   #$5, r1
                    sub     r2, r1
                    cmp     r1, r27
                    jump    nz,(r0)
-routine4e:
-                   addq    #2, r29
+
+routine4e:         addq    #2, r29
                    movei   #$3f, r0
                    loadw   (r29), r28
                    and     r0, r28
@@ -71,16 +77,16 @@ routine4e:
                    load    (r29), r1
                    add     r1, r26
                    movei   #$300, r2
-                   move    r3, r0
+                   move    fx_obj, r0
                    move    r26, r1
-                   movei   #routineba, r20
-                   movei   #routine88, r21
+                   movei   #GPULoad, r20
+                   movei   #PostGPULoadRoutine, r21
                    or      r21, r21
-                   store   r21, (r14+$1f)
+                   store   r21, (r14+_PostGPULoadRoutine)
                    jump    (r20)
                    nop
-routine88:
-                   addq    #4, r29
+
+PostGPULoadRoutine:addq    #4, r29
                    loadw   (r29), r26
                    addq    #2, r29
                    move    r26, r25
@@ -90,29 +96,56 @@ routine88:
                    add     r28, r26
                    subq    #$6, r29
                    load    (r29), r27
-                   movei   #$f03f58, r0
+                   movei   #draw_screen + 4, r0
                    moveq   #1, r1
                    store   r1, (r0)
                    moveq   #1, r1
-                   jr    routine1
+                   jr    ReturnToOmega
                    nop
-routineac:
-                   xor     r1, r1
-routine1:
-                   movei   #$f03f80, r14
-                   load    (r14+$15), r0
+
+; *******************************************************************
+;
+; *******************************************************************
+ReturnEarlyToOmega:xor     r1, r1
+
+; *******************************************************************
+; Return to the omega.gas module at entry point 'FinishedDBeast'.
+; *******************************************************************
+ReturnToOmega:     movei   #in_buf+$20, r14
+                   load    (r14+_OmegaReentryPoint), r0
                    jump    (r0)
                    nop
-routineba:
-                   movei   #B_CMD, r20
-routine2:
-                   load    (r20), r21
-                   btst    #$0, r21
-                   jr    z,routine2
-                   nop
+
+; -------------------------------------------------------------------
+; waitblit
+; -------------------------------------------------------------------
+        MACRO waitblit  ; Wait for the GPULoad to stop
+      \~waitt:
+        load (blit_cmd),r21
+        btst #0,r21
+        jr z,\~waitt
+        nop
+        ENDM
+
+; *******************************************************************
+; GPULoad
+; *******************************************************************
+GPULoad:
+                   blit_cmd REGEQU r20
+                   a1_base REGEQU r20
+                   a2_base REGEQU r21
+                   module_length REGEQU r2
+                   module_load_address REGEQU r1
+                   module_itself REGEQU r0
+
+                   movei   #B_CMD, blit_cmd
+                   waitblit
+
                    movei   #A1_BASE, r20
                    movei   #A2_BASE, r21
-                   move    r1, r25
+
+                   ; Set up the a1_base address - the place we're loading the module to.
+                   move    module_load_address, r25
                    movei   #$fffffff8, r26
                    move    r25, r24
                    and     r26, r25
@@ -124,6 +157,8 @@ routine2:
                    addq    #8, r20
                    shrq    #1, r24
                    store   r24, (r20)
+
+                    ; Set up the a2_base address - the data we're copying.
                    move    r0, r25
                    move    r0, r23
                    and     r26, r25
@@ -134,27 +169,28 @@ routine2:
                    addq    #8, r21
                    shrq    #1, r23
                    store   r23, (r21)
+
+                    ; Set up the counter.
                    shrq    #1, r2
                    movei   #B_COUNT, r25
                    bset    #16, r2
                    store   r2, (r25)
-                   movei   #$1800001, r22
-                   or      r23, r24
-                   jr      z,routine3
-                   nop
-                   movei   #$1800005, r22
 
-routine3:
-                   movei   #B_CMD, r20
-                   store   r22, (r20)
-routine4:
-                   load    (r20), r21
-                   btst    #$0, r21
-                   jr      z,routine4
+                    ; Make the blit command.
+                   movei  #1|LFU_AN|LFU_A,r22
+                   or      r23, r24
+                   jr      z,JustBlit
                    nop
-                   load    (r14+$1f), r20
+
+.aligned:          movei  #1|4|LFU_AN|LFU_A,r22
+
+JustBlit:          movei   #B_CMD, r20
+                   store   r22, (r20)
+                   waitblit
+                   load    (r14+_PostGPULoadRoutine), r20
                    jump    (r20)
                    nop
+
                    add     r0, r0
                    add     r0, r0
 ; vim:ft=asm68k ts=2

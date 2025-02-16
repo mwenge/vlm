@@ -741,9 +741,9 @@ routine666:
                     shrq    #16, r1
                     and     r13, r1
                     move    r1, r0
-                    addq    #PIXEL16, r1
+                    addq    #32, r1
                     add     r2, r0
-                    addq    #PIXEL16, r1
+                    addq    #32, r1
                     loadb   (r0), r30
                     addq    #1, r0
                     loadb   (r0), r19

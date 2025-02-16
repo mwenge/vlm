@@ -86,13 +86,13 @@ routine50:
                     subq    #1, r2
                     jump    nn,(r4)
                     addq    #4, r0
-                    movei   #$00f0365a, r3
+                    movei   #routine65a, r3
                     move    pc, r30
                     jump    (r3)
                     addq    #$6, r30
                     movei   #in_buf, r0
                     load    (r0), r1
-                    addq    #PIXEL16, r1
+                    addq    #32, r1
                     addq    #$c, r1
                     load    (r1), r0
                     addq    #4, r1
@@ -101,7 +101,7 @@ routine50:
                     cmpq    #$0, r3
                     jr    z,routine70 ; #$000000C2
                     nop
-                    movei   #$00f03176, r1
+                    movei   #routine176, r1
                     jump    (r1)
                     nop
 routine70:
@@ -109,11 +109,11 @@ routine70:
                     storew  r1, (r0)
                     movei   #in_buf, r0
                     load    (r0), r1
-                    addq    #PIXEL16, r1
+                    addq    #32, r1
                     addq    #$c, r1
                     load    (r1), r0
                     addq    #2, r0
-                    movei   #$00f0314a, r1
+                    movei   #routine14a, r1
                     loadw   (r0), r2
                     cmpq    #$0, r2
                     jump    z,(r1)
@@ -121,12 +121,12 @@ routine70:
                     cmpq    #8, r2
                     jr    nz,routine89 ; #$000000F0
                     nop
-                    movei   #$00f0341a, r3
+                    movei   #routine41a, r3
 routine89:
                     cmpq    #$6, r2
                     jr    nz,routine93 ; #$000000FC
                     nop
-                    movei   #$00f033e4, r3
+                    movei   #routine3e4, r3
 routine93:
                     cmpq    #$7, r2
                     jr    nz,routine97 ; #$00000108
@@ -158,15 +158,16 @@ routine113:
                     addq    #$6, r30
                     movei   #in_buf, r0
                     load    (r0), r1
-                    addq    #PIXEL16, r1
+                    addq    #32, r1
                     addq    #$c, r1
                     load    (r1), r0
                     addq    #2, r0
                     xor     r1, r1
                     storew  r1, (r0)
+routine14a:
                     movei   #in_buf, r0
                     load    (r0), r1
-                    addq    #PIXEL16, r1
+                    addq    #32, r1
                     addq    #$c, r1
                     load    (r1), r0
                     loadw   (r0), r1
@@ -181,6 +182,7 @@ routine144:
                     load    (r14+$15), r0
                     jump    (r0)
                     nop
+routine176:
                     cmpq    #1, r3
                     jr    z,routine144 ; #$00000172
                     nop
@@ -293,14 +295,14 @@ routine220:
                     movei   #$00034420, r0
                     movei   #A1_FLAGS, r1
                     store   r0, (r1)
-                    movei   #$00f032e4, r28
+                    movei   #routine2e4, r28
                     move    pc, r31
                     jump    (r28)
                     addq    #$6, r31
                     move    r19, r0
                     shlq    #16, r0
                     or      r19, r0
-                    movei   #$00f032e0, r3
+                    movei   #routine2e0, r3
                     move    r7, r28
                     bclr    #16, r28
                     cmpq    #$0, r28
@@ -331,8 +333,10 @@ routine284:
                     btst    #$0, r28
                     jr    z,routine284 ; #$000002E0
                     nop
+routine2e0:
                     jump    (r30)
                     nop
+routine2e4:
                     sub     r9, r11
                     sub     r10, r12
                     move    r10, r6
@@ -345,11 +349,11 @@ routine284:
                     cmp     r0, r1
                     jr    n,routine298 ; #$0000030E
                     nop
-                    movei   #$00f03354, r0
+                    movei   #routine354, r0
                     jump    (r0)
                     nop
 routine298:
-                    movei   #$00f033a8, r28
+                    movei   #routine3a8, r28
                     cmpq    #$0, r0
                     jump    z,(r28)
                     nop
@@ -385,7 +389,8 @@ routine330:
                     or      r0, r5
                     jump    (r31)
                     nop
-                    movei   #$00f033a8, r28
+                    routine354:
+                    movei   #routine3a8, r28
                     cmpq    #$0, r1
                     jump    z,(r28)
                     nop
@@ -422,16 +427,18 @@ routine364:
                     or      r0, r5
                     jump    (r31)
                     nop
+                    routine3a8:
                     moveq   #$0, r7
                     jump    (r31)
                     nop
-                    movei   #$00f0345c, r1
+                    movei   #routine45c, r1
                     move    pc, r31
                     jump    (r1)
                     addq    #$6, r31
-                    movei   #$00f033da, r19
-                    movei   #$00f033c8, r20
+                    movei   #routine3da, r19
+                    movei   #routine3c8, r20
                     move    r6, r17
+routine3c8:
                     move    r14, r0
                     addq    #1, r14
                     and     r11, r0
@@ -441,18 +448,21 @@ routine364:
                     sub     r1, r18
                     jump    (r12)
                     nop
+routine3da:
                     subq    #1, r4
                     jump    nn,(r20)
                     addq    #1, r17
                     jump    (r30)
                     nop
-                    movei   #$00f0345c, r1
+routine3e4:
+                    movei   #routine45c, r1
                     move    pc, r31
                     jump    (r1)
                     addq    #$6, r31
-                    movei   #$00f03410, r19
-                    movei   #$00f033fe, r20
+                    movei   #routine410, r19
+                    movei   #routine3fe, r20
                     move    r7, r18
+routine3fe:
                     move    r14, r0
                     addq    #1, r14
                     and     r11, r0
@@ -462,18 +472,21 @@ routine364:
                     add     r1, r17
                     jump    (r12)
                     nop
+routine410:
                     subq    #1, r4
                     jump    nn,(r20)
                     subq    #1, r18
                     jump    (r30)
                     nop
-                    movei   #$00f0345c, r1
+routine41a:
+                    movei   #routine45c, r1
                     move    pc, r31
                     jump    (r1)
                     addq    #$6, r31
-                    movei   #$00f03452, r19
-                    movei   #$00f03438, r20
+                    movei   #routine452, r19
+                    movei   #routine438, r20
                     movei   #64, r26
+routine438:
                     move    r14, r0
                     addq    #1, r14
                     and     r11, r0
@@ -487,11 +500,13 @@ routine364:
                     sub     r1, r18
                     jump    (r12)
                     nop
+routine452:
                     subq    #1, r4
                     jump    nn,(r20)
                     nop
                     jump    (r30)
                     nop
+routine45c:
                     movei   #in_buf+$20, r14
                     load    (r14+$1e), r0
                     load    (r0), r23
@@ -513,10 +528,10 @@ routine364:
                     movei   #$0000017f, r15
                     movei   #$0000ffff, r27
                     movei   #$0000003f, r4
-                    movei   #$00f03626, r12
+                    movei   #routine626, r12
                     jump    (r31)
                     nop
-                    movei   #$00f0345c, r1
+                    movei   #routine45c, r1
                     move    pc, r31
                     jump    (r1)
                     addq    #$6, r31
@@ -625,7 +640,8 @@ routine561:
                     loadw   (r8), r22
                     movei   #TOPNEN, r5
                     shrq    #2, r22
-                    movei   #$00f0360a, r0
+routine5ec:
+                    movei   #routine60a, r0
                     move    pc, r31
                     jump    (r0)
                     addq    #$6, r31
@@ -633,9 +649,10 @@ routine561:
                     sub     r22, r28
                     jump    n,(r12)
                     nop
-                    movei   #$00f035ec, r0
+                    movei   #routine5ec, r0
                     jump    (r0)
                     nop
+routine60a:
                     cmp     r6, r8
                     jump    n,(r12)
                     move    r6, r17
@@ -646,6 +663,7 @@ routine561:
                     move    r28, r1
                     shrq    #$a, r1
                     sub     r1, r18
+routine626:
                     cmp     r15, r17
                     jump    nn,(r19)
                     cmp     r15, r18
@@ -672,6 +690,7 @@ routine561:
                     storew  r0, (r2)
                     jump    (r19)
                     nop
+routine65a:
                     movei   #in_buf, r0
                     load    (r0), r1
                     addq    #$1c, r1

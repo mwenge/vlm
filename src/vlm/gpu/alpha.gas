@@ -24,7 +24,7 @@
 .include "../vlm.inc"
 .org $1b9c0
                     movei   #$f03f5c, r0
-                    movei   #$f03f80, r14
+                    movei   #in_buf+$20, r14
                     load    (r0), r1
                     movei   #$48, r0
                     add     r3, r0
@@ -440,9 +440,9 @@ routine349:
                     shrq    #16, r1
                     and     r13, r1
                     move    r1, r0
-                    addq    #PIXEL16, r1
+                    addq    #32, r1
                     add     r2, r0
-                    addq    #PIXEL16, r1
+                    addq    #32, r1
                     loadb   (r0), r30
                     addq    #1, r0
                     loadb   (r0), r19
@@ -856,7 +856,7 @@ routine797:
                     jump    nn,(r0)
                     add     r11, r21
                     load    (r14+$15), r0
-                    movei   #$f03f58, r1
+                    movei   #draw_screen + 4, r1
                     load    (r1), r2
                     btst    #$0, r2
                     jump    z,(r0)
