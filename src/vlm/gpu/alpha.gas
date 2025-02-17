@@ -598,7 +598,7 @@ routine553:
                     sub     r17, r0
                     movei   #$f035b6, r19
                     move    r0, r17
-                    btst    #PITCH8, r22
+                    btst    #3, r22
                     jr    z,routine563 ; #$000005BE
                     nop
                     jump    (r31)
@@ -864,7 +864,7 @@ routine797:
                     movei   #64, r0
                     add     r3, r0
                     load    (r0), r1
-                    sharq   #PITCH8, r1
+                    sharq   #3, r1
                     add     r1, r25
                     movei   #$d4, r0
                     add     r3, r0

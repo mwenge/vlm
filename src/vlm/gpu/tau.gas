@@ -23,7 +23,7 @@
                     add     r3, r0
                     load    (r0), r4
                     shrq    #16, r4
-                    movei   #PITCH8, r0
+                    movei   #3, r0
                     and     r0, r4
                     movei   #in_buf, r0
                     load    (r0), r1
@@ -78,7 +78,7 @@
                     movefa  r2, r28
                     and     r12, r30
                     and     r12, r1
-                    shlq    #PITCH8, r30
+                    shlq    #3, r30
                     add     r1, r28
                     add     r30, r28
                     loadb   (r28), r16
@@ -498,7 +498,7 @@ routine453:
                     movefa  r2, r28
                     and     r12, r30
                     and     r12, r1
-                    shlq    #PITCH8, r30
+                    shlq    #3, r30
                     add     r1, r28
                     add     r30, r28
                     loadb   (r28), r16
@@ -539,7 +539,7 @@ routine453:
                     movei   #$98, r0
                     add     r3, r0
                     load    (r0), r30
-                    movei   #PITCH8, r31
+                    movei   #3, r31
                     shrq    #16, r30
                     and     r31, r30
                     movei   #in_buf, r0
@@ -589,7 +589,7 @@ routine551:
                     movefa  r2, r28
                     and     r12, r30
                     and     r12, r1
-                    shlq    #PITCH8, r30
+                    shlq    #3, r30
                     add     r1, r28
                     add     r30, r28
                     loadb   (r28), r16

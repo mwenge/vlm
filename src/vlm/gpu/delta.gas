@@ -5,7 +5,7 @@
                     movei   #$00000098, r0
                     add     r3, r0
                     load    (r0), r2
-                    moveq   #PITCH8, r4
+                    moveq   #3, r4
                     movei   #in_buf, r0
                     shrq    #16, r2
                     load    (r0), r1
@@ -17,7 +17,7 @@
                     movei   #in_buf+$20, r14
                     movei   #$00f03f5c, r0
                     load    (r0), r1
-                    cmpq    #PITCH8, r1
+                    cmpq    #3, r1
                     jr    nz,routine20 ; #$00000046
                     nop
                     movei   #$00f03380, r0
@@ -27,7 +27,7 @@ routine20:
                     loadw   (r24), r16
                     movei   #$00000300, r10
                     addq    #2, r24
-                    movei   #$00f03f40, r0
+                    movei   #dscreen, r0
                     loadw   (r24), r19
                     movei   #$0000017e, r15
                     addq    #2, r24

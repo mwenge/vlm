@@ -519,7 +519,7 @@ routine515:
                     btst    #$0, r31
                     jr    z,routine515 ; #$00000512
                     nop
-                    movei   #$00f03f40, r0
+                    movei   #dscreen, r0
                     load    (r0), r1
                     or      r1, r1
                     store   r1, (r14)
@@ -1084,7 +1084,7 @@ routine1044:
                     store   r1, (r14+$1)
                     moveta  r28, r0
                     move    r27, r0
-                    moveq   #PITCH8, r31
+                    moveq   #3, r31
                     and     r31, r0
 routine1066:
                     cmpq    #$0, r0

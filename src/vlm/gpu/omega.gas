@@ -44,6 +44,17 @@ _fxobj_r23        REGEQU r23
 _fxobj_r25        REGEQU r25
 _bigloop_ctr      REGEQU r26
 _results_r24      REGEQU r24
+_osc_vals_loop    REGEQU r23
+_osc_loop_counter REGEQU r22
+_osc_vals         REGEQU r4
+_delayf           REGEQU r0
+_next_osc_val     REGEQU r24
+_oscbank_cur      REGEQU r10
+_oscbank_sines    REGEQU r11
+_oscbank_4        REGEQU r12
+_255              REGEQU r21
+_65535            REGEQU r20
+
 
 ; Position to load this module in GPU RAM.
 ; Note that it's clear of the position where all other modules are loaded,
@@ -107,8 +118,8 @@ _results_r24      REGEQU r24
 ; the 'psi' GPU module to finish off.
 ;
 ; It looks like this is a 'main loop' and will keep running forever,
-; signalling 'screen ready', then cycling back to RunFXObjModulesLoop to start again
-;  after updating each of the 6 fxobjs.
+; signalling 'screen ready', then cycling back to RunFXObjModulesLoop
+; to start again after updating each of the 6 fxobjs.
 ; *******************************************************************
 
 RunFXObjModules:    movei   #in_buf+$20, r14
@@ -318,17 +329,6 @@ SkipXOR:            add     r0, r21                      ; Increment the initial
                     jump    nn,(_update_osc_loop)
                     nop
 
-                    _osc_vals_loop REGEQU r23
-                    _osc_loop_counter REGEQU r22
-                    _osc_vals REGEQU r4
-                    _delayf REGEQU r0
-                    _next_osc_val REGEQU r24
-                    _oscbank_cur REGEQU r10
-                    _oscbank_sines REGEQU r11
-                    _oscbank_4 REGEQU r12
-                    _255 REGEQU r21
-                    _65535 REGEQU r20
-
                     ; ----------------------------------------------------------------
                     ; Use the updated OSC Bank from above to populate the 'oscvals'.
                     ; 
@@ -408,7 +408,7 @@ BigLoop64:          loadw   (_fxobj_r23), r1
                     or      r2, r1
                     movei   #$0000003f, r0
                     sub     _bigloop_ctr, r0
-                    shlq    #PITCH8, r0
+                    shlq    #3, r0
                     move    r0, r2
                     shlq    #2, r0
                     add     r2, r0
@@ -475,7 +475,7 @@ routine249:         or      r18, r18
                     store   r18, (r14+$16)
                     move    r18, r5
                     load    (r14+_fxobj), r6
-                    addq    #PITCH8, r4
+                    addq    #3, r4
                     loadb   (r4), r9
                     addq    #1, r4
                     loadw   (r4), r0
