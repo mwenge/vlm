@@ -17,6 +17,7 @@ The source code can be compiled into an executable that you can run in `t2k.exe`
   * [Build the assembler toolchain](#build-the-assembler-toolchain)
   * [Build the Virtual Light Machine](#build-the-virtual-light-machine)
 * [Play the Virtual Light Machine](#play-the-virtual-light-machine)
+* [Play the Virtual Light Machine - Old Method](#play-the-virtual-light-machine---old-method)
   * [Getting to know the controls of the Virtual Light Machine](#getting-to-know-the-controls-of-the-virtual-light-machine)
 * [Notes on the Source Code](#notes-on-the-source-code)
 * [Reading the Source Code](#reading-the-source-code)
@@ -63,10 +64,18 @@ cd ..
 
 You are now ready to build the rom image `VirtualLightMachine.jag`:
 ```sh
-make virtuallightmachine.jag
+make
 ```
 
 ## Play the Virtual Light Machine
+This will let you play a barebones version of the VLM without any of the AudioCD infrastructure in
+`VirtualLightMachine.jag`.
+
+```sh
+bigpemu src/bin/vlm.abs
+```
+
+## Play the Virtual Light Machine - Old Method
 
 You can run the VLM as follows using `t2k.exe`:
 ```sh

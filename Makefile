@@ -25,7 +25,7 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 		-i src/images/arrow.cry arrow\
 		-i src/bin/cdbios.cof cd_bios\
 		-i src/bin/cdfront.abs cdfront\
-		-i src/bin/vlm.abs vlm
+		-i src/bin/vlm-stripped.abs vlm
 	./utils/CreateCart.py VirtualLightMachine.jag  src/incbin/romheader.bin src/bin/cdboot1.abs
 	#echo "f3144937d9f65fe7a1cf7f652d99a71d  VirtualLightMachine.jag" | md5sum -c
 	# Edit mode uses pause button
@@ -52,12 +52,12 @@ vlm.abs: vlm.gpu
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vidinit.s -o src/bin/vidinit.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vlmgpu.s -o src/bin/vlmgpu.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/ians.s -o src/bin/ians.cof
-	./rln/rln -m -z -e -rw -a 192000 x x -o src/bin/vlm-temp.abs src/bin/vlm.cof\
+	./rln/rln -m -z -e -rw -a 192000 x x -o src/bin/vlm.abs src/bin/vlm.cof\
 		src/bin/vidinit.cof\
 		src/bin/vlmgpu.cof\
 		src/bin/images.cof\
 		src/bin/ians.cof
-	./utils/StripAbsHeader.py src/bin/vlm-temp.abs src/bin/vlm.abs
+	./utils/StripAbsHeader.py src/bin/vlm.abs src/bin/vlm-stripped.abs
 
 cdfront.abs: 
 	$(shell mkdir -p $(DIRS))
