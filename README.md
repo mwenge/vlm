@@ -69,11 +69,12 @@ make
 
 ## Play the Virtual Light Machine
 This will let you play a barebones version of the VLM without any of the AudioCD infrastructure in
-`VirtualLightMachine.jag`.
+`VirtualLightMachine.jag` using [BigPEmu](https://www.richwhitehouse.com/jaguar/index.php?content=download).
 
 ```sh
 bigpemu src/bin/vlm.abs
 ```
+![vlm](https://github.com/user-attachments/assets/eaa35147-7655-47ec-a260-02462980d13f)
 
 ## Play the Virtual Light Machine - Old Method
 
