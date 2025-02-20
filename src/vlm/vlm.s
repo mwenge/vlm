@@ -398,15 +398,15 @@ irb:    bsr.w   ifxobj                ; Initialize the object.
         
         ; Beastie 3 - Jaguar Logo
 zippo:  lea     beasties+192,a0
-        move    #$64,d0               ; 'd'
-        move    #$104,d1
+        move    #100,d0               ; X pos
+        move    #260,d1               ; Y Pos
         move.l  #jaglogo + $04,d2     ; Make the jaguar logo the screen data.
         move    #5,d5                 ; Set the Object Type to 5
         jsr     makeit_transparent
-        move    #$10,$16(a0)
+        move    #16,22(a0)
         move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
-        move    #$88FF,$F00420
-        move    #$80FF,$F00422
+        move    #$88FF,$F00420 ; Colour lookup table
+        move    #$80FF,$F00422 ; Colour lookup table
         
         ; Beastie 4 - Dave's Overlay Object, i.e. the controls?
         lea     davesobj,a0 ; beasties + 256
@@ -428,7 +428,7 @@ zippo:  lea     beasties+192,a0
         swap    d0
         swap    d1
         move.l  #$4000,d2
-        move    #6,d5
+        move    #6,d5                 ; Set the Object Type to 6.
         jsr     makeit_transparent
         move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
         move    #$14,$16(a0)
@@ -439,7 +439,7 @@ zippo:  lea     beasties+192,a0
         move    #$50,d0               ; 'P'
         move    #$104,d1
         move.l  #$4000,d2
-        move    #6,d5
+        move    #6,d5                 ; Set the Object Type to 6.
         swap    d0
         swap    d1
         jsr     makeit_transparent
@@ -452,7 +452,7 @@ zippo:  lea     beasties+192,a0
         move    #$10A,d0
         move    #$190,d1
         move.l  #vlmlogo,d2
-        move    #7,d5
+        move    #7,d5 ; Object Type 7
         swap    d0
         swap    d1
         jsr     makeit_transparent
@@ -2072,10 +2072,10 @@ makeit:
         clr.w   22(a0)
         move    d5,12(a0) ; Set the object's mode (index to ModeVex).
         lsl     #3,d5 ; Multiply d5 by 8.
-        lea     ObTypes,a1
-        move    (a1,d5.w),24(a0)
-        move    2(a1,d5.w),26(a0)
-        move    4(a1,d5.w),28(a0)
+        lea     ObTypes,a1 ; Point a1 at ObTypes
+        move    (a1,d5.w),24(a0) ; Put the ObType width in the object.
+        move    2(a1,d5.w),26(a0) ; Put the ObType height in the object.
+        move    4(a1,d5.w),28(a0) ; Put the ObType depth in the object.
         clr.w   30(a0)
         rts
 
@@ -5672,6 +5672,13 @@ cow:
 ; 14-15    Object Type
 ; 16-18    Pointer to screen data.
 ; 20-22    Index to post-creation routine in 'postfixupsps'.
+; 23-24
+; 24-25    Width of Obj from ObTypes
+; 26-27    Height of Obj from ObTypes
+; 28-29    Depth of Obj from ObTypes
+; 30-31    Unused?
+; 32-33    Something to do with edit mode?
+; 33-34    Unused?
 ;
 ; Modes are:
 ;              0      1      2        3      4      5      6      7
@@ -5979,7 +5986,7 @@ StopList:
         move    #15,d0
 sl:     move.l  #0,(a0)+
         move.l  #4,(a0)+ ; A 4 indicates that this is a stop objfect.
-        dbf     d0,sl ; Keep looping until we've done 16 bytes.
+        dbf     d0,sl ; Keep looping until we've done 16 stop objects.
         rts
 
 ; *******************************************************************
@@ -7273,20 +7280,19 @@ nomatey:
 ; main one and it is this one that the GPU and Blitter draws most
 ; stuff to.
 ; Each entry is four words (16 bytes) long and is of the form:
-; - Width
+; - Width (in longs, so multiply by four)
 ; - Height
-; - Depth
+; - Depth: 0 = 1 bit per pixel, 2 = 4 bit per pixel, 4 = 16 bit per pixel
 ; - Offset to Colour Lookup Table (CLUT).
 ; *******************************************************************
-ObTypes:         dc.w    96,  384,  4,    0 ; Full screen
-                 dc.w     5,  240,  0,    0
-                 dc.w     1,    8,  0,    0
-                 dc.w    96,  192,  4,    0
-                 dc.w    96,   96,  4,    0
-                 dc.w     5,  112,  0,   16
-                 dc.w    16,   48,  2,    4
-                 dc.w     8,   10,  4,    0
-
+ObTypes:         dc.w    96,  384,  4,    0  ; 0: 384x384, 16bit
+                 dc.w     5,  240,  0,    0  ; 1: 20x240
+                 dc.w     1,    8,  0,    0  ; 2: 4x8
+                 dc.w    96,  192,  4,    0  ; 3: 384x192, 16 bit
+                 dc.w    96,   96,  4,    0  ; 4: 384x384, 16 bit
+                 dc.w     5,  112,  0,   16  ; 5: 20x112
+                 dc.w    16,   48,  2,    4  ; 6: 64x48
+                 dc.w     8,   10,  4,    0  ; 7: 32x10
 
 ; *******************************************************************
 ; sines
