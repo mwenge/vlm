@@ -3,7 +3,7 @@
 When VLM launches it selects `Bank 10` and  `Effect 5` to support the background display of its
 'attract mode'. This is what it looks like in action:
 
-[![Effect 5](https://img.youtube.com/vi/qJTREi4NCwY/0.jpg)](https://www.youtube.com/watch?v=qJTREi4NCwY)
+[![Effect 5](https://github.com/user-attachments/assets/39491849-47e9-4879-8b1b-7465346fccd5)](https://www.youtube.com/watch?v=qJTREi4NCwY)
 
 You can click on the picture above to view the full video on YouTube.
 
@@ -49,38 +49,38 @@ bigpemu src/bin/vlm.abs
 
 ## Effect 1
 
-[![Effect 1](https://img.youtube.com/vi/305jcrvpkqU/0.jpg)](https://www.youtube.com/watch?v=305jcrvpkqU)
+[![Effect 1](https://github.com/user-attachments/assets/8a7b6d98-d0d5-40ff-b0e2-82c63af6ccf3)](https://www.youtube.com/watch?v=305jcrvpkqU)
 
 ## Effect 2
 
-[![Effect 2](https://img.youtube.com/vi/cPo-Yd92Uxg/0.jpg)](https://www.youtube.com/watch?v=cPo-Yd92Uxg)
+[![Effect 2](https://github.com/user-attachments/assets/bc2efd87-9946-4aeb-9538-f0f714adbad3)](https://www.youtube.com/watch?v=cPo-Yd92Uxg)
 
 ## Effect 3
 
-[![Effect 3](https://img.youtube.com/vi/nxgBADcgong/0.jpg)](https://www.youtube.com/watch?v=nxgBADcgong)
+[![Effect 3](https://github.com/user-attachments/assets/bd9d09d1-fbb3-4d7b-aad3-f8fd58dbcb00)](https://www.youtube.com/watch?v=nxgBADcgong)
 
 ## Effect 4
 
-[![Effect 4](https://img.youtube.com/vi/iYFedyA8NNM/0.jpg)](https://www.youtube.com/watch?v=iYFedyA8NNM)
+[![Effect 4](https://github.com/user-attachments/assets/7ec1547e-901b-4135-b856-972da4d3f614)](https://www.youtube.com/watch?v=iYFedyA8NNM)
 
 ## Effect 5
 
-[![Effect 5](https://img.youtube.com/vi/qJTREi4NCwY/0.jpg)](https://www.youtube.com/watch?v=qJTREi4NCwY)
+[![Effect 5](https://github.com/user-attachments/assets/a6b96b86-c089-4d4d-9e75-f1f5688d9412)](https://www.youtube.com/watch?v=qJTREi4NCwY)
 
 ## Effect 6
 
-[![Effect 6](https://img.youtube.com/vi/M_2NZCb2xW0/0.jpg)](https://www.youtube.com/watch?v=M_2NZCb2xW0)
+[![Effect 6](https://github.com/user-attachments/assets/ae40430a-ca05-402f-8409-d60c05abea59)](https://www.youtube.com/watch?v=M_2NZCb2xW0)
 
 ## Effect 7
 
-[![Effect 7](https://img.youtube.com/vi/N56szSGV1ts/0.jpg)](https://www.youtube.com/watch?v=N56szSGV1ts)
+[![Effect 7](https://github.com/user-attachments/assets/84a1cc9a-dfc4-4960-91c0-271f69e815ae)](https://www.youtube.com/watch?v=N56szSGV1ts)
 
 ## Effect 8
 
-[![Effect 8](https://img.youtube.com/vi/uww-Cvj3VKM/0.jpg)](https://www.youtube.com/watch?v=uww-Cvj3VKM)
+[![Effect 8](https://github.com/user-attachments/assets/05c222f4-0fb3-4ef4-ba59-d3ff91ed7f63)](https://www.youtube.com/watch?v=uww-Cvj3VKM)
 
 ## Effect 9
 
-[![Effect 9](https://img.youtube.com/vi/MAt_qdciuG4/0.jpg)](https://www.youtube.com/watch?v=MAt_qdciuG4)
+[![Effect 9](https://github.com/user-attachments/assets/a2411dcb-f390-4534-add3-b2b728fc45ba)](https://www.youtube.com/watch?v=MAt_qdciuG4)
 
 
