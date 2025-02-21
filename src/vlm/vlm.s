@@ -85,7 +85,7 @@
 ; 5            Draw a ring of pixels          00000003  00000009    gpu/alpha.gas 
 ; 6            Spectrum as intensities        0000000E  00090000    gpu/shu.gas 
 ;
-; The value in 'info' acts as an index into 'editinginfo' for identifying the
+; The value in 'info' acts as an index into 'vars' for identifying the
 ; sub-effect during editing. Meanwhile 'gpu' acts as an index into the array
 ; 'gpumods' in vlmgpu.s and tells 'omega.gas' (which is responsible for
 ; orchestrating all GPU modules) the specific GPU module to load for the
@@ -226,7 +226,7 @@
 ; *******************************************************************
 free:
 LaunchVLM:
-        move    #3,skid          ; Select Effect 5
+        move    #5,skid          ; Select Effect 5
         movea.l #stack,sp        ; Set 'sp' as our stack pointer.
         move.l  #rrts,davesvec
         move    #0,started ; Indicate we haven't started the VLM yet.
@@ -622,7 +622,7 @@ makering:
 ipm:
         bsr.w   gadd
         clr.l   4(a6)
-        move.l  #$D,info(a6)
+        move.l  #13,info(a6)
         move.l  #$60000,gpu(a6)
         move.l  a6,(a0)
         bra.w   ggg
@@ -654,7 +654,7 @@ mopo:
 ; *******************************************************************
 mpo:
         bsr.w   makestar
-        move.l  #$C,info(a6)
+        move.l  #12,info(a6)
         move.l  #$50000,gpu(a6)
         rts
 
@@ -664,7 +664,7 @@ mpo:
 ; *******************************************************************
 makeshun:
         bsr.w   makestar
-        move.l  #$E,info(a6)
+        move.l  #14,info(a6)
         move.l  #$90000,gpu(a6)
         rts
 
@@ -726,7 +726,7 @@ mplaz1:
 mjaglogo:
         bsr.s   makemono
         move.l  #$40003,gpu(a6)
-        move.l  #$B,info(a6)
+        move.l  #11,info(a6)
         rts
 
 ; *******************************************************************
