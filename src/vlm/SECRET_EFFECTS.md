@@ -8,15 +8,15 @@ When VLM launches it selects `Bank 10` and  `Effect 5` to support the background
 You can click on the picture above to view the full video on YouTube.
 
 The other 8 effects in Bank 10 are inaccessible to the player once VLM is launched. This is because the VLM
-only allows single-digit selections from 1 to 9:
+only allows single-digit selections from 1 to 9.
 
 This means some moderately interesting artefacts have been hidden from view, lying buried in 
-`vlm.abs`. Eight VLM effects previously unknown to computerdom. Now that we have deconstructed 
+`vlm.abs` since 1994. Eight VLM effects previously unknown to computerdom. Now that we have deconstructed 
 the VLM binary and turned it into source code that can be
 tinkered with and reassembled we have the opportunity to bring them back to the surface again.
 
-To do this we twiddle the first line in the listing below (`move    #5,skid`). For example, changing
-it to `move    #1,skid` to select Effect 1 in Bank 10.
+To do this we twiddle the first line in the listing below (`move #5,skid`). For example, changing
+it to `move #1,skid` to select Effect 1 in Bank 10.
 
 ```asm
 ; *******************************************************************
@@ -45,7 +45,7 @@ make
 bigpemu src/bin/vlm.abs
 ```
 
-.. we discover new treasures.
+.. we discover some buried treasure.
 
 ## Effect 1
 
