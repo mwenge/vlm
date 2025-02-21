@@ -21,6 +21,7 @@ The source code can be compiled into an executable that you can run in `t2k.exe`
   * [Getting to know the controls of the Virtual Light Machine](#getting-to-know-the-controls-of-the-virtual-light-machine)
 * [Notes on the Source Code](#notes-on-the-source-code)
 * [Reading the Source Code](#reading-the-source-code)
+* [Things Hidden Since the Foundation of the Light Machine](#things-hidden-since-the-foundation-of-the-light-machine)
 
 <!-- vim-markdown-toc -->
 ## Build Instructions
@@ -145,4 +146,7 @@ comaptible with `rmac` since most of the code would originally have been written
 I've recently started annotating the reverse-engineered code. Little by little, its mode of operation is becoming
 clear and hopefully my annotations make the code worth exploring in its own right. A good place to start is [vlm.s](src/vlm/vlm.s).
 
+## Things Hidden Since the Foundation of the Light Machine
+
+It turns out [there is some buried treasure](src/vlm/SECRET_EFFECTS.md).
 
