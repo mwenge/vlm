@@ -255,9 +255,9 @@ LaunchVLM:
         move    #5,skid          ; Select Effect 5
         movea.l #stack,sp        ; Set 'sp' as our stack pointer.
         move.l  #rrts,davesvec
-        move    #0,started
-        move    #1,freerun
-        move    #9,imatrix       ; Set Bank Number to 9
+        move    #0,started ; Indicate we haven't started the VLM yet.
+        move    #1,freerun ; Displaying 'Jaguar' 'wait mode'
+        move    #9,imatrix       ; Set Bank Number to 10 (9+1)
         bsr.w   everything       ; Set up everything.
         lea     davesobj,a0
         rts
@@ -272,8 +272,8 @@ audio:
         movea.l #stack,sp
         move.l  #rrts,davesvec
         move    #4,skid
-        move    #0,imatrix ; Set Bank Number to 0
-        move    #0,started
+        move    #0,imatrix ; Set Bank Number to 1 (0+1).
+        move    #0,started ; Indicate we haven't started the VLM yet.
         move.l  #-1,CLUT
         move.l  #-1,CLUT+4
 
@@ -287,7 +287,7 @@ audio:
 ; of the routine 'everything' below.
 ; *******************************************************************
 goagain:
-        clr.w   freerun ; Allow the VLM to run freely, like a demo mode?
+        clr.w   freerun ; Allow the VLM to run freely.
         bsr.w   everything ; The main business of the main loop.
         bra.s   goagain ; Loop ad-infinitum.
         illegal
@@ -345,7 +345,7 @@ irb:    bsr.w   ifxobj                ; Initialize the object.
         lea     board,a0
         jsr     cleol
         
-        move    #$FFFF,actime
+        move    #-1,actime
         
         ; Draw the version details.
         movea.l #versionp,a0          ; "Virtual Light Machine v0.9//(c) 1994 Vi"...
@@ -375,7 +375,7 @@ irb:    bsr.w   ifxobj                ; Initialize the object.
         jsr     makeit                ; Create the screen object in the display list.
         
         tst.w   freerun               ; Are we in audio reactive mode?
-        bne.w   zippo
+        bne.w   zippo ; If not, skip initiatlizing beasties 1 + 2.
         
         ; Beastie 2 -  The editing screen etc.
         ; Is this the display list object for the controls screen?
@@ -410,16 +410,16 @@ zippo:  lea     beasties+192,a0
         
         ; Beastie 4 - Dave's Overlay Object, i.e. the controls?
         lea     davesobj,a0 ; beasties + 256
-        move    #$50,d0               ; 'P'
-        move    #$104,d1
+        move    #80,d0               ; 'P'
+        move    #260,d1
         swap    d0
         swap    d1
         move.l  #$4000,d2
         move    #6,d5                 ; Set the Object Type to 6.
         jsr     makeit_transparent
-        move    #4,$16(a0)
+        move    #4,22(a0)
         move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
-        move    #1,$1E(a0)
+        move    #1,30(a0)
         
         ; Beastie 5 - 
         lea     beasties+320,a0
@@ -431,8 +431,8 @@ zippo:  lea     beasties+192,a0
         move    #6,d5                 ; Set the Object Type to 6.
         jsr     makeit_transparent
         move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
-        move    #$14,$16(a0)
-        move    #1,$1E(a0)
+        move    #20,22(a0)
+        move    #1,30(a0)
         
         ; Beastie 6 - 
         lea     beasties+384,a0
@@ -444,8 +444,8 @@ zippo:  lea     beasties+192,a0
         swap    d1
         jsr     makeit_transparent
         move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
-        move    #$24,$16(a0)          ; '$'
-        move    #1,$1E(a0)
+        move    #36,22(a0)          ; '$'
+        move    #1,30(a0)
         
         ; Beastie 7 -  VLM Logo
         lea     beasties+448,a0
@@ -549,9 +549,9 @@ makepoly:
 ; Start everything up if necessary.
 ; *******************************************************************
 gogo:
-        tst.w   started
-        bne.w   rrts
-        move    #1,started
+        tst.w   started ; Have we started the VLM already?
+        bne.w   rrts ; If so, return.
+        move    #1,started ; Indicate we've started the VLM.
         move.l  #$70007,G_END
         move.l  #$70007,D_END
         move    #$100,JOYSTICK
@@ -1531,7 +1531,7 @@ titlescr:
 editloop:
         clr.w   moomoomo
         tst.w   freerun ; Are we in audio reactive mode?
-        beq.w   eloop ; If not, we must be editing!
+        beq.w   eloop ; If we are, allo editing (if enabled). 
         rts
 
         ; Do the editing.
@@ -5670,9 +5670,9 @@ cow:
 ; 4-7      Y 
 ; 12-13    Object Mode
 ; 14-15    Object Type
-; 16-18    Pointer to screen data.
-; 20-22    Index to post-creation routine in 'postfixupsps'.
-; 23-24
+; 16-19    Pointer to screen data.
+; 20-21    Index to post-creation routine in 'postfixupsps'.
+; 22-23
 ; 24-25    Width of Obj from ObTypes
 ; 26-27    Height of Obj from ObTypes
 ; 28-29    Depth of Obj from ObTypes
@@ -6117,7 +6117,7 @@ MakeUnScaledObject:
         clr.w   bo
         bsr.w   nmulto
         move    #1,bo
-        lea     -$20(a0),a3
+        lea     -32(a0),a3
         bset    #0,9(a3)
         movem.l (sp)+,d0-d5/a1
         move    d3,d6
@@ -6147,14 +6147,14 @@ nmulto:
         move.l  a0,d6
         and.l   #$FFFFE0,d6
         movea.l d6,a0
-        lea     $20(a0),a0
+        lea     32(a0),a0
 
 mumuso:
         move.l  a1,d6
         and.l   #$FFFFFFF8,d6
         lsl.l   #8,d6
         move.l  d6,(a0)+
-        lea     $20(a4),a6
+        lea     32(a4),a6
         move.l  a6,d6
         lsl.l   #5,d6
         swap    d6
@@ -6287,7 +6287,7 @@ charblit:
         move.l  #$1FFF8,A1_STEP
         move.l  #$80008,B_COUNT
         move.l  #0,B_PATD
-        move.l  #0,$F0226C
+        move.l  #0,B_PATD+4
         move.l  #$1800609,d7
         tst.w   inverse
         beq.w   notinv
