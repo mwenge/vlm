@@ -226,7 +226,7 @@
 ; *******************************************************************
 free:
 LaunchVLM:
-        move    #5,skid          ; Select Effect 5
+        move    #3,skid          ; Select Effect 5
         movea.l #stack,sp        ; Set 'sp' as our stack pointer.
         move.l  #rrts,davesvec
         move    #0,started ; Indicate we haven't started the VLM yet.
