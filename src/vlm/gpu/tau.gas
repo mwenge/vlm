@@ -722,7 +722,7 @@ routine668:
                     move    r27, r17
                     store   r2, (r0)
                     shrq    #8, r17
-                    movei   #$f0226c, r0
+                    movei   #B_PATD+4, r0
                     or      r5, r17
                     move    r17, r2
                     shlq    #16, r17

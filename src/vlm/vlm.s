@@ -219,32 +219,6 @@
 .include "vlm.inc"
 
 ; *******************************************************************
-; Constants for the joystick controller.
-; *******************************************************************
-        pausebutton  EQU $10000000
-        abutton      EQU $20000000
-        bbutton      EQU $02000000
-        right        EQU $00800000
-        left         EQU $00400000
-        down         EQU $00200000
-        up           EQU $00100000
-        seven        EQU $00080000
-        four         EQU $00040000
-        one          EQU $00020000
-        asterisk     EQU $00010000
-        cbutton      EQU $00002000
-        optionbutton EQU $00000200
-        two          EQU $00000080
-        five         EQU $00000040
-        eight        EQU $00000020
-        zerobutton   EQU $00000010
-        three        EQU $00000008
-        six          EQU $00000004
-        nine         EQU $00000002
-        hash         EQU $00000001
-        allbutts     EQU $22002000 ; A,B,& C Button pressed together.
-
-; *******************************************************************
 ; LaunchVLM
 ;
 ; This is where execution starts. Set the initial Bank and Effect to
@@ -8412,7 +8386,40 @@ delayn:         dc.w $0000,$0000
 edlgauge:       dc.b '~g3:5:                                 ',0
 edlgauge2:      dcb.l 2,0
 
+
+;                    :;<v!tC54kK&p2or                                                                                     
+;         )zLLen66SGZ$KMRQQQQQAVo">}!`       -=\+        ^ngS/    `          "ei=-       ;\r*?#26yLl:                     
+;        'gQQQQQQQQQQQQQQDbj{|:TYKQQQu.   ^74&B0Md}-    |AQQQ4- "FOZm;      )bQQBd -\]ydbHRQQQQQQQQQ$m| +c>               
+;         xpOGhhpJ#4QQQQP^.  =bQQQQQQV. '78QQQQM&Yf'   i8QQQE" cUQQQQ*    s4RQQQQm{kRQQQQQQQQBBB0QQQQQ$/:<|               
+;           .      gQQQR}   ckQMhMQQQw {YQQQA2*"`     iUQQQS` rBQQQM7.  "gRGVRQQMLXMQQMQQQRGx;^;vYQQQQR>                  
+;                 1QQQQq  .LMQAlcQQQQ%!MQQY!_    ;rx^+$QQQC_ "DQQQ01  /3DQ$y$QQQK; /!?g0Q01.=` =2MQQQA*                   
+;                :&QQQK=  nQQQ4EH0QQQ}UQQG;  \7SZHQ0FhQQM#   6QQQM[  {8QQQQRBQQQE    L0QR[ <PAPKQR@V]'                    
+;                FQQQQ];t6QQN8PFuMQQQ?@QR{ :yXh2@QQWgQQMI  _LQQQRL<7E0Q&ZC{/eQQQE   sRQQmzdW0QQ0RDo.                      
+;               j0QQQC \NQQy|-  %QQQQ}8QQF  ^  =DQQYKQM] =uOQQQQwiMQQQm:    oQQQj  +$QQB)wB$0QQNYgkPl.                    
+;              oRQQQy /PQQ#     >MQQK^?KQQgr^`-vNQQqMQ@tE@P$QQQ@<fMQRn.     I0QQ[ .5QQQp '?6WQKNQWGG8Ve/                  
+;            =6QQQNu r$QQJ.     .ZQQQ% ^zk0QRK@H4g0#J8U@mi-ZQQRM@QQ$I       -hQW) LQQ0M\    iqYdXDQQ8Y@&3l_               
+; if)`     +L$QQQS) *MQQf        ^u5I_   `"I77oc. i; -_-   =1jORQMS|         )NB_"BQRKJ       |yGdwVNQRAbXEo=             
+; :CGb3oe3ZWQQMgl  {W@h[                                    /dQQAc            6S"UQMgh+         +L5gF#4N0k6FSLr-          
+;   `>a5gYbG6o\    i*,                                      t4ei'             `_vK3>'              |LyLo2bGg5yF2T).       
+;                                                                               .'                   `%zF2#ujtzCjIfj|     
+;                                                                                                       'luynsaJf%<lTJjl; 
+;                                                                                                          :rLwuzwj[af!?1'
+;                                                                                                             :xenut/r`   
+;                                                                                                                'r7#;    
 jaglogo:        .incbin "images/jaglogo.cry"
+
+; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
+; _;^)iiiiiiiiiiiiiii)!#j- .`_?[[[[[[[[12m{         _;;/"//|1o)      `[ol//"/*Tu
+;   ./""""""""""""""""}Jj- .`_l{sssssss*2m{            ':'':|)la!. <a[\)=''''lTu
+;  .`=+/////////////=^*Cu_ .`_xlllllllcs3m{           .'''''''+>)?[l><'''''''lTu
+;   .__,^^========^=r*x)<. .`_i%vvvvvvvc3ms           ._''''''___vx"__''''''_lTu
+;      _,,^^^^^^^,';L#%    .`_<>>>>>>>>v2mL}}}}**r`   .__________--_________-cTu
+;      `__:::,,::"ii{*|    .`_|\))))))|<toozzz7Cq2_   .---------------------`cTu
+;       ..-__''-.cT7`      .`-+/////////======^!6y_   .``````````````````````cTu
+;       ..``-__""la]-      .`-;^^^^^^^^^^^^^^^:!qy_   .`````````````````````.c#n
+;         ..``'tzi         .``''''''''''''''''-rwL_    ..................... ioa
+;            ..``.         .`````````````````  .``                           ...
+;
 vlmlogo:        .incbin "images/vlmlogo.cry"
 
 ixcon:          dc.l $800000

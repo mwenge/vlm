@@ -1029,7 +1029,7 @@
                      move    r27, r28
                      store   r2, (r0)
                      shrq    #8, r28
-                     movei   #$f0226c, r0
+                     movei   #B_PATD+4, r0
                      or      r5, r28
                      move    r28, r2
                      shlq    #16, r28

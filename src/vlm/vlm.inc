@@ -289,4 +289,30 @@ dvf_ws_y     EQU 8
 dvf_crot_x   EQU $18
 dvf_crot_y   EQU $1C
 dvf_deltai   EQU $20
+; *******************************************************************
+; Constants for the joystick controller.
+; *******************************************************************
+pausebutton  EQU $10000000
+abutton      EQU $20000000
+bbutton      EQU $02000000
+right        EQU $00800000
+left         EQU $00400000
+down         EQU $00200000
+up           EQU $00100000
+seven        EQU $00080000
+four         EQU $00040000
+one          EQU $00020000
+asterisk     EQU $00010000
+cbutton      EQU $00002000
+optionbutton EQU $00000200
+two          EQU $00000080
+five         EQU $00000040
+eight        EQU $00000020
+zerobutton   EQU $00000010
+three        EQU $00000008
+six          EQU $00000004
+nine         EQU $00000002
+hash         EQU $00000001
+allbutts     EQU $22002000 ; A,B,& C Button pressed together.
+
 ; vim:ft=asm68k ts=2
