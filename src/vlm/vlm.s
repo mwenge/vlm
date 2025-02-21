@@ -7272,7 +7272,7 @@ ObTypes:         dc.w    96,  384,  4,    0  ; 0: 384x384, 16bit
 ; sines
 ; A sine table
 ; *******************************************************************
-.include "sines.dat"
+.include "sines.s"
 
 sympad:         dc.l   symclr
                 dc.l   sp8,  sp7

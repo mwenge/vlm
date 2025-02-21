@@ -95,3 +95,4 @@ sines:          dc.b   0,  3,  6,  9, $C, $F,$12,$15
                 dc.b $74,$F2,$FB,$F4,$84,$F6,$10,$F7
                 dc.b $9D,$F9,$2B,$FA,$BB,$FC,$4B,$FD
                 dc.b $DD,$FF,$6E,  0,  0,  0,  0
+; vim:ft=asm68k ts=2
