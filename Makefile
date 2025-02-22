@@ -49,7 +49,7 @@ vlm.abs: vlm.gpu
 	$(shell mkdir -p $(DIRS))
 	./rmac/rmac ~o1 -fb -u -l -isrc -isrc/vlm src/vlm/vlm.s -o src/bin/vlm.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/images.s -o src/bin/images.cof
-	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vidinit.s -o src/bin/vidinit.cof
+	./rmac/rmac ~o1 -fb -u -l -isrc -isrc/vlm src/vlm/vidinit.s -o src/bin/vidinit.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/vlmgpu.s -o src/bin/vlmgpu.cof
 	./rmac/rmac ~o1 -fb -u -isrc -isrc/vlm src/vlm/ians.s -o src/bin/ians.cof
 	./rln/rln -m -z -e -rw -a 192000 x x -o src/bin/vlm.abs src/bin/vlm.cof\

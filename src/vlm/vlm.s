@@ -15,7 +15,7 @@
 ;
 ; vlm.s
 ;
-; Below is the reverse-engineered source code for the 'Virtual Light Machine'
+; This is the reverse-engineered source code for the 'Virtual Light Machine'
 ; written by Jeff Minter in 1994 for the Atari Jaguar.
 ;
 ; The original code from which this source is derived is the copyright of Jeff
@@ -2429,7 +2429,7 @@ nox1:
         move    #$FF00,d0
         swap    d0
         move    monptr,d0
-        move.l  d0,dword_1A6810
+        move.l  d0,_monptr
         move    #8,_fmode
         jsr     fmodewai
         move.l  draw_screen,_ein_buf
@@ -2439,7 +2439,7 @@ nox1:
         move    #$8800,d0
         swap    d0
         move    monptr,d0
-        move.l  d0,dword_1A6810
+        move.l  d0,_monptr
         move    #7,_fmode
         bsr.w   fmodewai
         move.l  #draw_screen,_ein_buf
@@ -2474,7 +2474,7 @@ w2sngl:
         move    #$8800,d0
         swap    d0
         move    monptr,d0
-        move.l  d0,dword_1A6810
+        move.l  d0,_monptr
         move    #6,_fmode
         bra.s   fmodewai
 

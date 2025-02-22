@@ -1,7 +1,22 @@
-; *******************************************************************
+; ******************************************************************************
+; This is Jeff Minter's Virtual Light Machine for the Atari Jaguar.
+;
+; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
+; _;^)iiiiiiiiiiiiiii)!#j- .`_?[[[[[[[[12m{         _;;/"//|1o)      `[ol//"/*Tu
+;   ./""""""""""""""""}Jj- .`_l{sssssss*2m{            ':'':|)la!. <a[\)=''''lTu
+;  .`=+/////////////=^*Cu_ .`_xlllllllcs3m{           .'''''''+>)?[l><'''''''lTu
+;   .__,^^========^=r*x)<. .`_i%vvvvvvvc3ms           ._''''''___vx"__''''''_lTu
+;      _,,^^^^^^^,';L#%    .`_<>>>>>>>>v2mL}}}}**r`   .__________--_________-cTu
+;      `__:::,,::"ii{*|    .`_|\))))))|<toozzz7Cq2_   .---------------------`cTu
+;       ..-__''-.cT7`      .`-+/////////======^!6y_   .``````````````````````cTu
+;       ..``-__""la]-      .`-;^^^^^^^^^^^^^^^:!qy_   .`````````````````````.c#n
+;         ..``'tzi         .``''''''''''''''''-rwL_    ..................... ioa
+;            ..``.         .`````````````````  .``                           ...
+;
 ; vidinit.s
 ; Routines to set up video, e.g. NTSC/PAL.
-; *******************************************************************
+;
+; ******************************************************************************
 .include "../jaguar.inc"
 .include "../blitter.inc"
 .include "vlm.inc"
@@ -9,27 +24,24 @@
 .globl _fsync
 .globl _fmode
 .globl _ein_buf
-.globl dword_1A6810
+.globl _monptr
 .globl VideoIni
 .globl ispal
 .globl doit
 
-_fsync:    dc.w 0              
-_fmode:    dc.w 0              
+_fsync:     dc.w 0              
+_fmode:     dc.w 0              
 _ein_buf:   dc.l 0             
             dc.l 0             
             dc.l 0             
-                               
-dword_1A6810:   dcb.l $A,0     
+_monptr:    dcb.l $A,0     
                                
 ; *******************************************************************
 ; VideoIni
 ; Check if NTSC or PAL
 ; For now assume NTSC
 ; *******************************************************************
-
-VideoIni:                     
-                movem.l d0-d6,-(sp)
+VideoIni:       movem.l d0-d6,-(sp)
                 clr.w   pal
                 move.w  ($F14002).l,d0
                 and.w   #$10,d0
@@ -39,17 +51,14 @@ VideoIni:
                 move.w  #$10A,d6
                 move.w  #$F1,d4
                 bra.w   doit
-; ---------------------------------------------------------------------------
 
-ispal:                             ; CODE XREF: ROM:001A684C↑j
-                move.w  #$34B,d2
+ispal:          move.w  #$34B,d2
                 move.w  #$565,d0
                 move.w  #$142,d6
                 move.w  #$11F,d4
                 move.w  #1,pal
 
-doit:                             ; CODE XREF: ROM:001A6860↑j
-                move.w  d0,width2
+doit:           move.w  d0,width2
                 move.w  d4,height2
                 move.w  d0,d1
                 asr.w   #1,d1
@@ -72,7 +81,6 @@ doit:                             ; CODE XREF: ROM:001A6860↑j
                 move.l  #0,BORD1
                 movem.l (sp)+,d0-d6
                 rts
-; ---------------------------------------------------------------------------
 
                 .dphrase
 ; vim:ft=asm68k
