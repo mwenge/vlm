@@ -6972,7 +6972,7 @@ ivtb:   move.l  #-1,(a1)+       ; Clear a 4-byte phrase.
         ; Point a0 at the position in av1 given by the bank number in imatrix.
         movea.l av1ref,a0
         move.l  a0,d1
-        lea     16(a0),a0
+        lea     16(a0),a0 ; Move a0 past the unused offsets.
         move    imatrix,d0      ; Get the bank number
         lsl     #2,d0           ; Multiply d0 by 4.
         move.l  (a0,d0.w),d0
@@ -8470,7 +8470,7 @@ av1:
         dc.b  $00,$90,$00,$38,$F4,$35,$2A,$C6 ; 0x38
 
         ; Offsets into each bank. The 'gm' routine uses the
-        ; last two bytes (e.g. $0200, $1856) into 
+        ; last two bytes (e.g. $0200, $1856) as an index into 
         ; each bank's data in banks.s.
         dc.l  $00900200 ; Bank 1
         dc.l  $00901856 ; Bank 2
@@ -8481,7 +8481,7 @@ av1:
         dc.l  $009075A6 ; Bank 7
         dc.l  $00908806 ; Bank 8
         dc.l  $00909A72 ; Bank 9
-        dc.l  $0090A6B4 ; Bank 10 - Unused
+        dc.l  $0090A6B4 ; Bank 10 - Used by the splash screen only.
 
 
 ; *******************************************************************

@@ -112,7 +112,7 @@ absdelta     EQU $1AE57C
 udud         EQU $1AE77C
 aded         EQU $1AE780
 cskr         EQU $1AE788
-list1        EQU	$1AE81C
+list1        EQU $1AE81C
 list2        EQU $1AEA8C
 blist        EQU $1AEC7C
 dlist        EQU $1AEC80
@@ -215,8 +215,8 @@ CD_read      EQU $303C
 CD_setup     EQU $3048
 CD_osamp     EQU $3054
 dstoffz      EQU $34
-vectorx      EQU 56
-vectory      EQU 64
+vectorx      EQU $38
+vectory      EQU $40
 d_x          EQU $38
 dy           EQU $3C
 d_z          EQU $40
@@ -284,8 +284,8 @@ VOLUME       EQU $F1BD60
 _mtrig       EQU $F4
 info         EQU $F8
 gpu          EQU $FC
-dvf_ws_x     EQU 4
-dvf_ws_y     EQU 8
+dvf_ws_x     EQU $4
+dvf_ws_y     EQU $8
 dvf_crot_x   EQU $18
 dvf_crot_y   EQU $1C
 dvf_deltai   EQU $20
@@ -313,6 +313,6 @@ three        EQU $00000008
 six          EQU $00000004
 nine         EQU $00000002
 hash         EQU $00000001
-allbutts     EQU $22002000 ; A,B,& C Button pressed together.
-
+; A,B,& C Button pressed together.
+allbutts     EQU $22002000
 ; vim:ft=asm68k ts=2
