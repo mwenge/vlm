@@ -15,7 +15,7 @@
 ;
 ; vlm.s
 ;
-; This is the reverse-engineered source code for the 'Virtual Light Machine'
+; This is the reverse-engineered Motorola 68000 assembly code for the 'Virtual Light Machine'
 ; written by Jeff Minter in 1994 for the Atari Jaguar.
 ;
 ; The original code from which this source is derived is the copyright of Jeff
@@ -1717,8 +1717,8 @@ elcend:
 ;             Offset        Variable Name        Proper Name
 ;             --------------------------------------------------------------
 ;  Index 0 -  Byte 0-4:                           
-;  Index 1 -  Byte 4-8:     $4                   DVF window size: X           
-;  Index 2 -  Byte 8-12:    $8                   DVF window size: Y           
+;  Index 1 -  Byte 4-8:     dvf_ws_x             DVF window size: X           
+;  Index 2 -  Byte 8-12:    dvf_ws_y             DVF window size: Y           
 ;  Index 3 -  Byte 12-16:   vfb_xsca             DVF scale: X                 
 ;  Index 4 -  Byte 16-20:   vfb_ysca             DVF scale: Y                 
 ;  Index 5 -  Byte 20-24:   vfb_angl             DVF rotate angle             
@@ -1730,9 +1730,9 @@ elcend:
 ;  Index 11 - Byte 44-48:   vfb_xpos             DVF window centre: X         
 ;  Index 12 - Byte 48-52:   vfb_ypos             DVF window centre: Y         
 ;  Index 13 - Byte 52-56:   dstoffz              Destination position: Z      
-;  Index 14 - Byte 56-60:                        Vector: X                    
+;  Index 14 - Byte 56-60:   vectorx              Vector: X                    
 ;  Index 15 - Byte 60-64:   dy                   Destination Y offset         
-;  Index 16 - Byte 64-68:                        Vector: Y                    
+;  Index 16 - Byte 64-68:   vectory              Vector: Y                    
 ;  Index 17 - Byte 68-72:                        Symmetry Types               
 ;  Index 18 - Byte 72-76:   rsym_ord             Rotational Symmetry Order    
 ;  Index 19 - Byte 76-80:   rsym_ste             Rotational Angle Step        
@@ -7339,9 +7339,9 @@ sympaddstep:    dc.l  dstep
 ; *******************************************************************
 rantab:
                 dc.b $DC,$A9,$B1
-                dc.b $54,$F5,$4E,$55,$4A,$2C,  9,$65
+                dc.b $54,$F5,$4E,$55,$4A,$2C,$09,$65
                 dc.b $A3,$C2,$F9,$F0,$FD,$A8,$BF,$49
-                dc.b $EC, $E,$F7,$3F,$D2,$82,$82,  9
+                dc.b $EC,$0E,$F7,$3F,$D2,$82,$82,$09
                 dc.b $39,$BD,$F7,$BC,$2D,$2A,$68,$44
                 dc.b $11,$58,$22,$3B,$77,$56,$7E,$47
                 dc.b $1A,$24,$3A,$FA,$79,$1A,$13,$DA
@@ -7350,60 +7350,60 @@ rantab:
                 dc.b $ED,$5E,$EF,$6E,$99,$AD,$B4,$C4
                 dc.b $45,$D9,$DA,$AE,$D2,$CE,$C3,$B7
                 dc.b $9D,$B7,$E6,$72,$25,$A7,$CB,$37
-                dc.b $4B,$78,$E5,$CF,$79,$BD,$6F, $D
+                dc.b $4B,$78,$E5,$CF,$79,$BD,$6F,$0D
                 dc.b $E4,$7B,$42,$30,$33,$36,$A2,$57
-                dc.b $10,  7,$89,$64,$EF,$B1,$73,$B2
-                dc.b $10,$91, $B,  5, $A,$5F,$74,$9D
+                dc.b $10,$07,$89,$64,$EF,$B1,$73,$B2
+                dc.b $10,$91,$0B,$05,$0A,$5F,$74,$9D
                 dc.b $31,$9E,$6A,$C5,$B0,$1E,$86,$3F
-                dc.b $F6,$70,$17,$83,$61,  1,$35,$1C
+                dc.b $F6,$70,$17,$83,$61,$01,$35,$1C
                 dc.b $9C,$98,$18,$EA,$C7,$1D,$93,$A0
-                dc.b $43,$14,$AC,$62,  4,$69,$F6,$CD
+                dc.b $43,$14,$AC,$62,$04,$69,$F6,$CD
                 dc.b $F0,$FC,$99,$8B,$7A,$9C,$EC,$2D
-                dc.b $35,$61,$14,$27,$7F,$CD,$38,  0
+                dc.b $35,$61,$14,$27,$7F,$CD,$38,$00
                 dc.b  $E,$D0,$27,$A9,$2A,$4C,$94,$81
                 dc.b $22,$32,$53,$4A,$AF,$C1,$77,$9F
                 dc.b $FB,$7E,$A1,$D8,$13,$8F,$F2,$48
-                dc.b $7C,$DB,$BE, $C,$1F,$8D,$75,$D5
+                dc.b $7C,$DB,$BE,$0C,$1F,$8D,$75,$D5
                 dc.b  $D,$C9,$FA,$B9,$DF,$1B,$C6,$86
-                dc.b $34,$85,  8,$59,$20,$FF,$66,$BB
+                dc.b $34,$85,$08,$59,$20,$FF,$66,$BB
                 dc.b $E4,$36,$5C,$76,$76,$26,$4E,$93
                 dc.b $8D,$6A,$68,$D6,$CF,$55,$A6,$7B
                 dc.b $96,$DE,$B3,$18,$DD,$47,$15,$F1
-                dc.b $23,$C7,$2E,$4F,  0,$6D,$92,$8A
-                dc.b $20,$9E,$11,  8,$7A,$BA,$38,$87
-                dc.b $C3,$A2,$4C,$81,$83,$50,  3,$D3
+                dc.b $23,$C7,$2E,$4F,$00,$6D,$92,$8A
+                dc.b $20,$9E,$11,$08,$7A,$BA,$38,$87
+                dc.b $C3,$A2,$4C,$81,$83,$50,$03,$D3
                 dc.b $80,$54,$71,$87,$29,$60,$5A,$1D
                 dc.b $A4,$C5,$EB,$2F,$60,$E0,$8A,$30
-                dc.b $AC,$41,$F5,$63,  5,$37,$CA,$AA
+                dc.b $AC,$41,$F5,$63,$05,$37,$CA,$AA
                 dc.b $CA,$1F,$3C,$88,$39,$69,$15,$F1
                 dc.b $21,$E7,$5B,$6E,$B6,$DF,$B8,$5E
-                dc.b $21, $F,$1C,$51,$FB,$19,$D1,$BA
-                dc.b $AB,$3E,$1B,$AF,  6,$49,$DD,  2
-                dc.b $3A,$F8,$4D,$80,$46,$31,$90,  1
-                dc.b $AD,$FD,$A4,$89,$3D,  4,$C9,$B6
+                dc.b $21,$0F,$1C,$51,$FB,$19,$D1,$BA
+                dc.b $AB,$3E,$1B,$AF,$06,$49,$DD,$02
+                dc.b $3A,$F8,$4D,$80,$46,$31,$90,$01
+                dc.b $AD,$FD,$A4,$89,$3D,$04,$C9,$B6
                 dc.b $3E,$5B,$DB,$D8,$9B,$C1,$BF,$74
-                dc.b $90,$64,$84, $B,$2B,$5F,$5C,$9F
-                dc.b $FE,$91,$73,$E1,  7,$4D,$9A,$C2
+                dc.b $90,$64,$84,$0B,$2B,$5F,$5C,$9F
+                dc.b $FE,$91,$73,$E1,$07,$4D,$9A,$C2
                 dc.b $71,$E2,$C8,$D0,$58,$6B,$BB,$63
                 dc.b $A5,$E9,$AE,$A1,$B5,$84,$E5,$D7
                 dc.b $2F,$6B,$E1,$9B,$F3,$75,$5A,$DC
                 dc.b $56,$FE,$D6,$E3,$67,$A7,$8E,$50
                 dc.b $CC,$C0,$D4,$43,$42,$A8,$92,$57
                 dc.b $A6,$B4,$EA,$BE,$25,$B5,$28,$97
-                dc.b $94,$EE,$40, $C,$66,$7D,$16,$51
+                dc.b $94,$EE,$40,$0C,$66,$7D,$16,$51
                 dc.b $45,$B2,$FC,$F4,$D1,$95,$5D,$B0
                 dc.b $52,$A3,$48,$E7,$96,$E3,$46,$8C
                 dc.b $41,$D3,$B8,$CB,$A5,$C4,$A0,$B3
-                dc.b $D7,  3,$EE,$95,$59,$F2,$33, $F
+                dc.b $D7,$03,$EE,$95,$59,$F2,$33,$0F
                 dc.b $53,$70,$CC,$8E,$3D,$8B,$EB,$DE
                 dc.b $6D,$C8,$88,$6C,$ED,$7D,$28,$40
                 dc.b $7F,$7C,$19,$85,$24,$32,$E8,$2C
                 dc.b $8C,$67,$3B,$17,$12,$8F,$4B,$F3
                 dc.b $78,$D4,$D5,$29,$C6,$9A,$AA,$34
-                dc.b $23,$C0,$97,$CE,$26,$65, $A,$16
-                dc.b $F9,$D9,$44,$F8,$AB,  2,$62,$B9
-                dc.b   6,$2E,$F4,$FF,$72,  0,  0,  0
-                dc.b   0
+                dc.b $23,$C0,$97,$CE,$26,$65,$0A,$16
+                dc.b $F9,$D9,$44,$F8,$AB,$02,$62,$B9
+                dc.b $06,$2E,$F4,$FF,$72,$00,$00,$00
+                dc.b $00
 
 av1ref:         dc.l av1 ; $19B0FB
 versionp:       dc.b 'Virtual Light Machine v0.9//(c) 1994 Virtual Light Company Ltd.'
@@ -8310,9 +8310,24 @@ mmasks:         dc.l cmask1
 ; Put a 2 in here to stop GPU in free run
 freerun:        dcb.w 2,0
 
-; font.bin
+; *******************************************************************
+; Definition for a font.
+; *******************************************************************
 .include "font.s"
 
+; A sprite-sheet in 1-bit pixels containing two small 'Jaguar' logos side by side at the top
+; followed by the clipped middle section of a large Jaguar logo.
+;
+;     v77y6gP6Tu5pgw.^IeT?: 'tSL_*t) `)!yu>s1Tf7oq5#)^,           }5njJGK5aLXEG5.\1T71^ :ag!;eyl ;)eSJl1T223yqdyc^,       
+;     .':%O0SIJm6OQGgOo{eJ5nbGjab@hoLF28Qy)JMZ6gw8&f>              _.vZB3}udSGQE6K1]!qm#Yg]e8&SnJ53PQ#|5QGupdObJ<         
+; +";=|{fXm#5Fs:`*4o*L!*[Cwf5%lXBgga/_ {@*#Um:cn6XYhJes=_.    ="/;>!wg3oy6%_ vgtvo??}T#ujv*ZDS3a+. ib{#8f_"afSdh3n!\'.    
+; _+|%lr<_ /=                  +\^      :"%^     `/){eTt[elc": '^,">|` ;:                  ,\,       |),     .'/%o#11ol%"_
+;                 ^fyyy#_  _oy2[=fyyy>.zffyL\         ]Fq4bI:_offfye   _Iyn)eyyyy;'}TLzyy27+    =Jyy32t             '/||-`
+;                 yQQQQu  +XQQErTQQQQl2QQQy"   =)[5fs{RQQBl  rQQQQK)  [&QQ0UQQQQ8: `/c8QQU< 1r<t&QQQD3"                   
+;                cNQQQE``\GQQQ@D8MQQQ?KQ0J  vwG@NQQQS$QQP>  =&QQQY^`iqQQQWkSdQQQE   -XQQ$c>w@Q0QQW2r,                     
+;               )$QQQ&=)bWQ@2e{\lQQQQ?@QQ1 ,j[%)8QQ@bQQX: ^eAQQQA{m8QQD7I". tQQQ6  .FQQ0t5BNQQQM$&V}.                     
+;              _h@$$b\ r8@b<    v$$$8)m$$P/    >$$$pA$Y^+eP8K$$8c)8K$Ox     ?$$$}  *$$$X`{EZ8$$UZ62O2<                    
+;
 jlogo2:         .incbin "images/jlogo2.cry"
 
 blokk:          dc.l $1003F
@@ -8387,27 +8402,25 @@ edlgauge:       dc.b '~g3:5:                                 ',0
 edlgauge2:      dcb.l 2,0
 
 
-;                    :;<v!tC54kK&p2or                                                                                     
-;         )zLLen66SGZ$KMRQQQQQAVo">}!`       -=\+        ^ngS/    `          "ei=-       ;\r*?#26yLl:                     
-;        'gQQQQQQQQQQQQQQDbj{|:TYKQQQu.   ^74&B0Md}-    |AQQQ4- "FOZm;      )bQQBd -\]ydbHRQQQQQQQQQ$m| +c>               
-;         xpOGhhpJ#4QQQQP^.  =bQQQQQQV. '78QQQQM&Yf'   i8QQQE" cUQQQQ*    s4RQQQQm{kRQQQQQQQQBBB0QQQQQ$/:<|               
-;           .      gQQQR}   ckQMhMQQQw {YQQQA2*"`     iUQQQS` rBQQQM7.  "gRGVRQQMLXMQQMQQQRGx;^;vYQQQQR>                  
-;                 1QQQQq  .LMQAlcQQQQ%!MQQY!_    ;rx^+$QQQC_ "DQQQ01  /3DQ$y$QQQK; /!?g0Q01.=` =2MQQQA*                   
-;                :&QQQK=  nQQQ4EH0QQQ}UQQG;  \7SZHQ0FhQQM#   6QQQM[  {8QQQQRBQQQE    L0QR[ <PAPKQR@V]'                    
-;                FQQQQ];t6QQN8PFuMQQQ?@QR{ :yXh2@QQWgQQMI  _LQQQRL<7E0Q&ZC{/eQQQE   sRQQmzdW0QQ0RDo.                      
-;               j0QQQC \NQQy|-  %QQQQ}8QQF  ^  =DQQYKQM] =uOQQQQwiMQQQm:    oQQQj  +$QQB)wB$0QQNYgkPl.                    
-;              oRQQQy /PQQ#     >MQQK^?KQQgr^`-vNQQqMQ@tE@P$QQQ@<fMQRn.     I0QQ[ .5QQQp '?6WQKNQWGG8Ve/                  
-;            =6QQQNu r$QQJ.     .ZQQQ% ^zk0QRK@H4g0#J8U@mi-ZQQRM@QQ$I       -hQW) LQQ0M\    iqYdXDQQ8Y@&3l_               
-; if)`     +L$QQQS) *MQQf        ^u5I_   `"I77oc. i; -_-   =1jORQMS|         )NB_"BQRKJ       |yGdwVNQRAbXEo=             
-; :CGb3oe3ZWQQMgl  {W@h[                                    /dQQAc            6S"UQMgh+         +L5gF#4N0k6FSLr-          
-;   `>a5gYbG6o\    i*,                                      t4ei'             `_vK3>'              |LyLo2bGg5yF2T).       
-;                                                                               .'                   `%zF2#ujtzCjIfj|     
-;                                                                                                       'luynsaJf%<lTJjl; 
-;                                                                                                          :rLwuzwj[af!?1'
-;                                                                                                             :xenut/r`   
-;                                                                                                                'r7#;    
+; The jaguar logo in a 1-bit per pixel bitmap, which looks like:
+;
+;        ``.:;+\x}a#F4A@Au1{.               '"                         _;:.                 
+;      `CA&AKWMM0QQQWX2ty#mP!   -%oyp1;    1&Wy. ia!:     1G5a  ^%]n6EP8H@Y2*..^'           
+;      .tZYE4F5DQQM}= :hQQQQG  }ZQQQKYa   L0QH!`nRQQe  .IERQQG1bWQQQQQBHB0QQQm-)/           
+;             )WQQ2  xk02UQQy^dQQXa|.    TQQU) yQQQy- i4$qNQQnfA8KQQb?-`+gQQQd`             
+;            .XQQU: [MQgTBQQzgQH{ .i1wX2eQQb+ }QQQC ;6QQNKQQN| .cKQ4'l#aX0BZa-              
+;            jQQ0{vw0MYgC$QQJKQ# %5FPQQODQg- x$QQFcC$QP2?sBQB^ ,OQ$oqDQQRHL`                
+;           ?MQQe VQb\. .$QQaPQk|-  wQNYQY\1dNQQhxMQBI   ^NQb. 6QQ7rYWQ0WZGSr_              
+;         `jMQWa;hQZ=    hQQ?=J@BPF5G8NfH8Zf]RQ0X&Qb\    `gQg eRQ$: '{GAAWWKOGL).           
+; rj\`  ^!bQ0S>"&QG^     =To"  :vejo<_%`;+,  sTHQBC'      )ML|WQBt    .x2gSkBM@P5{'         
+; :12FmPH0@Fi  55?_                          ,EY6\         aiA&f1-       <[yf3Y8dgyzi_      
+;    '|i>|_    `                             `|.             l^            .>]npFCjT2?[).   
+;                                                                             _)1u1zC]le#ex'
+;                                                                                _)]7Ju*1\\:
+;                                                                                   -<[e<   
 jaglogo:        .incbin "images/jaglogo.cry"
 
+; The VLM logo in 16-bit per pixel cry format, which looks like:
 ; %TuuuuuuuuuuuuuuuuuunTj-   _f555555555F6{         %uLLLLL7'..       ..%nLLLLuu
 ; _;^)iiiiiiiiiiiiiii)!#j- .`_?[[[[[[[[12m{         _;;/"//|1o)      `[ol//"/*Tu
 ;   ./""""""""""""""""}Jj- .`_l{sssssss*2m{            ':'':|)la!. <a[\)=''''lTu
