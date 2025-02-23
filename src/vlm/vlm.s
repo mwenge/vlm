@@ -245,7 +245,7 @@ LaunchVLM:
 audio:
         movea.l #stack,sp
         move.l  #rrts,davesvec
-        move    #4,skid
+        move    #4,skid ; Set Effect Number to 4.
         move    #0,imatrix ; Set Bank Number to 1 (0+1).
         move    #0,started ; Indicate we haven't started the VLM yet.
         move.l  #-1,CLUT
@@ -261,7 +261,7 @@ audio:
 ; of the routine 'everything' below.
 ; *******************************************************************
 goagain:
-        clr.w   freerun ; Allow the VLM to run freely.
+        clr.w   freerun ;  Signal we're in audio reactive mode.
         bsr.w   everything ; The main business of the main loop.
         bra.s   goagain ; Loop ad-infinitum.
         illegal
@@ -296,7 +296,7 @@ irb:    bsr.w   ifxobj                ; Initialize the object.
         lea     1024(a6),a6           ; Each fx object is 1024 bytes long.
         dbf     d7,irb                ; Loop until we've done 6 objects.
         
-        ; Create an fx object in fxspace and point to it in a few
+        ; Create the first fx object in fxspace and point to it in a few
         ; different places.
         movea.l #fxspace,a6
         move.l  a6,fx1
@@ -352,7 +352,6 @@ irb:    bsr.w   ifxobj                ; Initialize the object.
         bne.w   zippo ; If not, skip initiatlizing beasties 1 + 2.
         
         ; Beastie 2 -  The editing screen etc.
-        ; Is this the display list object for the controls screen?
         lea     beasties+128,a0
         move.l  #board,d2             ; Make board the screen data for the object.
         move    #24,d0
@@ -365,7 +364,7 @@ irb:    bsr.w   ifxobj                ; Initialize the object.
         move    #$24,d3               ; Set the width.
         move    #$24,d4               ; Set the hight.
         jsr     makeit_transparent
-        move    #$FFFF,beasties+140
+        move    #-1,beasties+140 ; Set Display Object's Mode to off.
 
         ; Beastie 1 - Unused
         lea     beasties+64,a0
@@ -378,7 +377,7 @@ zippo:  lea     beasties+192,a0
         move    #5,d5                 ; Set the Object Type to 5
         jsr     makeit_transparent
         move    #16,22(a0)
-        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,12(a0)         ; Set Display Object's Mode to off.
         move    #$88FF,$F00420 ; Colour lookup table
         move    #$80FF,$F00422 ; Colour lookup table
         
@@ -392,7 +391,7 @@ zippo:  lea     beasties+192,a0
         move    #6,d5                 ; Set the Object Type to 6.
         jsr     makeit_transparent
         move    #4,22(a0)
-        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,12(a0)         ; Set Display Object's Mode to off.
         move    #1,30(a0)
         
         ; Beastie 5 - 
@@ -404,7 +403,7 @@ zippo:  lea     beasties+192,a0
         move.l  #$4000,d2
         move    #6,d5                 ; Set the Object Type to 6.
         jsr     makeit_transparent
-        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,12(a0)         ; Set Display Object's Mode to off.
         move    #20,22(a0)
         move    #1,30(a0)
         
@@ -417,7 +416,7 @@ zippo:  lea     beasties+192,a0
         swap    d0
         swap    d1
         jsr     makeit_transparent
-        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,12(a0)         ; Set Display Object's Mode to off.
         move    #36,22(a0)          ; '$'
         move    #1,30(a0)
         
@@ -430,8 +429,8 @@ zippo:  lea     beasties+192,a0
         swap    d0
         swap    d1
         jsr     makeit_transparent
-        move    #$FFFF,12(a0)         ; Set Display Object's Mode to off.
-        move    #$FFFF,vlmtim
+        move    #-1,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,vlmtim ; Turn off the VLM logo timer.
         
         ; Clear the environment variables.
         lea     envvals,a0
@@ -448,7 +447,7 @@ xx:     clr.l   (a0)+
         move.l  #fx1,fx
         move    #1,fxed
         
-        ; Create the fx objects.
+        ; Create the reamaining 5 fx objects, giving 6 in total.
         lea     fxspace+1024,a6
         move    #4,d7
 iprep:  movem.l d7/a5-a6,-(sp)        ; Stash some values in the stack so we can restore them later.
@@ -853,27 +852,35 @@ wlink:
 
 ; *******************************************************************
 ; symadj
+;
+; Responds to up/down/left/right controller movement and adjusts the
+; symmetry accordingly.
 ; *******************************************************************
 symadj:
-        lea     pad_now,a1
-        bsr.w   doadsr
-        tst.w   vlm_mode
-        beq.w   rrts
-        lea     pad_now,a1
-        tst.w   editing
+        lea     pad_now,a1 ; Get the button presses
+        bsr.w   doadsr ; Respond to a/b/c being pressed.
+
+        tst.w   vlm_mode ; Are we in audio control mode?
+        beq.w   rrts ; If so, return.
+
+        lea     pad_now,a1 ; Get the button presses
+        tst.w   editing ; Is editing mode active?
         beq.w   shoop
-        lea     pad_now+4,a1
+        lea     pad_now+4,a1 ; Get the button presses from edit mode.
         ; Falls through.
 
-shoop:
-        move.b  1(a1),d0
+        ; Respond to up/down/left/right in VLM mode.
+shoop:  move.b  1(a1),d0
         rol.b   #2,d0
         lea     pixcon,a0
         jsr     pinertco
+
         move.b  1(a1),d0
         rol.b   #4,d0
         lea     piycon,a0
         jsr     pinertco
+
+        ; Prepare px and py.
         move.l  pixcon,d0
         lsr.l   #8,d0
         and.l   #$FFFF,d0
@@ -887,6 +894,8 @@ shoop:
 ; *******************************************************************
 ; doadsr
 ; Do Attack Decay Sustain Release
+;
+; a1 -> pad_now (buttons pressed)
 ; *******************************************************************
 doadsr:
         tst.w   vlm_mode
@@ -894,22 +903,25 @@ doadsr:
         lea     zero,a1
 
 ago:
-        movea.l a1,a3
+        movea.l a1,a3 ; Store pad_now/zero in a3.
         lea     envvals,a1
-        lea     $A(a1),a1
+
+        lea     10(a1),a1
         lea     adsrc,a0
         move.l  (a3),d0
-        and.l   #$2000,d0
+        and.l   #cbutton,d0
         bsr.w   do_adsr
+
         lea     2(a1),a1
         lea     adsrb,a0
         move.l  (a3),d0
-        and.l   #$2000000,d0
+        and.l   #bbutton,d0
         bsr.w   do_adsr
+
         lea     2(a1),a1
         lea     adsra,a0
         move.l  (a3),d0
-        and.l   #$20000000,d0
+        and.l   #abutton,d0
 
 do_adsr:
         move    8(a0),d1
@@ -917,6 +929,7 @@ do_adsr:
         lsl     #2,d1 ; Multiply d1 by 4.
         movea.l (a4,d1.w),a4
         jmp     (a4)
+        ; Returns
 
 ; *******************************************************************
 ; adsrvex
@@ -937,6 +950,8 @@ setatac:
 
 ; *******************************************************************
 ; attack
+; a0 -> adsra for a button/adsrb for b button/adsrc for c button.
+; d0 -> whether corresponding button pressed (a,b,c).
 ; *******************************************************************
 attack:
         tst.l   d0
@@ -1093,7 +1108,7 @@ someeother:
 somebutt:
         move.l  d0,-(sp) ; Stash some values in the stack so we can restore them later.
         movea.l (a0)+,a2
-        cmp.l   #$2000,d0
+        cmp.l   #cbutton,d0
         bne.w   notc
         jsr     (a2)
 
@@ -1116,7 +1131,7 @@ nota:
         move.l  (sp)+,d0
         move.l  d0,-(sp) ; Stash some values in the stack so we can restore them later.
         movea.l (a0)+,a2
-        cmp.l   #$2002000,d0 ; abutton or bbutton
+        cmp.l   #(bbutton|cbutton),d0 ; cbutton or bbutton
         bne.w   notab
         jsr     (a2)
 
@@ -1153,28 +1168,28 @@ dorsym3:
 gjoy:
         move.l  (a1),d0
         move.l  d0,d1
-        and.l   #$400000,d0
+        and.l   #left,d0
         beq.w   npleft
         movea.l (a3),a4
         jsr     (a4)
 
 npleft:
         move.l  (a1),d0
-        and.l   #$800000,d0
+        and.l   #right,d0
         beq.w   npright
         movea.l 4(a3),a4
         jsr     (a4)
 
 npright:
         move.l  (a1),d0
-        and.l   #$100000,d0
+        and.l   #up,d0
         beq.w   npup
         movea.l 8(a3),a4
         jsr     (a4)
 
 npup:
         move.l  (a1),d0
-        and.l   #$200000,d0
+        and.l   #down,d0
         beq.w   npdn
         movea.l 12(a3),a4
         jsr     (a4)
@@ -1229,7 +1244,7 @@ anteclr:
 ; *******************************************************************
 keydb:
         move.l  pad_now,d1
-        and.l   #$E00FF,d1 ; Were any of the number buttons pressed?
+        and.l   #(hash|zerobutton|one|two|three|four|five|six|seven|eight|nine),d1 ; Were any of the number buttons pressed?
         bne.w   rrts
         move.l  ov,routine
         rts
@@ -1268,7 +1283,7 @@ setedit:
         bne.w   rrts ; If so, return early.
         move    vlm_mode,ovlm_mod
         move    #1,vedit ; Signal we are in edit mode.
-        move    #3,vlm_mode ; Change mode to editing.
+        move    #EDITING_MODE,vlm_mode ; Change mode to editing.
         move    #1,beasties+140
         move.l  #initedit,action ; Set action routine.
         rts
@@ -1904,7 +1919,7 @@ cram:   clr.l   (a0)+
         ; Initialize the backing list we used for the 'blist' Object List.
         jsr     InitBeasties ; Initialize the beasties object list.
 
-        move    #$FFFF,db_on ; Enable double-buffering.
+        move    #-1,db_on ; Enable double-buffering.
         clr.l   screen_ready ; Signal that we don't have a screen ready for the Object Processor yet.
         move.l  #rrts,routine
         move.l  #rrts,_fx
@@ -2042,7 +2057,7 @@ makeit:
         move    d3,8(a0)   ; Set the width?
         move    d4,10(a0)  ; Set the height?
         move.l  d2,16(a0) ; Set the pointer to screen data.
-        move    #$FFFF,20(a0) ; Caller will set the postfixup.
+        move    #-1,20(a0) ; Caller will set the postfixup.
         clr.w   22(a0)
         move    d5,12(a0) ; Set the object's mode (index to ModeVex).
         lsl     #3,d5 ; Multiply d5 by 8.
@@ -2631,7 +2646,7 @@ sidbl:
         move.l  (sp)+,d5
         move    #$C0,d0
         move    #$BF,d1
-        move    #$FFFF,d4
+        move    #-1,d4
         move    #3,d3
         lsr     #8,d5
         sub.w   #$7F,d5
@@ -2646,7 +2661,7 @@ n1add5:
         move.l  (sp)+,d5
         move    #$C0,d1
         move    #$BF,d0
-        move    #$FFFF,d4
+        move    #-1,d4
         move    #3,d2
         lsr     #8,d5
         sub.w   #$7F,d5
@@ -3530,7 +3545,7 @@ giedit:
         clr.w   cbuttf
 
 ogiedit:
-        move    #$FFFF,actime
+        move    #-1,actime
         move.l  a1,editlist ; Store the options array in editlist.
         bsr.w   print ; Display the options
         move    #SELECTOR,editing ; Set selector as the editing routine.
@@ -4309,29 +4324,29 @@ no_db:  tst.w   flash
         move.l  d0,BG+4
         tst.w   flash
         bne.w   cflash
-        move    #$FFFF,scron
+        move    #-1,scron
 
-cflash: cmpi.w  #1,vlm_mode
-        bne.w   dflash
-        move.l  pad_now,d0
+        ; Maybe do a 'Strobe'..
+cflash: cmpi.w  #VLM_MODE,vlm_mode ; Are we in VLM mode?
+        bne.w   dflash ; If not, skip. Otherwise..
+        move.l  pad_now,d0 ; Get the button presses.
         and.l   #cbutton,d0 ; Was the C button pressed?
-        beq.w   dflash
-        tst.w   flash_db
-        bne.w   eflash
-        move    #1,flash_db
+        beq.w   dflash ; If not, skip to 'dflash'
+        tst.w   flash_db ; Otherwise, check if we are strobing already.
+        bne.w   eflash ; If we are, skip to 'eflash'. 
+        move    #1,flash_db ; Turn on strobing.
         move    #$100,flash
         move    #1,scron
         bra.w   eflash
 
-dflash:
-        clr.w   flash_db
+dflash: clr.w   flash_db ; Make sure strobing is off.
 
-eflash:
-        tst.w   vlmtim
-        bmi.w   ncanc
-        subi.w  #1,vlmtim
-        bpl.w   ncanc
-        move    #$FFFF,davesobj+204
+        ; Check the VLM logo timer.
+eflash: tst.w   vlmtim ; Is the VLM logo timer active?
+        bmi.w   ncanc ; If not, skip to 'ncanc'.
+        subi.w  #1,vlmtim ; Decrement the VLM logo timer.
+        bpl.w   ncanc ; If it's still active, skip to 'ncanc'.
+        move    #-1,davesobj+204 ; Otherwise, turn off the VLM logo.
 
         ; Check for input from the controller.
 ncanc:  jsr     readpad         ; Update pad_now.
@@ -4341,10 +4356,9 @@ ncanc:  jsr     readpad         ; Update pad_now.
         or.l    pad_now+4,d1
         and.l   #$22FE20FF,d1   ; Were any of the buttons pressed?
         bne.w   no_ksel         ; Skip past everything.
-        clr.w   seldb           ; Clear the debounce flag.
 
-do_ed:
-        tst.w   vlm_mode ; Are the VLM controls active?
+        clr.w   seldb           ; Clear the debounce flag.
+do_ed:  tst.w   vlm_mode ; Are the VLM controls active?
         beq.w   no_ed ; If not, skip to no_ed.
 
         ; The VLM edit controls are active.
@@ -4364,13 +4378,14 @@ no_ed:  tst.l   action
         bne.w   no_ksel
         move.l  pad_now,d0
         and.l   #optionbutton,d0 ; Was the option button pressed?
-        bra.w   nothash
+        bra.w   nothash ; If not, skip to 'nothash', otherwise..
 
+        ; ..turn on the VLM logo and VLM mode.
 vlm_on: move    #1,seldb
-        move    #1,vlm_mode
+        move    #VLM_MODE,vlm_mode
         move    #1,beasties+140
-        move    #7,davesobj+204
-        move    #$1F4,vlmtim
+        move    #7,davesobj+204 ; Turn on the logo.
+        move    #500,vlmtim ; Set the VLM logo timer.
 
 nothash:
         tst.w   editing
@@ -4598,7 +4613,7 @@ sletto: lea     1024(a1),a1
         jsr     dcopyblo
         bsr.w   zapdel
         clr.w   og
-        move    #$FFFF,beasties+204
+        move    #-1,beasties+204
         rts
         rts
 
@@ -5367,13 +5382,13 @@ _bodb2:
         lsr     #1,d6
         dbf     d7,_gk2
         move.l  pad_now,d1
-        and.l   #(abutton|bbutton|cbutton),d1 ; Did the player press a,b, and c?
+        and.l   #(abutton|bbutton|cbutton),d1 ; Did the player press a,b, or c?
         beq.w   rrts
         move    selected,d2
         movea.l edwave,a0
         lsl     #4,d2 ; Multiply d2 by 16.
         lea     4(a0,d2),a0
-        cmp.l   #$2000000,d1
+        cmp.l   #bbutton,d1
         bne.w   zinc
 
 ; *******************************************************************
@@ -5603,7 +5618,7 @@ InitBeasties:
         move    #12,d7         ; Move 12 to d7.
         move    d7,nbeastie    ; There will be 12 entries in beasties.
 ibeasts: 
-        move    #$FFFF,12(a0) ; Initialize the mode of the entry to 'inactive'
+        move    #-1,12(a0) ; Initialize the mode of the entry to 'inactive'
         lea     64(a0),a0      ; Each entry is 64 bytes long.
         dbf     d7,ibeasts     ; Go to the next entry.
         rts
@@ -5628,6 +5643,9 @@ cow:
         bra.s   cow
         rts
 
+OBJ_TYPE EQU 14
+OBJ_MODE EQU 12
+OBJ_Y EQU 4
 ; *******************************************************************
 ; RunBeasties
 ; Create the shadow hardware display list in blist using the backing list
@@ -5642,6 +5660,7 @@ cow:
 ; Data structure of items in 'beasties':
 ; 0-3      X
 ; 4-7      Y 
+; 10-11    Transparency?
 ; 12-13    Object Mode
 ; 14-15    Object Type
 ; 16-19    Pointer to screen data.
@@ -5675,7 +5694,7 @@ RunBeasties:
         ; routine to call and that will create the object and add it to
         ; blist. Our pointer to blist in this operation is a0.
 RBeasts:move    d7,-(sp)       ; Stash some values in the stack so we can restore them later.
-        move    12(a2),d0      ; Get the object's 'Mode'.
+        move    OBJ_MODE(a2),d0      ; Get the object's 'Mode'.
         bmi.w   nxbeast        ; Skip if it doesn't have a mode set.
         lea     ModeVex,a3     ; Point a3 at the ModeVex list.
         asl.w   #2,d0          ; Multiply d0 by 4.
@@ -5704,8 +5723,8 @@ postfixups:
 ; *******************************************************************
 make_rmw:
         lea     -$20(a0),a3
-        bset    #6,$A(a3)
-        bset    #7,$A(a3)
+        bset    #6,10(a3)
+        bset    #7,10(a3)
 
 setref:
         tst.w   $1E(a2)
@@ -5722,7 +5741,7 @@ setrf:
 ; *******************************************************************
 make_transparent:
         lea     -$20(a0),a3
-        bset    #7,$A(a3)
+        bset    #7,10(a3)
         bra.s   setref
 
 ; *******************************************************************
@@ -5741,6 +5760,7 @@ moo:
 
 ; *******************************************************************
 ; stoptop
+; a2 -> pointer to object in beasties list
 ; *******************************************************************
 stoptop:
         move    #$B4,d3
@@ -5748,33 +5768,40 @@ stoptop:
         move    #$1A4,d4
         add.w   paltop,d4
         sub.w   #$B0,d4
-        tst.w   vlm_mode
-        beq.w   clip1
+
+        tst.w   vlm_mode ; Are we in audio reactive mode?
+        beq.w   clip1 ; If so, skip to clip1.
+
+        ; Update the x position using cursor?
         move    pixcon,d0
-        sub.w   #$7F,d0
+        sub.w   #127,d0
         add.w   d3,d0
         move    d0,(a2)
+
+        ; Update the y position using cursor?
         move    piycon,d0
-        sub.w   #$7F,d0
+        sub.w   #127,d0
         lsl     #1,d0 ; Multiply d0 by 2.
         add.w   d4,d0
-        move    d0,4(a2)
+        move    d0,OBJ_Y(a2)
+
         bmi.w   rrts
         bra.w   clip1
 
 ; *******************************************************************
 ; clip0
+; a2 -> pointer to object in beasties list
 ; *******************************************************************
 clip0:
         move    skale,d0
         beq.w   clip00
         add.w   #2,d0
-        move    d0,$E(a2)
+        move    d0,OBJ_TYPE(a2)
         move    #1,bo
         bra.w   clip2
 
 clip00:
-        clr.w   $E(a2)
+        clr.w   OBJ_TYPE(a2)
         move    #1,bo
         bra.w   clipc
 
@@ -5787,7 +5814,7 @@ clip1:
 clipc:
         move    (a2),d0
         move    4(a2),d1
-        cmpi.w  #5,$E(a2)
+        cmpi.w  #5,OBJ_TYPE(a2)
         bne.w   fixpal
         sub.w   palside,d0
         add.w   paltop,d1
@@ -5805,19 +5832,19 @@ ponscr:
         bclr    #0,d1
         swap    d6
         move    8(a2),d6
-        move    $A(a2),d3
+        move    10(a2),d3
         lsl     #8,d3
         or.w    d6,d3
         swap    d3
         swap    d6
-        move    $E(a2),d7
+        move    OBJ_TYPE(a2),d7
         lea     ObTypes,a3
         asl.w   #3,d7
         move    $18(a2),d3
         move    $1A(a2),d4
         move    $1C(a2),d5
         move    $16(a2),d2
-        movea.l vfb_ysca(a2),a1
+        movea.l $10(a2),a1
         tst.w   d6
         beq.w   nohang
         move    d3,d7
@@ -6680,9 +6707,11 @@ pinertco:
         and.w   #3,d1
         beq.w   friction
         bra.w   uuu
+        ; Returns
 
 ; *******************************************************************
 ; inertcon
+; a0 -> pixcon/piycon
 ; *******************************************************************
 inertcon:
         move    #1,d3
@@ -7109,7 +7138,7 @@ blitcopy:
 monovert:
         movea.l a0,a1
         lea     2(a0),a0
-        move    #$FFFF,d7
+        move    #-1,d7
         move    #1,d0
 
 icu:

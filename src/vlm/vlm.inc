@@ -318,4 +318,8 @@ nine         EQU $00000002
 hash         EQU $00000001
 ; A,B,& C Button pressed together.
 allbutts     EQU $22002000
+
+AUDIO_CTRL_MODE EQU 0
+VLM_MODE EQU 1
+EDITING_MODE EQU 3
 ; vim:ft=asm68k ts=2
