@@ -11,7 +11,8 @@ The other eight effects are eventually visible to the Jaguar owner with a Jaguar
 CD bios will select a random effect at launch: the randomness of its choice being based on values in the Jaguar's
 'save data', its EEPROM. The selection is set
 here in [cdboot1.s](../cdboot1.s#L328). Just to reiterate, this code invoking the VLM splash screen is not part of the VLM proper itself,
-rather it is a component of the CD Bios written by Dave Stauger.
+rather it is a component of the CD Bios written by Dave Stauger. So the extra 8 effects are probably not encountered
+so frequently any more, since most people running an emulator will be booting up with an 'empty' EEPROM.
 
 ```asm
         ; Select a random effect from Bank 10 for the CD Player's splash screen.
@@ -19,9 +20,9 @@ rather it is a component of the CD Bios written by Dave Stauger.
         swap  d2          ; Swap the words in the random long.
         moveq  #0,d1      ; Set d1 to 0.
         move.w  d2,d1     ; Store the lower word of d2 in the lower word of d1.
-        divu  #9,d1       ; Divid the result by 9
+        divu  #9,d1       ; Divid the result by 9 to make the upper word between 0 and 8.
         swap  d1          ; Swap the lower and higher words in d1.
-        addq.w  #1,d1     ; Add 1 to it.
+        addq.w  #1,d1     ; Add 1 to it to make it between 1 and 9.
         move.w  d1,skid   ; Make the result the effect we select for the splash screen.
         jsr  free         ; Run the splash screen in the VLM (see LaunchVLM).
 ```
