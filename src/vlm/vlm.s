@@ -377,7 +377,7 @@ zippo:  lea     beasties+192,a0
         move    #5,d5                 ; Set the Object Type to 5
         jsr     makeit_transparent
         move    #16,22(a0)
-        move    #-1,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,OBJ_MODE(a0)         ; Set Display Object's Mode to off.
         move    #$88FF,$F00420 ; Colour lookup table
         move    #$80FF,$F00422 ; Colour lookup table
         
@@ -391,7 +391,7 @@ zippo:  lea     beasties+192,a0
         move    #6,d5                 ; Set the Object Type to 6.
         jsr     makeit_transparent
         move    #4,22(a0)
-        move    #-1,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,OBJ_MODE(a0)         ; Set Display Object's Mode to off.
         move    #1,30(a0)
         
         ; Beastie 5 - 
@@ -403,7 +403,7 @@ zippo:  lea     beasties+192,a0
         move.l  #$4000,d2
         move    #6,d5                 ; Set the Object Type to 6.
         jsr     makeit_transparent
-        move    #-1,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,OBJ_MODE(a0)         ; Set Display Object's Mode to off.
         move    #20,22(a0)
         move    #1,30(a0)
         
@@ -416,7 +416,7 @@ zippo:  lea     beasties+192,a0
         swap    d0
         swap    d1
         jsr     makeit_transparent
-        move    #-1,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,OBJ_MODE(a0)         ; Set Display Object's Mode to off.
         move    #36,22(a0)          ; '$'
         move    #1,30(a0)
         
@@ -429,7 +429,7 @@ zippo:  lea     beasties+192,a0
         swap    d0
         swap    d1
         jsr     makeit_transparent
-        move    #-1,12(a0)         ; Set Display Object's Mode to off.
+        move    #-1,OBJ_MODE(a0)         ; Set Display Object's Mode to off.
         move    #-1,vlmtim ; Turn off the VLM logo timer.
         
         ; Clear the environment variables.
@@ -462,7 +462,7 @@ iprep:  movem.l d7/a5-a6,-(sp)        ; Stash some values in the stack so we can
         move    #$F0,mony
         move    #3,monitand
         move.l  #symadj,routine
-        clr.l   action
+        clr.l   action ; Clear the current edit or effect-load action.
         jmp     titlescr              ; Draw the screen. Do all the GPU stuff.
 
 
@@ -530,9 +530,9 @@ gogo:
         move    #$100,JOYSTICK
         move    #1,INT1
         move.l  #dumint,($100).w
-        move.l  #-1,action
+        move.l  #-1,action ; Clear any existing action.
         bsr.w   startup ; Initialize everything.
-        move.l  #-1,action
+        move.l  #-1,action ; Clear any existing action.
         rts
 
 ; *******************************************************************
@@ -857,6 +857,7 @@ wlink:
 ; symmetry accordingly.
 ; *******************************************************************
 symadj:
+        ; Update the adsra/adsrb/adsrc arrays.
         lea     pad_now,a1 ; Get the button presses
         bsr.w   doadsr ; Respond to a/b/c being pressed.
 
@@ -865,22 +866,25 @@ symadj:
 
         lea     pad_now,a1 ; Get the button presses
         tst.w   editing ; Is editing mode active?
-        beq.w   shoop
+        beq.w   shoop ; If not, skip to shoop.
+
         lea     pad_now+4,a1 ; Get the button presses from edit mode.
-        ; Falls through.
 
         ; Respond to up/down/left/right in VLM mode.
+
+        ; Update pixcon array.
 shoop:  move.b  1(a1),d0
         rol.b   #2,d0
         lea     pixcon,a0
         jsr     pinertco
 
+        ; Update piycon array.
         move.b  1(a1),d0
         rol.b   #4,d0
         lea     piycon,a0
         jsr     pinertco
 
-        ; Prepare px and py.
+        ; Update px and py.
         move.l  pixcon,d0
         lsr.l   #8,d0
         and.l   #$FFFF,d0
@@ -894,6 +898,8 @@ shoop:  move.b  1(a1),d0
 ; *******************************************************************
 ; doadsr
 ; Do Attack Decay Sustain Release
+; Updates the adsra/adsrb/adsrc array as appropriate. This is used
+; in the fxobj.
 ;
 ; a1 -> pad_now (buttons pressed)
 ; *******************************************************************
@@ -908,20 +914,20 @@ ago:
 
         lea     10(a1),a1
         lea     adsrc,a0
-        move.l  (a3),d0
-        and.l   #cbutton,d0
+        move.l  (a3),d0 ; Put button presses in d0.
+        and.l   #cbutton,d0 ; Set d0 if c button pressed.
         bsr.w   do_adsr
 
         lea     2(a1),a1
         lea     adsrb,a0
-        move.l  (a3),d0
-        and.l   #bbutton,d0
+        move.l  (a3),d0 ; Put button presses in d0.
+        and.l   #bbutton,d0 ; Set d0 if b button pressed.
         bsr.w   do_adsr
 
         lea     2(a1),a1
         lea     adsra,a0
-        move.l  (a3),d0
-        and.l   #abutton,d0
+        move.l  (a3),d0 ; Put button presses in d0.
+        and.l   #abutton,d0 ; Set d0 if a button pressed.
 
 do_adsr:
         move    8(a0),d1
@@ -1033,7 +1039,7 @@ gkpad:
 ; gkp
 ; *******************************************************************
 gkp:
-        lea     pad_now,a1
+        lea     pad_now,a1 ; Get the most recent button presses.
         tst.w   editing
         beq.w   gnana
         movea.l cpad+4,a3
@@ -1230,7 +1236,7 @@ exec1:
         bne.w   anteclr
         clr.w   2(a3)
         clr.w   antelope
-        move    #1,seldb
+        move    #1,seldb ; Set the selection debounce flag.
 
 anteclr:
         cmpi.l  #keydb,routine
@@ -1243,10 +1249,10 @@ anteclr:
 ; keydb
 ; *******************************************************************
 keydb:
-        move.l  pad_now,d1
+        move.l  pad_now,d1 ; Get the most recent button presses.
         and.l   #(hash|zerobutton|one|two|three|four|five|six|seven|eight|nine),d1 ; Were any of the number buttons pressed?
-        bne.w   rrts
-        move.l  ov,routine
+        bne.w   rrts ; If yes, return.
+        move.l  ov,routine ; Store the old 'routine' in routine.
         rts
 
 ; *******************************************************************
@@ -1281,7 +1287,7 @@ idli:   clr.l   248(a0)
 setedit:
         tst.w   vedit ; Are we already editing?
         bne.w   rrts ; If so, return early.
-        move    vlm_mode,ovlm_mod
+        move    vlm_mode,ovlm_mod ; Stash the current VLM mode.
         move    #1,vedit ; Signal we are in edit mode.
         move    #EDITING_MODE,vlm_mode ; Change mode to editing.
         move    #1,beasties+140
@@ -1538,7 +1544,10 @@ eloop:  tst.w   _fsync
 
 ; *******************************************************************
 ; yakedit
+;
 ; Display the current editing screen.
+;
+; Runs any current 'action' routine.
 ; *******************************************************************
 yakedit:
         tst.w   actime
@@ -2059,7 +2068,7 @@ makeit:
         move.l  d2,16(a0) ; Set the pointer to screen data.
         move    #-1,20(a0) ; Caller will set the postfixup.
         clr.w   22(a0)
-        move    d5,12(a0) ; Set the object's mode (index to ModeVex).
+        move    d5,OBJ_MODE(a0) ; Set the object's mode (index to ModeVex).
         lsl     #3,d5 ; Multiply d5 by 8.
         lea     ObTypes,a1 ; Point a1 at ObTypes
         move    (a1,d5.w),24(a0) ; Put the ObType width in the object.
@@ -3896,11 +3905,11 @@ unquit:
 ; Quit out of the editing mode.
 ; *******************************************************************
 editquit:
-        lea     normal,a0 ; "Standard Mode"
-eq:     bsr.w   cprint
-        clr.w   editing
-        clr.l   star_on
-        move    ovlm_mod,vlm_mode
+        lea     normal,a0 ; Set on-screen text to: "Standard Mode"
+eq:     bsr.w   cprint ; Print it to the screen.
+        clr.w   editing ; Signal we're not editing anymore.
+        clr.l   star_on ; Clear bank/effect selection so we don't attempt to load it again.
+        move    ovlm_mod,vlm_mode ; Restore the VLM mode we were in before entering edit mode.
         rts
 
 ; *******************************************************************
@@ -4291,11 +4300,11 @@ no_new_screen:
         movea.l dlist,a0            ; Point a0 at the display list
         move    db_on,d7            ; Is double-buffering enabled
         bmi.w   no_db               ; If not, skip to warp flash.
-        tst.w   scron
-        beq.w   stdb
-        bpl.w   no_db
-        clr.w   scron
-        bra.w   no_db
+        tst.w   scron ; Are we strobing?
+        beq.w   stdb ; If not, skip to stdb.
+        bpl.w   no_db ; If yes skip updating the main screen item in the Object list.
+        clr.w   scron ; Reset strobing.
+        bra.w   no_db ; Skip to no_db.
         
         ; Update the main screen item in the Object List with the address of the new screen contained
         ; in cscreen. This has the effect of ensuring all the objects we drew with the GPU
@@ -4312,85 +4321,90 @@ stdb:   move.l  d5,d6
         add.l   dbadj,d5            ; Move to the next object in cscreen.
         dbf     d7,stdb             ; Keep looping until we've done all double-buffered screens.
 
-no_db:  tst.w   flash
-        beq.w   cflash
-        subi.w  #$10,flash
-        move    flash,d0
-        or.w    #$7700,d0
-        move    d0,d1
-        swap    d0
-        move    d1,d0
-        move.l  d0,BG
-        move.l  d0,BG+4
-        tst.w   flash
-        bne.w   cflash
-        move    #-1,scron
-
+no_db:  tst.w   flash                ; Are we strobing?
+        beq.w   cflash               ; If not, skip to 'cflash'.
+        subi.w  #16,flash            ; Decrement the strobe timer.
+        move    flash,d0             ; Store the timer in d0.
+        or.w    #$7700,d0            ; Make sure some of the top bits are set.
+        move    d0,d1                ; Store in d1.
+        swap    d0                   ; Swap the words in d0.
+        move    d1,d0                ; Store the value in d1 in the lower word of d0.
+        move.l  d0,BG                ; Use d0 to set our background color.
+        move.l  d0,BG+4              ; Use d0 to set our background color.
+        tst.w   flash                ; Have we used up the strobe timer yet?
+        bne.w   cflash               ; If not, skip to cflash.
+        move    #-1,scron            ; If the strobe timer is finished, turn off strobing.
+        
         ; Maybe do a 'Strobe'..
-cflash: cmpi.w  #VLM_MODE,vlm_mode ; Are we in VLM mode?
-        bne.w   dflash ; If not, skip. Otherwise..
-        move.l  pad_now,d0 ; Get the button presses.
-        and.l   #cbutton,d0 ; Was the C button pressed?
-        beq.w   dflash ; If not, skip to 'dflash'
-        tst.w   flash_db ; Otherwise, check if we are strobing already.
-        bne.w   eflash ; If we are, skip to 'eflash'. 
-        move    #1,flash_db ; Turn on strobing.
-        move    #$100,flash
-        move    #1,scron
-        bra.w   eflash
-
-dflash: clr.w   flash_db ; Make sure strobing is off.
-
+cflash: cmpi.w  #VLM_MODE,vlm_mode   ; Are we in VLM mode?
+        bne.w   dflash               ; If not, skip. Otherwise..
+        move.l  pad_now,d0           ; Get the button presses.
+        and.l   #cbutton,d0          ; Was the C button pressed?
+        beq.w   dflash               ; If not, skip to 'dflash'
+        tst.w   flash_db             ; Otherwise, check if we are strobing already.
+        bne.w   eflash               ; If we are, skip to 'eflash'.
+        move    #1,flash_db          ; Turn on strobing selection debounce (to prevent selection again).
+        move    #256,flash           ; Start the strobe timer.
+        move    #1,scron             ; Turn on strobing
+        bra.w   eflash               ; Skip to eflash.
+        
+dflash: clr.w   flash_db             ; Make sure strobing debounce is off.
+        
         ; Check the VLM logo timer.
-eflash: tst.w   vlmtim ; Is the VLM logo timer active?
-        bmi.w   ncanc ; If not, skip to 'ncanc'.
-        subi.w  #1,vlmtim ; Decrement the VLM logo timer.
-        bpl.w   ncanc ; If it's still active, skip to 'ncanc'.
-        move    #-1,davesobj+204 ; Otherwise, turn off the VLM logo.
-
-        ; Check for input from the controller.
-ncanc:  jsr     readpad         ; Update pad_now.
-        tst.w   seldb           ; Is the debounce flag set?
-        beq.w   do_ed           ; If not, go ahead.
-        move.l  pad_now,d1
-        or.l    pad_now+4,d1
-        and.l   #$22FE20FF,d1   ; Were any of the buttons pressed?
-        bne.w   no_ksel         ; Skip past everything.
-
-        clr.w   seldb           ; Clear the debounce flag.
-do_ed:  tst.w   vlm_mode ; Are the VLM controls active?
-        beq.w   no_ed ; If not, skip to no_ed.
-
+eflash: tst.w   vlmtim               ; Is the VLM logo timer active?
+        bmi.w   ncanc                ; If not, skip to 'ncanc'.
+        subi.w  #1,vlmtim            ; Decrement the VLM logo timer.
+        bpl.w   ncanc                ; If it's still active, skip to 'ncanc'.
+        move    #-1,davesobj+204     ; Otherwise, turn off the VLM logo.
+        
+        ; Check for input from the controller. We get a new reading
+        ; and compare with the previous so that we 'debounce' the input,
+        ; i.e. check the button was definitely pressed.
+ncanc:  jsr     readpad              ; Update pad_now.
+        tst.w   seldb                ; Is the debounce flag set?
+        beq.w   do_ed                ; If not, go ahead.
+        move.l  pad_now,d1           ; Store the current reading.
+        or.l    pad_now+4,d1         ; Compare with the old reading.
+        and.l   #anybutton,d1        ; Were any of the buttons pressed in both the old and new reading?
+        bne.w   no_ksel              ; Skip past everything.
+        
+        ; A button was definitely pressed and should be acted upon.
+        clr.w   seldb                ; Clear the debounce flag.
+do_ed:  tst.w   vlm_mode             ; Are the VLM edit controls active?
+        beq.w   no_ed                ; If not, skip to no_ed.
+        
         ; The VLM edit controls are active.
-        move    editing,d0     ; Put current editing mode in d0.
-        beq.w   no_ed          ; If none, skip to no_end.
-        tst.l   action         ; Are we in the middle of an action?
-        bne.w   no_ksel        ; If we are, skip to no_ksel.
-        subq.w  #1,d0          ; Subtract 1 from the current editin gmode.
-        lea     editvex,a0     ; Point a0 at edit vex.
-        lsl     #2,d0          ; Multiply d0 by 4.
-        movea.l (a0,d0.w),a0   ; Use d0 as an index into 'editvex' to get the edit routine.
-        jsr     (a0)           ; Run the edit routine.
-        bra.w   no_ksel        ; Skip over the 'not editing' activity below.
+        move    editing,d0           ; Put current editing mode in d0.
+        beq.w   no_ed                ; If none, skip to no_end.
+
+        ; We're in editing mode - run an edit routine if necessary.
+        tst.l   action               ; Are we in the middle of an action?
+        bne.w   no_ksel              ; If we are, skip to no_ksel.
+        subq.w  #1,d0                ; Subtract 1 from the current editin gmode.
+        lea     editvex,a0           ; Point a0 at edit vex.
+        lsl     #2,d0                ; Multiply d0 by 4.
+        movea.l (a0,d0.w),a0         ; Use d0 as an index into 'editvex' to get the edit routine.
+        jsr     (a0)                 ; Run the edit routine.
+        bra.w   no_ksel              ; Skip over the 'not editing' activity below.
 
         ; We're not in editing mode.
-no_ed:  tst.l   action
-        bne.w   no_ksel
-        move.l  pad_now,d0
-        and.l   #optionbutton,d0 ; Was the option button pressed?
-        bra.w   nothash ; If not, skip to 'nothash', otherwise..
-
+no_ed:  tst.l   action ; Do we have an active 'action' routine?
+        bne.w   no_ksel ; If so, skip bank/level selection.
+        move.l  pad_now,d0 ; Get buttons pressed.
+        and.l   #optionbutton,d0     ; Was the option button pressed?
+        bra.w   nothash              ; If not, skip to 'nothash', otherwise..
+        
         ; ..turn on the VLM logo and VLM mode.
-vlm_on: move    #1,seldb
+vlm_on: move    #1,seldb             ; Set the selection debounce flag.
         move    #VLM_MODE,vlm_mode
         move    #1,beasties+140
-        move    #7,davesobj+204 ; Turn on the logo.
-        move    #500,vlmtim ; Set the VLM logo timer.
-
+        move    #7,davesobj+204      ; Turn on the logo.
+        move    #500,vlmtim          ; Set the VLM logo timer.
+        
 nothash:
-        tst.w   editing
-        bne.w   no_ksel
-        move.l  pad_now,d0
+        tst.w   editing ; Are we in editing mode?
+        bne.w   no_ksel ; If so, skip to no_ksel (can't change effect during editing?).
+        move.l  pad_now,d0 ; Get the most recent button presses.
         move.l  d0,d1
         move.l  d1,d0
         and.l   #asterisk,d0
@@ -4399,37 +4413,41 @@ nothash:
         ; Check if we've selected a new bank combination for a new effect (e.g. 8-9).
         move.l  d1,d0
         and.l   #(zerobutton|one|two|three|four|five|six|seven|eight|nine),d0 ; Were any of the number buttons pressed?
-        beq.w   no_ksel ; No, skip to no_ksel.
-
-        ;Get the number that was pressed.
-        bsr.w   dcode
-        and.w   #$FF,d2
-        sub.b   #$30,d2             ; '0'
-        bne.w   pharty
-        bra.w   no_ksel
+        beq.w   no_ksel             ; No, skip to no_ksel.
         
-        ; An effect was selected, so enable it.
-pharty: move    star_on+2,star_on
-        move    d2,star_on+2
-        move    #1,seldb
-        bra.w   no_ksel
+        ; Get the number that was pressed.
+        bsr.w   dcode               ; Translate the number selected to an effect number.
+        and.w   #$FF,d2             ; We're only interested in the last byte.
+        sub.b   #$30,d2             ; Subtract out the 30.
+        bne.w   pharty              ; If we have a valid value, let's enter it.
+        bra.w   no_ksel             ; Otherwise skip to no_ksel (no effect was selected).
         
-        ; Was an effect selected?
+        ; An effect was selected, so shuffle the current effect value into the
+        ; bank value, and set debounce on to ensure the button is pressed..
+pharty: move    star_on+2,star_on   ; Shuffle the effect value into the bank value.
+        move    d2,star_on+2        ; Store the new button press as the effect.
+        move    #1,seldb            ; Set the selection debounce flag.
+        bra.w   no_ksel             ; Skip to no_ksel.
+        
+        ; Was a new bank or effect selected?
 knobby: tst.l   star_on             ; Test if one was turned on.
         beq.w   no_ksel             ; If not, skip to no_ksel.
-        move    star_on,d0          ; Store selection in d0.
-        bne.w   setbth
-        move    star_on+2,skid
-        move.l  #skidoo,action
-        bra.w   n_ks
+        
+        ; A new bank or effect (or both) was selected.
+        move    star_on,d0          ; Store bank selection in d0.
+        bne.w   setbth              ; If star_on is non-zero we have both a bank and effect selected, so do both.
+        ; Just a new effect was selected.
+        move    star_on+2,skid      ; Get the selected effect.
+        move.l  #skidoo,action      ; Our next call to the 'action' routine will enable.
+        bra.w   n_ks                ; Skip to n_ks.
         
         ; We've got an effect to load so load it.
-setbth: sub.w   #1,d0
+setbth: sub.w   #1,d0               ; Decrement the effect number so we can use it as an index.
         move    d0,imatrix          ; Set the bank number
         move    star_on+2,skid      ; Set the effect number within the bank.
-        move.l  #gm,action          ; Load the effect.
+        move.l  #gm,action          ; Load the bank and the effect.
         
-n_ks:   clr.l   star_on
+n_ks:   clr.l   star_on             ; Clear bank/effect selection so we don't attempt to load it again.
         
 no_ksel:
         ; Detect the cheat-mode enable for editing.
@@ -4438,8 +4456,8 @@ no_ksel:
         ; Temporarily use pause button to enter edit mode.
         ; cmp.l   #(seven|asterisk|zerobutton|three),d0
         cmp.l   #pausebutton,d0     ; Was the edit cheat code (037#) selected?
-        
-        bne.w   nse1                ; Edit not selected
+        bne.w   nse1                ; Edit not selected, skip to nse1.
+        ; Edit mode was enabled!
         jsr     setedit             ; Enable Edit mode.
         bra.w   nse2                ; Skip next line, leave editing enabled.
         
@@ -4449,14 +4467,16 @@ nse1:   clr.w   vedit               ; Clear edit enabled.
         ; - symadj, keydb, ov, rrts.
 nse2:   movea.l _fx,a0
         jsr     (a0)
-        tst.l   action
-        bne.w   gharbaj
+
+        tst.l   action ; Do we have an active 'action' routine?
+        bne.w   gharbaj ; If so, don't run the 'routine' routine - skip to gharbaj.
         
         ; Perform whatever the current 'routine' is. Can be one of:
         ; - symadj, keydb, ov, rrts.
         movea.l routine,a0
         jsr     (a0)
         
+        ; Return from the interrupt. Restore stuff stashed in the stack etc.
 gharbaj:
         movem.l (sp)+,d6-d7/a3-a6   ; Restore stashed values from the stack.
         
@@ -4570,20 +4590,22 @@ selett:
 
 ; *******************************************************************
 ; skidoo
-; I think this copies the effect from av1 into the current fx object.
+; This copies the selected effect from selected bank into the current fx object.
 ; *******************************************************************
 skidoo:
 
+        ; Point a1 at the beginning of our selected effect data.
         movea.l #fxedbase+8,a0
-        move    skid,d0
-        sub.w   #1,d0
-        mulu.w  #6144,d0 ; $1800
-        lea     matrix,a1
-        adda.l  d0,a1
+        move    skid,d0 ; Store the selected effect in d0.
+        sub.w   #1,d0 ; Subtract 1.
+        mulu.w  #6144,d0 ; Multiply it by the length of effect data (6144 bytes)
+        lea     matrix,a1 ; Point a1 at our bank data.
+        adda.l  d0,a1 ; Add d0 to point a1 at the bank data of our selected effect.
 
-        ; Loop
+        ; Loop to copy the 6144 bytes of effect data (6 sub-effects of 1024 bytes
+        ; each) from our selected effect into fxedbase.
         ; a0 - fxedbase
-        ; a1 - matrix
+        ; a1 - points to bank data in matrix
         move    #5,d0
 slett:  clr.l   (a0)
         tst.l   info(a1)
@@ -4988,7 +5010,7 @@ iawfy:
 ; awf_y
 ; *******************************************************************
 awf_y:
-        lea     pad_now,a1
+        lea     pad_now,a1 ; Get the most recent button presses.
         move.b  1(a1),d0
         rol.b   #4,d0
         movea.l cwed2,a4
@@ -4998,7 +5020,7 @@ awf_y:
 ; awf_x
 ; *******************************************************************
 awf_x:
-        lea     pad_now,a1
+        lea     pad_now,a1 ; Get the most recent button presses.
         move.b  1(a1),d0
         rol.b   #2,d0
         movea.l cwed1,a4
@@ -5132,7 +5154,7 @@ ant8:
 ; x_one
 ; *******************************************************************
 x_one:
-        lea     pad_now,a1
+        lea     pad_now,a1 ; Get the most recent button presses.
         move.b  1(a1),d0
         rol.b   #2,d0
         lea     ixcon,a0
@@ -5143,7 +5165,7 @@ x_one:
 ; xy1
 ; *******************************************************************
 xy1:
-        lea     pad_now,a1
+        lea     pad_now,a1 ; Get the most recent button presses.
         move.b  1(a1),d0
         rol.b   #2,d0
         lea     ixcon,a0
@@ -5170,7 +5192,7 @@ spn_butt:
 pn_butte:
         tst.l   action
         bne.w   rrts
-        lea     pad_now,a1
+        lea     pad_now,a1 ; Get the most recent button presses.
         move.l  (a1),d0
         move.l  #bbutton,d1 ; Put b button in d1.
         and.l   d0,d1 ; Was the b button pressed?
@@ -5225,7 +5247,7 @@ xseldn:
 ; dladj
 ; *******************************************************************
 dladj:
-        move.l  pad_now,d0
+        move.l  pad_now,d0 ; Get the most recent button presses.
         move.l  d0,d1
         and.l   #up,d0 ; Did the player press up?
         bne.w   sninc
@@ -5241,7 +5263,7 @@ dladj:
         move.l  d1,d0
         and.l   #bbutton,d0 ; Did the player press b?
         beq.w   padex
-        move.l  pad_now,d0
+        move.l  pad_now,d0 ; Get the most recent button presses.
         move.l  d0,d1
         and.l   #up,d0 ; Did the player press up?
         bsr.w   selup
@@ -5268,7 +5290,7 @@ sic:
         andi.w  #$3F,delayt ; '?'
 
 spex:
-        move    #1,seldb
+        move    #1,seldb ; Set the selection debounce flag.
         move.l  #udedg,action
         rts
 
@@ -5291,7 +5313,7 @@ sndec:
 ; adsred
 ; *******************************************************************
 adsred:
-        move.l  pad_now,d0
+        move.l  pad_now,d0 ; Get the most recent button presses.
         move.l  d0,d1
         and.l   #up,d0 ; Did the player pressup?
         bne.w   selup
@@ -5314,7 +5336,7 @@ adsred:
 ; Check if we should exit the current screen (user has pressed a, b, or c).
 ; *******************************************************************
 padex:
-        move.l  pad_now,d1
+        move.l  pad_now,d1 ; Get the most recent button presses.
         and.l   #(abutton|bbutton|cbutton),d1 ; Did the player press a,b, or c?
         bne.w   owwt ; If so, exit the screen.
         rts ; Otherwise do nothing.
@@ -5337,7 +5359,7 @@ intinc:
 ; spdinc
 ; *******************************************************************
 spdinc:
-        move.l  pad_now,d0
+        move.l  pad_now,d0 ; Get the most recent button presses.
         move.l  d0,d1
         and.l   #up,d0
         bne.w   xselup
@@ -5351,7 +5373,7 @@ spdinc:
         and.l   #right,d0
         bne.w   ph_inc
         lea     wfpad,a0
-        lea     pad_now,a1
+        lea     pad_now,a1 ; Get the most recent button presses.
         move    (a1),d6
         move    #3,d7
 
@@ -5381,7 +5403,7 @@ _gk2:
 _bodb2:
         lsr     #1,d6
         dbf     d7,_gk2
-        move.l  pad_now,d1
+        move.l  pad_now,d1 ; Get the most recent button presses.
         and.l   #(abutton|bbutton|cbutton),d1 ; Did the player press a,b, or c?
         beq.w   rrts
         move    selected,d2
@@ -5500,7 +5522,7 @@ git:
 ; to change selection.
 ; *******************************************************************
 selector:
-        move.l  pad_now,d0
+        move.l  pad_now,d0 ; Get the most recent button presses.
         move.l  d0,d1
         and.l   #up,d0 ; Up selected?
         bne.w   selup ; Move up.
@@ -5566,7 +5588,7 @@ sud:    move.l  #ud_selcu,action
 ; Signal a selection has been made.
 ; *******************************************************************
 sdb:
-        move    #1,seldb
+        move    #1,seldb ; Set the selection debounce flag.
         rts
 
 ; *******************************************************************
@@ -5618,7 +5640,7 @@ InitBeasties:
         move    #12,d7         ; Move 12 to d7.
         move    d7,nbeastie    ; There will be 12 entries in beasties.
 ibeasts: 
-        move    #-1,12(a0) ; Initialize the mode of the entry to 'inactive'
+        move    #-1,OBJ_MODE(a0) ; Initialize the mode of the entry to 'inactive'
         lea     64(a0),a0      ; Each entry is 64 bytes long.
         dbf     d7,ibeasts     ; Go to the next entry.
         rts
@@ -5682,10 +5704,11 @@ RunBeasties:
         movea.l dlist,a4       ; Point a4 at dlist.
         lea     beasties,a2    ; Point a2 at beasties.
         move    nbeastie,d7    ; There are 12 entries in the beasties list.
-        tst.w   scron          ; Do we already have an initial display list object?
+        tst.w   scron          ; Are we strobing?
         beq.w   RBeasts        ; If not, skip to intialising from the start.
         bmi.w   RBeasts        ; If not, skip to intialising from the start.
-        ; We already have an entry at the start of the list.
+
+        ; If we're strobing we have one less Beastie to worry about. 
         sub.w   #1,d7          ; Need to initialize one less.
         lea     64(a2),a2      ; Move the pointer to the second entry in the beasties list.
         
@@ -6473,17 +6496,19 @@ MergeBlock:
 ; *******************************************************************
 ; dcode
 ; Get the number that was pressed and store the result in d2.
+; d0 -> the button code that was pressed.
 ; *******************************************************************
 dcode:
-        lea     codez,a3
-        move    #$1F,d1
-
-dco:
-        move.b  (a3)+,d2
-        btst    d1,d0
-        bne.w   rrts
-        dbf     d1,dco
-        clr.w   d2
+        lea     codez,a3   ; Point a3 at the codez array below.
+        
+        ; Find a hit for d0 in the codez array.
+        move    #31,d1     ; Loop through all 32 entries in codez.
+dco:    move.b  (a3)+,d2   ; Put current entry in codez in d2 and advance one position.
+        btst    d1,d0      ; Have we reached the code selected by d0?
+        bne.w   rrts       ; If so, d2 is now the value we want: return.
+        dbf     d1,dco     ; Otherwise, keep looping.
+        
+        clr.w   d2         ; We didn't get a hit - so clear d2.
         rts
 
 ; *******************************************************************

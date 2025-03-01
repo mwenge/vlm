@@ -318,6 +318,7 @@ nine         EQU $00000002
 hash         EQU $00000001
 ; A,B,& C Button pressed together.
 allbutts     EQU $22002000
+anybutton    EQU $22FE20FF
 
 AUDIO_CTRL_MODE EQU 0
 VLM_MODE EQU 1
