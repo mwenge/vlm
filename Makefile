@@ -29,7 +29,7 @@ virtuallightmachine.jag: cdfront.abs vlm.abs
 	./utils/CreateCart.py VirtualLightMachine.jag  src/incbin/romheader.bin src/bin/cdboot1.abs
 	#echo "f3144937d9f65fe7a1cf7f652d99a71d  VirtualLightMachine.jag" | md5sum -c
 	# Edit mode uses pause button
-	echo "cc268a46764dc1d8f47d8612cd3c4c8c  VirtualLightMachine.jag" | md5sum -c
+	echo "3644a269bb3097981d242a9d12b1e879  VirtualLightMachine.jag" | md5sum -c
 
 vlm.gpu:
 	./rmac/rmac -fr -mtom -l -isrc -isrc/vlm/gpu src/vlm/gpu/dbeast.gas -o src/bin/dbeast.o

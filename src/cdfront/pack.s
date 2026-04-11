@@ -409,7 +409,7 @@ tvsetmem:
 	move.w	#0,tvPH			; initialise horz scroll pointer
 	move.w	#0,tvPV			; initialise vert scroll pointer
 .getcolr:
-	move.b	SYMB04(a6),d0		; d1 = symbol 4
+	move.b	SYMB04(a6),d1		; d1 = symbol 4
 	andi.w	#$000F,d1		; d1 = 0000 0000 0000 cccc
 	add.w	#TVCOLOFF,d1
 	move.w	d1,d0			; d0 = d1
